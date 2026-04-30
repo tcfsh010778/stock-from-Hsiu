@@ -352,7 +352,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
 .chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
-.hover-chart{position:relative}
+.hover-chart,.indicator-hover{position:relative}
 .chart-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(88,166,255,.85);display:none;pointer-events:none}
 .chart-tooltip{position:absolute;z-index:5;display:none;min-width:190px;max-width:240px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:9px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;box-shadow:0 10px 28px rgba(0,0,0,.35);pointer-events:none}
 .chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
@@ -953,6 +953,16 @@ def holding_payload(series: list[dict]) -> list[dict]:
             "large": item.get("large"),
             "retail": item.get("retail"),
             "totalPeople": item.get("total_people"),
+        }
+        for item in series[-80:]
+    ]
+
+
+def foreign_payload(series: list[dict]) -> list[dict]:
+    return [
+        {
+            "date": item.get("date", ""),
+            "foreign": item.get("foreign"),
         }
         for item in series[-80:]
     ]
@@ -1944,7 +1954,7 @@ def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], s
 </svg>"""
 
 
-def indicator_chart_panel(rows: list[dict], label: str) -> str:
+def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
     data = indicator_series(rows)
     if not data:
         return '<div class="strategy-note" style="margin-top:10px">指標資料不足。</div>'
@@ -1952,23 +1962,26 @@ def indicator_chart_panel(rows: list[dict], label: str) -> str:
     macd = mini_line_svg(f"{label} MACD", [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")], zero_line=True)
     wr = mini_line_svg(f"{label} Williams %R", [("%R", data["wr"], "#a78bfa")], fixed_range=(-100, 0))
     return f"""<div class="indicator-stack">
-  <div class="indicator-box">{wr}</div>
-  <div class="indicator-box">{kd}</div>
-  <div class="indicator-box">{macd}</div>
+  <div class="indicator-box indicator-hover" data-source="price" data-mode="{esc(mode)}" data-kind="wr">{wr}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+  <div class="indicator-box indicator-hover" data-source="price" data-mode="{esc(mode)}" data-kind="kd">{kd}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+  <div class="indicator-box indicator-hover" data-source="price" data-mode="{esc(mode)}" data-kind="macd">{macd}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
 </div>"""
 
 
 def chip_indicator_panel(holding_series: list[dict], chip_series: list[dict]) -> str:
     panels = []
     if holding_series:
-        panels.append(mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major", 0) or 0) for x in holding_series], "#f85149")], height=108))
-        panels.append(mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail", 0) or 0) for x in holding_series], "#3fb950")], height=108))
-        panels.append(mini_line_svg("總股東指標", [("股東人數", [float(x.get("total_people", 0) or 0) if x.get("total_people") is not None else None for x in holding_series], "#58a6ff")], height=108))
+        panels.append(("holding", "major", mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major", 0) or 0) for x in holding_series], "#f85149")], height=108)))
+        panels.append(("holding", "retail", mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail", 0) or 0) for x in holding_series], "#3fb950")], height=108)))
+        panels.append(("holding", "totalPeople", mini_line_svg("總股東人數", [("股東人數", [float(x.get("total_people", 0) or 0) if x.get("total_people") is not None else None for x in holding_series], "#58a6ff")], height=108)))
     if chip_series:
-        panels.append(mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign", 0) or 0) for x in chip_series], "#d2a520")], height=108, zero_line=True))
+        panels.append(("foreign", "foreign", mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign", 0) or 0) for x in chip_series], "#d2a520")], height=108, zero_line=True)))
     if not panels:
         return '<div class="strategy-note" style="margin-top:10px">籌碼指標資料不足。</div>'
-    return '<div class="chip-indicator-stack">' + "".join(f'<div class="indicator-box">{p}</div>' for p in panels[:4]) + '</div>'
+    return '<div class="chip-indicator-stack">' + "".join(
+        f'<div class="indicator-box indicator-hover" data-source="{source}" data-kind="{kind}">{svg}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>'
+        for source, kind, svg in panels[:4]
+    ) + '</div>'
 
 
 def enrich_stock_fields(s: dict) -> dict:
@@ -2476,12 +2489,14 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     }, ensure_ascii=False)
     holding_data = json.dumps(holding_payload(holding_series), ensure_ascii=False)
     chip_flow_data = json.dumps(chip_flow_payload(chip_series), ensure_ascii=False)
+    foreign_data = json.dumps(foreign_payload(chip_series), ensure_ascii=False)
     main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
 const holdingData_{stock_id} = {holding_data};
 const chipFlowData_{stock_id} = {chip_flow_data};
+const foreignData_{stock_id} = {foreign_data};
 const mainForceData_{stock_id} = {main_force_data};
 function showChart_{stock_id}(mode){{
   const root=document.getElementById('{chart_id}');
@@ -2581,12 +2596,12 @@ function initHoverCharts_{stock_id}(){{
       if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
       tip.style.left=`${{Math.max(6, tx)}}px`;
       tip.style.top=`${{Math.max(6, ty)}}px`;
-      syncHoldingFromK_{stock_id}(item.date);
+      syncIndicatorPack_{stock_id}(item.date, mode);
     }});
     chart.addEventListener('mouseleave', ()=>{{
       tip.style.display='none';
       line.style.display='none';
-      clearHoldingHover_{stock_id}();
+      clearIndicatorPack_{stock_id}(mode);
     }});
   }});
 }}
@@ -2622,6 +2637,92 @@ function kHtml_{stock_id}(x){{
       W%R ${{fmt(x.wr,1)}}
     </div>`;
 }}
+function indicatorData_{stock_id}(chart, mode){{
+  const source=chart.dataset.source;
+  if(source==='price') return chartData_{stock_id}[chart.dataset.mode || mode] || [];
+  if(source==='holding') return holdingData_{stock_id} || [];
+  if(source==='foreign') return foreignData_{stock_id} || [];
+  return [];
+}}
+function indicatorHtml_{stock_id}(chart, x){{
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
+  const kind=chart.dataset.kind;
+  if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span></div>`;
+  if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span></div>`;
+  if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span></div>`;
+  if(kind==='major') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
+  if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
+  if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
+  if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span></div>`;
+  return `<div class="t-date">${{x.date || '-'}}</div>`;
+}}
+function syncIndicatorPack_{stock_id}(date, mode){{
+  const root=document.getElementById('{chart_id}');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  if(!pane) return;
+  pane.querySelectorAll('.indicator-hover').forEach(chart=>{{
+    const data=indicatorData_{stock_id}(chart, mode);
+    const idx=nearestByDate_{stock_id}(data, date);
+    if(idx < 0) return;
+    positionTooltip_{stock_id}(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, indicatorHtml_{stock_id}(chart, data[idx]));
+  }});
+}}
+function clearIndicatorPack_{stock_id}(mode){{
+  const root=document.getElementById('{chart_id}');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  if(!pane) return;
+  pane.querySelectorAll('.indicator-hover').forEach(chart=>clearOverlay_{stock_id}(chart));
+}}
+function syncMainK_{stock_id}(date, mode){{
+  const root=document.getElementById('{chart_id}');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  const chart=pane ? pane.querySelector('.hover-chart[data-mode="'+mode+'"]') : null;
+  const data=chartData_{stock_id}[mode] || [];
+  const idx=nearestByDate_{stock_id}(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_{stock_id}(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, kHtml_{stock_id}(data[idx]));
+}}
+function clearMainK_{stock_id}(mode){{
+  const root=document.getElementById('{chart_id}');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  clearOverlay_{stock_id}(pane ? pane.querySelector('.hover-chart[data-mode="'+mode+'"]') : null);
+}}
+function initIndicatorHover_{stock_id}(){{
+  const root=document.getElementById('{chart_id}');
+  if(!root) return;
+  root.querySelectorAll('.indicator-hover').forEach(chart=>{{
+    if(chart.dataset.hoverReady==='1') return;
+    chart.dataset.hoverReady='1';
+    const tip=chart.querySelector('.chart-tooltip');
+    const line=chart.querySelector('.chart-crosshair');
+    if(!tip || !line) return;
+    chart.addEventListener('mousemove', ev=>{{
+      const pane=chart.closest('.chart-pane');
+      const mode=pane ? pane.dataset.pane : 'daily';
+      const data=indicatorData_{stock_id}(chart, mode);
+      if(data.length < 2) return;
+      const rect=chart.getBoundingClientRect();
+      const x=ev.clientX - rect.left;
+      const left=rect.width * 50 / 900;
+      const right=rect.width * (900 - 18) / 900;
+      const clamped=Math.max(left, Math.min(right, x));
+      const pct=(clamped-left) / Math.max(1, right-left);
+      const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+      const item=data[idx];
+      syncMainK_{stock_id}(item.date, mode);
+      syncIndicatorPack_{stock_id}(item.date, mode);
+    }});
+    chart.addEventListener('mouseleave', ()=>{{
+      const pane=chart.closest('.chart-pane');
+      const mode=pane ? pane.dataset.pane : 'daily';
+      clearIndicatorPack_{stock_id}(mode);
+      clearMainK_{stock_id}(mode);
+    }});
+  }});
+}}
+initIndicatorHover_{stock_id}();
 function syncHoldingFromK_{stock_id}(date){{
   const chart=document.getElementById('{holding_id}');
   const data=holdingData_{stock_id} || [];
@@ -2782,16 +2883,15 @@ initMainForceHover_{stock_id}();
         <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>
         <button type="button" data-btn="monthly" onclick="showChart_{stock_id}('monthly')">月K</button>
       </div>
-      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K')}</div>
-      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K')}</div>
-      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K')}</div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K', 'daily')}{chip_indicator_panel(holding_series, chip_series)}</div>
+      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K', 'weekly')}{chip_indicator_panel(holding_series, chip_series)}</div>
+      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K', 'monthly')}{chip_indicator_panel(holding_series, chip_series)}</div>
     </div>
   </div>
 
   <div class="card">
     <div class="section-label">10 日籌碼動向折射圖</div>
     {build_chip_panel(chip, holding)}
-    {chip_indicator_panel(holding_series, chip_series)}
     <div class="chart-stack">
       <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
       <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
