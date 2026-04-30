@@ -886,6 +886,19 @@ def read_holding_series(stock_id: str) -> list[dict]:
     return series
 
 
+def holding_payload(series: list[dict]) -> list[dict]:
+    return [
+        {
+            "date": item.get("date", ""),
+            "major": item.get("major"),
+            "large": item.get("large"),
+            "retail": item.get("retail"),
+            "totalPeople": item.get("total_people"),
+        }
+        for item in series[-80:]
+    ]
+
+
 def get_v44_fetcher():
     global _V44_FETCHER
     if _V44_FETCHER is not None:
@@ -1809,14 +1822,17 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
         event_rows = '<tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr>'
 
     chart_id = f"chart-{stock_id}"
+    holding_id = f"holding-chart-{stock_id}"
     chart_data = json.dumps({
         "daily": chart_payload(daily),
         "weekly": chart_payload(weekly),
         "monthly": chart_payload(monthly),
     }, ensure_ascii=False)
+    holding_data = json.dumps(holding_payload(holding_series), ensure_ascii=False)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
+const holdingData_{stock_id} = {holding_data};
 function showChart_{stock_id}(mode){{
   const root=document.getElementById('{chart_id}');
   root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
@@ -1878,6 +1894,51 @@ function initHoverCharts_{stock_id}(){{
   }});
 }}
 initHoverCharts_{stock_id}();
+function initHoldingHover_{stock_id}(){{
+  const chart=document.getElementById('{holding_id}');
+  const data=holdingData_{stock_id} || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  const fmtPct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const html=(x)=>`
+    <div class="t-date">${{x.date || '-'}}</div>
+    <div class="t-grid">
+      <span>大戶&gt;1000張</span><span>${{fmtPct(x.major)}}</span>
+      <span>400~1000張</span><span>${{fmtPct(x.large)}}</span>
+      <span>散戶&lt;1萬股</span><span>${{fmtPct(x.retail)}}</span>
+      <span>總股東數</span><span>${{fmtInt(x.totalPeople)}}</span>
+    </div>`;
+  chart.addEventListener('mousemove', ev=>{{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 50 / 900;
+    const right=rect.width * (900 - 18) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    const item=data[idx];
+    line.style.display='block';
+    line.style.left=`${{clamped}}px`;
+    tip.innerHTML=html(item);
+    tip.style.display='block';
+    const tipWidth=tip.offsetWidth || 210;
+    const tipHeight=tip.offsetHeight || 112;
+    let tx=x + 14;
+    let ty=ev.clientY - rect.top + 14;
+    if(tx + tipWidth > rect.width) tx=x - tipWidth - 14;
+    if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+    tip.style.left=`${{Math.max(6, tx)}}px`;
+    tip.style.top=`${{Math.max(6, ty)}}px`;
+  }});
+  chart.addEventListener('mouseleave', ()=>{{
+    tip.style.display='none';
+    line.style.display='none';
+  }});
+}}
+initHoldingHover_{stock_id}();
 </script>"""
 
     body = f"""
@@ -1919,7 +1980,7 @@ initHoverCharts_{stock_id}();
   <div class="card">
     <div class="section-label">籌碼 / 股權分配</div>
     {build_chip_panel(chip, holding)}
-    <div class="chart-box">{holding_line_svg(holding_series, "股權分配折線圖")}</div>
+    <div id="{holding_id}" class="chart-box hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
     <div class="strategy-note" style="margin-top:12px">
       大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>
