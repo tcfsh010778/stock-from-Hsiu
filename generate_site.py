@@ -352,10 +352,16 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
 .chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.hover-chart{position:relative}
+.chart-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(88,166,255,.85);display:none;pointer-events:none}
+.chart-tooltip{position:absolute;z-index:5;display:none;min-width:190px;max-width:240px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:9px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;box-shadow:0 10px 28px rgba(0,0,0,.35);pointer-events:none}
+.chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
+.chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
-.ma-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:10px}
+.ma-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
 .ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 8px}
 .ma-name{font-size:11px;color:#8b949e}
 .ma-value{font-size:15px;font-weight:800;color:#e6edf3}
@@ -993,6 +999,47 @@ def latest_ma_and_slope(rows: list[dict], window: int, lookback: int = 5) -> tup
     return latest, slope
 
 
+def bollinger_values(rows: list[dict], window: int = 20, width: float = 2.0) -> tuple[list[float | None], list[float | None]]:
+    closes = [r["close"] for r in rows]
+    upper: list[float | None] = []
+    lower: list[float | None] = []
+    for i in range(len(closes)):
+        if i + 1 < window:
+            upper.append(None)
+            lower.append(None)
+            continue
+        sample = closes[i + 1 - window:i + 1]
+        avg = sum(sample) / window
+        variance = sum((x - avg) ** 2 for x in sample) / window
+        sd = variance ** 0.5
+        upper.append(avg + width * sd)
+        lower.append(avg - width * sd)
+    return upper, lower
+
+
+def chart_payload(rows: list[dict]) -> list[dict]:
+    rows = rows[-160:]
+    ma_map = {n: ma_values(rows, n) for n in (5, 10, 20, 60)}
+    bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
+    payload: list[dict] = []
+    for i, r in enumerate(rows):
+        payload.append({
+            "date": r.get("date", ""),
+            "open": r.get("open"),
+            "high": r.get("high"),
+            "low": r.get("low"),
+            "close": r.get("close"),
+            "volume": r.get("volume", 0),
+            "ma5": ma_map[5][i],
+            "ma10": ma_map[10][i],
+            "ma20": ma_map[20][i],
+            "ma60": ma_map[60][i],
+            "bbUpper": bb_upper[i],
+            "bbLower": bb_lower[i],
+        })
+    return payload
+
+
 def chart_svg(rows: list[dict], title: str) -> str:
     rows = rows[-160:]
     if len(rows) < 2:
@@ -1003,11 +1050,13 @@ def chart_svg(rows: list[dict], title: str) -> str:
     vol_top = pad_t + price_h + 18
     vol_h = h - vol_top - pad_b
     values = [r["close"] for r in rows]
+    ma5 = ma_values(rows, 5)
+    ma10 = ma_values(rows, 10)
     ma20 = ma_values(rows, 20)
     ma60 = ma_values(rows, 60)
-    ma120 = ma_values(rows, 120)
-    ma240 = ma_values(rows, 240)
-    lo, hi = min(values), max(values)
+    bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
+    band_values = [v for v in bb_upper + bb_lower if v is not None]
+    lo, hi = min(values + band_values), max(values + band_values)
     if hi == lo:
         hi += 1
         lo -= 1
@@ -1023,10 +1072,12 @@ def chart_svg(rows: list[dict], title: str) -> str:
             x, y = xy(i, float(v))
             pts.append(f"{x:.1f},{y:.1f}")
         return f'<polyline fill="none" stroke="{color}" stroke-width="{width}" points="{" ".join(pts)}" />' if pts else ""
-    ma20_line = poly(ma20, "#d2a520", 1.7)
+    ma5_line = poly(ma5, "#58a6ff", 1.5)
+    ma10_line = poly(ma10, "#d2a520", 1.5)
+    ma20_line = poly(ma20, "#f0883e", 1.7)
     ma60_line = poly(ma60, "#3fb950", 1.7)
-    ma120_line = poly(ma120, "#a78bfa", 1.5)
-    ma240_line = poly(ma240, "#f0883e", 1.5)
+    bb_upper_line = poly(bb_upper, "#8b949e", 1.2)
+    bb_lower_line = poly(bb_lower, "#8b949e", 1.2)
     grid = ""
     for pct in [0, .25, .5, .75, 1]:
         y = pad_t + pct * price_h
@@ -1062,14 +1113,15 @@ def chart_svg(rows: list[dict], title: str) -> str:
   <text x="4" y="{vol_top+12:.1f}" fill="#6e7681" font-size="11">量</text>
   <text x="4" y="{vol_top+28:.1f}" fill="#6e7681" font-size="11">{max_vol_lot:.0f}張</text>
   {candles}
-  {ma20_line}{ma60_line}{ma120_line}{ma240_line}
+  {bb_upper_line}{bb_lower_line}{ma5_line}{ma10_line}{ma20_line}{ma60_line}
   <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(rows[0]["date"])}</text>
   <text x="{w-112}" y="{h-8}" fill="#6e7681" font-size="11">{esc(last["date"])}</text>
   <text x="{pad_l}" y="14" fill="#e6edf3" font-size="12">{esc(title)} ｜ 收 {last["close"]:.2f}</text>
-  <text x="{w-275}" y="14" fill="#d2a520" font-size="11">MA20</text>
-  <text x="{w-220}" y="14" fill="#3fb950" font-size="11">MA60</text>
-  <text x="{w-165}" y="14" fill="#a78bfa" font-size="11">MA120</text>
-  <text x="{w-95}" y="14" fill="#f0883e" font-size="11">MA240</text>
+  <text x="{w-315}" y="14" fill="#58a6ff" font-size="11">MA5</text>
+  <text x="{w-265}" y="14" fill="#d2a520" font-size="11">MA10</text>
+  <text x="{w-210}" y="14" fill="#f0883e" font-size="11">MA20</text>
+  <text x="{w-155}" y="14" fill="#3fb950" font-size="11">MA60</text>
+  <text x="{w-95}" y="14" fill="#8b949e" font-size="11">BB</text>
 </svg>"""
 
 
@@ -1186,6 +1238,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     ma_windows = [5, 10, 20, 60, 120, 240]
     ma_pairs = {n: latest_ma_and_slope(rows, n) for n in ma_windows}
     ma5, ma10, ma20, ma60, ma120, ma240 = [ma_pairs[n][0] for n in ma_windows]
+    bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
     avg_vol20 = None
     if len(rows) >= 20:
         avg_vol20 = sum(r.get("volume", 0) for r in rows[-20:]) / 20
@@ -1206,6 +1259,8 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "ma60": ma60,
         "ma120": ma120,
         "ma240": ma240,
+        "bb_upper": bb_upper[-1] if bb_upper else None,
+        "bb_lower": bb_lower[-1] if bb_lower else None,
         "ma_slopes": {f"ma{n}": ma_pairs[n][1] for n in ma_windows},
         "open": rows[-1].get("open"),
         "high": rows[-1].get("high"),
@@ -1304,7 +1359,7 @@ def build_tech_panel(tech: dict) -> str:
     vol_label = "大量K" if tech.get("large_volume") else "正常量"
     ma_slopes = tech.get("ma_slopes") or {}
     ma_strip = ""
-    for n in [5, 10, 20, 60, 120, 240]:
+    for n in [5, 10, 20, 60]:
         val = tech.get(f"ma{n}")
         slope = ma_slopes.get(f"ma{n}")
         if slope is None:
@@ -1328,8 +1383,8 @@ def build_tech_panel(tech: dict) -> str:
   <div class="info-cell"><div class="k">MA10</div><div class="v">{fmt_num(tech.get('ma10'))}</div></div>
   <div class="info-cell"><div class="k">MA20</div><div class="v">{fmt_num(tech.get('ma20'))}</div></div>
   <div class="info-cell"><div class="k">MA60</div><div class="v">{fmt_num(tech.get('ma60'))}</div></div>
-  <div class="info-cell"><div class="k">MA120</div><div class="v">{fmt_num(tech.get('ma120'))}</div></div>
-  <div class="info-cell"><div class="k">MA240</div><div class="v">{fmt_num(tech.get('ma240'))}</div></div>
+  <div class="info-cell"><div class="k">布林上軌</div><div class="v">{fmt_num(tech.get('bb_upper'))}</div></div>
+  <div class="info-cell"><div class="k">布林下軌</div><div class="v">{fmt_num(tech.get('bb_lower'))}</div></div>
   <div class="info-cell"><div class="k">60日支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
   <div class="info-cell"><div class="k">60日壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
   <div class="info-cell"><div class="k">大量K判斷</div><div class="v">{vol_label}</div></div>
@@ -1754,8 +1809,14 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
         event_rows = '<tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr>'
 
     chart_id = f"chart-{stock_id}"
+    chart_data = json.dumps({
+        "daily": chart_payload(daily),
+        "weekly": chart_payload(weekly),
+        "monthly": chart_payload(monthly),
+    }, ensure_ascii=False)
     chart_script = f"""
 <script>
+const chartData_{stock_id} = {chart_data};
 function showChart_{stock_id}(mode){{
   const root=document.getElementById('{chart_id}');
   root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
@@ -1763,6 +1824,60 @@ function showChart_{stock_id}(mode){{
   root.querySelector('[data-pane="'+mode+'"]').style.display='block';
   root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
 }}
+function initHoverCharts_{stock_id}(){{
+  const root=document.getElementById('{chart_id}');
+  if(!root) return;
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const html=(x)=>`
+    <div class="t-date">${{x.date || '-'}}</div>
+    <div class="t-grid">
+      <span>開 ${{fmt(x.open)}}</span><span>高 ${{fmt(x.high)}}</span>
+      <span>低 ${{fmt(x.low)}}</span><span>收 ${{fmt(x.close)}}</span>
+      <span>量 ${{fmtInt((x.volume || 0)/1000)}} 張</span><span></span>
+    </div>
+    <div class="t-ma">
+      BB上 ${{fmt(x.bbUpper)}} / BB下 ${{fmt(x.bbLower)}}<br>
+      MA5 ${{fmt(x.ma5)}} / MA10 ${{fmt(x.ma10)}}<br>
+      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}
+    </div>`;
+  root.querySelectorAll('.hover-chart').forEach(chart=>{{
+    if(chart.dataset.hoverReady==='1') return;
+    chart.dataset.hoverReady='1';
+    const mode=chart.dataset.mode;
+    const data=chartData_{stock_id}[mode] || [];
+    const tip=chart.querySelector('.chart-tooltip');
+    const line=chart.querySelector('.chart-crosshair');
+    if(!tip || !line || data.length < 2) return;
+    chart.addEventListener('mousemove', ev=>{{
+      const rect=chart.getBoundingClientRect();
+      const x=ev.clientX - rect.left;
+      const left=rect.width * 50 / 900;
+      const right=rect.width * (900 - 18) / 900;
+      const clamped=Math.max(left, Math.min(right, x));
+      const pct=(clamped-left) / Math.max(1, right-left);
+      const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+      const item=data[idx];
+      line.style.display='block';
+      line.style.left=`${{clamped}}px`;
+      tip.innerHTML=html(item);
+      tip.style.display='block';
+      const tipWidth=tip.offsetWidth || 210;
+      const tipHeight=tip.offsetHeight || 128;
+      let tx=x + 14;
+      let ty=ev.clientY - rect.top + 14;
+      if(tx + tipWidth > rect.width) tx=x - tipWidth - 14;
+      if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+      tip.style.left=`${{Math.max(6, tx)}}px`;
+      tip.style.top=`${{Math.max(6, ty)}}px`;
+    }});
+    chart.addEventListener('mouseleave', ()=>{{
+      tip.style.display='none';
+      line.style.display='none';
+    }});
+  }});
+}}
+initHoverCharts_{stock_id}();
 </script>"""
 
     body = f"""
@@ -1818,9 +1933,9 @@ function showChart_{stock_id}(mode){{
         <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>
         <button type="button" data-btn="monthly" onclick="showChart_{stock_id}('monthly')">月K</button>
       </div>
-      <div class="chart-pane" data-pane="daily">{chart_svg(daily, '日K')}</div>
-      <div class="chart-pane" data-pane="weekly" style="display:none">{chart_svg(weekly, '週K')}</div>
-      <div class="chart-pane" data-pane="monthly" style="display:none">{chart_svg(monthly, '月K')}</div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
     </div>
   </div>
 
