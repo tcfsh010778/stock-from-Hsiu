@@ -63,6 +63,13 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
+.ma-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:10px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 8px}
+.ma-name{font-size:11px;color:#8b949e}
+.ma-value{font-size:15px;font-weight:800;color:#e6edf3}
+.arrow-up{color:#f85149;font-weight:900}
+.arrow-down{color:#3fb950;font-weight:900}
+.arrow-flat{color:#8b949e;font-weight:900}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -131,6 +138,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
+  .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid{grid-template-columns:1fr}
 }
 </style>
@@ -183,6 +191,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">v44 技術 / 買點雷達</div>
     
+<div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">36.87 <span class="arrow-down">▼</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">37.33 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">32.93 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">28.64 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA120</div><div class="ma-value">27.42 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA240</div><div class="ma-value">24.98 <span class="arrow-up">▲</span></div></div></div>
+<div class="strategy-note" style="margin-top:10px">紅色 ▲ 代表該均線近 5 日斜率向上；綠色 ▼ 代表近 5 日斜率向下。</div>
 <div class="info-grid">
   <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">長多偏強</div></div>
   <div class="info-cell"><div class="k">距建議買點</div><div class="v">-0.2%</div></div>
@@ -216,6 +226,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="info-cell"><div class="k">大戶週變化</div><div class="v neg">-0.77%</div></div>
   <div class="info-cell"><div class="k">總股東變化</div><div class="v pos">-697人</div></div>
 </div>
+    <div class="chart-box">
+<svg viewBox="0 0 900 240" width="100%" role="img" aria-label="股權分配折線圖">
+  <rect x="0" y="0" width="900" height="240" fill="#0d1117"/>
+  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">35.3%</text><line x1="50" y1="65.5" x2="882" y2="65.5" stroke="#21262d"/><text x="4" y="69.5" fill="#6e7681" font-size="11">27.6%</text><line x1="50" y1="113.0" x2="882" y2="113.0" stroke="#21262d"/><text x="4" y="117.0" fill="#6e7681" font-size="11">19.8%</text><line x1="50" y1="160.5" x2="882" y2="160.5" stroke="#21262d"/><text x="4" y="164.5" fill="#6e7681" font-size="11">12.1%</text><line x1="50" y1="208.0" x2="882" y2="208.0" stroke="#21262d"/><text x="4" y="212.0" fill="#6e7681" font-size="11">4.4%</text>
+  <polyline fill="none" stroke="#f85149" stroke-width="2.1" points="50.0,33.0 66.0,33.4 82.0,31.2 98.0,30.7 114.0,31.9 130.0,31.7 146.0,30.0 162.0,29.2 178.0,33.2 194.0,29.4 210.0,31.0 226.0,33.3 242.0,29.2 258.0,32.2 274.0,33.9 290.0,32.9 306.0,30.7 322.0,27.4 338.0,30.2 354.0,30.3 370.0,31.0 386.0,29.2 402.0,45.3 418.0,43.6 434.0,43.9 450.0,44.2 466.0,45.2 482.0,47.5 498.0,47.9 514.0,43.7 530.0,43.1 546.0,41.9 562.0,41.5 578.0,39.1 594.0,39.6 610.0,41.6 626.0,42.9 642.0,44.7 658.0,41.8 674.0,41.6 690.0,45.2 706.0,43.2 722.0,43.1 738.0,41.3 754.0,34.9 770.0,33.7 786.0,26.7 802.0,27.2 818.0,30.7 834.0,27.3 850.0,18.0 866.0,25.7 882.0,30.4" /><polyline fill="none" stroke="#d2a520" stroke-width="2.1" points="50.0,202.6 66.0,202.0 82.0,203.6 98.0,203.4 114.0,203.6 130.0,203.5 146.0,205.2 162.0,204.9 178.0,202.0 194.0,202.5 210.0,202.6 226.0,201.2 242.0,202.8 258.0,204.2 274.0,204.1 290.0,206.0 306.0,204.2 322.0,206.6 338.0,203.7 354.0,202.9 370.0,203.8 386.0,204.6 402.0,203.7 418.0,204.9 434.0,204.6 450.0,203.2 466.0,204.4 482.0,202.8 498.0,202.6 514.0,204.7 530.0,203.8 546.0,206.2 562.0,203.9 578.0,203.3 594.0,201.6 610.0,201.3 626.0,202.0 642.0,200.3 658.0,203.9 674.0,202.7 690.0,203.1 706.0,201.9 722.0,203.5 738.0,204.6 754.0,208.0 770.0,207.3 786.0,204.4 802.0,203.6 818.0,205.3 834.0,205.7 850.0,201.9 866.0,204.2 882.0,197.6" /><polyline fill="none" stroke="#3fb950" stroke-width="2.1" points="50.0,70.8 66.0,71.4 82.0,71.7 98.0,72.3 114.0,72.0 130.0,72.1 146.0,72.3 162.0,72.8 178.0,72.8 194.0,73.3 210.0,73.0 226.0,72.5 242.0,73.9 258.0,73.4 274.0,73.1 290.0,73.4 306.0,74.7 322.0,75.4 338.0,75.4 354.0,75.5 370.0,75.7 386.0,71.7 402.0,64.6 418.0,65.2 434.0,65.2 450.0,66.5 466.0,64.6 482.0,64.9 498.0,65.7 514.0,66.5 530.0,67.2 546.0,67.5 562.0,68.7 578.0,71.1 594.0,71.5 610.0,71.3 626.0,71.1 642.0,71.5 658.0,71.5 674.0,71.3 690.0,71.6 706.0,72.1 722.0,72.6 738.0,73.3 754.0,74.3 770.0,74.9 786.0,78.5 802.0,78.8 818.0,78.1 834.0,76.6 850.0,83.0 866.0,70.1 882.0,72.0" />
+  <text x="50" y="14" fill="#e6edf3" font-size="12">股權分配折線圖 ｜ 2026-04-30</text>
+  <text x="580" y="14" fill="#f85149" font-size="11">大戶>1000張</text><text x="685" y="14" fill="#d2a520" font-size="11">400~1000張</text><text x="790" y="14" fill="#3fb950" font-size="11">散戶<1萬股</text>
+  <text x="50" y="232" fill="#6e7681" font-size="11">2025-04-25</text>
+  <text x="788" y="232" fill="#6e7681" font-size="11">2026-04-30</text>
+</svg></div>
     <div class="strategy-note" style="margin-top:12px">
       大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>

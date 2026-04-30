@@ -355,6 +355,13 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
+.ma-strip{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px;margin-top:10px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 8px}
+.ma-name{font-size:11px;color:#8b949e}
+.ma-value{font-size:15px;font-weight:800;color:#e6edf3}
+.arrow-up{color:#f85149;font-weight:900}
+.arrow-down{color:#3fb950;font-weight:900}
+.arrow-flat{color:#8b949e;font-weight:900}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -423,6 +430,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
+  .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid{grid-template-columns:1fr}
 }
 """
@@ -845,6 +853,33 @@ def read_holding_summary(stock_id: str) -> dict:
     return {"date": latest_date, "latest": latest, "prev": prev}
 
 
+def read_holding_series(stock_id: str) -> list[dict]:
+    rows = read_csv_rows(LOCAL_HOLDING_DIR / f"{stock_id}.csv", V44_HOLDING_DIR / f"{stock_id}.csv")
+    if not rows:
+        return []
+    by_date: dict[str, list[dict]] = {}
+    for r in rows:
+        by_date.setdefault(r.get("date", ""), []).append(r)
+    series = []
+    for date in sorted(d for d in by_date if d):
+        item = {"date": date, "major": 0.0, "large": 0.0, "retail": 0.0, "total_people": None}
+        for r in by_date.get(date, []):
+            level = r.get("HoldingSharesLevel", "")
+            try:
+                pct = float(r.get("percent") or 0)
+                people = int(float(r.get("people") or 0))
+            except Exception:
+                continue
+            if level == "total":
+                item["total_people"] = people
+                continue
+            group = _holding_group(level)
+            if group in {"major", "large", "retail"}:
+                item[group] += pct
+        series.append(item)
+    return series
+
+
 def get_v44_fetcher():
     global _V44_FETCHER
     if _V44_FETCHER is not None:
@@ -950,6 +985,14 @@ def ma_values(rows: list[dict], window: int) -> list[float | None]:
     return out
 
 
+def latest_ma_and_slope(rows: list[dict], window: int, lookback: int = 5) -> tuple[float | None, float | None]:
+    vals = ma_values(rows, window)
+    latest = vals[-1] if vals else None
+    prev = vals[-1 - lookback] if len(vals) > lookback else None
+    slope = (latest - prev) if latest is not None and prev is not None else None
+    return latest, slope
+
+
 def chart_svg(rows: list[dict], title: str) -> str:
     rows = rows[-160:]
     if len(rows) < 2:
@@ -1030,6 +1073,55 @@ def chart_svg(rows: list[dict], title: str) -> str:
 </svg>"""
 
 
+def holding_line_svg(series: list[dict], title: str = "股權分配趨勢") -> str:
+    series = series[-80:]
+    if len(series) < 2:
+        return '<div class="strategy-note">股權分配資料不足，暫時無法形成趨勢折線圖。</div>'
+    w, h = 900, 240
+    pad_l, pad_r, pad_t, pad_b = 50, 18, 18, 32
+    keys = [("major", "大戶>1000張", "#f85149"), ("large", "400~1000張", "#d2a520"), ("retail", "散戶<1萬股", "#3fb950")]
+    values = [float(x.get(k, 0) or 0) for x in series for k, _, _ in keys]
+    lo, hi = min(values), max(values)
+    if hi == lo:
+        hi += 1
+        lo -= 1
+
+    def xy(idx, val):
+        x = pad_l + idx * (w - pad_l - pad_r) / (len(series) - 1)
+        y = pad_t + (hi - val) * (h - pad_t - pad_b) / (hi - lo)
+        return x, y
+
+    grid = ""
+    for pct in [0, .25, .5, .75, 1]:
+        y = pad_t + pct * (h - pad_t - pad_b)
+        v = hi - pct * (hi - lo)
+        grid += f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-pad_r}" y2="{y:.1f}" stroke="#21262d"/><text x="4" y="{y+4:.1f}" fill="#6e7681" font-size="11">{v:.1f}%</text>'
+
+    lines = ""
+    for key, label, color in keys:
+        pts = []
+        for i, item in enumerate(series):
+            x, y = xy(i, float(item.get(key, 0) or 0))
+            pts.append(f"{x:.1f},{y:.1f}")
+        lines += f'<polyline fill="none" stroke="{color}" stroke-width="2.1" points="{" ".join(pts)}" />'
+
+    latest = series[-1]
+    legend = ""
+    x0 = w - 320
+    for idx, (key, label, color) in enumerate(keys):
+        legend += f'<text x="{x0 + idx*105}" y="14" fill="{color}" font-size="11">{label}</text>'
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {lines}
+  <text x="{pad_l}" y="14" fill="#e6edf3" font-size="12">{esc(title)} ｜ {esc(latest.get('date',''))}</text>
+  {legend}
+  <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(series[0].get('date',''))}</text>
+  <text x="{w-112}" y="{h-8}" fill="#6e7681" font-size="11">{esc(latest.get('date',''))}</text>
+</svg>"""
+
+
 def read_ai_logs(stock_id: str, limit: int = 3) -> list[dict]:
     if not V44_DB_PATH.exists():
         return []
@@ -1091,7 +1183,9 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         if len(closes) < n:
             return None
         return sum(closes[-n:]) / n
-    ma5, ma10, ma20, ma60, ma120, ma240 = [last_ma(n) for n in [5, 10, 20, 60, 120, 240]]
+    ma_windows = [5, 10, 20, 60, 120, 240]
+    ma_pairs = {n: latest_ma_and_slope(rows, n) for n in ma_windows}
+    ma5, ma10, ma20, ma60, ma120, ma240 = [ma_pairs[n][0] for n in ma_windows]
     avg_vol20 = None
     if len(rows) >= 20:
         avg_vol20 = sum(r.get("volume", 0) for r in rows[-20:]) / 20
@@ -1112,6 +1206,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "ma60": ma60,
         "ma120": ma120,
         "ma240": ma240,
+        "ma_slopes": {f"ma{n}": ma_pairs[n][1] for n in ma_windows},
         "open": rows[-1].get("open"),
         "high": rows[-1].get("high"),
         "low": rows[-1].get("low"),
@@ -1207,7 +1302,23 @@ def build_tech_panel(tech: dict) -> str:
     vol_ratio_txt = "─" if vol_ratio is None else f"{vol_ratio:.2f}x"
     volume_lots = (tech.get("volume") or 0) / 1000
     vol_label = "大量K" if tech.get("large_volume") else "正常量"
+    ma_slopes = tech.get("ma_slopes") or {}
+    ma_strip = ""
+    for n in [5, 10, 20, 60, 120, 240]:
+        val = tech.get(f"ma{n}")
+        slope = ma_slopes.get(f"ma{n}")
+        if slope is None:
+            arrow = '<span class="arrow-flat">→</span>'
+        elif slope > 0:
+            arrow = '<span class="arrow-up">▲</span>'
+        elif slope < 0:
+            arrow = '<span class="arrow-down">▼</span>'
+        else:
+            arrow = '<span class="arrow-flat">→</span>'
+        ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
     return f"""
+<div class="ma-strip">{ma_strip}</div>
+<div class="strategy-note" style="margin-top:10px">紅色 ▲ 代表該均線近 5 日斜率向上；綠色 ▼ 代表近 5 日斜率向下。</div>
 <div class="info-grid">
   <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">{esc(tech.get('trend','─'))}</div></div>
   <div class="info-cell"><div class="k">距建議買點</div><div class="v">{gap_txt}</div></div>
@@ -1618,6 +1729,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     tech = technical_snapshot(daily, s)
     chip = read_chip_summary(stock_id)
     holding = read_holding_summary(stock_id)
+    holding_series = read_holding_series(stock_id)
     s_view = dict(s)
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
@@ -1692,6 +1804,7 @@ function showChart_{stock_id}(mode){{
   <div class="card">
     <div class="section-label">籌碼 / 股權分配</div>
     {build_chip_panel(chip, holding)}
+    <div class="chart-box">{holding_line_svg(holding_series, "股權分配折線圖")}</div>
     <div class="strategy-note" style="margin-top:12px">
       大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>
