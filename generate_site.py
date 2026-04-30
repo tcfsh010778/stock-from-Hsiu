@@ -1450,6 +1450,14 @@ def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
     basket = basket_label(classify_basket(s))
     events = ledger_item.get("events", []) if ledger_item else []
     repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}。" if events else "首次或尚未建立歷史台帳。"
+    sid = s.get("id", "")
+    daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily") if sid else []
+    decision = build_trade_decision(technical_snapshot(daily, s), s) if daily else {
+        "rating": "觀望",
+        "entry_range": "資料不足",
+        "defense": "資料不足",
+        "reason": "等待價格快取更新",
+    }
     if basket == "行進籃":
         action = "偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。"
     elif basket == "盤整籃":
@@ -1458,8 +1466,9 @@ def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
         action = "偏熱或風險區：不追高，等降溫、回測支撐不破，或重新整理後再評估。"
     return (
         f"分類：{basket}\n"
-        f"買點：{s.get('entry','─')}｜目標：{s.get('target','─')}｜防守：{s.get('stop','─')}\n"
-        f"現況：收盤 {s.get('price','─')}，近6週 {s.get('gain_6w','─')}，RSI {s.get('rsi','─')}，%B {s.get('bband_pct','─')}。\n"
+        f"操作評價：{decision['rating']}｜買進區間：{decision['entry_range']}｜關鍵防守：{decision['defense']}\n"
+        f"現況：收盤 {s.get('price','─')}，RSI {s.get('rsi','─')}，%B {s.get('bband_pct','─')}。\n"
+        f"理由：{decision['reason']}\n"
         f"台帳：{repeat_note}\n"
         f"操作：{action}"
     )
@@ -1527,6 +1536,67 @@ def fmt_num(v, digits: int = 2) -> str:
         return f"{float(v):.{digits}f}"
     except Exception:
         return "─"
+
+
+def build_trade_decision(tech: dict, s: dict) -> dict:
+    if not tech:
+        return {"rating": "觀望", "rating_class": "", "entry_range": "資料不足", "defense": "資料不足", "reason": "等待價格快取更新"}
+    close = tech.get("close")
+    ma5 = tech.get("ma5")
+    ma10 = tech.get("ma10")
+    ma20 = tech.get("ma20")
+    ma60 = tech.get("ma60")
+    entry = _to_float(s.get("entry", ""), None)
+    large_event = tech.get("large_volume_event") or {}
+    large_low = large_event.get("low")
+
+    entry_candidates = [x for x in [entry, ma5, ma10] if x]
+    if entry_candidates:
+        low = min(entry_candidates) * 0.99
+        high = max(entry_candidates) * 1.01
+        entry_range = f"{fmt_num(low)} ~ {fmt_num(high)}"
+    elif ma20:
+        entry_range = f"{fmt_num(ma20 * 0.99)} ~ {fmt_num(ma20 * 1.01)}"
+    else:
+        entry_range = "資料不足"
+
+    defense_candidates = []
+    for label, value in [("近期大量K低點", large_low), ("MA20", ma20), ("MA60", ma60)]:
+        if value and close and value < close:
+            defense_candidates.append((close - value, label, value))
+    if defense_candidates:
+        _, defense_label, defense_value = min(defense_candidates, key=lambda x: x[0])
+        defense = f"{fmt_num(defense_value)}（{defense_label}）"
+    elif ma20:
+        defense = f"{fmt_num(ma20)}（MA20）"
+    else:
+        defense = "資料不足"
+
+    entry_high = None
+    if entry_range != "資料不足":
+        nums = [_to_float(x, None) for x in re.findall(r"\d+(?:\.\d+)?", entry_range)]
+        entry_high = max([x for x in nums if x is not None], default=None)
+    defense_value = _to_float(defense, None)
+    gap = ((close / entry_high - 1) * 100) if close and entry_high else None
+
+    if close and defense_value and close < defense_value:
+        rating, cls, reason = "賣出/避開", "neg", "跌破關鍵防守價位"
+    elif tech.get("volume_price") == "放量下跌":
+        rating, cls, reason = "觀望", "", "放量下跌，先等賣壓消化"
+    elif gap is not None and gap <= 2:
+        rating, cls, reason = "可買進", "pos", "收盤仍在買進區間附近"
+    elif gap is not None and gap <= 8:
+        rating, cls, reason = "觀望", "", "略高於買進區間，等回測"
+    else:
+        rating, cls, reason = "觀望", "", "距買進區間偏遠，不追價"
+
+    return {
+        "rating": rating,
+        "rating_class": cls,
+        "entry_range": entry_range,
+        "defense": defense,
+        "reason": reason,
+    }
 
 
 def calc_rsi(closes: list[float], period: int = 14):
@@ -2023,6 +2093,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     chip_series = read_chip_series(stock_id)
     holding = read_holding_summary(stock_id)
     holding_series = read_holding_series(stock_id)
+    decision = build_trade_decision(tech, s)
     s_view = dict(s)
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
@@ -2271,12 +2342,11 @@ initHoldingHover_{stock_id}();
       <div class="section-label">資訊卡</div>
       <div class="info-grid">
         <div class="info-cell"><div class="k">FinMind收盤 {esc(s_view.get('price_date',''))}</div><div class="v">{esc(s_view.get('price','─'))}</div></div>
-        <div class="info-cell"><div class="k">近6週</div><div class="v {gain_color(s.get('gain_6w',''))}">{esc(s.get('gain_6w','─'))}</div></div>
-        <div class="info-cell"><div class="k">評分</div><div class="v">{esc(s.get('score','─'))}</div></div>
+        <div class="info-cell"><div class="k">操作評價</div><div class="v {decision['rating_class']}">{esc(decision['rating'])}</div></div>
         <div class="info-cell"><div class="k">分類</div><div class="v">{basket_label(classify_basket(s))}</div></div>
-        <div class="info-cell"><div class="k">建議買點</div><div class="v">{esc(s.get('entry','─'))}</div></div>
-        <div class="info-cell"><div class="k">目標</div><div class="v">{esc(s.get('target','─'))}</div></div>
-        <div class="info-cell"><div class="k">防守</div><div class="v">{esc(s.get('stop','─'))}</div></div>
+        <div class="info-cell"><div class="k">買進區間</div><div class="v">{esc(decision['entry_range'])}</div></div>
+        <div class="info-cell"><div class="k">關鍵防守價位</div><div class="v">{esc(decision['defense'])}</div></div>
+        <div class="info-cell"><div class="k">判斷理由</div><div class="v">{esc(decision['reason'])}</div></div>
         <div class="info-cell"><div class="k">外資近5日</div><div class="v">{esc(s.get('foreign_5d','─'))}</div></div>
       </div>
       <div class="pill-row">
