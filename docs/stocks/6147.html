@@ -66,6 +66,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
 .chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
+.linked-holding-panel{margin-top:14px;padding-top:12px;border-top:1px solid #30363d}
+.linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
@@ -227,16 +229,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="info-cell"><div class="k">大戶週變化</div><div class="v pos">0.86%</div></div>
   <div class="info-cell"><div class="k">總股東變化</div><div class="v pos">-2271人</div></div>
 </div>
-    <div id="holding-chart-6147" class="chart-box hover-chart">
-<svg viewBox="0 0 900 240" width="100%" role="img" aria-label="股權分配折線圖">
-  <rect x="0" y="0" width="900" height="240" fill="#0d1117"/>
-  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">68.9%</text><line x1="50" y1="65.5" x2="882" y2="65.5" stroke="#21262d"/><text x="4" y="69.5" fill="#6e7681" font-size="11">52.8%</text><line x1="50" y1="113.0" x2="882" y2="113.0" stroke="#21262d"/><text x="4" y="117.0" fill="#6e7681" font-size="11">36.8%</text><line x1="50" y1="160.5" x2="882" y2="160.5" stroke="#21262d"/><text x="4" y="164.5" fill="#6e7681" font-size="11">20.8%</text><line x1="50" y1="208.0" x2="882" y2="208.0" stroke="#21262d"/><text x="4" y="212.0" fill="#6e7681" font-size="11">4.8%</text>
-  <polyline fill="none" stroke="#f85149" stroke-width="2.1" points="50.0,43.3 66.0,42.2 82.0,43.7 98.0,40.8 114.0,41.6 130.0,41.5 146.0,42.5 162.0,40.7 178.0,43.6 194.0,45.7 210.0,46.4 226.0,47.5 242.0,49.9 258.0,48.5 274.0,48.2 290.0,51.2 306.0,51.8 322.0,52.0 338.0,51.7 354.0,51.3 370.0,50.2 386.0,50.0 402.0,49.9 418.0,49.7 434.0,50.0 450.0,49.3 466.0,48.5 482.0,48.8 498.0,50.1 514.0,50.8 530.0,53.0 546.0,53.0 562.0,53.2 578.0,53.7 594.0,54.2 610.0,54.4 626.0,54.5 642.0,55.4 658.0,55.2 674.0,53.6 690.0,52.6 706.0,53.5 722.0,54.6 738.0,54.4 754.0,57.2 770.0,50.9 786.0,43.4 802.0,34.4 818.0,35.3 834.0,27.2 850.0,22.8 866.0,20.5 882.0,18.0" /><polyline fill="none" stroke="#d2a520" stroke-width="2.1" points="50.0,207.2 66.0,207.6 82.0,205.4 98.0,206.7 114.0,207.0 130.0,207.2 146.0,206.6 162.0,207.1 178.0,206.8 194.0,208.0 210.0,208.0 226.0,207.5 242.0,206.3 258.0,206.6 274.0,206.3 290.0,206.0 306.0,206.1 322.0,206.1 338.0,206.8 354.0,206.4 370.0,206.8 386.0,206.8 402.0,206.8 418.0,207.4 434.0,206.8 450.0,207.1 466.0,206.8 482.0,206.5 498.0,206.1 514.0,205.7 530.0,205.9 546.0,206.4 562.0,206.1 578.0,205.5 594.0,205.3 610.0,205.1 626.0,205.5 642.0,205.0 658.0,206.1 674.0,205.3 690.0,205.5 706.0,205.8 722.0,206.0 738.0,205.7 754.0,205.7 770.0,206.3 786.0,205.2 802.0,204.1 818.0,203.2 834.0,202.8 850.0,204.1 866.0,204.3 882.0,204.7" /><polyline fill="none" stroke="#3fb950" stroke-width="2.1" points="50.0,172.4 66.0,172.9 82.0,173.0 98.0,173.8 114.0,173.6 130.0,173.4 146.0,173.4 162.0,173.5 178.0,172.2 194.0,171.2 210.0,170.6 226.0,170.4 242.0,170.1 258.0,170.5 274.0,170.8 290.0,169.7 306.0,169.5 322.0,169.5 338.0,169.5 354.0,169.8 370.0,169.7 386.0,169.8 402.0,169.8 418.0,169.8 434.0,170.0 450.0,170.3 466.0,170.8 482.0,171.0 498.0,170.8 514.0,170.8 530.0,169.7 546.0,169.3 562.0,169.3 578.0,169.3 594.0,169.4 610.0,169.3 626.0,169.1 642.0,168.8 658.0,168.4 674.0,169.5 690.0,170.1 706.0,169.7 722.0,169.1 738.0,169.5 754.0,168.9 770.0,171.5 786.0,175.1 802.0,180.0 818.0,180.4 834.0,183.5 850.0,184.5 866.0,185.4 882.0,187.6" />
-  <text x="50" y="14" fill="#e6edf3" font-size="12">股權分配折線圖 ｜ 2026-04-30</text>
-  <text x="580" y="14" fill="#f85149" font-size="11">大戶>1000張</text><text x="685" y="14" fill="#d2a520" font-size="11">400~1000張</text><text x="790" y="14" fill="#3fb950" font-size="11">散戶<1萬股</text>
-  <text x="50" y="232" fill="#6e7681" font-size="11">2025-04-25</text>
-  <text x="788" y="232" fill="#6e7681" font-size="11">2026-04-30</text>
-</svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
     <div class="strategy-note" style="margin-top:12px">
       大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>
@@ -304,6 +296,19 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <text x="745" y="14" fill="#3fb950" font-size="11">MA60</text>
   <text x="805" y="14" fill="#8b949e" font-size="11">BB</text>
 </svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+      <div class="linked-holding-panel">
+        <div class="linked-holding-title">股權分配連動</div>
+        <div id="holding-chart-6147" class="hover-chart">
+<svg viewBox="0 0 900 240" width="100%" role="img" aria-label="股權分配折線圖">
+  <rect x="0" y="0" width="900" height="240" fill="#0d1117"/>
+  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">68.9%</text><line x1="50" y1="65.5" x2="882" y2="65.5" stroke="#21262d"/><text x="4" y="69.5" fill="#6e7681" font-size="11">52.8%</text><line x1="50" y1="113.0" x2="882" y2="113.0" stroke="#21262d"/><text x="4" y="117.0" fill="#6e7681" font-size="11">36.8%</text><line x1="50" y1="160.5" x2="882" y2="160.5" stroke="#21262d"/><text x="4" y="164.5" fill="#6e7681" font-size="11">20.8%</text><line x1="50" y1="208.0" x2="882" y2="208.0" stroke="#21262d"/><text x="4" y="212.0" fill="#6e7681" font-size="11">4.8%</text>
+  <polyline fill="none" stroke="#f85149" stroke-width="2.1" points="50.0,43.3 66.0,42.2 82.0,43.7 98.0,40.8 114.0,41.6 130.0,41.5 146.0,42.5 162.0,40.7 178.0,43.6 194.0,45.7 210.0,46.4 226.0,47.5 242.0,49.9 258.0,48.5 274.0,48.2 290.0,51.2 306.0,51.8 322.0,52.0 338.0,51.7 354.0,51.3 370.0,50.2 386.0,50.0 402.0,49.9 418.0,49.7 434.0,50.0 450.0,49.3 466.0,48.5 482.0,48.8 498.0,50.1 514.0,50.8 530.0,53.0 546.0,53.0 562.0,53.2 578.0,53.7 594.0,54.2 610.0,54.4 626.0,54.5 642.0,55.4 658.0,55.2 674.0,53.6 690.0,52.6 706.0,53.5 722.0,54.6 738.0,54.4 754.0,57.2 770.0,50.9 786.0,43.4 802.0,34.4 818.0,35.3 834.0,27.2 850.0,22.8 866.0,20.5 882.0,18.0" /><polyline fill="none" stroke="#d2a520" stroke-width="2.1" points="50.0,207.2 66.0,207.6 82.0,205.4 98.0,206.7 114.0,207.0 130.0,207.2 146.0,206.6 162.0,207.1 178.0,206.8 194.0,208.0 210.0,208.0 226.0,207.5 242.0,206.3 258.0,206.6 274.0,206.3 290.0,206.0 306.0,206.1 322.0,206.1 338.0,206.8 354.0,206.4 370.0,206.8 386.0,206.8 402.0,206.8 418.0,207.4 434.0,206.8 450.0,207.1 466.0,206.8 482.0,206.5 498.0,206.1 514.0,205.7 530.0,205.9 546.0,206.4 562.0,206.1 578.0,205.5 594.0,205.3 610.0,205.1 626.0,205.5 642.0,205.0 658.0,206.1 674.0,205.3 690.0,205.5 706.0,205.8 722.0,206.0 738.0,205.7 754.0,205.7 770.0,206.3 786.0,205.2 802.0,204.1 818.0,203.2 834.0,202.8 850.0,204.1 866.0,204.3 882.0,204.7" /><polyline fill="none" stroke="#3fb950" stroke-width="2.1" points="50.0,172.4 66.0,172.9 82.0,173.0 98.0,173.8 114.0,173.6 130.0,173.4 146.0,173.4 162.0,173.5 178.0,172.2 194.0,171.2 210.0,170.6 226.0,170.4 242.0,170.1 258.0,170.5 274.0,170.8 290.0,169.7 306.0,169.5 322.0,169.5 338.0,169.5 354.0,169.8 370.0,169.7 386.0,169.8 402.0,169.8 418.0,169.8 434.0,170.0 450.0,170.3 466.0,170.8 482.0,171.0 498.0,170.8 514.0,170.8 530.0,169.7 546.0,169.3 562.0,169.3 578.0,169.3 594.0,169.4 610.0,169.3 626.0,169.1 642.0,168.8 658.0,168.4 674.0,169.5 690.0,170.1 706.0,169.7 722.0,169.1 738.0,169.5 754.0,168.9 770.0,171.5 786.0,175.1 802.0,180.0 818.0,180.4 834.0,183.5 850.0,184.5 866.0,185.4 882.0,187.6" />
+  <text x="50" y="14" fill="#e6edf3" font-size="12">股權分配折線圖 ｜ 2026-04-30</text>
+  <text x="580" y="14" fill="#f85149" font-size="11">大戶>1000張</text><text x="685" y="14" fill="#d2a520" font-size="11">400~1000張</text><text x="790" y="14" fill="#3fb950" font-size="11">散戶<1萬股</text>
+  <text x="50" y="232" fill="#6e7681" font-size="11">2025-04-25</text>
+  <text x="788" y="232" fill="#6e7681" font-size="11">2026-04-30</text>
+</svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+      </div>
     </div>
   </div>
 
@@ -342,6 +347,48 @@ function showChart_6147(mode){
   root.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
   root.querySelector('[data-pane="'+mode+'"]').style.display='block';
   root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
+}
+function nearestByDate_6147(data, date){
+  const target=Date.parse(date || '');
+  if(!data || !data.length || Number.isNaN(target)) return -1;
+  let best=0;
+  let bestGap=Infinity;
+  data.forEach((item, idx)=>{
+    const t=Date.parse(item.date || '');
+    if(Number.isNaN(t)) return;
+    const gap=Math.abs(t-target);
+    if(gap < bestGap){
+      best=idx;
+      bestGap=gap;
+    }
+  });
+  return best;
+}
+function positionTooltip_6147(chart, line, tip, dataLength, idx, html, xHint, yHint){
+  if(!chart || !line || !tip || dataLength < 2 || idx < 0) return;
+  const rect=chart.getBoundingClientRect();
+  const left=rect.width * 50 / 900;
+  const right=rect.width * (900 - 18) / 900;
+  const clamped=left + (right-left) * idx / Math.max(1, dataLength-1);
+  line.style.display='block';
+  line.style.left=`${clamped}px`;
+  tip.innerHTML=html;
+  tip.style.display='block';
+  const tipWidth=tip.offsetWidth || 210;
+  const tipHeight=tip.offsetHeight || 128;
+  let tx=(Number.isFinite(xHint) ? xHint : clamped) + 14;
+  let ty=(Number.isFinite(yHint) ? yHint : 18);
+  if(tx + tipWidth > rect.width) tx=(Number.isFinite(xHint) ? xHint : clamped) - tipWidth - 14;
+  if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+  tip.style.left=`${Math.max(6, tx)}px`;
+  tip.style.top=`${Math.max(6, ty)}px`;
+}
+function clearOverlay_6147(chart){
+  if(!chart) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(tip) tip.style.display='none';
+  if(line) line.style.display='none';
 }
 function initHoverCharts_6147(){
   const root=document.getElementById('chart-6147');
@@ -389,24 +436,20 @@ function initHoverCharts_6147(){
       if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
       tip.style.left=`${Math.max(6, tx)}px`;
       tip.style.top=`${Math.max(6, ty)}px`;
+      syncHoldingFromK_6147(item.date);
     });
     chart.addEventListener('mouseleave', ()=>{
       tip.style.display='none';
       line.style.display='none';
+      clearHoldingHover_6147();
     });
   });
 }
 initHoverCharts_6147();
-function initHoldingHover_6147(){
-  const chart=document.getElementById('holding-chart-6147');
-  const data=holdingData_6147 || [];
-  if(!chart || data.length < 2) return;
-  const tip=chart.querySelector('.chart-tooltip');
-  const line=chart.querySelector('.chart-crosshair');
-  if(!tip || !line) return;
+function holdingHtml_6147(x){
   const fmtPct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
   const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
-  const html=(x)=>`
+  return `
     <div class="t-date">${x.date || '-'}</div>
     <div class="t-grid">
       <span>大戶&gt;1000張</span><span>${fmtPct(x.major)}</span>
@@ -414,6 +457,52 @@ function initHoldingHover_6147(){
       <span>散戶&lt;1萬股</span><span>${fmtPct(x.retail)}</span>
       <span>總股東數</span><span>${fmtInt(x.totalPeople)}</span>
     </div>`;
+}
+function kHtml_6147(x){
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  return `
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>開 ${fmt(x.open)}</span><span>高 ${fmt(x.high)}</span>
+      <span>低 ${fmt(x.low)}</span><span>收 ${fmt(x.close)}</span>
+      <span>量 ${fmtInt((x.volume || 0)/1000)} 張</span><span></span>
+    </div>
+    <div class="t-ma">
+      BB上 ${fmt(x.bbUpper)} / BB下 ${fmt(x.bbLower)}<br>
+      MA5 ${fmt(x.ma5)} / MA10 ${fmt(x.ma10)}<br>
+      MA20 ${fmt(x.ma20)} / MA60 ${fmt(x.ma60)}
+    </div>`;
+}
+function syncHoldingFromK_6147(date){
+  const chart=document.getElementById('holding-chart-6147');
+  const data=holdingData_6147 || [];
+  const idx=nearestByDate_6147(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_6147(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, holdingHtml_6147(data[idx]));
+}
+function clearHoldingHover_6147(){
+  clearOverlay_6147(document.getElementById('holding-chart-6147'));
+}
+function syncDailyFromHolding_6147(date){
+  const root=document.getElementById('chart-6147');
+  const chart=root ? root.querySelector('.hover-chart[data-mode="daily"]') : null;
+  const data=chartData_6147.daily || [];
+  const idx=nearestByDate_6147(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_6147(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, kHtml_6147(data[idx]));
+}
+function clearDailyHover_6147(){
+  const root=document.getElementById('chart-6147');
+  clearOverlay_6147(root ? root.querySelector('.hover-chart[data-mode="daily"]') : null);
+}
+function initHoldingHover_6147(){
+  const chart=document.getElementById('holding-chart-6147');
+  const data=holdingData_6147 || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
   chart.addEventListener('mousemove', ev=>{
     const rect=chart.getBoundingClientRect();
     const x=ev.clientX - rect.left;
@@ -425,7 +514,7 @@ function initHoldingHover_6147(){
     const item=data[idx];
     line.style.display='block';
     line.style.left=`${clamped}px`;
-    tip.innerHTML=html(item);
+    tip.innerHTML=holdingHtml_6147(item);
     tip.style.display='block';
     const tipWidth=tip.offsetWidth || 210;
     const tipHeight=tip.offsetHeight || 112;
@@ -435,10 +524,12 @@ function initHoldingHover_6147(){
     if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
     tip.style.left=`${Math.max(6, tx)}px`;
     tip.style.top=`${Math.max(6, ty)}px`;
+    syncDailyFromHolding_6147(item.date);
   });
   chart.addEventListener('mouseleave', ()=>{
     tip.style.display='none';
     line.style.display='none';
+    clearDailyHover_6147();
   });
 }
 initHoldingHover_6147();

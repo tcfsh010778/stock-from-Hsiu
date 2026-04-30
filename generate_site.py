@@ -358,6 +358,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
 .chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
+.linked-holding-panel{margin-top:14px;padding-top:12px;border-top:1px solid #30363d}
+.linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
@@ -1901,6 +1903,48 @@ function showChart_{stock_id}(mode){{
   root.querySelector('[data-pane="'+mode+'"]').style.display='block';
   root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
 }}
+function nearestByDate_{stock_id}(data, date){{
+  const target=Date.parse(date || '');
+  if(!data || !data.length || Number.isNaN(target)) return -1;
+  let best=0;
+  let bestGap=Infinity;
+  data.forEach((item, idx)=>{{
+    const t=Date.parse(item.date || '');
+    if(Number.isNaN(t)) return;
+    const gap=Math.abs(t-target);
+    if(gap < bestGap){{
+      best=idx;
+      bestGap=gap;
+    }}
+  }});
+  return best;
+}}
+function positionTooltip_{stock_id}(chart, line, tip, dataLength, idx, html, xHint, yHint){{
+  if(!chart || !line || !tip || dataLength < 2 || idx < 0) return;
+  const rect=chart.getBoundingClientRect();
+  const left=rect.width * 50 / 900;
+  const right=rect.width * (900 - 18) / 900;
+  const clamped=left + (right-left) * idx / Math.max(1, dataLength-1);
+  line.style.display='block';
+  line.style.left=`${{clamped}}px`;
+  tip.innerHTML=html;
+  tip.style.display='block';
+  const tipWidth=tip.offsetWidth || 210;
+  const tipHeight=tip.offsetHeight || 128;
+  let tx=(Number.isFinite(xHint) ? xHint : clamped) + 14;
+  let ty=(Number.isFinite(yHint) ? yHint : 18);
+  if(tx + tipWidth > rect.width) tx=(Number.isFinite(xHint) ? xHint : clamped) - tipWidth - 14;
+  if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+  tip.style.left=`${{Math.max(6, tx)}}px`;
+  tip.style.top=`${{Math.max(6, ty)}}px`;
+}}
+function clearOverlay_{stock_id}(chart){{
+  if(!chart) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(tip) tip.style.display='none';
+  if(line) line.style.display='none';
+}}
 function initHoverCharts_{stock_id}(){{
   const root=document.getElementById('{chart_id}');
   if(!root) return;
@@ -1947,24 +1991,20 @@ function initHoverCharts_{stock_id}(){{
       if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
       tip.style.left=`${{Math.max(6, tx)}}px`;
       tip.style.top=`${{Math.max(6, ty)}}px`;
+      syncHoldingFromK_{stock_id}(item.date);
     }});
     chart.addEventListener('mouseleave', ()=>{{
       tip.style.display='none';
       line.style.display='none';
+      clearHoldingHover_{stock_id}();
     }});
   }});
 }}
 initHoverCharts_{stock_id}();
-function initHoldingHover_{stock_id}(){{
-  const chart=document.getElementById('{holding_id}');
-  const data=holdingData_{stock_id} || [];
-  if(!chart || data.length < 2) return;
-  const tip=chart.querySelector('.chart-tooltip');
-  const line=chart.querySelector('.chart-crosshair');
-  if(!tip || !line) return;
+function holdingHtml_{stock_id}(x){{
   const fmtPct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
-  const html=(x)=>`
+  return `
     <div class="t-date">${{x.date || '-'}}</div>
     <div class="t-grid">
       <span>大戶&gt;1000張</span><span>${{fmtPct(x.major)}}</span>
@@ -1972,6 +2012,52 @@ function initHoldingHover_{stock_id}(){{
       <span>散戶&lt;1萬股</span><span>${{fmtPct(x.retail)}}</span>
       <span>總股東數</span><span>${{fmtInt(x.totalPeople)}}</span>
     </div>`;
+}}
+function kHtml_{stock_id}(x){{
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  return `
+    <div class="t-date">${{x.date || '-'}}</div>
+    <div class="t-grid">
+      <span>開 ${{fmt(x.open)}}</span><span>高 ${{fmt(x.high)}}</span>
+      <span>低 ${{fmt(x.low)}}</span><span>收 ${{fmt(x.close)}}</span>
+      <span>量 ${{fmtInt((x.volume || 0)/1000)}} 張</span><span></span>
+    </div>
+    <div class="t-ma">
+      BB上 ${{fmt(x.bbUpper)}} / BB下 ${{fmt(x.bbLower)}}<br>
+      MA5 ${{fmt(x.ma5)}} / MA10 ${{fmt(x.ma10)}}<br>
+      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}
+    </div>`;
+}}
+function syncHoldingFromK_{stock_id}(date){{
+  const chart=document.getElementById('{holding_id}');
+  const data=holdingData_{stock_id} || [];
+  const idx=nearestByDate_{stock_id}(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_{stock_id}(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, holdingHtml_{stock_id}(data[idx]));
+}}
+function clearHoldingHover_{stock_id}(){{
+  clearOverlay_{stock_id}(document.getElementById('{holding_id}'));
+}}
+function syncDailyFromHolding_{stock_id}(date){{
+  const root=document.getElementById('{chart_id}');
+  const chart=root ? root.querySelector('.hover-chart[data-mode="daily"]') : null;
+  const data=chartData_{stock_id}.daily || [];
+  const idx=nearestByDate_{stock_id}(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_{stock_id}(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, kHtml_{stock_id}(data[idx]));
+}}
+function clearDailyHover_{stock_id}(){{
+  const root=document.getElementById('{chart_id}');
+  clearOverlay_{stock_id}(root ? root.querySelector('.hover-chart[data-mode="daily"]') : null);
+}}
+function initHoldingHover_{stock_id}(){{
+  const chart=document.getElementById('{holding_id}');
+  const data=holdingData_{stock_id} || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
   chart.addEventListener('mousemove', ev=>{{
     const rect=chart.getBoundingClientRect();
     const x=ev.clientX - rect.left;
@@ -1983,7 +2069,7 @@ function initHoldingHover_{stock_id}(){{
     const item=data[idx];
     line.style.display='block';
     line.style.left=`${{clamped}}px`;
-    tip.innerHTML=html(item);
+    tip.innerHTML=holdingHtml_{stock_id}(item);
     tip.style.display='block';
     const tipWidth=tip.offsetWidth || 210;
     const tipHeight=tip.offsetHeight || 112;
@@ -1993,10 +2079,12 @@ function initHoldingHover_{stock_id}(){{
     if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
     tip.style.left=`${{Math.max(6, tx)}}px`;
     tip.style.top=`${{Math.max(6, ty)}}px`;
+    syncDailyFromHolding_{stock_id}(item.date);
   }});
   chart.addEventListener('mouseleave', ()=>{{
     tip.style.display='none';
     line.style.display='none';
+    clearDailyHover_{stock_id}();
   }});
 }}
 initHoldingHover_{stock_id}();
@@ -2041,7 +2129,6 @@ initHoldingHover_{stock_id}();
   <div class="card">
     <div class="section-label">籌碼 / 股權分配</div>
     {build_chip_panel(chip, holding)}
-    <div id="{holding_id}" class="chart-box hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
     <div class="strategy-note" style="margin-top:12px">
       大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>
@@ -2058,6 +2145,10 @@ initHoldingHover_{stock_id}();
       <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
       <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
       <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+      <div class="linked-holding-panel">
+        <div class="linked-holding-title">股權分配連動</div>
+        <div id="{holding_id}" class="hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+      </div>
     </div>
   </div>
 
