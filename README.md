@@ -7,6 +7,8 @@
 ```
 選股網站/
 ├── generate_site.py          # 主程式：解析 MD -> 生成 HTML
+├── refresh_prices.py         # 直接接 FinMind 更新股價快取
+├── data/prices/              # FinMind 股價快取（日K/週K/月K來源）
 ├── docs/                     # GitHub Pages 根目錄
 │   ├── index.html            # 首頁
 │   ├── daily.html            # 今日精選
@@ -21,8 +23,11 @@
 ## 本地執行
 
 ```bash
+python refresh_prices.py
 python generate_site.py
 ```
+
+`refresh_prices.py` 會從 v44 的 `.env` 或環境變數讀取 `FINMIND_TOKEN`，抓取目前報告出現過的股票近 12 個月股價，寫入 `data/prices/`。個股頁會用這份資料顯示 FinMind 最新收盤、日K、週K、月K。
 
 ## GitHub Pages 部署步驟
 

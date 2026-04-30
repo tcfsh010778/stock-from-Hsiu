@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1309 台達化（塑膠工業） — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+.signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
+.signal-foot strong{color:#e6edf3}
+.signal-table td{vertical-align:top}
+.signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
+.push-ok{color:#3fb950;font-weight:700}
+.push-wait{color:#d2a520;font-weight:700}
+.push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#3fb950}
+.neg{color:#f85149}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#3fb950;font-size:12px}
+.price-stop{color:#f85149;font-size:12px}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .detail-hero,.info-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="daily.html" class="tab">今日選股</a>
+<a href="baskets.html" class="tab active">雙籃儀表板</a>
+<a href="signals.html" class="tab">訊號追蹤</a>
+<a href="history.html" class="tab">歷史報告</a>
+
+</nav>
+
+<div class="container">
+  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div class="page-title">1309 台達化（塑膠工業）</div>
+  <div class="page-sub">v44 個股研究頁 · 報告日期 2026-04-24</div>
+  <div class="detail-hero">
+    <div class="card">
+      <div class="section-label">資訊卡</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="k">FinMind收盤 2026-04-30</div><div class="v">20.80</div></div>
+        <div class="info-cell"><div class="k">近6週</div><div class="v pos">6.04%</div></div>
+        <div class="info-cell"><div class="k">評分</div><div class="v">100.0</div></div>
+        <div class="info-cell"><div class="k">分類</div><div class="v">盤整籃</div></div>
+        <div class="info-cell"><div class="k">建議買點</div><div class="v">19.26 (MA5×98.5%)</div></div>
+        <div class="info-cell"><div class="k">目標</div><div class="v">27.03 (壓力×102%)</div></div>
+        <div class="info-cell"><div class="k">防守</div><div class="v">─</div></div>
+        <div class="info-cell"><div class="k">外資近5日</div><div class="v">+2925 張</div></div>
+      </div>
+      <div class="pill-row">
+        <span class="tag tag-green">SFZ</span><span class="tag tag-yellow">MABC/CaryBot</span><span class="tag">v44資料</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">快速分析</div>
+      <div class="mini-report">分類：盤整籃
+買點：19.26 (MA5×98.5%)｜目標：27.03 (壓力×102%)｜防守：─
+現況：收盤 20.80，近6週 6.04%，RSI 52.1，%B 32.9%。
+台帳：歷史入選 1 次，最近 2026-04-24。
+操作：偏向盤整觀察：重點看 MABC 是否維持 A/B，CaryBot 或量縮價穩轉強時才處理早買點。</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">日K / 週K / 月K</div>
+    <div id="chart-1309" class="chart-box">
+      <div class="chart-tabs">
+        <button type="button" class="active" data-btn="daily" onclick="showChart_1309('daily')">日K</button>
+        <button type="button" data-btn="weekly" onclick="showChart_1309('weekly')">週K</button>
+        <button type="button" data-btn="monthly" onclick="showChart_1309('monthly')">月K</button>
+      </div>
+      <div class="chart-pane" data-pane="daily">
+<svg viewBox="0 0 860 280" width="100%" role="img" aria-label="日K">
+  <rect x="0" y="0" width="860" height="280" fill="#0d1117"/>
+  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">26.5</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">22.5</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">18.4</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">14.4</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">10.4</text>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,228.1 53.0,230.9 58.0,231.6 63.0,235.2 68.0,235.9 73.0,234.5 78.0,234.5 83.0,233.8 87.9,236.6 92.9,238.0 97.9,243.7 102.9,242.3 107.9,242.3 112.9,242.3 117.9,241.6 122.9,240.9 127.9,240.9 132.9,240.9 137.9,241.6 142.9,243.0 147.9,240.2 152.9,242.3 157.9,242.3 162.9,241.6 167.8,242.3 172.8,243.0 177.8,243.0 182.8,241.6 187.8,231.6 192.8,233.0 197.8,237.3 202.8,238.7 207.8,237.3 212.8,233.0 217.8,236.6 222.8,238.7 227.8,234.5 232.8,230.9 237.8,232.3 242.8,235.9 247.7,235.2 252.7,236.6 257.7,238.7 262.7,243.0 267.7,244.4 272.7,248.0 277.7,245.9 282.7,244.4 287.7,246.6 292.7,245.2 297.7,238.0 302.7,233.0 307.7,231.6 312.7,235.2 317.7,238.7 322.7,243.0 327.6,240.9 332.6,245.2 337.6,245.2 342.6,245.2 347.6,243.0 352.6,238.7 357.6,236.6 362.6,233.8 367.6,218.1 372.6,222.4 377.6,216.7 382.6,222.4 387.6,228.1 392.6,226.6 397.6,233.0 402.6,230.2 407.5,231.6 412.5,227.3 417.5,230.9 422.5,235.9 427.5,238.0 432.5,236.6 437.5,232.3 442.5,232.3 447.5,233.8 452.5,235.9 457.5,235.2 462.5,234.5 467.5,236.6 472.5,240.2 477.5,239.5 482.5,237.3 487.4,231.6 492.4,233.8 497.4,232.3 502.4,228.8 507.4,227.3 512.4,226.6 517.4,222.4 522.4,225.9 527.4,223.8 532.4,228.1 537.4,228.8 542.4,227.3 547.4,226.6 552.4,212.4 557.4,217.4 562.4,216.7 567.3,219.5 572.3,221.7 577.3,230.9 582.3,228.1 587.3,219.5 592.3,220.9 597.3,227.3 602.3,220.9 607.3,226.6 612.3,223.1 617.3,221.7 622.3,220.9 627.3,214.5 632.3,218.1 637.3,219.5 642.3,205.3 647.2,213.1 652.2,214.5 657.2,196.7 662.2,177.5 667.2,196.0 672.2,199.6 677.2,180.4 682.2,177.5 687.2,163.3 692.2,170.4 697.2,173.2 702.2,151.2 707.2,137.6 712.2,112.0 717.2,110.6 722.2,134.1 727.1,108.4 732.1,80.0 737.1,48.6 742.1,67.1 747.1,59.3 752.1,25.8 757.1,18.0 762.1,55.7 767.1,61.4 772.1,73.5 777.1,60.7 782.1,74.3 787.1,92.8 792.1,99.9 797.1,116.3 802.1,123.4 807.0,123.4 812.0,130.5 817.0,104.2 822.0,103.4 827.0,124.8 832.0,119.1 837.0,125.5 842.0,99.2" /><polyline fill="none" stroke="#d2a520" stroke-width="1.7" points="142.9,237.9 147.9,238.5 152.9,239.1 157.9,239.6 162.9,240.0 167.8,240.3 172.8,240.7 177.8,241.1 182.8,241.5 187.8,241.3 192.8,241.0 197.8,240.7 202.8,240.5 207.8,240.3 212.8,239.8 217.8,239.6 222.8,239.5 227.8,239.1 232.8,238.6 237.8,238.2 242.8,237.8 247.7,237.6 252.7,237.3 257.7,237.1 262.7,237.2 267.7,237.3 272.7,237.5 277.7,237.7 282.7,237.8 287.7,238.6 292.7,239.2 297.7,239.2 302.7,238.9 307.7,238.6 312.7,238.7 317.7,238.8 322.7,239.1 327.6,239.4 332.6,240.1 337.6,240.7 342.6,241.2 347.6,241.6 352.6,241.7 357.6,241.6 362.6,241.1 367.6,239.8 372.6,238.5 377.6,237.1 382.6,236.0 387.6,235.0 392.6,234.1 397.6,233.9 402.6,233.7 407.5,233.7 412.5,233.3 417.5,232.9 422.5,232.6 427.5,232.4 432.5,232.0 437.5,231.4 442.5,230.7 447.5,230.3 452.5,230.1 457.5,230.1 462.5,230.1 467.5,231.0 472.5,231.9 477.5,233.0 482.5,233.8 487.4,234.0 492.4,234.3 497.4,234.3 502.4,234.2 507.4,234.0 512.4,234.0 517.4,233.5 522.4,233.0 527.4,232.3 532.4,231.9 537.4,231.7 542.4,231.5 547.4,231.1 552.4,229.9 557.4,229.1 562.4,228.2 567.3,227.3 572.3,226.4 577.3,226.0 582.3,225.5 587.3,224.9 592.3,224.3 597.3,224.0 602.3,223.6 607.3,223.6 612.3,223.4 617.3,223.4 622.3,223.1 627.3,222.7 632.3,222.2 637.3,221.7 642.3,220.6 647.2,219.9 652.2,220.0 657.2,219.0 662.2,217.0 667.2,215.8 672.2,214.7 677.2,212.2 682.2,209.7 687.2,206.9 692.2,204.3 697.2,201.6 702.2,198.2 707.2,193.7 712.2,188.2 717.2,182.6 722.2,178.3 727.1,172.9 732.1,166.0 737.1,157.5 742.1,150.6 747.1,142.9 752.1,133.5 757.1,124.5 762.1,118.4 767.1,111.7 772.1,105.4 777.1,99.4 782.1,94.3 787.1,90.7 792.1,87.2 797.1,84.4 802.1,83.0 807.0,82.3 812.0,83.2 817.0,82.9 822.0,81.3 827.0,82.2 832.0,84.1 837.0,88.0 842.0,89.6" /><polyline fill="none" stroke="#3fb950" stroke-width="1.7" points="342.6,239.0 347.6,239.2 352.6,239.4 357.6,239.4 362.6,239.4 367.6,239.1 372.6,238.9 377.6,238.6 382.6,238.4 387.6,238.3 392.6,238.1 397.6,237.9 402.6,237.7 407.5,237.5 412.5,237.3 417.5,237.1 422.5,237.0 427.5,237.0 432.5,236.9 437.5,236.8 442.5,236.6 447.5,236.5 452.5,236.4 457.5,236.3 462.5,236.1 467.5,236.0 472.5,236.0 477.5,235.9 482.5,235.9 487.4,235.9 492.4,235.9 497.4,235.8 502.4,235.6 507.4,235.5 512.4,235.3 517.4,235.1 522.4,234.9 527.4,234.7 532.4,234.7 537.4,234.6 542.4,234.5 547.4,234.3 552.4,233.9 557.4,233.6 562.4,233.1 567.3,232.7 572.3,232.3 577.3,232.0 582.3,231.8 587.3,231.3 592.3,230.9 597.3,230.7 602.3,230.5 607.3,230.4 612.3,230.2 617.3,229.9 622.3,229.6 627.3,229.1 632.3,228.7 637.3,228.3 642.3,227.6 647.2,227.1 652.2,226.7 657.2,226.0 662.2,225.1 667.2,224.7 672.2,224.3 677.2,223.7 682.2,223.0 687.2,221.9 692.2,221.0 697.2,220.0 702.2,218.7 707.2,217.1 712.2,215.2 717.2,213.2 722.2,211.5 727.1,209.3 732.1,206.7 737.1,203.6 742.1,200.9 747.1,198.0 752.1,194.5 757.1,190.9 762.1,187.9 767.1,185.0 772.1,182.2 777.1,179.2 782.1,176.5 787.1,174.2 792.1,171.9 797.1,170.0 802.1,168.2 807.0,166.5 812.0,164.9 817.0,162.9 822.0,160.9 827.0,159.3 832.0,157.4 837.0,155.7 842.0,153.6" />
+  <text x="48" y="272" fill="#6e7681" font-size="11">2025-08-28</text>
+  <text x="750" y="272" fill="#6e7681" font-size="11">2026-04-30</text>
+  <text x="48" y="14" fill="#e6edf3" font-size="12">日K ｜ 收 20.80</text>
+  <text x="650" y="14" fill="#58a6ff" font-size="11">Close</text>
+  <text x="705" y="14" fill="#d2a520" font-size="11">MA20</text>
+  <text x="760" y="14" fill="#3fb950" font-size="11">MA60</text>
+</svg></div>
+      <div class="chart-pane" data-pane="weekly" style="display:none">
+<svg viewBox="0 0 860 280" width="100%" role="img" aria-label="週K">
+  <rect x="0" y="0" width="860" height="280" fill="#0d1117"/>
+  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">25.9</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">22.0</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">18.0</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">14.0</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">10.0</text>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,223.5 63.3,217.0 78.5,216.3 93.8,219.2 109.1,222.8 124.3,223.5 139.6,230.7 154.9,240.8 170.2,245.8 185.4,243.7 200.7,243.7 216.0,248.0 231.2,235.0 246.5,229.3 261.8,227.1 277.0,229.3 292.3,222.0 307.6,213.4 322.8,225.6 338.1,229.3 353.4,237.2 368.7,235.7 383.9,237.2 399.2,237.9 414.5,226.4 429.7,227.8 445.0,225.6 460.3,233.6 475.5,239.3 490.8,226.4 506.1,240.1 521.3,231.4 536.6,217.0 551.9,226.4 567.2,231.4 582.4,230.7 597.7,235.0 613.0,227.1 628.2,220.6 643.5,221.3 658.8,216.3 674.0,222.0 689.3,217.7 704.6,212.7 719.8,191.0 735.1,171.6 750.4,131.2 765.7,72.8 780.9,18.0 796.2,66.3 811.5,109.6 826.7,96.6 842.0,92.3" /><polyline fill="none" stroke="#d2a520" stroke-width="1.7" points="338.1,229.3 353.4,230.0 368.7,230.9 383.9,232.0 399.2,232.9 414.5,233.1 429.7,233.3 445.0,233.0 460.3,232.7 475.5,232.4 490.8,231.5 506.1,231.3 521.3,230.5 536.6,229.6 551.9,229.4 567.2,229.7 582.4,229.7 597.7,230.4 613.0,231.1 628.2,230.8 643.5,230.4 658.8,229.4 674.0,228.7 689.3,227.7 704.6,226.4 719.8,224.7 735.1,221.9 750.4,217.1 765.7,209.1 780.9,198.0 796.2,190.0 811.5,183.5 826.7,176.8 842.0,170.5" />
+  <text x="48" y="272" fill="#6e7681" font-size="11">2025-04-25</text>
+  <text x="750" y="272" fill="#6e7681" font-size="11">2026-04-30</text>
+  <text x="48" y="14" fill="#e6edf3" font-size="12">週K ｜ 收 20.80</text>
+  <text x="650" y="14" fill="#58a6ff" font-size="11">Close</text>
+  <text x="705" y="14" fill="#d2a520" font-size="11">MA20</text>
+  <text x="760" y="14" fill="#3fb950" font-size="11">MA60</text>
+</svg></div>
+      <div class="chart-pane" data-pane="monthly" style="display:none">
+<svg viewBox="0 0 860 280" width="100%" role="img" aria-label="月K">
+  <rect x="0" y="0" width="860" height="280" fill="#0d1117"/>
+  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">23.1</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">19.8</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">16.6</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">13.3</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">10.1</text>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,214.3 114.2,219.6 180.3,248.0 246.5,219.6 312.7,222.2 378.8,236.5 445.0,232.0 511.2,229.4 577.3,229.4 643.5,210.7 709.7,206.3 775.8,18.0 842.0,58.0" />
+  <text x="48" y="272" fill="#6e7681" font-size="11">2025-04-30</text>
+  <text x="750" y="272" fill="#6e7681" font-size="11">2026-04-30</text>
+  <text x="48" y="14" fill="#e6edf3" font-size="12">月K ｜ 收 20.80</text>
+  <text x="650" y="14" fill="#58a6ff" font-size="11">Close</text>
+  <text x="705" y="14" fill="#d2a520" font-size="11">MA20</text>
+  <text x="760" y="14" fill="#3fb950" font-size="11">MA60</text>
+</svg></div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="section-label">歷史訊號</div>
+      <div style="overflow-x:auto">
+        <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>
+<tr>
+  <td>2026-04-24</td><td>盤整籃</td><td>19.26 (MA5×98.5%)</td><td>20.50</td><td>100.0</td>
+</tr></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">v44 AI / 快速分析紀錄</div>
+      <div class="strategy-note">目前沒有讀到 v44 AI 分析紀錄。之後只要 v44 的快速分析或 AI深度分析寫入 SQLite，這裡會自動帶出最近紀錄。</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showChart_1309(mode){
+  const root=document.getElementById('chart-1309');
+  root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
+  root.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  root.querySelector('[data-pane="'+mode+'"]').style.display='block';
+  root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
+}
+</script>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>

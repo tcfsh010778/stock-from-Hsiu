@@ -49,6 +49,19 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
 .push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -117,6 +130,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
+  .detail-hero,.info-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -185,7 +199,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#1</span></td>
   <td>
-    <div style="font-weight:700">6213 聯茂</div>
+    <div><a class="stock-link" href="stocks/6213.html">6213 聯茂</a></div>
     <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
   </td>
   <td class="price-main">─</td>
@@ -200,7 +214,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#2</span></td>
   <td>
-    <div style="font-weight:700">4960 奇力新</div>
+    <div><a class="stock-link" href="stocks/4960.html">4960 奇力新</a></div>
     <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
   </td>
   <td class="price-main">─</td>
@@ -215,7 +229,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#3</span></td>
   <td>
-    <div style="font-weight:700">8358 金居</div>
+    <div><a class="stock-link" href="stocks/8358.html">8358 金居</a></div>
     <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
   </td>
   <td class="price-main">─</td>
@@ -230,7 +244,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#4</span></td>
   <td>
-    <div style="font-weight:700">6434 台亞</div>
+    <div><a class="stock-link" href="stocks/6434.html">6434 台亞</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -245,7 +259,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#5</span></td>
   <td>
-    <div style="font-weight:700">6920 黑彩</div>
+    <div><a class="stock-link" href="stocks/6920.html">6920 黑彩</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -260,7 +274,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#6</span></td>
   <td>
-    <div style="font-weight:700">6147 頎邦</div>
+    <div><a class="stock-link" href="stocks/6147.html">6147 頎邦</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -275,7 +289,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#7</span></td>
   <td>
-    <div style="font-weight:700">4958 臻鼎-KY</div>
+    <div><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -290,7 +304,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#8</span></td>
   <td>
-    <div style="font-weight:700">1785 光洋科</div>
+    <div><a class="stock-link" href="stocks/1785.html">1785 光洋科</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -305,7 +319,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#9</span></td>
   <td>
-    <div style="font-weight:700">2426 鼎元</div>
+    <div><a class="stock-link" href="stocks/2426.html">2426 鼎元</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -320,7 +334,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#10</span></td>
   <td>
-    <div style="font-weight:700">8046 南電</div>
+    <div><a class="stock-link" href="stocks/8046.html">8046 南電</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -335,7 +349,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#11</span></td>
   <td>
-    <div style="font-weight:700">6672 泰鼎-KY</div>
+    <div><a class="stock-link" href="stocks/6672.html">6672 泰鼎-KY</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -350,7 +364,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#12</span></td>
   <td>
-    <div style="font-weight:700">6234 高鐵電</div>
+    <div><a class="stock-link" href="stocks/6234.html">6234 高鐵電</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -365,7 +379,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#13</span></td>
   <td>
-    <div style="font-weight:700">2351 順德</div>
+    <div><a class="stock-link" href="stocks/2351.html">2351 順德</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -380,7 +394,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#14</span></td>
   <td>
-    <div style="font-weight:700">8027 鈦昇科</div>
+    <div><a class="stock-link" href="stocks/8027.html">8027 鈦昇科</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -395,7 +409,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#15</span></td>
   <td>
-    <div style="font-weight:700">6789 采鈺</div>
+    <div><a class="stock-link" href="stocks/6789.html">6789 采鈺</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -410,7 +424,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#16</span></td>
   <td>
-    <div style="font-weight:700">1727 中華化</div>
+    <div><a class="stock-link" href="stocks/1727.html">1727 中華化</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -425,7 +439,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#17</span></td>
   <td>
-    <div style="font-weight:700">2464 建通</div>
+    <div><a class="stock-link" href="stocks/2464.html">2464 建通</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -440,7 +454,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#18</span></td>
   <td>
-    <div style="font-weight:700">3714 富采</div>
+    <div><a class="stock-link" href="stocks/3714.html">3714 富采</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -455,7 +469,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#19</span></td>
   <td>
-    <div style="font-weight:700">6531 愛普</div>
+    <div><a class="stock-link" href="stocks/6531.html">6531 愛普</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>
@@ -470,7 +484,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#20</span></td>
   <td>
-    <div style="font-weight:700">8064 億力-KY</div>
+    <div><a class="stock-link" href="stocks/8064.html">8064 億力-KY</a></div>
     <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
   </td>
   <td class="price-main">─</td>

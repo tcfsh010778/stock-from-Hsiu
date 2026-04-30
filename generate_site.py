@@ -11,6 +11,9 @@ import sys
 import glob
 import shutil
 import csv
+import json
+import html
+import sqlite3
 from pathlib import Path
 from datetime import datetime
 
@@ -21,6 +24,12 @@ _WIN_REPORTS  = Path(r"C:\Users\USER\OneDrive\文件\Claude\Projects\Stock from 
 _LINUX_REPORTS = Path("/sessions/adoring-amazing-mayer/mnt/Stock from Zero")
 _REPO_REPORTS = Path(__file__).parent / "reports"
 PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
+V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
+LOCAL_DATA_DIR = Path(__file__).parent / "data"
+LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
+V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
+V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
+_V44_FETCHER = None
 
 if os.environ.get("REPORTS_DIR"):
     REPORTS_DIR = Path(os.environ["REPORTS_DIR"])
@@ -303,6 +312,19 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
 .push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -371,6 +393,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
+  .detail-hero,.info-grid{grid-template-columns:1fr}
 }
 """
 
@@ -420,6 +443,14 @@ def gain_color(gain_str: str) -> str:
         return ""
 
 
+def esc(value) -> str:
+    return html.escape(str(value if value is not None else ""))
+
+
+def stock_href(stock_id: str, prefix: str = "stocks") -> str:
+    return f"{prefix}/{esc(stock_id)}.html"
+
+
 def html_page(title: str, nav_key: str, body: str) -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
@@ -442,7 +473,7 @@ def html_page(title: str, nav_key: str, body: str) -> str:
 #  各頁面生成
 # ──────────────────────────────────────────────
 
-def build_stock_table(stocks: list[dict], compact: bool = False) -> str:
+def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_prefix: str = "stocks") -> str:
     """生成股票表格 HTML"""
     rows = ""
     for i, s in enumerate(stocks, 1):
@@ -454,7 +485,7 @@ def build_stock_table(stocks: list[dict], compact: bool = False) -> str:
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#{i}</span></td>
   <td>
-    <div style="font-weight:700">{s['id']} {s['name']}</div>
+    <div><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']} {s['name']}</a></div>
     <div style="margin-top:3px">{badge}</div>
   </td>
   <td class="price-main">{s['price']}</td>
@@ -471,7 +502,7 @@ def build_stock_table(stocks: list[dict], compact: bool = False) -> str:
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#{i}</span></td>
   <td>
-    <div style="font-weight:700;font-size:14px">{s['id']}</div>
+    <div style="font-size:14px"><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']}</a></div>
     <div style="color:#8b949e;font-size:12px">{s['name']}</div>
   </td>
   <td>{badge}</td>
@@ -649,6 +680,249 @@ def signal_summary_html(stock_id: str, ledger: dict[str, dict]) -> str:
     )
 
 
+def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
+    stocks: dict[str, dict] = {}
+    for report in reversed(reports):
+        for s in report.get("stocks", []):
+            sid = s.get("id", "")
+            if sid:
+                item = dict(s)
+                item["report_date"] = report.get("date", "")
+                stocks[sid] = item
+    return stocks
+
+
+def read_price_history(stock_id: str, limit: int = 420) -> list[dict]:
+    path = LOCAL_PRICE_DIR / f"{stock_id}.csv"
+    if not path.exists():
+        path = V44_PRICE_DIR / f"{stock_id}.csv"
+    rows = []
+    if path.exists():
+        with path.open("r", encoding="utf-8-sig", newline="") as fh:
+            reader = csv.DictReader(fh)
+            for row in reader:
+                try:
+                    rows.append({
+                        "date": row.get("date") or row.get("Date"),
+                        "open": float(row.get("open") or row.get("Open")),
+                        "high": float(row.get("high") or row.get("max") or row.get("High")),
+                        "low": float(row.get("low") or row.get("min") or row.get("Low")),
+                        "close": float(row.get("close") or row.get("Close")),
+                        "volume": float(row.get("Trading_Volume") or row.get("Volume") or 0),
+                    })
+                except Exception:
+                    continue
+    if not rows:
+        months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
+        rows = fetch_v44_price_history(stock_id, months=months)
+    return rows[-limit:]
+
+
+def get_v44_fetcher():
+    global _V44_FETCHER
+    if _V44_FETCHER is not None:
+        return _V44_FETCHER
+    if os.environ.get("V44_LIVE_FETCH", "0") == "0":
+        return None
+    cell3 = V44_ROOT / "cell3_v44.py"
+    cell4 = V44_ROOT / "cell4_v44.py"
+    if not cell3.exists() or not cell4.exists():
+        return None
+    try:
+        ns = {}
+        for p in [cell3, cell4]:
+            code = p.read_text(encoding="utf-8")
+            exec(compile(code, str(p), "exec"), ns)
+        _V44_FETCHER = ns["DataFetcher"]()
+        return _V44_FETCHER
+    except Exception as e:
+        print(f"   [WARN] v44 fetcher unavailable: {e}", flush=True)
+        _V44_FETCHER = False
+        return None
+
+
+def fetch_v44_price_history(stock_id: str, months: int = 36) -> list[dict]:
+    fetcher = get_v44_fetcher()
+    if not fetcher:
+        return []
+    try:
+        df = fetcher.fetch_kline(stock_id, months=months)
+        if df is None or df.empty:
+            return []
+        rows = []
+        for idx, row in df.iterrows():
+            try:
+                date = idx.strftime("%Y-%m-%d") if hasattr(idx, "strftime") else str(row.get("date") or idx)
+                rows.append({
+                    "date": date[:10],
+                    "open": float(row.get("Open") or row.get("open")),
+                    "high": float(row.get("High") or row.get("max") or row.get("high")),
+                    "low": float(row.get("Low") or row.get("min") or row.get("low")),
+                    "close": float(row.get("Close") or row.get("close")),
+                    "volume": float(row.get("Volume") or row.get("Trading_Volume") or 0),
+                })
+            except Exception:
+                continue
+        return rows
+    except Exception as e:
+        print(f"   [WARN] {stock_id} v44 kline failed: {e}", flush=True)
+        return []
+
+
+def merge_report_close(rows: list[dict], s: dict) -> list[dict]:
+    """讓個股頁最後一筆價格至少與每日報告的收盤價一致。"""
+    price = _to_float(s.get("price", ""), None)
+    date = s.get("report_date") or ""
+    if price is None or not date:
+        return rows
+    out = list(rows)
+    if out and out[-1].get("date") == date:
+        out[-1] = {**out[-1], "close": price, "high": max(out[-1]["high"], price), "low": min(out[-1]["low"], price)}
+        return out
+    if not out or str(out[-1].get("date", "")) < date:
+        out.append({"date": date, "open": price, "high": price, "low": price, "close": price, "volume": 0})
+    return out
+
+
+def aggregate_ohlcv(rows: list[dict], mode: str) -> list[dict]:
+    if mode == "daily":
+        return rows
+    buckets: dict[str, list[dict]] = {}
+    for r in rows:
+        try:
+            dt = datetime.strptime(r["date"], "%Y-%m-%d")
+        except Exception:
+            continue
+        if mode == "weekly":
+            iso = dt.isocalendar()
+            key = f"{iso.year}-W{iso.week:02d}"
+        else:
+            key = dt.strftime("%Y-%m")
+        buckets.setdefault(key, []).append(r)
+    out = []
+    for key, items in buckets.items():
+        out.append({
+            "date": items[-1]["date"],
+            "open": items[0]["open"],
+            "high": max(x["high"] for x in items),
+            "low": min(x["low"] for x in items),
+            "close": items[-1]["close"],
+            "volume": sum(x["volume"] for x in items),
+        })
+    return out
+
+
+def ma_values(rows: list[dict], window: int) -> list[float | None]:
+    closes = [r["close"] for r in rows]
+    out: list[float | None] = []
+    for i in range(len(closes)):
+        if i + 1 < window:
+            out.append(None)
+        else:
+            out.append(sum(closes[i + 1 - window:i + 1]) / window)
+    return out
+
+
+def chart_svg(rows: list[dict], title: str) -> str:
+    rows = rows[-160:]
+    if len(rows) < 2:
+        return '<div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div>'
+    w, h = 860, 280
+    pad_l, pad_r, pad_t, pad_b = 48, 18, 18, 32
+    values = [r["close"] for r in rows]
+    ma20 = ma_values(rows, 20)
+    ma60 = ma_values(rows, 60)
+    lo, hi = min(values), max(values)
+    if hi == lo:
+        hi += 1
+        lo -= 1
+    def xy(idx, val):
+        x = pad_l + idx * (w - pad_l - pad_r) / (len(rows) - 1)
+        y = pad_t + (hi - val) * (h - pad_t - pad_b) / (hi - lo)
+        return x, y
+    def poly(vals, color, width=2):
+        pts = []
+        for i, v in enumerate(vals):
+            if v is None:
+                continue
+            x, y = xy(i, float(v))
+            pts.append(f"{x:.1f},{y:.1f}")
+        return f'<polyline fill="none" stroke="{color}" stroke-width="{width}" points="{" ".join(pts)}" />' if pts else ""
+    close_line = poly(values, "#58a6ff", 2.2)
+    ma20_line = poly(ma20, "#d2a520", 1.7)
+    ma60_line = poly(ma60, "#3fb950", 1.7)
+    grid = ""
+    for pct in [0, .25, .5, .75, 1]:
+        y = pad_t + pct * (h - pad_t - pad_b)
+        price = hi - pct * (hi - lo)
+        grid += f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-pad_r}" y2="{y:.1f}" stroke="#21262d"/><text x="4" y="{y+4:.1f}" fill="#6e7681" font-size="11">{price:.1f}</text>'
+    last = rows[-1]
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {close_line}{ma20_line}{ma60_line}
+  <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(rows[0]["date"])}</text>
+  <text x="{w-110}" y="{h-8}" fill="#6e7681" font-size="11">{esc(last["date"])}</text>
+  <text x="{pad_l}" y="14" fill="#e6edf3" font-size="12">{esc(title)} ｜ 收 {last["close"]:.2f}</text>
+  <text x="{w-210}" y="14" fill="#58a6ff" font-size="11">Close</text>
+  <text x="{w-155}" y="14" fill="#d2a520" font-size="11">MA20</text>
+  <text x="{w-100}" y="14" fill="#3fb950" font-size="11">MA60</text>
+</svg>"""
+
+
+def read_ai_logs(stock_id: str, limit: int = 3) -> list[dict]:
+    if not V44_DB_PATH.exists():
+        return []
+    try:
+        conn = sqlite3.connect(str(V44_DB_PATH))
+        rows = conn.execute(
+            """
+            SELECT created_at, kind, close, stage, buy_zone, stop_line, target_price, report
+            FROM ai_analysis_logs
+            WHERE stock_id=?
+            ORDER BY created_at DESC
+            LIMIT ?
+            """,
+            (stock_id, limit),
+        ).fetchall()
+        conn.close()
+    except Exception:
+        return []
+    return [
+        {
+            "created_at": r[0],
+            "kind": r[1],
+            "close": r[2],
+            "stage": r[3],
+            "buy_zone": r[4],
+            "stop_line": r[5],
+            "target_price": r[6],
+            "report": r[7],
+        }
+        for r in rows
+    ]
+
+
+def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
+    basket = basket_label(classify_basket(s))
+    events = ledger_item.get("events", []) if ledger_item else []
+    repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}。" if events else "首次或尚未建立歷史台帳。"
+    if basket == "行進籃":
+        action = "偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。"
+    elif basket == "盤整籃":
+        action = "偏向盤整觀察：重點看 MABC 是否維持 A/B，CaryBot 或量縮價穩轉強時才處理早買點。"
+    else:
+        action = "偏熱或風險區：不追高，等降溫、回測支撐不破，或重新整理後再評估。"
+    return (
+        f"分類：{basket}\n"
+        f"買點：{s.get('entry','─')}｜目標：{s.get('target','─')}｜防守：{s.get('stop','─')}\n"
+        f"現況：收盤 {s.get('price','─')}，近6週 {s.get('gain_6w','─')}，RSI {s.get('rsi','─')}，%B {s.get('bband_pct','─')}。\n"
+        f"台帳：{repeat_note}\n"
+        f"操作：{action}"
+    )
+
+
 def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
     gain_cls = gain_color(s.get("gain_6w", ""))
     if basket == "marching":
@@ -685,6 +959,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
   <div style="font-size:12px;color:#c9d1d9">買點 {s.get('entry','─')} ｜ 目標 {s.get('target','─')} ｜ 防守 {s.get('stop','─')}</div>
   <div class="tag-row">{tag_html}</div>
   {signal_summary_html(s.get('id',''), ledger or {})}
+  <div style="margin-top:10px"><a class="history-link" href="{stock_href(s.get('id',''))}">打開個股頁 →</a></div>
 </div>"""
 
 
@@ -815,7 +1090,7 @@ def build_daily_page(report: dict) -> str:
         '<div style="font-size:12px;color:#6e7681;margin-bottom:14px">'
         '&#x1F7E2; Health | &#x1F7E1; Strong | &#x1F534; Overbought'
         '</div>'
-        + build_stock_table(stocks, compact=False)
+        + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks")
         + '</div>'
     )
 
@@ -1005,6 +1280,119 @@ def build_signals_page(reports):
     return html_page("訊號追蹤", "signals", body)
 
 
+def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> str:
+    item = ledger.get(stock_id, {})
+    rows = merge_report_close(read_price_history(stock_id), s)
+    daily = aggregate_ohlcv(rows, "daily")
+    weekly = aggregate_ohlcv(rows, "weekly")
+    monthly = aggregate_ohlcv(rows, "monthly")
+    latest = daily[-1] if daily else {}
+    s_view = dict(s)
+    if latest.get("close") is not None:
+        s_view["price"] = f'{latest["close"]:.2f}'
+        s_view["price_date"] = latest.get("date", "")
+    ai_logs = read_ai_logs(stock_id)
+    ai_html = ""
+    if ai_logs:
+        for log in ai_logs:
+            headline = f"{log['created_at']}｜{log['kind']}｜收盤 {log.get('close') or '─'}｜買點 {log.get('buy_zone') or '─'}"
+            body = (log.get("report") or "")[:1800]
+            ai_html += f'<div class="mini-report"><strong>{esc(headline)}</strong>\n\n{esc(body)}</div>'
+    else:
+        ai_html = '<div class="strategy-note">目前沒有讀到 v44 AI 分析紀錄。之後只要 v44 的快速分析或 AI深度分析寫入 SQLite，這裡會自動帶出最近紀錄。</div>'
+
+    event_rows = ""
+    for e in item.get("events", [])[-12:][::-1]:
+        event_rows += f"""
+<tr>
+  <td>{e['date']}</td><td>{basket_label(e['basket'])}</td><td>{e['entry']}</td><td>{e['price']}</td><td>{e['score']}</td>
+</tr>"""
+    if not event_rows:
+        event_rows = '<tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr>'
+
+    chart_id = f"chart-{stock_id}"
+    chart_script = f"""
+<script>
+function showChart_{stock_id}(mode){{
+  const root=document.getElementById('{chart_id}');
+  root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
+  root.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  root.querySelector('[data-pane="'+mode+'"]').style.display='block';
+  root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
+}}
+</script>"""
+
+    body = f"""
+<div class="container">
+  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}</div>
+  <div class="page-sub">v44 個股研究頁 · 報告日期 {esc(s.get('report_date','─'))}</div>
+  <div class="detail-hero">
+    <div class="card">
+      <div class="section-label">資訊卡</div>
+      <div class="info-grid">
+        <div class="info-cell"><div class="k">FinMind收盤 {esc(s_view.get('price_date',''))}</div><div class="v">{esc(s_view.get('price','─'))}</div></div>
+        <div class="info-cell"><div class="k">近6週</div><div class="v {gain_color(s.get('gain_6w',''))}">{esc(s.get('gain_6w','─'))}</div></div>
+        <div class="info-cell"><div class="k">評分</div><div class="v">{esc(s.get('score','─'))}</div></div>
+        <div class="info-cell"><div class="k">分類</div><div class="v">{basket_label(classify_basket(s))}</div></div>
+        <div class="info-cell"><div class="k">建議買點</div><div class="v">{esc(s.get('entry','─'))}</div></div>
+        <div class="info-cell"><div class="k">目標</div><div class="v">{esc(s.get('target','─'))}</div></div>
+        <div class="info-cell"><div class="k">防守</div><div class="v">{esc(s.get('stop','─'))}</div></div>
+        <div class="info-cell"><div class="k">外資近5日</div><div class="v">{esc(s.get('foreign_5d','─'))}</div></div>
+      </div>
+      <div class="pill-row">
+        <span class="tag tag-green">SFZ</span><span class="tag tag-yellow">MABC/CaryBot</span><span class="tag">v44資料</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">快速分析</div>
+      <div class="mini-report">{esc(quick_analysis_text(s_view, item))}</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">日K / 週K / 月K</div>
+    <div id="{chart_id}" class="chart-box">
+      <div class="chart-tabs">
+        <button type="button" class="active" data-btn="daily" onclick="showChart_{stock_id}('daily')">日K</button>
+        <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>
+        <button type="button" data-btn="monthly" onclick="showChart_{stock_id}('monthly')">月K</button>
+      </div>
+      <div class="chart-pane" data-pane="daily">{chart_svg(daily, '日K')}</div>
+      <div class="chart-pane" data-pane="weekly" style="display:none">{chart_svg(weekly, '週K')}</div>
+      <div class="chart-pane" data-pane="monthly" style="display:none">{chart_svg(monthly, '月K')}</div>
+    </div>
+  </div>
+
+  <div class="grid grid-2">
+    <div class="card">
+      <div class="section-label">歷史訊號</div>
+      <div style="overflow-x:auto">
+        <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>{event_rows}</tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="section-label">v44 AI / 快速分析紀錄</div>
+      {ai_html}
+    </div>
+  </div>
+</div>
+{chart_script}"""
+    return html_page(f"{stock_id} {s.get('name','')}", "basket", body)
+
+
+def build_stock_pages(reports: list[dict]) -> int:
+    stock_map = find_latest_stock_map(reports)
+    ledger = build_signal_ledger(reports)
+    out_dir = OUTPUT_DIR / "stocks"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    count = 0
+    for stock_id, s in sorted(stock_map.items()):
+        (out_dir / f"{stock_id}.html").write_text(build_stock_detail_page(stock_id, s, ledger), encoding="utf-8")
+        count += 1
+    return count
+
+
 def build_history_page(reports):
     items = ""
     for r in reports:
@@ -1071,6 +1459,8 @@ def main():
     print("   [OK] signals.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
+    stock_page_count = build_stock_pages(reports)
+    print(f"   [OK] stocks/*.html ({stock_page_count})", flush=True)
 
     for r in reports:
         html = build_daily_page(r)
@@ -1078,7 +1468,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+4} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+4+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 

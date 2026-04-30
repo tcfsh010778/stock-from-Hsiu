@@ -38,6 +38,12 @@ jobs:
       #   run: python run_screener.py
 
       # 5. 生成靜態網站
+      - name: Refresh FinMind prices
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+          V44_FETCH_MONTHS: "12"
+        run: python refresh_prices.py
+
       - name: Generate static site
         run: python generate_site.py
 
@@ -46,6 +52,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/
+          git add docs/ data/prices/
           git diff --cached --quiet || git commit -m "Auto update: $(date '+%Y-%m-%d')"
           git push
