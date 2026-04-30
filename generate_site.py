@@ -10,6 +10,7 @@ import os
 import sys
 import glob
 import shutil
+import csv
 from pathlib import Path
 from datetime import datetime
 
@@ -19,6 +20,7 @@ from datetime import datetime
 _WIN_REPORTS  = Path(r"C:\Users\USER\OneDrive\文件\Claude\Projects\Stock from Zero")
 _LINUX_REPORTS = Path("/sessions/adoring-amazing-mayer/mnt/Stock from Zero")
 _REPO_REPORTS = Path(__file__).parent / "reports"
+PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 
 if os.environ.get("REPORTS_DIR"):
     REPORTS_DIR = Path(os.environ["REPORTS_DIR"])
@@ -294,6 +296,13 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
 .tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
 .strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+.signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
+.signal-foot strong{color:#e6edf3}
+.signal-table td{vertical-align:top}
+.signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
+.push-ok{color:#3fb950;font-weight:700}
+.push-wait{color:#d2a520;font-weight:700}
+.push-miss{color:#f85149;font-weight:700}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -370,6 +379,7 @@ def nav_html(active: str = "home") -> str:
         ("home",    "index.html",   "首頁"),
         ("daily",   "daily.html",   "今日選股"),
         ("basket",  "baskets.html", "雙籃儀表板"),
+        ("signals", "signals.html", "訊號追蹤"),
         ("history", "history.html", "歷史報告"),
     ]
     items = ""
@@ -538,24 +548,108 @@ def _to_float(value: str, default: float = 0.0) -> float:
         return default
 
 
+def classify_basket(s: dict) -> str:
+    gain = _to_float(s.get("gain_6w", "0"))
+    score = _to_float(s.get("score", "0"))
+    icon = s.get("icon", "")
+    status = s.get("status", "")
+    if icon == "🔴" or "超買" in status:
+        return "risk"
+    if icon == "🟡" or gain >= 18 or score >= 170:
+        return "marching"
+    return "consolidation"
+
+
+def basket_label(basket: str) -> str:
+    return {
+        "marching": "行進籃",
+        "consolidation": "盤整籃",
+        "risk": "過熱/風險",
+    }.get(basket, "未分類")
+
+
 def split_baskets(stocks: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
     """用現有每日報告欄位先做網站層分籃；正式版可改讀 JSON。"""
     marching, consolidation, risk = [], [], []
     for s in stocks:
-        gain = _to_float(s.get("gain_6w", "0"))
-        score = _to_float(s.get("score", "0"))
-        icon = s.get("icon", "")
-        status = s.get("status", "")
-        if icon == "🔴" or "超買" in status:
+        basket = classify_basket(s)
+        if basket == "risk":
             risk.append(s)
-        elif icon == "🟡" or gain >= 18 or score >= 170:
+        elif basket == "marching":
             marching.append(s)
         else:
             consolidation.append(s)
     return marching, consolidation, risk
 
 
-def basket_card(s: dict, basket: str) -> str:
+def load_push_log() -> dict[tuple[str, str], list[dict]]:
+    """讀取可選的推播台帳：date,stock_id,status,sent_at,channel。"""
+    if not PUSH_LOG_PATH.exists():
+        return {}
+    rows: dict[tuple[str, str], list[dict]] = {}
+    with PUSH_LOG_PATH.open("r", encoding="utf-8-sig", newline="") as fh:
+        reader = csv.DictReader(fh)
+        for row in reader:
+            date = (row.get("date") or row.get("signal_date") or "").strip()
+            stock_id = (row.get("stock_id") or row.get("id") or "").strip()
+            if not date or not stock_id:
+                continue
+            rows.setdefault((date, stock_id), []).append(row)
+    return rows
+
+
+def build_signal_ledger(reports: list[dict]) -> dict[str, dict]:
+    push_log = load_push_log()
+    ledger: dict[str, dict] = {}
+    for report in sorted(reports, key=lambda r: r.get("date", "")):
+        date = report.get("date", "")
+        for s in report.get("stocks", []):
+            stock_id = s.get("id", "")
+            if not stock_id:
+                continue
+            item = ledger.setdefault(stock_id, {
+                "id": stock_id,
+                "name": s.get("name", ""),
+                "events": [],
+                "push_count": 0,
+            })
+            logs = push_log.get((date, stock_id), [])
+            pushed = any((x.get("status", "").lower() in {"ok", "sent", "success", "pushed", "done"} or x.get("sent_at")) for x in logs)
+            item["events"].append({
+                "date": date,
+                "basket": classify_basket(s),
+                "entry": s.get("entry", "─"),
+                "price": s.get("price", "─"),
+                "score": s.get("score", "─"),
+                "pushed": pushed,
+                "log_count": len(logs),
+            })
+            if pushed:
+                item["push_count"] += 1
+            item["name"] = s.get("name", item["name"])
+    return ledger
+
+
+def signal_summary_html(stock_id: str, ledger: dict[str, dict]) -> str:
+    item = ledger.get(stock_id)
+    if not item:
+        return '<div class="signal-foot">歷史訊號：首次出現，尚無摘要。</div>'
+    events = item["events"]
+    first = events[0]
+    latest = events[-1]
+    baskets = " / ".join(dict.fromkeys(basket_label(e["basket"]) for e in events))
+    if PUSH_LOG_PATH.exists():
+        push = f'推播 <span class="push-ok">{item["push_count"]}</span> / {len(events)}'
+    else:
+        push = '<span class="push-wait">推播台帳待串接</span>'
+    return (
+        '<div class="signal-foot">'
+        + f'歷史訊號：<strong>{len(events)}</strong> 次 ｜ 首見 {first["date"]} ｜ 最近 {latest["date"]} ｜ {baskets} ｜ {push}'
+        + '</div>'
+    )
+
+
+def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
     gain_cls = gain_color(s.get("gain_6w", ""))
     if basket == "marching":
         action = "SFZ試單/續抱"
@@ -590,11 +684,12 @@ def basket_card(s: dict, basket: str) -> str:
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 {s.get('entry','─')} ｜ 目標 {s.get('target','─')} ｜ 防守 {s.get('stop','─')}</div>
   <div class="tag-row">{tag_html}</div>
+  {signal_summary_html(s.get('id',''), ledger or {})}
 </div>"""
 
 
-def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: str) -> str:
-    cards = "\n".join(basket_card(s, basket) for s in stocks[:12])
+def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: str, ledger: dict[str, dict] | None = None) -> str:
+    cards = "\n".join(basket_card(s, basket, ledger) for s in stocks[:12])
     if not cards:
         cards = '<div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>'
     return f"""
@@ -789,6 +884,7 @@ def build_baskets_page(reports):
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
     marching, consolidation, risk = split_baskets(stocks)
+    ledger = build_signal_ledger(reports)
 
     hero = f"""
 <div class="card">
@@ -822,13 +918,91 @@ def build_baskets_page(reports):
         + hero
         + playbook
         + '<div class="grid grid-2">'
-        + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching")
-        + build_basket_column("盤整籃｜MABC + CaryBot", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation")
+        + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching", ledger)
+        + build_basket_column("盤整籃｜MABC + CaryBot", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation", ledger)
         + '</div>'
-        + build_basket_column("過熱/風險觀察", "強勢但不適合追價；等回測、降溫或重新整理後再評估。", risk, "risk")
+        + build_basket_column("過熱/風險觀察", "強勢但不適合追價；等回測、降溫或重新整理後再評估。", risk, "risk", ledger)
         + '</div>'
     )
     return html_page("雙籃儀表板", "basket", body)
+
+
+def build_signals_page(reports):
+    ledger = build_signal_ledger(reports)
+    latest = reports[0] if reports else {}
+    latest_date = latest.get("date", "-")
+    latest_ids = {s.get("id") for s in latest.get("stocks", [])}
+    total_events = sum(len(x["events"]) for x in ledger.values())
+    pushed_events = sum(x["push_count"] for x in ledger.values())
+    active_count = sum(1 for sid in ledger if sid in latest_ids)
+    push_note = (
+        f'<span class="push-ok">{pushed_events}</span> / {total_events}'
+        if PUSH_LOG_PATH.exists()
+        else '<span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span>'
+    )
+
+    rows = ""
+    sorted_items = sorted(
+        ledger.values(),
+        key=lambda x: (x["events"][-1]["date"], len(x["events"])),
+        reverse=True,
+    )
+    for item in sorted_items:
+        events = item["events"]
+        latest_event = events[-1]
+        dates = "、".join(e["date"] for e in events[-6:])
+        if len(events) > 6:
+            dates += " ..."
+        latest_mark = '<span class="tag tag-green">今日仍在榜</span>' if item["id"] in latest_ids else '<span class="tag">歷史訊號</span>'
+        basket = basket_label(latest_event["basket"])
+        push_status = (
+            f'<span class="push-ok">{item["push_count"]}/{len(events)}</span>'
+            if PUSH_LOG_PATH.exists() and item["push_count"] == len(events)
+            else f'<span class="push-miss">{item["push_count"]}/{len(events)}</span>'
+            if PUSH_LOG_PATH.exists()
+            else '<span class="push-wait">待串接</span>'
+        )
+        rows += f"""
+<tr>
+  <td>
+    <div style="font-weight:700">{item['id']} {item['name']}</div>
+    <div class="tag-row">{latest_mark}<span class="tag">{basket}</span></div>
+  </td>
+  <td><strong>{len(events)}</strong> 次</td>
+  <td>{events[0]['date']}<br><span style="color:#8b949e">最近 {latest_event['date']}</span></td>
+  <td>買點 {latest_event['entry']}<br><span style="color:#8b949e">收盤 {latest_event['price']} ｜ 分數 {latest_event['score']}</span></td>
+  <td>{push_status}</td>
+  <td><div class="signal-dates">{dates}</div></td>
+</tr>"""
+
+    body = f"""
+<div class="container">
+  <div class="page-title">訊號追蹤</div>
+  <div class="page-sub">最新資料：{latest_date} · 目標是確認每個買點都有被記錄、追蹤、推播</div>
+  <div class="card">
+    <div class="section-label">Signal Ledger</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(ledger)}</div><div class="metric-label">歷史唯一個股</div></div>
+      <div class="metric"><div class="metric-num" style="color:#3fb950">{active_count}</div><div class="metric-label">今日仍在追蹤</div></div>
+      <div class="metric"><div class="metric-num" style="font-size:16px">{push_note}</div><div class="metric-label">推播覆蓋率</div></div>
+    </div>
+    <div class="strategy-note" style="margin-top:14px">
+      這頁先用每日報告建立「入選台帳」。等 Telegram 發送程式把成功推播寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">歷史訊號摘要</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table signal-table">
+        <thead>
+          <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買點</th><th>推播</th><th>出現日期</th></tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
+  </div>
+</div>"""
+    return html_page("訊號追蹤", "signals", body)
 
 
 def build_history_page(reports):
@@ -893,6 +1067,8 @@ def main():
     print("   [OK] daily.html", flush=True)
     (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
     print("   [OK] baskets.html", flush=True)
+    (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
+    print("   [OK] signals.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
 
@@ -902,7 +1078,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+3} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+4} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 

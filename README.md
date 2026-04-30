@@ -11,6 +11,7 @@
 │   ├── index.html            # 首頁
 │   ├── daily.html            # 今日精選
 │   ├── baskets.html          # 雙籃儀表板（行進籃 / 盤整籃）
+│   ├── signals.html          # 訊號追蹤與歷史摘要
 │   ├── history.html          # 歷史報告
 │   └── daily/YYYY-MM-DD.html # 個別日期完整報告
 └── .github/workflows/
@@ -50,3 +51,16 @@ REPORTS_DIR=/path/to/reports python generate_site.py
 - **行進籃**：SFZ 波段候選，原訊號可試單，TA3 作加碼/確認，MA20 管理。
 - **盤整籃**：MABC + CaryBot 早買觀察，重點是量縮價穩、籌碼不離開、轉強型態。
 - **過熱/風險**：不追高，等待回測 MA5/MA10/箱頂後再處理。
+
+## 訊號追蹤
+
+`docs/signals.html` 會把每日報告整理成歷史訊號台帳，包含個股首次入選、最近入選、入選次數、最新買點與出現日期。雙籃資訊卡也會顯示同一份歷史訊號摘要，方便確認哪些股票已經反覆進入觀察。
+
+若 Telegram 發送程式有成功推播紀錄，可在 repo 根目錄放 `signal_push_log.csv`，欄位支援：
+
+```csv
+date,stock_id,status,sent_at,channel
+2026-04-30,6213,sent,2026-04-30 17:35,telegram
+```
+
+網站會自動比對「入選訊號」與「推播紀錄」，用來檢查是否有買點漏推。
