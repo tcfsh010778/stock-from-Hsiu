@@ -1,0 +1,51 @@
+name: Daily Stock Site Update
+
+on:
+  # 每天台股收盤後自動執行（UTC 09:30 = 台灣時間 17:30）
+  schedule:
+    - cron: '30 9 * * 1-5'   # 週一到週五
+
+  # 手動觸發（測試用）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 取得最新程式碼
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      # 2. 安裝 Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. 安裝相依套件（目前只用標準庫）
+      - name: Install dependencies
+        run: pip install --upgrade pip
+
+      # 4. 執行選股腳本（輸出 MD 報告）
+      #    如果你的選股腳本需要 FinMind token，在 repo Secrets 設定 FINMIND_TOKEN
+      # - name: Run screener
+      #   env:
+      #     FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+      #   run: python run_screener.py
+
+      # 5. 生成靜態網站
+      - name: Generate static site
+        run: python generate_site.py
+
+      # 6. 把 docs/ 推回 repo，GitHub Pages 自動更新
+      - name: Commit & push docs
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/
+          git diff --cached --quiet || git commit -m "Auto update: $(date '+%Y-%m-%d')"
+          git push

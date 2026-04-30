@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-04-29 — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#3fb950}
+.neg{color:#f85149}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#3fb950;font-size:12px}
+.price-stop{color:#f85149;font-size:12px}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="daily.html" class="tab active">今日選股</a>
+<a href="history.html" class="tab">歷史報告</a>
+
+</nav>
+<div class="container"><div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div><div class="page-title">2026-04-29</div><div class="page-sub">Quant Screener &middot; FinMind &middot; Foreign Capital Weighted Score</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#3fb950">11</div>
+    <div style="font-size:11px;color:#6e7681">健康整理 🟢</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#d2a520">9</div>
+    <div style="font-size:11px;color:#6e7681">強勢追漲 🟡</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#f85149">0</div>
+    <div style="font-size:11px;color:#6e7681">短線超買 🔴</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#58a6ff">20</div>
+    <div style="font-size:11px;color:#6e7681">精選總數</div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-label">📰 大盤市況</div>
+  <div class="market-text">台股加權指數收盤 **39,521 點**，維持多頭格局。外資 4/27 大買超前五名：南亞科(2408) +36,559張、旺宏(2337) +29,694張、鴻海(2317) +19,579張，資金持續流向記憶體與AI供應鏈。2026年高盛重申看好台積電、鴻海、緯創等25檔台廠，AI半導體、散熱、光收發模組、PCB族群仍是外資主要加碼方向。整體市場情緒偏多，惟指數高位需留意短線震盪。</div>
+</div>
+<div class="card">
+  <div class="section-label">🔍 篩選流程</div>
+  
+</div><div class="card"><div class="section-label">Top 20</div><div style="font-size:12px;color:#6e7681;margin-bottom:14px">&#x1F7E2; Health | &#x1F7E1; Strong | &#x1F534; Overbought</div><div style="overflow-x:auto">
+<table class="stock-table">
+<thead><tr>
+  <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
+  <th>近6週漲幅</th><th>RSI</th><th>%B</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
+  <th>評分</th><th>進場/目標/停損</th>
+</tr></thead>
+<tbody>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#1</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6434</div>
+    <div style="color:#8b949e;font-size:12px">達輝光電</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">26.0</td>
+  <td class="pos" style="font-weight:600">35.12%</td>
+  <td style="color:#8b949e">63.2</td>
+  <td style="color:#8b949e">74.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">53,546 張</td>
+  <td class="hide-mobile" style="color:#8b949e">0 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">200.0</span></td>
+  <td>
+    <div class="price-entry">📌 26.87</div>
+    <div class="price-target">🎯 39.22</div>
+    <div class="price-stop">🛑 6.37</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#2</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6213</div>
+    <div style="color:#8b949e;font-size:12px">聯茂</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">253.5</td>
+  <td class="pos" style="font-weight:600">10.64%</td>
+  <td style="color:#8b949e">62.4</td>
+  <td style="color:#8b949e">63.3%</td>
+  <td class="hide-mobile" style="color:#8b949e">86,376 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+5,704 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">190.0</span></td>
+  <td>
+    <div class="price-entry">📌 269.1</div>
+    <div class="price-target">🎯 318.24</div>
+    <div class="price-stop">🛑 139.8</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#3</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">3714</div>
+    <div style="color:#8b949e;font-size:12px">富采</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">71.3</td>
+  <td class="pos" style="font-weight:600">8.47%</td>
+  <td style="color:#8b949e">63.1</td>
+  <td style="color:#8b949e">70.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">65,144 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+4,556 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">180.0</span></td>
+  <td>
+    <div class="price-entry">📌 68.18</div>
+    <div class="price-target">🎯 82.11</div>
+    <div class="price-stop">🛑 45.22</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#4</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">8358</div>
+    <div style="color:#8b949e;font-size:12px">金居</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">362.0</td>
+  <td class="pos" style="font-weight:600">7.56%</td>
+  <td style="color:#8b949e">62.0</td>
+  <td style="color:#8b949e">70.5%</td>
+  <td class="hide-mobile" style="color:#8b949e">53,365 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+6,645 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">170.0</span></td>
+  <td>
+    <div class="price-entry">📌 358.64</div>
+    <div class="price-target">🎯 424.32</div>
+    <div class="price-stop">🛑 222.88</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">3105</div>
+    <div style="color:#8b949e;font-size:12px">穩懋</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">499.5</td>
+  <td class="pos" style="font-weight:600">6.98%</td>
+  <td style="color:#8b949e">56.8</td>
+  <td style="color:#8b949e">57.1%</td>
+  <td class="hide-mobile" style="color:#8b949e">193,241 張</td>
+  <td class="hide-mobile" style="color:#f85149">-3,059 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">160.0</span></td>
+  <td>
+    <div class="price-entry">📌 531.7</div>
+    <div class="price-target">🎯 649.74</div>
+    <div class="price-stop">🛑 338.3</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">3673</div>
+    <div style="color:#8b949e;font-size:12px">TPK-KY</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">60.1</td>
+  <td class="pos" style="font-weight:600">6.19%</td>
+  <td style="color:#8b949e">57.5</td>
+  <td style="color:#8b949e">57.0%</td>
+  <td class="hide-mobile" style="color:#8b949e">77,051 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+5,405 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">150.0</span></td>
+  <td>
+    <div class="price-entry">📌 60.28</div>
+    <div class="price-target">🎯 76.7</div>
+    <div class="price-stop">🛑 42.98</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">2455</div>
+    <div style="color:#8b949e;font-size:12px">全新</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">318.0</td>
+  <td class="pos" style="font-weight:600">6.0%</td>
+  <td style="color:#8b949e">57.8</td>
+  <td style="color:#8b949e">63.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">48,748 張</td>
+  <td class="hide-mobile" style="color:#f85149">-2,761 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">140.0</span></td>
+  <td>
+    <div class="price-entry">📌 332.14</div>
+    <div class="price-target">🎯 391.68</div>
+    <div class="price-stop">🛑 245.27</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">2402</div>
+    <div style="color:#8b949e;font-size:12px">毅嘉</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">69.5</td>
+  <td class="pos" style="font-weight:600">5.95%</td>
+  <td style="color:#8b949e">59.4</td>
+  <td style="color:#8b949e">60.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">112,629 張</td>
+  <td class="hide-mobile" style="color:#f85149">-2,759 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">130.0</span></td>
+  <td>
+    <div class="price-entry">📌 70.53</div>
+    <div class="price-target">🎯 86.7</div>
+    <div class="price-stop">🛑 48.61</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6257</div>
+    <div style="color:#8b949e;font-size:12px">矽格</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">180.5</td>
+  <td class="pos" style="font-weight:600">5.47%</td>
+  <td style="color:#8b949e">63.1</td>
+  <td style="color:#8b949e">65.1%</td>
+  <td class="hide-mobile" style="color:#8b949e">89,142 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+7,059 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">120.0</span></td>
+  <td>
+    <div class="price-entry">📌 179.47</div>
+    <div class="price-target">🎯 197.88</div>
+    <div class="price-stop">🛑 136.81</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">5439</div>
+    <div style="color:#8b949e;font-size:12px">高技</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">401.0</td>
+  <td class="pos" style="font-weight:600">5.34%</td>
+  <td style="color:#8b949e">61.6</td>
+  <td style="color:#8b949e">70.8%</td>
+  <td class="hide-mobile" style="color:#8b949e">46,942 張</td>
+  <td class="hide-mobile" style="color:#f85149">-2,302 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">110.0</span></td>
+  <td>
+    <div class="price-entry">📌 381.29</div>
+    <div class="price-target">🎯 472.77</div>
+    <div class="price-stop">🛑 266.66</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">3264</div>
+    <div style="color:#8b949e;font-size:12px">欣銓</div>
+  </td>
+  <td><span class="badge badge-green">健康整理</span></td>
+  <td class="price-main">198.5</td>
+  <td class="pos" style="font-weight:600">5.14%</td>
+  <td style="color:#8b949e">58.9</td>
+  <td style="color:#8b949e">72.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">105,881 張</td>
+  <td class="hide-mobile" style="color:#f85149">-367 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">📌 198.97</div>
+    <div class="price-target">🎯 225.93</div>
+    <div class="price-stop">🛑 145.27</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6920</div>
+    <div style="color:#8b949e;font-size:12px">恆勁科技</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">104.5</td>
+  <td class="pos" style="font-weight:600">18.36%</td>
+  <td style="color:#8b949e">71.5</td>
+  <td style="color:#8b949e">81.0%</td>
+  <td class="hide-mobile" style="color:#8b949e">47,436 張</td>
+  <td class="hide-mobile" style="color:#8b949e">0 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">📌 101.91</div>
+    <div class="price-target">🎯 133.11</div>
+    <div class="price-stop">🛑 36.96</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6147</div>
+    <div style="color:#8b949e;font-size:12px">頎邦</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">144.0</td>
+  <td class="pos" style="font-weight:600">14.01%</td>
+  <td style="color:#8b949e">70.2</td>
+  <td style="color:#8b949e">84.8%</td>
+  <td class="hide-mobile" style="color:#8b949e">85,773 張</td>
+  <td class="hide-mobile" style="color:#f85149">-2,392 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">80.0</span></td>
+  <td>
+    <div class="price-entry">📌 137.01</div>
+    <div class="price-target">🎯 154.53</div>
+    <div class="price-stop">🛑 68.85</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">1785</div>
+    <div style="color:#8b949e;font-size:12px">光洋科</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">163.5</td>
+  <td class="pos" style="font-weight:600">10.66%</td>
+  <td style="color:#8b949e">77.2</td>
+  <td style="color:#8b949e">82.9%</td>
+  <td class="hide-mobile" style="color:#8b949e">54,364 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+3,121 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
+  <td>
+    <div class="price-entry">📌 149.62</div>
+    <div class="price-target">🎯 166.77</div>
+    <div class="price-stop">🛑 86.66</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">4960</div>
+    <div style="color:#8b949e;font-size:12px">誠美材</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">39.8</td>
+  <td class="pos" style="font-weight:600">9.81%</td>
+  <td style="color:#8b949e">67.6</td>
+  <td style="color:#8b949e">79.0%</td>
+  <td class="hide-mobile" style="color:#8b949e">45,101 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+1,955 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">60.0</span></td>
+  <td>
+    <div class="price-entry">📌 39.83</div>
+    <div class="price-target">🎯 48.96</div>
+    <div class="price-stop">🛑 19.5</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#16</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">8046</div>
+    <div style="color:#8b949e;font-size:12px">南電</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">932.0</td>
+  <td class="pos" style="font-weight:600">9.71%</td>
+  <td style="color:#8b949e">82.4</td>
+  <td style="color:#8b949e">97.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">124,088 張</td>
+  <td class="hide-mobile" style="color:#f85149">-1,466 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">50.0</span></td>
+  <td>
+    <div class="price-entry">📌 850.45</div>
+    <div class="price-target">🎯 996.54</div>
+    <div class="price-stop">🛑 519.39</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#17</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6672</div>
+    <div style="color:#8b949e;font-size:12px">騰輝電子-KY</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">207.5</td>
+  <td class="pos" style="font-weight:600">9.46%</td>
+  <td style="color:#8b949e">76.7</td>
+  <td style="color:#8b949e">86.2%</td>
+  <td class="hide-mobile" style="color:#8b949e">68,584 張</td>
+  <td class="hide-mobile" style="color:#f85149">-528 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.0</span></td>
+  <td>
+    <div class="price-entry">📌 201.53</div>
+    <div class="price-target">🎯 230.52</div>
+    <div class="price-stop">🛑 121.89</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#18</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6789</div>
+    <div style="color:#8b949e;font-size:12px">采鈺</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">562.0</td>
+  <td class="pos" style="font-weight:600">9.3%</td>
+  <td style="color:#8b949e">81.1</td>
+  <td style="color:#8b949e">90.3%</td>
+  <td class="hide-mobile" style="color:#8b949e">87,246 張</td>
+  <td class="hide-mobile" style="color:#f85149">-4,395 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">30.0</span></td>
+  <td>
+    <div class="price-entry">📌 529.83</div>
+    <div class="price-target">🎯 604.86</div>
+    <div class="price-stop">🛑 298.0</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#19</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">2351</div>
+    <div style="color:#8b949e;font-size:12px">順德</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">146.5</td>
+  <td class="pos" style="font-weight:600">8.5%</td>
+  <td style="color:#8b949e">66.6</td>
+  <td style="color:#8b949e">74.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">79,140 張</td>
+  <td class="hide-mobile" style="color:#3fb950">+21 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">20.0</span></td>
+  <td>
+    <div class="price-entry">📌 149.03</div>
+    <div class="price-target">🎯 175.95</div>
+    <div class="price-stop">🛑 93.83</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#20</span></td>
+  <td>
+    <div style="font-weight:700;font-size:14px">6234</div>
+    <div style="color:#8b949e;font-size:12px">高僑</div>
+  </td>
+  <td><span class="badge badge-yellow">強勢追漲</span></td>
+  <td class="price-main">43.7</td>
+  <td class="pos" style="font-weight:600">7.9%</td>
+  <td style="color:#8b949e">78.7</td>
+  <td style="color:#8b949e">92.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">66,648 張</td>
+  <td class="hide-mobile" style="color:#f85149">-925 張</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">10.0</span></td>
+  <td>
+    <div class="price-entry">📌 41.93</div>
+    <div class="price-target">🎯 49.01</div>
+    <div class="price-stop">🛑 27.46</div>
+  </td>
+</tr></tbody>
+</table>
+</div></div><div class="card"><div class="section-label">Operation Notes</div><ul class="notes-list"><li><strong>不追高原則：</strong>強勢追漲中（🟡）標的請等待回測 MA5 或進場參考價，切勿追漲殺入</li>
+<li><strong>籌碼最乾淨標的：</strong>- **8358 金居**：外資4月淨買+16,921張，近5日持續加碼+6,645張 ✅    - **4960 誠美材**：外資4月淨買+23,670張，連買6天 ✅    - **3673 TPK-KY**：外資4月淨買+9,148張，近5日+5,406張 ✅    - **6257 矽格**：外資近5日大買+7,060張 ✅</li>
+<li><strong>停損紀律：</strong>每筆交易嚴守停損價，單筆虧損不超過本金 2%</li>
+<li><strong>週線為主、日線為輔：</strong>所有標的週線均多排確認，趨勢明確</li>
+<li><strong>高動能注意：</strong>6434 達輝光電 近6週均漲35.12%，屬於高動能個股，波動極大，僅適合積極型投資人，嚴控倉位</li></ul></div></div>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>

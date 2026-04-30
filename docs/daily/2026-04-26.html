@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-04-26 — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#3fb950}
+.neg{color:#f85149}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#3fb950;font-size:12px}
+.price-stop{color:#f85149;font-size:12px}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="daily.html" class="tab active">今日選股</a>
+<a href="history.html" class="tab">歷史報告</a>
+
+</nav>
+<div class="container"><div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div><div class="page-title">2026-04-26</div><div class="page-sub">Quant Screener &middot; FinMind &middot; Foreign Capital Weighted Score</div>
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#3fb950">0</div>
+    <div style="font-size:11px;color:#6e7681">健康整理 🟢</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#d2a520">0</div>
+    <div style="font-size:11px;color:#6e7681">強勢追漲 🟡</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#f85149">0</div>
+    <div style="font-size:11px;color:#6e7681">短線超買 🔴</div>
+  </div>
+  <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
+    <div style="font-size:24px;font-weight:800;color:#58a6ff">0</div>
+    <div style="font-size:11px;color:#6e7681">精選總數</div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-label">📰 大盤市況</div>
+  <div class="market-text">2026-04-24（週四）台股加權指數收 **38,932 點**，單日大漲 **+1,218 點（+3.23%）**，成交金額達 1,034 億元，為近期最強勁的反彈行情。大盤由 37,862 開高後持續走強，收在盤中高點附近（38,989），市場信心明顯回升。當週市場主軸圍繞 **記憶體（南亞科 DDR4 報價暴漲）、矽光子/CPO（日月光宣示商業化）、高階 PCB/CCL**，以及 **AI/半導體先進封裝**，外資持續加碼台積電、鴻海、世芯-KY 等核心持股。整體環境適合趁拉回均線時佈局強勢族群。</div>
+</div>
+<div class="card">
+  <div class="section-label">🔍 篩選流程</div>
+  
+</div><div class="card"><div class="section-label">Top 20</div><div style="font-size:12px;color:#6e7681;margin-bottom:14px">&#x1F7E2; Health | &#x1F7E1; Strong | &#x1F534; Overbought</div><div style="overflow-x:auto">
+<table class="stock-table">
+<thead><tr>
+  <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
+  <th>近6週漲幅</th><th>RSI</th><th>%B</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
+  <th>評分</th><th>進場/目標/停損</th>
+</tr></thead>
+<tbody></tbody>
+</table>
+</div></div><div class="card"><div class="section-label">Operation Notes</div><ul class="notes-list"><li><strong>不追高：</strong>等股價回測 MA5 或 MA21 後再進場，切勿追漲買在高點</li>
+<li><strong>籌碼優先：</strong>外資連續買超 ≥ 3 天、外資本月淨買正值者，勝率更高</li>
+<li><strong>嚴格停損：</strong>跌破支撐×0.995 立即出場，不等、不補、不翻倉</li>
+<li><strong>周線架構：</strong>WMA5 > WMA21 > WMA89 是主趨勢，只做多、不做空</li>
+<li><strong>分批進場：</strong>可分 1/2 + 1/2，第一筆買回測點，第二筆確認站穩後加碼  > 本報告由量化系統自動生成，僅供參考，不構成投資建議。投資有風險，請自行評估。</li></ul></div></div>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>
