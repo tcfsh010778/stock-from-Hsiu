@@ -68,6 +68,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
 .linked-holding-panel{margin-top:14px;padding-top:12px;border-top:1px solid #30363d}
 .linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
+.chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
@@ -217,20 +219,24 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 
   <div class="card">
-    <div class="section-label">籌碼 / 股權分配</div>
+    <div class="section-label">10 日籌碼動向折射圖</div>
     
 <div class="info-grid">
   <div class="info-cell"><div class="k">法人日期</div><div class="v">─</div></div>
   <div class="info-cell"><div class="k">外資買賣超</div><div class="v pos">─張</div></div>
   <div class="info-cell"><div class="k">投信買賣超</div><div class="v pos">─張</div></div>
-  <div class="info-cell"><div class="k">三大法人5日</div><div class="v pos">─張</div></div>
-  <div class="info-cell"><div class="k">股權日期</div><div class="v">2026-04-30</div></div>
-  <div class="info-cell"><div class="k">大戶&gt;1000張</div><div class="v">84.01%</div></div>
-  <div class="info-cell"><div class="k">大戶週變化</div><div class="v neg">-0.29%</div></div>
-  <div class="info-cell"><div class="k">總股東變化</div><div class="v neg">594人</div></div>
+  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">主力當日合計</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">外資5日</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">投信5日</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">主力5日合計</div><div class="v pos">─張</div></div>
 </div>
+    <div class="chart-stack">
+      <div class="chart-box"><div class="strategy-note">籌碼資料不足，暫時無法形成 10 日籌碼動向圖。</div></div>
+      <div class="chart-box"><div class="strategy-note">籌碼或收盤價資料不足，暫時無法形成主力與收盤價關係圖。</div></div>
+    </div>
     <div class="strategy-note" style="margin-top:12px">
-      大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
+      外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
     </div>
   </div>
 
@@ -298,13 +304,14 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
       <div class="linked-holding-panel">
         <div class="linked-holding-title">股權分配連動</div>
+        <div class="holding-stats"><div class="info-cell"><div class="k">大戶持股比例</div><div class="v">84.01%</div></div><div class="info-cell"><div class="k">散戶持股比例</div><div class="v">4.98%</div></div><div class="info-cell"><div class="k">總股東人數</div><div class="v">10072人</div></div></div>
         <div id="holding-chart-6434" class="hover-chart">
 <svg viewBox="0 0 900 240" width="100%" role="img" aria-label="股權分配折線圖">
   <rect x="0" y="0" width="900" height="240" fill="#0d1117"/>
-  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">85.2%</text><line x1="50" y1="65.5" x2="882" y2="65.5" stroke="#21262d"/><text x="4" y="69.5" fill="#6e7681" font-size="11">64.2%</text><line x1="50" y1="113.0" x2="882" y2="113.0" stroke="#21262d"/><text x="4" y="117.0" fill="#6e7681" font-size="11">43.2%</text><line x1="50" y1="160.5" x2="882" y2="160.5" stroke="#21262d"/><text x="4" y="164.5" fill="#6e7681" font-size="11">22.2%</text><line x1="50" y1="208.0" x2="882" y2="208.0" stroke="#21262d"/><text x="4" y="212.0" fill="#6e7681" font-size="11">1.2%</text>
-  <polyline fill="none" stroke="#f85149" stroke-width="2.1" points="50.0,18.2 66.0,18.2 82.0,18.2 98.0,18.1 114.0,18.1 130.0,18.1 146.0,18.1 162.0,18.1 178.0,18.1 194.0,18.1 210.0,18.1 226.0,18.1 242.0,18.0 258.0,18.0 274.0,18.0 290.0,18.0 306.0,18.0 322.0,18.0 338.0,18.0 354.0,18.0 370.0,18.1 386.0,18.1 402.0,18.2 418.0,18.7 434.0,18.7 450.0,18.7 466.0,18.7 482.0,18.7 498.0,18.7 514.0,18.8 530.0,18.8 546.0,18.8 562.0,18.8 578.0,18.8 594.0,18.8 610.0,18.8 626.0,18.8 642.0,18.8 658.0,18.8 674.0,18.8 690.0,20.4 706.0,20.4 722.0,20.4 738.0,20.4 754.0,20.4 770.0,19.8 786.0,19.8 802.0,18.9 818.0,18.9 834.0,18.9 850.0,19.3 866.0,19.9 882.0,20.6" /><polyline fill="none" stroke="#d2a520" stroke-width="2.1" points="50.0,204.0 66.0,204.0 82.0,203.8 98.0,203.9 114.0,203.9 130.0,203.9 146.0,204.0 162.0,204.0 178.0,204.0 194.0,204.0 210.0,204.0 226.0,204.0 242.0,204.0 258.0,203.9 274.0,203.7 290.0,203.7 306.0,204.0 322.0,204.7 338.0,204.9 354.0,204.9 370.0,205.8 386.0,206.3 402.0,206.1 418.0,205.5 434.0,205.5 450.0,205.4 466.0,205.4 482.0,205.3 498.0,205.5 514.0,205.5 530.0,205.5 546.0,205.5 562.0,205.5 578.0,205.5 594.0,205.2 610.0,205.2 626.0,205.2 642.0,205.1 658.0,205.1 674.0,205.1 690.0,205.4 706.0,205.0 722.0,205.0 738.0,205.1 754.0,205.4 770.0,205.8 786.0,205.8 802.0,205.9 818.0,206.0 834.0,205.8 850.0,205.0 866.0,207.2 882.0,208.0" /><polyline fill="none" stroke="#3fb950" stroke-width="2.1" points="50.0,207.2 66.0,207.2 82.0,207.3 98.0,207.3 114.0,207.3 130.0,207.3 146.0,207.3 162.0,207.3 178.0,207.3 194.0,207.4 210.0,207.4 226.0,207.4 242.0,207.4 258.0,207.4 274.0,207.4 290.0,207.4 306.0,207.4 322.0,207.3 338.0,207.1 354.0,207.1 370.0,206.1 386.0,205.9 402.0,205.6 418.0,205.7 434.0,205.6 450.0,205.7 466.0,205.7 482.0,205.7 498.0,205.8 514.0,205.8 530.0,205.8 546.0,205.8 562.0,205.9 578.0,205.9 594.0,205.9 610.0,205.9 626.0,205.9 642.0,206.0 658.0,206.0 674.0,206.0 690.0,202.9 706.0,203.0 722.0,203.2 738.0,203.5 754.0,203.4 770.0,203.6 786.0,203.5 802.0,203.5 818.0,203.5 834.0,203.6 850.0,203.5 866.0,200.1 882.0,199.4" />
+  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">85.2%</text><text x="848" y="22.0" fill="#6e7681" font-size="11">10k</text><line x1="50" y1="65.5" x2="882" y2="65.5" stroke="#21262d"/><text x="4" y="69.5" fill="#6e7681" font-size="11">64.2%</text><text x="848" y="69.5" fill="#6e7681" font-size="11">8k</text><line x1="50" y1="113.0" x2="882" y2="113.0" stroke="#21262d"/><text x="4" y="117.0" fill="#6e7681" font-size="11">43.2%</text><text x="848" y="117.0" fill="#6e7681" font-size="11">6k</text><line x1="50" y1="160.5" x2="882" y2="160.5" stroke="#21262d"/><text x="4" y="164.5" fill="#6e7681" font-size="11">22.2%</text><text x="848" y="164.5" fill="#6e7681" font-size="11">4k</text><line x1="50" y1="208.0" x2="882" y2="208.0" stroke="#21262d"/><text x="4" y="212.0" fill="#6e7681" font-size="11">1.2%</text><text x="848" y="212.0" fill="#6e7681" font-size="11">3k</text>
+  <polyline fill="none" stroke="#f85149" stroke-width="2.1" points="50.0,18.2 66.0,18.2 82.0,18.2 98.0,18.1 114.0,18.1 130.0,18.1 146.0,18.1 162.0,18.1 178.0,18.1 194.0,18.1 210.0,18.1 226.0,18.1 242.0,18.0 258.0,18.0 274.0,18.0 290.0,18.0 306.0,18.0 322.0,18.0 338.0,18.0 354.0,18.0 370.0,18.1 386.0,18.1 402.0,18.2 418.0,18.7 434.0,18.7 450.0,18.7 466.0,18.7 482.0,18.7 498.0,18.7 514.0,18.8 530.0,18.8 546.0,18.8 562.0,18.8 578.0,18.8 594.0,18.8 610.0,18.8 626.0,18.8 642.0,18.8 658.0,18.8 674.0,18.8 690.0,20.4 706.0,20.4 722.0,20.4 738.0,20.4 754.0,20.4 770.0,19.8 786.0,19.8 802.0,18.9 818.0,18.9 834.0,18.9 850.0,19.3 866.0,19.9 882.0,20.6" /><polyline fill="none" stroke="#d2a520" stroke-width="2.1" points="50.0,204.0 66.0,204.0 82.0,203.8 98.0,203.9 114.0,203.9 130.0,203.9 146.0,204.0 162.0,204.0 178.0,204.0 194.0,204.0 210.0,204.0 226.0,204.0 242.0,204.0 258.0,203.9 274.0,203.7 290.0,203.7 306.0,204.0 322.0,204.7 338.0,204.9 354.0,204.9 370.0,205.8 386.0,206.3 402.0,206.1 418.0,205.5 434.0,205.5 450.0,205.4 466.0,205.4 482.0,205.3 498.0,205.5 514.0,205.5 530.0,205.5 546.0,205.5 562.0,205.5 578.0,205.5 594.0,205.2 610.0,205.2 626.0,205.2 642.0,205.1 658.0,205.1 674.0,205.1 690.0,205.4 706.0,205.0 722.0,205.0 738.0,205.1 754.0,205.4 770.0,205.8 786.0,205.8 802.0,205.9 818.0,206.0 834.0,205.8 850.0,205.0 866.0,207.2 882.0,208.0" /><polyline fill="none" stroke="#3fb950" stroke-width="2.1" points="50.0,207.2 66.0,207.2 82.0,207.3 98.0,207.3 114.0,207.3 130.0,207.3 146.0,207.3 162.0,207.3 178.0,207.3 194.0,207.4 210.0,207.4 226.0,207.4 242.0,207.4 258.0,207.4 274.0,207.4 290.0,207.4 306.0,207.4 322.0,207.3 338.0,207.1 354.0,207.1 370.0,206.1 386.0,205.9 402.0,205.6 418.0,205.7 434.0,205.6 450.0,205.7 466.0,205.7 482.0,205.7 498.0,205.8 514.0,205.8 530.0,205.8 546.0,205.8 562.0,205.9 578.0,205.9 594.0,205.9 610.0,205.9 626.0,205.9 642.0,206.0 658.0,206.0 674.0,206.0 690.0,202.9 706.0,203.0 722.0,203.2 738.0,203.5 754.0,203.4 770.0,203.6 786.0,203.5 802.0,203.5 818.0,203.5 834.0,203.6 850.0,203.5 866.0,200.1 882.0,199.4" /><polyline fill="none" stroke="#58a6ff" stroke-width="1.8" stroke-dasharray="5 4" points="50.0,206.3 66.0,206.2 82.0,206.8 98.0,206.6 114.0,206.7 130.0,206.8 146.0,206.9 162.0,207.2 178.0,207.3 194.0,207.8 210.0,208.0 226.0,207.8 242.0,207.6 258.0,207.5 274.0,207.5 290.0,207.5 306.0,207.4 322.0,204.7 338.0,201.3 354.0,201.6 370.0,182.7 386.0,178.0 402.0,176.1 418.0,176.3 434.0,177.0 450.0,178.2 466.0,180.1 482.0,180.6 498.0,180.8 514.0,180.7 530.0,181.1 546.0,181.6 562.0,182.5 578.0,182.6 594.0,183.3 610.0,183.4 626.0,183.6 642.0,183.7 658.0,184.1 674.0,184.6 690.0,113.7 706.0,119.2 722.0,123.5 738.0,127.6 754.0,128.6 770.0,132.3 786.0,133.0 802.0,131.6 818.0,131.9 834.0,134.5 850.0,133.1 866.0,33.1 882.0,18.0" />
   <text x="50" y="14" fill="#e6edf3" font-size="12">股權分配折線圖 ｜ 2026-04-30</text>
-  <text x="580" y="14" fill="#f85149" font-size="11">大戶>1000張</text><text x="685" y="14" fill="#d2a520" font-size="11">400~1000張</text><text x="790" y="14" fill="#3fb950" font-size="11">散戶<1萬股</text>
+  <text x="490" y="14" fill="#f85149" font-size="11">大戶>1000張</text><text x="595" y="14" fill="#d2a520" font-size="11">400~1000張</text><text x="700" y="14" fill="#3fb950" font-size="11">散戶<1萬股</text><text x="815" y="14" fill="#58a6ff" font-size="11">總股東</text>
   <text x="50" y="232" fill="#6e7681" font-size="11">2025-04-25</text>
   <text x="788" y="232" fill="#6e7681" font-size="11">2026-04-30</text>
 </svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>

@@ -360,6 +360,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
 .linked-holding-panel{margin-top:14px;padding-top:12px;border-top:1px solid #30363d}
 .linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
+.chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
@@ -813,6 +815,29 @@ def read_chip_summary(stock_id: str) -> dict:
     return {"date": dates[-1], "latest": latest, "sum5": sum5}
 
 
+def read_chip_series(stock_id: str) -> list[dict]:
+    rows = read_csv_rows(LOCAL_CHIP_DIR / f"{stock_id}.csv", V44_CHIP_DIR / f"{stock_id}.csv")
+    if not rows:
+        return []
+    by_date: dict[str, dict] = {}
+    for r in rows:
+        date = r.get("date", "")
+        name = r.get("name", "")
+        try:
+            net = (float(r.get("buy") or 0) - float(r.get("sell") or 0)) / 1000
+        except Exception:
+            continue
+        d = by_date.setdefault(date, {"date": date, "foreign": 0.0, "trust": 0.0, "dealer": 0.0, "total": 0.0})
+        if "Foreign" in name:
+            d["foreign"] += net
+        elif "Investment_Trust" in name:
+            d["trust"] += net
+        elif "Dealer" in name:
+            d["dealer"] += net
+        d["total"] += net
+    return [by_date[d] for d in sorted(by_date)]
+
+
 def _holding_group(level: str) -> str:
     text = str(level)
     if text in {"total", "差異數調整（說明4）"}:
@@ -1203,21 +1228,32 @@ def holding_line_svg(series: list[dict], title: str = "股權分配趨勢") -> s
     pad_l, pad_r, pad_t, pad_b = 50, 18, 18, 32
     keys = [("major", "大戶>1000張", "#f85149"), ("large", "400~1000張", "#d2a520"), ("retail", "散戶<1萬股", "#3fb950")]
     values = [float(x.get(k, 0) or 0) for x in series for k, _, _ in keys]
+    people_values = [float(x.get("total_people", 0) or 0) for x in series if x.get("total_people") is not None]
     lo, hi = min(values), max(values)
     if hi == lo:
         hi += 1
         lo -= 1
+    p_lo, p_hi = (min(people_values), max(people_values)) if people_values else (0, 1)
+    if p_hi == p_lo:
+        p_hi += 1
+        p_lo -= 1
 
     def xy(idx, val):
         x = pad_l + idx * (w - pad_l - pad_r) / (len(series) - 1)
         y = pad_t + (hi - val) * (h - pad_t - pad_b) / (hi - lo)
         return x, y
 
+    def y_people(val):
+        return pad_t + (p_hi - val) * (h - pad_t - pad_b) / (p_hi - p_lo)
+
     grid = ""
     for pct in [0, .25, .5, .75, 1]:
         y = pad_t + pct * (h - pad_t - pad_b)
         v = hi - pct * (hi - lo)
         grid += f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-pad_r}" y2="{y:.1f}" stroke="#21262d"/><text x="4" y="{y+4:.1f}" fill="#6e7681" font-size="11">{v:.1f}%</text>'
+        if people_values:
+            pv = p_hi - pct * (p_hi - p_lo)
+            grid += f'<text x="{w-52}" y="{y+4:.1f}" fill="#6e7681" font-size="11">{pv/1000:.0f}k</text>'
 
     lines = ""
     for key, label, color in keys:
@@ -1226,12 +1262,22 @@ def holding_line_svg(series: list[dict], title: str = "股權分配趨勢") -> s
             x, y = xy(i, float(item.get(key, 0) or 0))
             pts.append(f"{x:.1f},{y:.1f}")
         lines += f'<polyline fill="none" stroke="{color}" stroke-width="2.1" points="{" ".join(pts)}" />'
+    if people_values:
+        pts = []
+        for i, item in enumerate(series):
+            if item.get("total_people") is None:
+                continue
+            x = pad_l + i * (w - pad_l - pad_r) / (len(series) - 1)
+            pts.append(f"{x:.1f},{y_people(float(item.get('total_people') or 0)):.1f}")
+        if pts:
+            lines += f'<polyline fill="none" stroke="#58a6ff" stroke-width="1.8" stroke-dasharray="5 4" points="{" ".join(pts)}" />'
 
     latest = series[-1]
     legend = ""
-    x0 = w - 320
+    x0 = w - 410
     for idx, (key, label, color) in enumerate(keys):
         legend += f'<text x="{x0 + idx*105}" y="14" fill="{color}" font-size="11">{label}</text>'
+    legend += f'<text x="{w-85}" y="14" fill="#58a6ff" font-size="11">總股東</text>'
     return f"""
 <svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
   <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
@@ -1241,6 +1287,129 @@ def holding_line_svg(series: list[dict], title: str = "股權分配趨勢") -> s
   {legend}
   <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(series[0].get('date',''))}</text>
   <text x="{w-112}" y="{h-8}" fill="#6e7681" font-size="11">{esc(latest.get('date',''))}</text>
+</svg>"""
+
+
+def chip_flow_svg(series: list[dict], title: str = "10日籌碼動向折線圖") -> str:
+    series = series[-10:]
+    if len(series) < 2:
+        return '<div class="strategy-note">籌碼資料不足，暫時無法形成 10 日籌碼動向圖。</div>'
+    w, h = 900, 260
+    pad_l, pad_r, pad_t, pad_b = 54, 18, 24, 36
+    plot_h = h - pad_t - pad_b
+    keys = [("foreign", "外資", "#58a6ff"), ("trust", "投信", "#d2a520"), ("dealer", "自營商", "#f85149")]
+    max_abs = max(abs(float(item.get(k, 0) or 0)) for item in series for k, _, _ in keys) or 1
+    max_abs *= 1.15
+    zero_y = pad_t + plot_h / 2
+
+    def y(v):
+        return zero_y - float(v) * (plot_h / 2) / max_abs
+
+    grid = f'<line x1="{pad_l}" y1="{zero_y:.1f}" x2="{w-pad_r}" y2="{zero_y:.1f}" stroke="#8b949e" stroke-width="1"/>'
+    for v in [max_abs, max_abs / 2, -max_abs / 2, -max_abs]:
+        yy = y(v)
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="11">{v:.0f}</text>'
+
+    group_w = (w - pad_l - pad_r) / len(series)
+    bar_w = max(6, min(18, group_w / 5))
+    bars = ""
+    labels = ""
+    for i, item in enumerate(series):
+        cx = pad_l + group_w * (i + 0.5)
+        for j, (key, _, color) in enumerate(keys):
+            v = float(item.get(key, 0) or 0)
+            x = cx + (j - 1) * (bar_w + 2) - bar_w / 2
+            yy = y(v)
+            top = min(yy, zero_y)
+            bh = max(abs(zero_y - yy), 1.5)
+            bars += f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{color}" opacity=".82"/>'
+        if i in {0, len(series) - 1}:
+            labels += f'<text x="{cx-32:.1f}" y="{h-10}" fill="#6e7681" font-size="11">{esc(item.get("date",""))}</text>'
+
+    legend = ""
+    for i, (_, label, color) in enumerate(keys):
+        legend += f'<text x="{w-210+i*65}" y="16" fill="{color}" font-size="11">{label}</text>'
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {bars}
+  <text x="{pad_l}" y="16" fill="#e6edf3" font-size="12">{esc(title)}（張）</text>
+  {legend}
+  {labels}
+</svg>"""
+
+
+def main_force_price_svg(chip_series: list[dict], price_rows: list[dict], title: str = "主力增減張數與收盤價關係") -> str:
+    chip_series = chip_series[-30:]
+    if len(chip_series) < 2 or len(price_rows) < 2:
+        return '<div class="strategy-note">籌碼或收盤價資料不足，暫時無法形成主力與收盤價關係圖。</div>'
+    close_by_date = {r.get("date"): r.get("close") for r in price_rows}
+    rows = []
+    last_close = None
+    for item in chip_series:
+        close = close_by_date.get(item.get("date"))
+        if close is not None:
+            last_close = close
+        rows.append({**item, "close": last_close})
+    rows = [r for r in rows if r.get("close") is not None]
+    if len(rows) < 2:
+        return '<div class="strategy-note">籌碼日期尚未對齊收盤價，暫時無法形成主力與收盤價關係圖。</div>'
+
+    w, h = 900, 280
+    pad_l, pad_r, pad_t, pad_b = 54, 54, 24, 36
+    plot_h = h - pad_t - pad_b
+    net_vals = [float(r.get("total", 0) or 0) for r in rows]
+    closes = [float(r.get("close", 0) or 0) for r in rows]
+    max_abs = max(abs(v) for v in net_vals) or 1
+    max_abs *= 1.15
+    lo, hi = min(closes), max(closes)
+    if hi == lo:
+        hi += 1
+        lo -= 1
+    zero_y = pad_t + plot_h / 2
+
+    def x(i):
+        return pad_l + i * (w - pad_l - pad_r) / (len(rows) - 1)
+
+    def y_net(v):
+        return zero_y - float(v) * (plot_h / 2) / max_abs
+
+    def y_close(v):
+        return pad_t + (hi - float(v)) * plot_h / (hi - lo)
+
+    grid = f'<line x1="{pad_l}" y1="{zero_y:.1f}" x2="{w-pad_r}" y2="{zero_y:.1f}" stroke="#8b949e" stroke-width="1"/>'
+    for pct in [0, .25, .5, .75, 1]:
+        yy = pad_t + pct * plot_h
+        price = hi - pct * (hi - lo)
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="{w-48}" y="{yy+4:.1f}" fill="#6e7681" font-size="11">{price:.1f}</text>'
+
+    step = (w - pad_l - pad_r) / max(len(rows), 1)
+    bar_w = max(3, min(10, step * 0.46))
+    bars = ""
+    points = []
+    for i, r in enumerate(rows):
+        v = float(r.get("total", 0) or 0)
+        xx = x(i)
+        yy = y_net(v)
+        top = min(yy, zero_y)
+        bh = max(abs(zero_y - yy), 1.5)
+        color = "#f85149" if v >= 0 else "#3fb950"
+        bars += f'<rect x="{xx-bar_w/2:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{color}" opacity=".55"/>'
+        points.append(f"{xx:.1f},{y_close(r['close']):.1f}")
+
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {bars}
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="{" ".join(points)}"/>
+  <text x="{pad_l}" y="16" fill="#e6edf3" font-size="12">{esc(title)}</text>
+  <text x="{w-245}" y="16" fill="#f85149" font-size="11">主力買超</text>
+  <text x="{w-175}" y="16" fill="#3fb950" font-size="11">主力賣超</text>
+  <text x="{w-105}" y="16" fill="#58a6ff" font-size="11">收盤價</text>
+  <text x="{pad_l}" y="{h-10}" fill="#6e7681" font-size="11">{esc(rows[0].get("date",""))}</text>
+  <text x="{w-112}" y="{h-10}" fill="#6e7681" font-size="11">{esc(rows[-1].get("date",""))}</text>
 </svg>"""
 
 
@@ -1472,24 +1641,16 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
         return '<div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>'
     chip_latest = chip.get("latest", {})
     chip_sum5 = chip.get("sum5", {})
-    h_latest = holding.get("latest", {})
-    h_prev = holding.get("prev", {})
-    major_delta = None
-    if h_latest and h_prev:
-        major_delta = h_latest.get("major", 0) - h_prev.get("major", 0)
-    people_delta = None
-    if h_latest.get("total_people") is not None and h_prev.get("total_people") is not None:
-        people_delta = h_latest.get("total_people") - h_prev.get("total_people")
     return f"""
 <div class="info-grid">
   <div class="info-cell"><div class="k">法人日期</div><div class="v">{esc(chip.get('date','─'))}</div></div>
   <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
   <div class="info-cell"><div class="k">投信買賣超</div><div class="v {('pos' if chip_latest.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('trust'),0)}張</div></div>
-  <div class="info-cell"><div class="k">三大法人5日</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
-  <div class="info-cell"><div class="k">股權日期</div><div class="v">{esc(holding.get('date','─'))}</div></div>
-  <div class="info-cell"><div class="k">大戶&gt;1000張</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
-  <div class="info-cell"><div class="k">大戶週變化</div><div class="v {('pos' if (major_delta or 0)>=0 else 'neg')}">{fmt_num(major_delta)}%</div></div>
-  <div class="info-cell"><div class="k">總股東變化</div><div class="v {('neg' if (people_delta or 0)>0 else 'pos')}">{fmt_num(people_delta,0)}人</div></div>
+  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v {('pos' if chip_latest.get('dealer',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('dealer'),0)}張</div></div>
+  <div class="info-cell"><div class="k">主力當日合計</div><div class="v {('pos' if chip_latest.get('total',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('total'),0)}張</div></div>
+  <div class="info-cell"><div class="k">外資5日</div><div class="v {('pos' if chip_sum5.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('foreign'),0)}張</div></div>
+  <div class="info-cell"><div class="k">投信5日</div><div class="v {('pos' if chip_sum5.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('trust'),0)}張</div></div>
+  <div class="info-cell"><div class="k">主力5日合計</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
 </div>"""
 
 
@@ -1859,6 +2020,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     latest = daily[-1] if daily else {}
     tech = technical_snapshot(daily, s)
     chip = read_chip_summary(stock_id)
+    chip_series = read_chip_series(stock_id)
     holding = read_holding_summary(stock_id)
     holding_series = read_holding_series(stock_id)
     s_view = dict(s)
@@ -1883,6 +2045,15 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
 </tr>"""
     if not event_rows:
         event_rows = '<tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr>'
+
+    h_latest = holding.get("latest", {}) if holding else {}
+    holding_stat_html = (
+        '<div class="holding-stats">'
+        f'<div class="info-cell"><div class="k">大戶持股比例</div><div class="v">{fmt_num(h_latest.get("major"))}%</div></div>'
+        f'<div class="info-cell"><div class="k">散戶持股比例</div><div class="v">{fmt_num(h_latest.get("retail"))}%</div></div>'
+        f'<div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get("total_people"),0)}人</div></div>'
+        '</div>'
+    )
 
     chart_id = f"chart-{stock_id}"
     holding_id = f"holding-chart-{stock_id}"
@@ -2127,10 +2298,14 @@ initHoldingHover_{stock_id}();
   </div>
 
   <div class="card">
-    <div class="section-label">籌碼 / 股權分配</div>
+    <div class="section-label">10 日籌碼動向折射圖</div>
     {build_chip_panel(chip, holding)}
+    <div class="chart-stack">
+      <div class="chart-box">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}</div>
+      <div class="chart-box">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}</div>
+    </div>
     <div class="strategy-note" style="margin-top:12px">
-      大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
+      外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
     </div>
   </div>
 
@@ -2147,6 +2322,7 @@ initHoldingHover_{stock_id}();
       <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
       <div class="linked-holding-panel">
         <div class="linked-holding-title">股權分配連動</div>
+        {holding_stat_html}
         <div id="{holding_id}" class="hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
       </div>
     </div>
