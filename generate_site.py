@@ -968,6 +968,46 @@ def foreign_payload(series: list[dict]) -> list[dict]:
     ]
 
 
+def aligned_chip_payload(series: list[dict]) -> list[dict]:
+    return [
+        {
+            "date": item.get("date", ""),
+            "major": item.get("major"),
+            "retail": item.get("retail"),
+            "totalPeople": item.get("total_people"),
+            "holdingDate": item.get("holding_date", ""),
+            "foreign": item.get("foreign"),
+        }
+        for item in series[-160:]
+    ]
+
+
+def align_chip_to_price_dates(price_rows: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
+    """Use trading dates as the x-axis; carry the latest weekly holding data forward."""
+    dates = [r.get("date", "") for r in price_rows[-160:] if r.get("date")]
+    if not dates:
+        return []
+    holding_sorted = sorted([x for x in holding_series if x.get("date")], key=lambda x: x.get("date", ""))
+    chip_by_date = {x.get("date"): x for x in chip_series if x.get("date")}
+    out = []
+    h_idx = -1
+    latest_h = None
+    for date in dates:
+        while h_idx + 1 < len(holding_sorted) and str(holding_sorted[h_idx + 1].get("date", "")) <= str(date):
+            h_idx += 1
+            latest_h = holding_sorted[h_idx]
+        chip = chip_by_date.get(date, {})
+        out.append({
+            "date": date,
+            "major": latest_h.get("major") if latest_h else None,
+            "retail": latest_h.get("retail") if latest_h else None,
+            "total_people": latest_h.get("total_people") if latest_h else None,
+            "holding_date": latest_h.get("date") if latest_h else "",
+            "foreign": chip.get("foreign"),
+        })
+    return out
+
+
 def get_v44_fetcher():
     global _V44_FETCHER
     if _V44_FETCHER is not None:
@@ -1968,14 +2008,13 @@ def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
 </div>"""
 
 
-def chip_indicator_panel(holding_series: list[dict], chip_series: list[dict]) -> str:
+def chip_indicator_panel(aligned_series: list[dict]) -> str:
     panels = []
-    if holding_series:
-        panels.append(("holding", "major", mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major", 0) or 0) for x in holding_series], "#f85149")], height=108)))
-        panels.append(("holding", "retail", mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail", 0) or 0) for x in holding_series], "#3fb950")], height=108)))
-        panels.append(("holding", "totalPeople", mini_line_svg("總股東人數", [("股東人數", [float(x.get("total_people", 0) or 0) if x.get("total_people") is not None else None for x in holding_series], "#58a6ff")], height=108)))
-    if chip_series:
-        panels.append(("foreign", "foreign", mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign", 0) or 0) for x in chip_series], "#d2a520")], height=108, zero_line=True)))
+    if aligned_series:
+        panels.append(("aligned", "major", mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major")) if x.get("major") is not None else None for x in aligned_series], "#f85149")], height=108)))
+        panels.append(("aligned", "retail", mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail")) if x.get("retail") is not None else None for x in aligned_series], "#3fb950")], height=108)))
+        panels.append(("aligned", "totalPeople", mini_line_svg("總股東人數", [("股東人數", [float(x.get("total_people")) if x.get("total_people") is not None else None for x in aligned_series], "#58a6ff")], height=108)))
+        panels.append(("aligned", "foreign", mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign")) if x.get("foreign") is not None else None for x in aligned_series], "#d2a520")], height=108, zero_line=True)))
     if not panels:
         return '<div class="strategy-note" style="margin-top:10px">籌碼指標資料不足。</div>'
     return '<div class="chip-indicator-stack">' + "".join(
@@ -2445,6 +2484,9 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     chip_series = read_chip_series(stock_id)
     holding = read_holding_summary(stock_id)
     holding_series = read_holding_series(stock_id)
+    daily_chip_indicators = align_chip_to_price_dates(daily, holding_series, chip_series)
+    weekly_chip_indicators = align_chip_to_price_dates(weekly, holding_series, chip_series)
+    monthly_chip_indicators = align_chip_to_price_dates(monthly, holding_series, chip_series)
     decision = build_trade_decision(tech, s)
     s_view = dict(s)
     if latest.get("close") is not None:
@@ -2489,14 +2531,18 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     }, ensure_ascii=False)
     holding_data = json.dumps(holding_payload(holding_series), ensure_ascii=False)
     chip_flow_data = json.dumps(chip_flow_payload(chip_series), ensure_ascii=False)
-    foreign_data = json.dumps(foreign_payload(chip_series), ensure_ascii=False)
+    aligned_chip_data = json.dumps({
+        "daily": aligned_chip_payload(daily_chip_indicators),
+        "weekly": aligned_chip_payload(weekly_chip_indicators),
+        "monthly": aligned_chip_payload(monthly_chip_indicators),
+    }, ensure_ascii=False)
     main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
 const holdingData_{stock_id} = {holding_data};
 const chipFlowData_{stock_id} = {chip_flow_data};
-const foreignData_{stock_id} = {foreign_data};
+const alignedChipData_{stock_id} = {aligned_chip_data};
 const mainForceData_{stock_id} = {main_force_data};
 function showChart_{stock_id}(mode){{
   const root=document.getElementById('{chart_id}');
@@ -2640,8 +2686,8 @@ function kHtml_{stock_id}(x){{
 function indicatorData_{stock_id}(chart, mode){{
   const source=chart.dataset.source;
   if(source==='price') return chartData_{stock_id}[chart.dataset.mode || mode] || [];
+  if(source==='aligned') return alignedChipData_{stock_id}[mode] || [];
   if(source==='holding') return holdingData_{stock_id} || [];
-  if(source==='foreign') return foreignData_{stock_id} || [];
   return [];
 }}
 function indicatorHtml_{stock_id}(chart, x){{
@@ -2652,9 +2698,9 @@ function indicatorHtml_{stock_id}(chart, x){{
   if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span></div>`;
   if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span></div>`;
   if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span></div>`;
-  if(kind==='major') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
-  if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
-  if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
+  if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
+  if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
+  if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
   if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span></div>`;
   return `<div class="t-date">${{x.date || '-'}}</div>`;
 }}
@@ -2883,9 +2929,9 @@ initMainForceHover_{stock_id}();
         <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>
         <button type="button" data-btn="monthly" onclick="showChart_{stock_id}('monthly')">月K</button>
       </div>
-      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K', 'daily')}{chip_indicator_panel(holding_series, chip_series)}</div>
-      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K', 'weekly')}{chip_indicator_panel(holding_series, chip_series)}</div>
-      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K', 'monthly')}{chip_indicator_panel(holding_series, chip_series)}</div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K', 'daily')}{chip_indicator_panel(daily_chip_indicators)}</div>
+      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K', 'weekly')}{chip_indicator_panel(weekly_chip_indicators)}</div>
+      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K', 'monthly')}{chip_indicator_panel(monthly_chip_indicators)}</div>
     </div>
   </div>
 
