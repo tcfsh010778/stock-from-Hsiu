@@ -427,7 +427,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 }
 """
 
-def nav_html(active: str = "home") -> str:
+def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",    "index.html",   "首頁"),
         ("daily",   "daily.html",   "今日選股"),
@@ -440,7 +440,7 @@ def nav_html(active: str = "home") -> str:
     items = ""
     for key, href, label in tabs:
         cls = "tab active" if key == active else "tab"
-        items += f'<a href="{href}" class="{cls}">{label}</a>\n'
+        items += f'<a href="{prefix}{href}" class="{cls}">{label}</a>\n'
     return f"""
 <nav>
   <span class="nav-brand">📊 Stockfrom脩</span>
@@ -483,7 +483,7 @@ def stock_href(stock_id: str, prefix: str = "stocks") -> str:
     return f"{prefix}/{esc(stock_id)}.html"
 
 
-def html_page(title: str, nav_key: str, body: str) -> str:
+def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -494,7 +494,7 @@ def html_page(title: str, nav_key: str, body: str) -> str:
 <style>{CSS}</style>
 </head>
 <body>
-{nav_html(nav_key)}
+{nav_html(nav_key, nav_prefix)}
 {body}
 {footer_html()}
 </body>
@@ -1370,7 +1370,7 @@ def build_daily_page(report: dict) -> str:
         + stat_row + market_section + filter_section + table_section + notes_section
         + '</div>'
     )
-    return html_page(f"{date_str}", "daily", body)
+    return html_page(f"{date_str}", "daily", body, nav_prefix="../")
 
 
 def build_latest_daily_page(reports):
@@ -1655,7 +1655,7 @@ function showChart_{stock_id}(mode){{
   </div>
 </div>
 {chart_script}"""
-    return html_page(f"{stock_id} {s.get('name','')}", "basket", body)
+    return html_page(f"{stock_id} {s.get('name','')}", "basket", body, nav_prefix="../")
 
 
 def build_stocks_index_page(reports: list[dict]) -> str:
