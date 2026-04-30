@@ -838,6 +838,35 @@ def read_chip_series(stock_id: str) -> list[dict]:
     return [by_date[d] for d in sorted(by_date)]
 
 
+def chip_flow_payload(series: list[dict]) -> list[dict]:
+    return [
+        {
+            "date": item.get("date", ""),
+            "foreign": item.get("foreign"),
+            "trust": item.get("trust"),
+            "dealer": item.get("dealer"),
+            "total": item.get("total"),
+        }
+        for item in series[-10:]
+    ]
+
+
+def main_force_payload(chip_series: list[dict], price_rows: list[dict]) -> list[dict]:
+    close_by_date = {r.get("date"): r.get("close") for r in price_rows}
+    rows = []
+    last_close = None
+    for item in chip_series[-30:]:
+        close = close_by_date.get(item.get("date"))
+        if close is not None:
+            last_close = close
+        rows.append({
+            "date": item.get("date", ""),
+            "total": item.get("total"),
+            "close": last_close,
+        })
+    return [r for r in rows if r.get("close") is not None]
+
+
 def _holding_group(level: str) -> str:
     text = str(level)
     if text in {"total", "差異數調整（說明4）"}:
@@ -1076,6 +1105,47 @@ def volume_price_relation(row: dict, volume_ratio: float | None) -> str:
     return "量價平穩"
 
 
+def trend_pattern(rows: list[dict], ma5, ma10, ma20, ma60) -> str:
+    if not rows:
+        return "資料不足"
+    close = rows[-1].get("close")
+    if close and ma5 and ma10 and ma20 and ma60 and close > ma5 > ma10 > ma20 > ma60:
+        return "短中多頭排列"
+    if close and ma20 and ma60 and close > ma20 > ma60:
+        return "多方趨勢"
+    if close and ma5 and ma10 and ma20 and close < ma5 < ma10 < ma20:
+        return "短線空頭排列"
+    if close and ma20 and close < ma20:
+        return "跌破月線整理"
+    if ma5 and ma10 and abs(ma5 / ma10 - 1) <= 0.015:
+        return "均線糾結"
+    return "區間整理"
+
+
+def candle_pattern(rows: list[dict]) -> str:
+    if not rows:
+        return "資料不足"
+    r = rows[-1]
+    open_, high, low, close = r.get("open"), r.get("high"), r.get("low"), r.get("close")
+    if None in {open_, high, low, close}:
+        return "資料不足"
+    rng = max(high - low, 0.01)
+    body = abs(close - open_)
+    upper = high - max(open_, close)
+    lower = min(open_, close) - low
+    if body / rng <= 0.15:
+        return "十字震盪"
+    if lower / rng >= 0.45 and close >= open_:
+        return "長下影承接"
+    if upper / rng >= 0.45 and close <= open_:
+        return "長上影賣壓"
+    if close > open_ and body / rng >= 0.55:
+        return "實體紅K"
+    if close < open_ and body / rng >= 0.55:
+        return "實體黑K"
+    return "小實體整理"
+
+
 def latest_large_volume_event(rows: list[dict], lookback: int = 60, threshold: float = 1.8) -> dict | None:
     start = max(19, len(rows) - lookback)
     latest = None
@@ -1116,6 +1186,37 @@ def chart_payload(rows: list[dict]) -> list[dict]:
     rows = rows[-160:]
     ma_map = {n: ma_values(rows, n) for n in (5, 10, 20, 60)}
     bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
+    closes = [float(r["close"]) for r in rows]
+    highs = [float(r["high"]) for r in rows]
+    lows = [float(r["low"]) for r in rows]
+    k_vals: list[float | None] = []
+    d_vals: list[float | None] = []
+    wr_vals: list[float | None] = []
+    k = 50.0
+    d = 50.0
+    for i in range(len(rows)):
+        if i + 1 >= 9:
+            hi9 = max(highs[i + 1 - 9:i + 1])
+            lo9 = min(lows[i + 1 - 9:i + 1])
+            rsv = 50.0 if hi9 == lo9 else (closes[i] - lo9) / (hi9 - lo9) * 100
+            k = k * 2 / 3 + rsv / 3
+            d = d * 2 / 3 + k / 3
+            k_vals.append(k)
+            d_vals.append(d)
+        else:
+            k_vals.append(None)
+            d_vals.append(None)
+        if i + 1 >= 14:
+            hi14 = max(highs[i + 1 - 14:i + 1])
+            lo14 = min(lows[i + 1 - 14:i + 1])
+            wr_vals.append(None if hi14 == lo14 else (hi14 - closes[i]) / (hi14 - lo14) * -100)
+        else:
+            wr_vals.append(None)
+    ema12 = ema_values(closes, 12)
+    ema26 = ema_values(closes, 26)
+    dif_vals = [(a - b) if a is not None and b is not None else None for a, b in zip(ema12, ema26)]
+    dea_vals = ema_values([float(x or 0) for x in dif_vals], 9)
+    macd_vals = [((dif_vals[i] - dea_vals[i]) * 2) if dif_vals[i] is not None and dea_vals[i] is not None else None for i in range(len(rows))]
     payload: list[dict] = []
     for i, r in enumerate(rows):
         payload.append({
@@ -1131,6 +1232,12 @@ def chart_payload(rows: list[dict]) -> list[dict]:
             "ma60": ma_map[60][i],
             "bbUpper": bb_upper[i],
             "bbLower": bb_lower[i],
+            "k": k_vals[i],
+            "d": d_vals[i],
+            "dif": dif_vals[i],
+            "dea": dea_vals[i],
+            "macd": macd_vals[i],
+            "wr": wr_vals[i],
         })
     return payload
 
@@ -1520,6 +1627,8 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "avg_vol20": avg_vol20,
         "volume_ratio": volume_ratio,
         "volume_price": volume_price_relation(rows[-1], volume_ratio),
+        "trend_pattern": trend_pattern(rows, ma5, ma10, ma20, ma60),
+        "candle_pattern": candle_pattern(rows),
         "large_volume": large_volume,
         "large_volume_event": large_volume_event,
         "support": support,
@@ -1615,6 +1724,129 @@ def calc_rsi(closes: list[float], period: int = 14):
     return 100 - (100 / (1 + rs))
 
 
+def ema_values(values: list[float], span: int) -> list[float | None]:
+    if not values:
+        return []
+    alpha = 2 / (span + 1)
+    out: list[float | None] = []
+    ema = values[0]
+    for i, v in enumerate(values):
+        ema = v if i == 0 else alpha * v + (1 - alpha) * ema
+        out.append(ema)
+    return out
+
+
+def indicator_snapshot(rows: list[dict]) -> dict:
+    if len(rows) < 15:
+        return {}
+    closes = [float(r["close"]) for r in rows]
+    highs = [float(r["high"]) for r in rows]
+    lows = [float(r["low"]) for r in rows]
+
+    k_vals: list[float | None] = []
+    d_vals: list[float | None] = []
+    k = 50.0
+    d = 50.0
+    wr = None
+    for i in range(len(rows)):
+        if i + 1 < 9:
+            k_vals.append(None)
+            d_vals.append(None)
+            continue
+        hi = max(highs[i + 1 - 9:i + 1])
+        lo = min(lows[i + 1 - 9:i + 1])
+        rsv = 50.0 if hi == lo else (closes[i] - lo) / (hi - lo) * 100
+        k = k * 2 / 3 + rsv / 3
+        d = d * 2 / 3 + k / 3
+        k_vals.append(k)
+        d_vals.append(d)
+
+    if len(rows) >= 14:
+        hi14 = max(highs[-14:])
+        lo14 = min(lows[-14:])
+        wr = None if hi14 == lo14 else (hi14 - closes[-1]) / (hi14 - lo14) * -100
+
+    ema12 = ema_values(closes, 12)
+    ema26 = ema_values(closes, 26)
+    dif = [(a - b) if a is not None and b is not None else None for a, b in zip(ema12, ema26)]
+    dea_series = ema_values([float(x or 0) for x in dif], 9)
+    macd_hist = None
+    if dif and dea_series:
+        macd_hist = (dif[-1] - dea_series[-1]) * 2
+
+    latest_k = k_vals[-1]
+    latest_d = d_vals[-1]
+    prev_k = next((x for x in reversed(k_vals[:-1]) if x is not None), None)
+    prev_d = next((x for x in reversed(d_vals[:-1]) if x is not None), None)
+    kd_state = "資料不足"
+    if latest_k is not None and latest_d is not None:
+        if prev_k is not None and prev_d is not None and prev_k <= prev_d and latest_k > latest_d:
+            kd_state = "黃金交叉"
+        elif prev_k is not None and prev_d is not None and prev_k >= prev_d and latest_k < latest_d:
+            kd_state = "死亡交叉"
+        elif latest_k > 80 and latest_d > 80:
+            kd_state = "高檔鈍化"
+        elif latest_k < 20 and latest_d < 20:
+            kd_state = "低檔轉折區"
+        elif latest_k > latest_d:
+            kd_state = "偏多"
+        else:
+            kd_state = "偏弱"
+
+    macd_state = "資料不足"
+    if dif and dea_series and dif[-1] is not None:
+        if dif[-1] > dea_series[-1] and (macd_hist or 0) > 0:
+            macd_state = "多方動能"
+        elif dif[-1] < dea_series[-1] and (macd_hist or 0) < 0:
+            macd_state = "空方動能"
+        else:
+            macd_state = "收斂觀察"
+
+    wr_state = "資料不足"
+    if wr is not None:
+        if wr > -20:
+            wr_state = "偏熱"
+        elif wr < -80:
+            wr_state = "超賣"
+        else:
+            wr_state = "中性"
+
+    return {
+        "k": latest_k,
+        "d": latest_d,
+        "kd_state": kd_state,
+        "dif": dif[-1] if dif else None,
+        "dea": dea_series[-1] if dea_series else None,
+        "macd": macd_hist,
+        "macd_state": macd_state,
+        "wr": wr,
+        "wr_state": wr_state,
+    }
+
+
+def build_indicator_table(daily: list[dict], weekly: list[dict], monthly: list[dict]) -> str:
+    rows = []
+    for label, data in [("日K", daily), ("週K", weekly), ("月K", monthly)]:
+        ind = indicator_snapshot(data)
+        rows.append(f"""
+<tr>
+  <td>{label}</td>
+  <td>{fmt_num(ind.get('k'), 1)} / {fmt_num(ind.get('d'), 1)}</td>
+  <td>{esc(ind.get('kd_state', '資料不足'))}</td>
+  <td>{fmt_num(ind.get('dif'), 2)} / {fmt_num(ind.get('dea'), 2)} / {fmt_num(ind.get('macd'), 2)}</td>
+  <td>{esc(ind.get('macd_state', '資料不足'))}</td>
+  <td>{fmt_num(ind.get('wr'), 1)}</td>
+  <td>{esc(ind.get('wr_state', '資料不足'))}</td>
+</tr>""")
+    return f"""
+<div style="overflow-x:auto;margin-top:12px">
+  <table class="stock-table">
+    <thead><tr><th>週期</th><th>K / D</th><th>KD狀態</th><th>DIF / DEA / MACD</th><th>MACD狀態</th><th>Williams %R</th><th>W%R狀態</th></tr></thead>
+    <tbody>{''.join(rows)}</tbody>
+  </table>
+</div>"""
+
+
 def enrich_stock_fields(s: dict) -> dict:
     out = dict(s)
     sid = out.get("id", "")
@@ -1665,18 +1897,6 @@ def enrich_stock_fields(s: dict) -> dict:
 def build_tech_panel(tech: dict) -> str:
     if not tech:
         return '<div class="strategy-note">技術資料不足，等待 FinMind 快取更新。</div>'
-    gap = tech.get("entry_gap")
-    gap_txt = "─" if gap is None else f"{gap:+.1f}%"
-    vol_ratio = tech.get("volume_ratio")
-    vol_ratio_txt = "─" if vol_ratio is None else f"{vol_ratio:.2f}x"
-    volume_lots = (tech.get("volume") or 0) / 1000
-    large_event = tech.get("large_volume_event") or {}
-    if tech.get("large_volume"):
-        vol_label = f"今日大量K {vol_ratio_txt}"
-    elif large_event:
-        vol_label = f"{large_event.get('date','─')} 大量K {fmt_num(large_event.get('ratio'), 2)}x"
-    else:
-        vol_label = "近60日無明顯大量K"
     ma_trends = tech.get("ma_trends") or {}
     ma_strip = ""
     for n in [5, 10, 20, 60]:
@@ -1695,14 +1915,8 @@ def build_tech_panel(tech: dict) -> str:
 <div class="ma-strip">{ma_strip}</div>
 <div class="info-grid">
   <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(tech.get('volume_price','─'))}</div></div>
-  <div class="info-cell"><div class="k">距建議買點</div><div class="v">{gap_txt}</div></div>
-  <div class="info-cell"><div class="k">當日K線</div><div class="v">{fmt_num(tech.get('open'))}/{fmt_num(tech.get('high'))}/{fmt_num(tech.get('low'))}</div></div>
-  <div class="info-cell"><div class="k">成交量</div><div class="v {('pos' if tech.get('large_volume') else '')}">{fmt_num(volume_lots,0)}張 {vol_ratio_txt}</div></div>
-  <div class="info-cell"><div class="k">布林上軌</div><div class="v">{fmt_num(tech.get('bb_upper'))}</div></div>
-  <div class="info-cell"><div class="k">布林下軌</div><div class="v">{fmt_num(tech.get('bb_lower'))}</div></div>
-  <div class="info-cell"><div class="k">近60日低點支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
-  <div class="info-cell"><div class="k">近60日高點壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
-  <div class="info-cell"><div class="k">大量K判斷</div><div class="v">{vol_label}</div></div>
+  <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
+  <div class="info-cell"><div class="k">K線型態</div><div class="v">{esc(tech.get('candle_pattern','─'))}</div></div>
 </div>"""
 
 
@@ -2128,16 +2342,22 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
 
     chart_id = f"chart-{stock_id}"
     holding_id = f"holding-chart-{stock_id}"
+    chip_flow_id = f"chip-flow-{stock_id}"
+    main_force_id = f"main-force-{stock_id}"
     chart_data = json.dumps({
         "daily": chart_payload(daily),
         "weekly": chart_payload(weekly),
         "monthly": chart_payload(monthly),
     }, ensure_ascii=False)
     holding_data = json.dumps(holding_payload(holding_series), ensure_ascii=False)
+    chip_flow_data = json.dumps(chip_flow_payload(chip_series), ensure_ascii=False)
+    main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
 const holdingData_{stock_id} = {holding_data};
+const chipFlowData_{stock_id} = {chip_flow_data};
+const mainForceData_{stock_id} = {main_force_data};
 function showChart_{stock_id}(mode){{
   const root=document.getElementById('{chart_id}');
   root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
@@ -2202,7 +2422,10 @@ function initHoverCharts_{stock_id}(){{
     <div class="t-ma">
       BB上 ${{fmt(x.bbUpper)}} / BB下 ${{fmt(x.bbLower)}}<br>
       MA5 ${{fmt(x.ma5)}} / MA10 ${{fmt(x.ma10)}}<br>
-      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}
+      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}<br>
+      KD ${{fmt(x.k,1)}} / ${{fmt(x.d,1)}}<br>
+      MACD ${{fmt(x.dif,2)}} / ${{fmt(x.dea,2)}} / ${{fmt(x.macd,2)}}<br>
+      W%R ${{fmt(x.wr,1)}}
     </div>`;
   root.querySelectorAll('.hover-chart').forEach(chart=>{{
     if(chart.dataset.hoverReady==='1') return;
@@ -2268,7 +2491,10 @@ function kHtml_{stock_id}(x){{
     <div class="t-ma">
       BB上 ${{fmt(x.bbUpper)}} / BB下 ${{fmt(x.bbLower)}}<br>
       MA5 ${{fmt(x.ma5)}} / MA10 ${{fmt(x.ma10)}}<br>
-      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}
+      MA20 ${{fmt(x.ma20)}} / MA60 ${{fmt(x.ma60)}}<br>
+      KD ${{fmt(x.k,1)}} / ${{fmt(x.d,1)}}<br>
+      MACD ${{fmt(x.dif,2)}} / ${{fmt(x.dea,2)}} / ${{fmt(x.macd,2)}}<br>
+      W%R ${{fmt(x.wr,1)}}
     </div>`;
 }}
 function syncHoldingFromK_{stock_id}(date){{
@@ -2330,6 +2556,62 @@ function initHoldingHover_{stock_id}(){{
   }});
 }}
 initHoldingHover_{stock_id}();
+function initChipFlowHover_{stock_id}(){{
+  const chart=document.getElementById('{chip_flow_id}');
+  const data=chipFlowData_{stock_id} || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  const fmt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const html=(x)=>`
+    <div class="t-date">${{x.date || '-'}}</div>
+    <div class="t-grid">
+      <span>外資</span><span>${{fmt(x.foreign)}} 張</span>
+      <span>投信</span><span>${{fmt(x.trust)}} 張</span>
+      <span>自營商</span><span>${{fmt(x.dealer)}} 張</span>
+      <span>三大合計</span><span>${{fmt(x.total)}} 張</span>
+    </div>`;
+  chart.addEventListener('mousemove', ev=>{{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 54 / 900;
+    const right=rect.width * (900 - 18) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    positionTooltip_{stock_id}(chart, line, tip, data.length, idx, html(data[idx]), x, ev.clientY - rect.top);
+  }});
+  chart.addEventListener('mouseleave', ()=>clearOverlay_{stock_id}(chart));
+}}
+function initMainForceHover_{stock_id}(){{
+  const chart=document.getElementById('{main_force_id}');
+  const data=mainForceData_{stock_id} || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  const fmt=(v,d=0)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const html=(x)=>`
+    <div class="t-date">${{x.date || '-'}}</div>
+    <div class="t-grid">
+      <span>主力合計</span><span>${{fmt(x.total,0)}} 張</span>
+      <span>收盤價</span><span>${{fmt(x.close,2)}}</span>
+    </div>`;
+  chart.addEventListener('mousemove', ev=>{{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 54 / 900;
+    const right=rect.width * (900 - 54) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    positionTooltip_{stock_id}(chart, line, tip, data.length, idx, html(data[idx]), x, ev.clientY - rect.top);
+  }});
+  chart.addEventListener('mouseleave', ()=>clearOverlay_{stock_id}(chart));
+}}
+initChipFlowHover_{stock_id}();
+initMainForceHover_{stock_id}();
 </script>"""
 
     body = f"""
@@ -2371,8 +2653,8 @@ initHoldingHover_{stock_id}();
     <div class="section-label">10 日籌碼動向折射圖</div>
     {build_chip_panel(chip, holding)}
     <div class="chart-stack">
-      <div class="chart-box">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}</div>
-      <div class="chart-box">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}</div>
+      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+      <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
     </div>
     <div class="strategy-note" style="margin-top:12px">
       外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
