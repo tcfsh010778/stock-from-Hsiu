@@ -69,9 +69,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
-.ma-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
-.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 8px}
-.ma-name{font-size:11px;color:#8b949e}
+.ma-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:280px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between}
+.ma-name{font-size:12px;color:#8b949e}
 .ma-value{font-size:15px;font-weight:800;color:#e6edf3}
 .arrow-up{color:#f85149;font-weight:900}
 .arrow-down{color:#3fb950;font-weight:900}
@@ -198,21 +198,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="section-label">v44 技術 / 買點雷達</div>
     
 <div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">43.24 <span class="arrow-down">▼</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">47.19 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">41.04 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">26.65 <span class="arrow-up">▲</span></div></div></div>
-<div class="strategy-note" style="margin-top:10px">紅色 ▲ 代表該均線近 5 日斜率向上；綠色 ▼ 代表近 5 日斜率向下。</div>
 <div class="info-grid">
-  <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">長多偏強</div></div>
+  <div class="info-cell"><div class="k">量價關係</div><div class="v">量價平穩</div></div>
   <div class="info-cell"><div class="k">距建議買點</div><div class="v">-7.7%</div></div>
   <div class="info-cell"><div class="k">當日K線</div><div class="v">41.81/48.50/42.75</div></div>
   <div class="info-cell"><div class="k">成交量</div><div class="v ">4815張 0.73x</div></div>
-  <div class="info-cell"><div class="k">MA5</div><div class="v">43.24</div></div>
-  <div class="info-cell"><div class="k">MA10</div><div class="v">47.19</div></div>
-  <div class="info-cell"><div class="k">MA20</div><div class="v">41.04</div></div>
-  <div class="info-cell"><div class="k">MA60</div><div class="v">26.65</div></div>
   <div class="info-cell"><div class="k">布林上軌</div><div class="v">59.31</div></div>
   <div class="info-cell"><div class="k">布林下軌</div><div class="v">22.77</div></div>
-  <div class="info-cell"><div class="k">60日支撐</div><div class="v">17.35</div></div>
-  <div class="info-cell"><div class="k">60日壓力</div><div class="v">69.70</div></div>
-  <div class="info-cell"><div class="k">大量K判斷</div><div class="v">正常量</div></div>
+  <div class="info-cell"><div class="k">近60日低點支撐</div><div class="v">17.35</div></div>
+  <div class="info-cell"><div class="k">近60日高點壓力</div><div class="v">69.70</div></div>
+  <div class="info-cell"><div class="k">大量K判斷</div><div class="v">2026-04-23 大量K 1.97x</div></div>
 </div>
     <div class="strategy-note" style="margin-top:12px">
       行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。

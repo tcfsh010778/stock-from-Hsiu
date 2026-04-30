@@ -361,9 +361,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
-.ma-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:10px}
-.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 8px}
-.ma-name{font-size:11px;color:#8b949e}
+.ma-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:280px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between}
+.ma-name{font-size:12px;color:#8b949e}
 .ma-value{font-size:15px;font-weight:800;color:#e6edf3}
 .arrow-up{color:#f85149;font-weight:900}
 .arrow-down{color:#3fb950;font-weight:900}
@@ -1012,6 +1012,61 @@ def latest_ma_and_slope(rows: list[dict], window: int, lookback: int = 5) -> tup
     return latest, slope
 
 
+def ma_trend_direction(rows: list[dict], window: int) -> int | None:
+    vals = [v for v in ma_values(rows, window) if v is not None]
+    span = min(len(vals), max(5, min(window, 20)))
+    if span < 3:
+        return None
+    recent = vals[-span:]
+    xs = list(range(span))
+    x_avg = sum(xs) / span
+    y_avg = sum(recent) / span
+    denom = sum((x - x_avg) ** 2 for x in xs)
+    if denom == 0:
+        return None
+    slope = sum((x - x_avg) * (y - y_avg) for x, y in zip(xs, recent)) / denom
+    if abs(slope) < 0.01:
+        return 0
+    return 1 if slope > 0 else -1
+
+
+def volume_price_relation(row: dict, volume_ratio: float | None) -> str:
+    close = row.get("close")
+    open_ = row.get("open")
+    if close is None or open_ is None:
+        return "資料不足"
+    up = close >= open_
+    if volume_ratio is None:
+        return "量能資料不足"
+    if volume_ratio >= 1.8 and up:
+        return "放量上漲"
+    if volume_ratio >= 1.8 and not up:
+        return "放量下跌"
+    if volume_ratio <= 0.7 and up:
+        return "量縮上漲"
+    if volume_ratio <= 0.7 and not up:
+        return "量縮下跌"
+    return "量價平穩"
+
+
+def latest_large_volume_event(rows: list[dict], lookback: int = 60, threshold: float = 1.8) -> dict | None:
+    start = max(19, len(rows) - lookback)
+    latest = None
+    for i in range(start, len(rows)):
+        avg20 = sum(r.get("volume", 0) for r in rows[i - 19:i + 1]) / 20
+        vol = rows[i].get("volume", 0)
+        ratio = (vol / avg20) if avg20 else None
+        if ratio and ratio >= threshold:
+            latest = {
+                "date": rows[i].get("date", ""),
+                "ratio": ratio,
+                "high": rows[i].get("high"),
+                "low": rows[i].get("low"),
+                "close": rows[i].get("close"),
+            }
+    return latest
+
+
 def bollinger_values(rows: list[dict], window: int = 20, width: float = 2.0) -> tuple[list[float | None], list[float | None]]:
     closes = [r["close"] for r in rows]
     upper: list[float | None] = []
@@ -1251,6 +1306,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     ma_windows = [5, 10, 20, 60, 120, 240]
     ma_pairs = {n: latest_ma_and_slope(rows, n) for n in ma_windows}
     ma5, ma10, ma20, ma60, ma120, ma240 = [ma_pairs[n][0] for n in ma_windows]
+    ma_trends = {f"ma{n}": ma_trend_direction(rows, n) for n in [5, 10, 20, 60]}
     bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
     avg_vol20 = None
     if len(rows) >= 20:
@@ -1258,6 +1314,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     latest_vol = rows[-1].get("volume", 0)
     volume_ratio = (latest_vol / avg_vol20) if avg_vol20 else None
     large_volume = bool(volume_ratio and volume_ratio >= 1.8)
+    large_volume_event = latest_large_volume_event(rows, 60, 1.8)
     recent = rows[-60:]
     support = min(r["low"] for r in recent) if recent else None
     resistance = max(r["high"] for r in recent) if recent else None
@@ -1274,6 +1331,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "ma240": ma240,
         "bb_upper": bb_upper[-1] if bb_upper else None,
         "bb_lower": bb_lower[-1] if bb_lower else None,
+        "ma_trends": ma_trends,
         "ma_slopes": {f"ma{n}": ma_pairs[n][1] for n in ma_windows},
         "open": rows[-1].get("open"),
         "high": rows[-1].get("high"),
@@ -1281,7 +1339,9 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "volume": latest_vol,
         "avg_vol20": avg_vol20,
         "volume_ratio": volume_ratio,
+        "volume_price": volume_price_relation(rows[-1], volume_ratio),
         "large_volume": large_volume,
+        "large_volume_event": large_volume_event,
         "support": support,
         "resistance": resistance,
         "entry_gap": entry_gap,
@@ -1369,37 +1429,38 @@ def build_tech_panel(tech: dict) -> str:
     vol_ratio = tech.get("volume_ratio")
     vol_ratio_txt = "─" if vol_ratio is None else f"{vol_ratio:.2f}x"
     volume_lots = (tech.get("volume") or 0) / 1000
-    vol_label = "大量K" if tech.get("large_volume") else "正常量"
-    ma_slopes = tech.get("ma_slopes") or {}
+    large_event = tech.get("large_volume_event") or {}
+    if tech.get("large_volume"):
+        vol_label = f"今日大量K {vol_ratio_txt}"
+    elif large_event:
+        vol_label = f"{large_event.get('date','─')} 大量K {fmt_num(large_event.get('ratio'), 2)}x"
+    else:
+        vol_label = "近60日無明顯大量K"
+    ma_trends = tech.get("ma_trends") or {}
     ma_strip = ""
     for n in [5, 10, 20, 60]:
         val = tech.get(f"ma{n}")
-        slope = ma_slopes.get(f"ma{n}")
-        if slope is None:
+        direction = ma_trends.get(f"ma{n}")
+        if direction is None:
             arrow = '<span class="arrow-flat">→</span>'
-        elif slope > 0:
+        elif direction > 0:
             arrow = '<span class="arrow-up">▲</span>'
-        elif slope < 0:
+        elif direction < 0:
             arrow = '<span class="arrow-down">▼</span>'
         else:
             arrow = '<span class="arrow-flat">→</span>'
         ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
     return f"""
 <div class="ma-strip">{ma_strip}</div>
-<div class="strategy-note" style="margin-top:10px">紅色 ▲ 代表該均線近 5 日斜率向上；綠色 ▼ 代表近 5 日斜率向下。</div>
 <div class="info-grid">
-  <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">{esc(tech.get('trend','─'))}</div></div>
+  <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(tech.get('volume_price','─'))}</div></div>
   <div class="info-cell"><div class="k">距建議買點</div><div class="v">{gap_txt}</div></div>
   <div class="info-cell"><div class="k">當日K線</div><div class="v">{fmt_num(tech.get('open'))}/{fmt_num(tech.get('high'))}/{fmt_num(tech.get('low'))}</div></div>
   <div class="info-cell"><div class="k">成交量</div><div class="v {('pos' if tech.get('large_volume') else '')}">{fmt_num(volume_lots,0)}張 {vol_ratio_txt}</div></div>
-  <div class="info-cell"><div class="k">MA5</div><div class="v">{fmt_num(tech.get('ma5'))}</div></div>
-  <div class="info-cell"><div class="k">MA10</div><div class="v">{fmt_num(tech.get('ma10'))}</div></div>
-  <div class="info-cell"><div class="k">MA20</div><div class="v">{fmt_num(tech.get('ma20'))}</div></div>
-  <div class="info-cell"><div class="k">MA60</div><div class="v">{fmt_num(tech.get('ma60'))}</div></div>
   <div class="info-cell"><div class="k">布林上軌</div><div class="v">{fmt_num(tech.get('bb_upper'))}</div></div>
   <div class="info-cell"><div class="k">布林下軌</div><div class="v">{fmt_num(tech.get('bb_lower'))}</div></div>
-  <div class="info-cell"><div class="k">60日支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
-  <div class="info-cell"><div class="k">60日壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
+  <div class="info-cell"><div class="k">近60日低點支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
+  <div class="info-cell"><div class="k">近60日高點壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
   <div class="info-cell"><div class="k">大量K判斷</div><div class="v">{vol_label}</div></div>
 </div>"""
 
