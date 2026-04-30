@@ -2019,8 +2019,7 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
         return '<div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>'
     chip_latest = chip.get("latest", {})
     chip_sum5 = chip.get("sum5", {})
-    return f"""
-<div class="info-grid">
+    return f"""<div class="info-grid">
   <div class="info-cell"><div class="k">法人日期</div><div class="v">{esc(chip.get('date','─'))}</div></div>
   <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
   <div class="info-cell"><div class="k">投信買賣超</div><div class="v {('pos' if chip_latest.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('trust'),0)}張</div></div>
@@ -2744,18 +2743,6 @@ initMainForceHover_{stock_id}();
   </div>
 
   <div class="card">
-    <div class="section-label">10 日籌碼動向折射圖</div>
-    {build_chip_panel(chip, holding)}
-    <div class="chart-stack">
-      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
-      <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
-    </div>
-    <div class="strategy-note" style="margin-top:12px">
-      外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
-    </div>
-  </div>
-
-  <div class="card">
     <div class="section-label">日K / 週K / 月K</div>
     <div id="{chart_id}" class="chart-box">
       <div class="chart-tabs">
@@ -2771,6 +2758,18 @@ initMainForceHover_{stock_id}();
         {holding_stat_html}
         <div id="{holding_id}" class="hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
       </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">10 日籌碼動向折射圖</div>
+    {build_chip_panel(chip, holding)}
+    <div class="chart-stack">
+      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+      <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+    </div>
+    <div class="strategy-note" style="margin-top:12px">
+      外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
     </div>
   </div>
 
