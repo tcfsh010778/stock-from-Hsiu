@@ -358,13 +358,12 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
 .chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
-.linked-holding-panel{margin-top:14px;padding-top:12px;border-top:1px solid #30363d}
-.linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
 .chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
 .tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
-.indicator-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.chip-indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
 .indicator-box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:8px}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -445,7 +444,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.indicator-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
 }
 """
 
@@ -1309,6 +1308,26 @@ def chart_svg(rows: list[dict], title: str) -> str:
             f'<rect x="{x-candle_w/2:.1f}" y="{body_y:.1f}" width="{candle_w:.1f}" height="{body_h:.1f}" fill="{color}" opacity=".78"/>'
             f'<rect x="{x-candle_w/2:.1f}" y="{vol_top + vol_h - v_h:.1f}" width="{candle_w:.1f}" height="{v_h:.1f}" fill="{color}" opacity=".35"/>'
         )
+    deduct_colors = {5: "#58a6ff", 10: "#d2a520", 20: "#f0883e", 60: "#3fb950"}
+    deduct_marks = ""
+    for period in [60, 20, 10, 5]:
+        idx = len(rows) - period
+        if idx < 0 or idx >= len(rows):
+            continue
+        x, y_close = xy(idx, rows[idx]["close"])
+        color = deduct_colors[period]
+        deduct_marks += (
+            f'<rect x="{x-step/2:.1f}" y="{pad_t:.1f}" width="{max(step, 5):.1f}" height="{price_h:.1f}" fill="{color}" opacity=".08"/>'
+            f'<line x1="{x:.1f}" y1="{pad_t:.1f}" x2="{x:.1f}" y2="{vol_top-2:.1f}" stroke="{color}" stroke-width="1" stroke-dasharray="4 4" opacity=".8"/>'
+            f'<circle cx="{x:.1f}" cy="{vol_top-11:.1f}" r="9" fill="#0d1117" stroke="{color}" stroke-width="2"/>'
+            f'<text x="{x:.1f}" y="{vol_top-7:.1f}" text-anchor="middle" fill="{color}" font-size="10" font-weight="700">{period}</text>'
+            f'<text x="{x+8:.1f}" y="{max(pad_t+13, y_close-10):.1f}" fill="{color}" font-size="10">扣抵 {rows[idx]["close"]:.1f}</text>'
+        )
+    if deduct_marks:
+        deduct_marks = (
+            f'<text x="{pad_l}" y="{vol_top-30:.1f}" fill="#c9d1d9" font-size="11">預備扣抵值區域</text>'
+            + deduct_marks
+        )
     max_vol_lot = max_vol / 1000 if max_vol else 0
     last = rows[-1]
     return f"""
@@ -1318,6 +1337,7 @@ def chart_svg(rows: list[dict], title: str) -> str:
   <line x1="{pad_l}" y1="{vol_top:.1f}" x2="{w-pad_r}" y2="{vol_top:.1f}" stroke="#30363d"/>
   <text x="4" y="{vol_top+12:.1f}" fill="#6e7681" font-size="11">量</text>
   <text x="4" y="{vol_top+28:.1f}" fill="#6e7681" font-size="11">{max_vol_lot:.0f}張</text>
+  {deduct_marks}
   {candles}
   {bb_upper_line}{bb_lower_line}{ma5_line}{ma10_line}{ma20_line}{ma60_line}
   <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(rows[0]["date"])}</text>
@@ -1876,9 +1896,9 @@ def indicator_series(rows: list[dict]) -> dict:
     }
 
 
-def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], str]], height: int = 150, fixed_range: tuple[float, float] | None = None, zero_line: bool = False) -> str:
-    w, h = 300, height
-    pad_l, pad_r, pad_t, pad_b = 34, 10, 20, 22
+def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], str]], height: int = 118, fixed_range: tuple[float, float] | None = None, zero_line: bool = False) -> str:
+    w, h = 900, height
+    pad_l, pad_r, pad_t, pad_b = 50, 18, 20, 22
     values = [float(v) for _, vals, _ in series_defs for v in vals if v is not None]
     if not values:
         return '<div class="strategy-note">指標資料不足</div>'
@@ -1913,7 +1933,7 @@ def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], s
             pts.append(f"{x:.1f},{y:.1f}")
         if pts:
             lines += f'<polyline fill="none" stroke="{color}" stroke-width="1.7" points="{" ".join(pts)}"/>'
-        legend += f'<text x="{w-92+idx*44}" y="14" fill="{color}" font-size="10">{esc(label)}</text>'
+        legend += f'<text x="{w-210+idx*68}" y="14" fill="{color}" font-size="10">{esc(label)}</text>'
     return f"""
 <svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
   <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
@@ -1931,12 +1951,24 @@ def indicator_chart_panel(rows: list[dict], label: str) -> str:
     kd = mini_line_svg(f"{label} KD", [("K", data["k"], "#58a6ff"), ("D", data["d"], "#d2a520")], fixed_range=(0, 100))
     macd = mini_line_svg(f"{label} MACD", [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")], zero_line=True)
     wr = mini_line_svg(f"{label} Williams %R", [("%R", data["wr"], "#a78bfa")], fixed_range=(-100, 0))
-    return f"""
-<div class="indicator-grid">
+    return f"""<div class="indicator-stack">
+  <div class="indicator-box">{wr}</div>
   <div class="indicator-box">{kd}</div>
   <div class="indicator-box">{macd}</div>
-  <div class="indicator-box">{wr}</div>
 </div>"""
+
+
+def chip_indicator_panel(holding_series: list[dict], chip_series: list[dict]) -> str:
+    panels = []
+    if holding_series:
+        panels.append(mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major", 0) or 0) for x in holding_series], "#f85149")], height=108))
+        panels.append(mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail", 0) or 0) for x in holding_series], "#3fb950")], height=108))
+        panels.append(mini_line_svg("總股東指標", [("股東人數", [float(x.get("total_people", 0) or 0) if x.get("total_people") is not None else None for x in holding_series], "#58a6ff")], height=108))
+    if chip_series:
+        panels.append(mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign", 0) or 0) for x in chip_series], "#d2a520")], height=108, zero_line=True))
+    if not panels:
+        return '<div class="strategy-note" style="margin-top:10px">籌碼指標資料不足。</div>'
+    return '<div class="chip-indicator-stack">' + "".join(f'<div class="indicator-box">{p}</div>' for p in panels[:4]) + '</div>'
 
 
 def enrich_stock_fields(s: dict) -> dict:
@@ -2753,17 +2785,13 @@ initMainForceHover_{stock_id}();
       <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K')}</div>
       <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K')}</div>
       <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K')}</div>
-      <div class="linked-holding-panel">
-        <div class="linked-holding-title">股權分配連動</div>
-        {holding_stat_html}
-        <div id="{holding_id}" class="hover-chart">{holding_line_svg(holding_series, "股權分配折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
-      </div>
     </div>
   </div>
 
   <div class="card">
     <div class="section-label">10 日籌碼動向折射圖</div>
     {build_chip_panel(chip, holding)}
+    {chip_indicator_panel(holding_series, chip_series)}
     <div class="chart-stack">
       <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
       <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
