@@ -62,6 +62,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -142,6 +143,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="daily.html" class="tab">今日選股</a>
 <a href="baskets.html" class="tab active">雙籃儀表板</a>
 <a href="signals.html" class="tab">訊號追蹤</a>
+<a href="stocks.html" class="tab">個股總覽</a>
 <a href="history.html" class="tab">歷史報告</a>
 
 </nav>
@@ -178,6 +180,24 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 
   <div class="card">
+    <div class="section-label">v44 技術 / 買點雷達</div>
+    
+<div class="info-grid">
+  <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">長多偏強</div></div>
+  <div class="info-cell"><div class="k">距建議買點</div><div class="v">─</div></div>
+  <div class="info-cell"><div class="k">60日支撐</div><div class="v">157.50</div></div>
+  <div class="info-cell"><div class="k">60日壓力</div><div class="v">421.00</div></div>
+  <div class="info-cell"><div class="k">MA5</div><div class="v">380.80</div></div>
+  <div class="info-cell"><div class="k">MA10</div><div class="v">345.10</div></div>
+  <div class="info-cell"><div class="k">MA20</div><div class="v">295.10</div></div>
+  <div class="info-cell"><div class="k">MA60</div><div class="v">225.72</div></div>
+</div>
+    <div class="strategy-note" style="margin-top:12px">
+      行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
+    </div>
+  </div>
+
+  <div class="card">
     <div class="section-label">日K / 週K / 月K</div>
     <div id="chart-4958" class="chart-box">
       <div class="chart-tabs">
@@ -200,9 +220,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="chart-pane" data-pane="weekly" style="display:none">
 <svg viewBox="0 0 860 280" width="100%" role="img" aria-label="週K">
   <rect x="0" y="0" width="860" height="280" fill="#0d1117"/>
-  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">421.0</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">339.5</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">258.1</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">176.6</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">95.1</text>
-  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,248.0 63.6,245.7 79.1,246.7 94.7,246.0 110.3,245.7 125.8,243.3 141.4,244.2 157.0,246.6 172.5,244.2 188.1,242.4 203.7,236.8 219.3,234.3 234.8,233.3 250.4,226.6 266.0,224.1 281.5,201.5 297.1,194.5 312.7,176.5 328.2,192.3 343.8,195.9 359.4,195.5 374.9,198.7 390.5,199.4 406.1,198.0 421.6,210.7 437.2,200.1 452.8,200.1 468.4,206.1 483.9,215.3 499.5,215.6 515.1,212.4 530.6,211.0 546.2,214.2 561.8,217.0 577.3,213.2 592.9,216.0 608.5,213.2 624.0,192.3 639.6,194.8 655.2,177.2 670.7,186.7 686.3,189.5 701.9,167.6 717.5,191.6 733.0,182.1 748.6,167.3 764.2,152.8 779.7,164.5 795.3,128.1 810.9,116.1 826.4,69.9 842.0,18.0" /><polyline fill="none" stroke="#d2a520" stroke-width="1.7" points="343.8,228.4 359.4,225.8 374.9,223.5 390.5,221.1 406.1,218.7 421.6,216.9 437.2,214.8 452.8,212.6 468.4,210.5 483.9,209.1 499.5,207.8 515.1,206.5 530.6,205.4 546.2,204.4 561.8,203.9 577.3,203.4 592.9,204.1 608.5,205.1 624.0,205.9 639.6,206.0 655.2,205.0 670.7,204.6 686.3,204.1 701.9,202.6 717.5,202.2 733.0,200.8 748.6,199.2 764.2,196.8 779.7,194.7 795.3,190.4 810.9,185.4 826.4,178.3 842.0,168.6" />
-  <text x="48" y="272" fill="#6e7681" font-size="11">2025-05-02</text>
+  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">421.0</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">339.9</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">258.7</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">177.5</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">96.4</text>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,248.0 63.3,245.7 78.5,243.3 93.8,244.4 109.1,243.7 124.3,243.3 139.6,240.8 154.9,245.1 170.2,247.5 185.4,245.1 200.7,243.3 216.0,237.7 231.2,235.2 246.5,234.1 261.8,229.5 277.0,224.9 292.3,202.2 307.6,195.1 322.8,177.1 338.1,193.0 353.4,196.6 368.7,196.2 383.9,199.4 399.2,200.1 414.5,198.7 429.7,211.4 445.0,200.8 460.3,200.8 475.5,206.8 490.8,216.0 506.1,216.4 521.3,213.2 536.6,211.8 551.9,215.0 567.2,217.8 582.4,213.9 597.7,216.8 613.0,213.9 628.2,193.0 643.5,195.5 658.8,177.8 674.0,187.3 689.3,190.2 704.6,168.2 719.8,192.3 735.1,182.7 750.4,167.9 765.7,153.3 780.9,165.0 796.2,128.5 811.5,116.5 826.7,70.1 842.0,18.0" /><polyline fill="none" stroke="#d2a520" stroke-width="1.7" points="338.1,231.0 353.4,228.4 368.7,225.9 383.9,223.7 399.2,221.5 414.5,219.2 429.7,217.7 445.0,215.7 460.3,213.4 475.5,211.4 490.8,210.0 506.1,208.6 521.3,207.4 536.6,206.2 551.9,205.3 567.2,204.7 582.4,204.1 597.7,204.8 613.0,205.8 628.2,206.6 643.5,206.7 658.8,205.8 674.0,205.3 689.3,204.9 704.6,203.3 719.8,203.0 735.1,201.5 750.4,199.9 765.7,197.5 780.9,195.4 796.2,191.0 811.5,186.0 826.7,178.9 842.0,169.2" />
+  <text x="48" y="272" fill="#6e7681" font-size="11">2025-04-25</text>
   <text x="750" y="272" fill="#6e7681" font-size="11">2026-04-30</text>
   <text x="48" y="14" fill="#e6edf3" font-size="12">週K ｜ 收 421.00</text>
   <text x="650" y="14" fill="#58a6ff" font-size="11">Close</text>
@@ -212,8 +232,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="chart-pane" data-pane="monthly" style="display:none">
 <svg viewBox="0 0 860 280" width="100%" role="img" aria-label="月K">
   <rect x="0" y="0" width="860" height="280" fill="#0d1117"/>
-  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">421.0</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">339.1</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">257.2</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">175.2</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">93.3</text>
-  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,248.0 114.2,244.4 180.3,243.0 246.5,225.4 312.7,175.6 378.8,197.0 445.0,199.1 511.2,211.4 577.3,213.8 643.5,176.3 709.7,166.8 775.8,168.6 842.0,18.0" />
+  <line x1="48" y1="18.0" x2="842" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">421.0</text><line x1="48" y1="75.5" x2="842" y2="75.5" stroke="#21262d"/><text x="4" y="79.5" fill="#6e7681" font-size="11">340.2</text><line x1="48" y1="133.0" x2="842" y2="133.0" stroke="#21262d"/><text x="4" y="137.0" fill="#6e7681" font-size="11">259.4</text><line x1="48" y1="190.5" x2="842" y2="190.5" stroke="#21262d"/><text x="4" y="194.5" fill="#6e7681" font-size="11">178.5</text><line x1="48" y1="248.0" x2="842" y2="248.0" stroke="#21262d"/><text x="4" y="252.0" fill="#6e7681" font-size="11">97.7</text>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2.2" points="48.0,248.0 114.2,244.2 180.3,246.0 246.5,228.2 312.7,177.7 378.8,199.4 445.0,201.5 511.2,214.0 577.3,216.5 643.5,178.4 709.7,168.8 775.8,170.6 842.0,18.0" />
   <text x="48" y="272" fill="#6e7681" font-size="11">2025-04-30</text>
   <text x="750" y="272" fill="#6e7681" font-size="11">2026-04-30</text>
   <text x="48" y="14" fill="#e6edf3" font-size="12">月K ｜ 收 421.00</text>

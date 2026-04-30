@@ -27,6 +27,7 @@ PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
 LOCAL_DATA_DIR = Path(__file__).parent / "data"
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
+REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
@@ -264,6 +265,30 @@ def find_all_reports() -> list[Path]:
     return [v for _, v in sorted(seen_dates.items(), reverse=True)]
 
 
+def load_reports() -> list[dict]:
+    md_files = find_all_reports()
+    reports = []
+    if md_files:
+        print(f"\n[Read] Found {len(md_files)} reports...", flush=True)
+        for f in md_files:
+            try:
+                r = parse_report(f)
+                reports.append(r)
+                print(f"   [OK] {r['date']} - {len(r['stocks'])} stocks", flush=True)
+            except Exception as e:
+                print(f"   [WARN] {f.name}: {e}", flush=True)
+        if reports:
+            LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
+            REPORTS_CACHE_PATH.write_text(json.dumps(reports, ensure_ascii=False, indent=2), encoding="utf-8")
+            return reports
+
+    if REPORTS_CACHE_PATH.exists():
+        print(f"\n[Read] No MD reports found; using cache {REPORTS_CACHE_PATH}", flush=True)
+        return json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8"))
+
+    return []
+
+
 # ──────────────────────────────────────────────
 #  HTML 元件
 # ──────────────────────────────────────────────
@@ -325,6 +350,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -403,6 +429,7 @@ def nav_html(active: str = "home") -> str:
         ("daily",   "daily.html",   "今日選股"),
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
+        ("stocks",  "stocks.html",  "個股總覽"),
         ("history", "history.html", "歷史報告"),
     ]
     items = ""
@@ -574,6 +601,9 @@ def build_notes(notes_text: str) -> str:
 def _to_float(value: str, default: float = 0.0) -> float:
     try:
         s = str(value).replace("%", "").replace("+", "").replace(",", "").strip()
+        m = re.search(r"-?\d+(?:\.\d+)?", s)
+        if m:
+            s = m.group(0)
         return float(s)
     except Exception:
         return default
@@ -921,6 +951,64 @@ def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
         f"台帳：{repeat_note}\n"
         f"操作：{action}"
     )
+
+
+def technical_snapshot(rows: list[dict], s: dict) -> dict:
+    if not rows:
+        return {}
+    close = rows[-1]["close"]
+    closes = [r["close"] for r in rows]
+    def last_ma(n):
+        if len(closes) < n:
+            return None
+        return sum(closes[-n:]) / n
+    ma5, ma10, ma20, ma60, ma120, ma240 = [last_ma(n) for n in [5, 10, 20, 60, 120, 240]]
+    recent = rows[-60:]
+    support = min(r["low"] for r in recent) if recent else None
+    resistance = max(r["high"] for r in recent) if recent else None
+    entry = _to_float(s.get("entry", ""), None)
+    entry_gap = ((close / entry - 1) * 100) if entry else None
+    trend = "長多偏強" if ma20 and ma60 and close > ma20 > ma60 else "短線轉強" if ma20 and close > ma20 else "整理/修正"
+    return {
+        "close": close,
+        "ma5": ma5,
+        "ma10": ma10,
+        "ma20": ma20,
+        "ma60": ma60,
+        "ma120": ma120,
+        "ma240": ma240,
+        "support": support,
+        "resistance": resistance,
+        "entry_gap": entry_gap,
+        "trend": trend,
+    }
+
+
+def fmt_num(v, digits: int = 2) -> str:
+    if v is None:
+        return "─"
+    try:
+        return f"{float(v):.{digits}f}"
+    except Exception:
+        return "─"
+
+
+def build_tech_panel(tech: dict) -> str:
+    if not tech:
+        return '<div class="strategy-note">技術資料不足，等待 FinMind 快取更新。</div>'
+    gap = tech.get("entry_gap")
+    gap_txt = "─" if gap is None else f"{gap:+.1f}%"
+    return f"""
+<div class="info-grid">
+  <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">{esc(tech.get('trend','─'))}</div></div>
+  <div class="info-cell"><div class="k">距建議買點</div><div class="v">{gap_txt}</div></div>
+  <div class="info-cell"><div class="k">60日支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
+  <div class="info-cell"><div class="k">60日壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
+  <div class="info-cell"><div class="k">MA5</div><div class="v">{fmt_num(tech.get('ma5'))}</div></div>
+  <div class="info-cell"><div class="k">MA10</div><div class="v">{fmt_num(tech.get('ma10'))}</div></div>
+  <div class="info-cell"><div class="k">MA20</div><div class="v">{fmt_num(tech.get('ma20'))}</div></div>
+  <div class="info-cell"><div class="k">MA60</div><div class="v">{fmt_num(tech.get('ma60'))}</div></div>
+</div>"""
 
 
 def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
@@ -1287,6 +1375,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     weekly = aggregate_ohlcv(rows, "weekly")
     monthly = aggregate_ohlcv(rows, "monthly")
     latest = daily[-1] if daily else {}
+    tech = technical_snapshot(daily, s)
     s_view = dict(s)
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
@@ -1351,6 +1440,14 @@ function showChart_{stock_id}(mode){{
   </div>
 
   <div class="card">
+    <div class="section-label">v44 技術 / 買點雷達</div>
+    {build_tech_panel(tech)}
+    <div class="strategy-note" style="margin-top:12px">
+      行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
+    </div>
+  </div>
+
+  <div class="card">
     <div class="section-label">日K / 週K / 月K</div>
     <div id="{chart_id}" class="chart-box">
       <div class="chart-tabs">
@@ -1379,6 +1476,70 @@ function showChart_{stock_id}(mode){{
 </div>
 {chart_script}"""
     return html_page(f"{stock_id} {s.get('name','')}", "basket", body)
+
+
+def build_stocks_index_page(reports: list[dict]) -> str:
+    stock_map = find_latest_stock_map(reports)
+    ledger = build_signal_ledger(reports)
+    items = []
+    for sid, s in sorted(stock_map.items()):
+        rows = merge_report_close(read_price_history(sid), s)
+        latest = rows[-1] if rows else {}
+        price = latest.get("close")
+        date = latest.get("date", "")
+        item = {
+            "id": sid,
+            "name": s.get("name", ""),
+            "basket": basket_label(classify_basket(s)),
+            "price": fmt_num(price),
+            "price_date": date,
+            "entry": s.get("entry", "─"),
+            "target": s.get("target", "─"),
+            "stop": s.get("stop", "─"),
+            "score": s.get("score", "─"),
+            "events": len(ledger.get(sid, {}).get("events", [])),
+        }
+        items.append(item)
+
+    rows_html = ""
+    for x in items:
+        search = f"{x['id']} {x['name']} {x['basket']}".lower()
+        rows_html += f"""
+<tr data-search="{esc(search)}">
+  <td><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">{esc(x['price_date'])}</div></td>
+  <td>{esc(x['basket'])}</td>
+  <td class="price-main">{esc(x['price'])}</td>
+  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">守 {esc(x['stop'])}</div></td>
+  <td>{esc(x['score'])}</td>
+  <td>{x['events']} 次</td>
+</tr>"""
+
+    script = """
+<script>
+function filterStocks(){
+  const q=document.getElementById('stockSearch').value.trim().toLowerCase();
+  document.querySelectorAll('#stockRows tr').forEach(tr=>{
+    tr.style.display=tr.dataset.search.includes(q)?'':'none';
+  });
+}
+</script>"""
+    body = f"""
+<div class="container">
+  <div class="page-title">個股總覽</div>
+  <div class="page-sub">FinMind 收盤價 · SFZ 買點 · MABC/CaryBot 分類 · 點股票進資訊卡</div>
+  <div class="card">
+    <div class="section-label">Stock Browser</div>
+    <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、行進籃、盤整籃..." oninput="filterStocks()">
+    <div style="overflow-x:auto">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/防守</th><th>分數</th><th>訊號</th></tr></thead>
+        <tbody id="stockRows">{rows_html}</tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{script}"""
+    return html_page("個股總覽", "stocks", body)
 
 
 def build_stock_pages(reports: list[dict]) -> int:
@@ -1429,23 +1590,10 @@ def main():
     print(f"   Output:  {OUTPUT_DIR}", flush=True)
 
     (OUTPUT_DIR / "daily").mkdir(parents=True, exist_ok=True)
-    md_files = find_all_reports()
-    if not md_files:
-        print("[ERROR] No report MD files found.", flush=True)
-        return
-
-    print(f"\n[Read] Found {len(md_files)} reports...", flush=True)
-    reports = []
-    for f in md_files:
-        try:
-            r = parse_report(f)
-            reports.append(r)
-            print(f"   [OK] {r['date']} - {len(r['stocks'])} stocks", flush=True)
-        except Exception as e:
-            print(f"   [WARN] {f.name}: {e}", flush=True)
+    reports = load_reports()
 
     if not reports:
-        print("[ERROR] No reports parsed.", flush=True)
+        print("[ERROR] No reports parsed or cached.", flush=True)
         return
 
     print("\n[Build] Generating pages...", flush=True)
@@ -1457,6 +1605,8 @@ def main():
     print("   [OK] baskets.html", flush=True)
     (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
     print("   [OK] signals.html", flush=True)
+    (OUTPUT_DIR / "stocks.html").write_text(build_stocks_index_page(reports), encoding="utf-8")
+    print("   [OK] stocks.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
     stock_page_count = build_stock_pages(reports)
@@ -1468,7 +1618,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+4+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+5+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 

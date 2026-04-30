@@ -14,6 +14,8 @@
 │   ├── daily.html            # 今日精選
 │   ├── baskets.html          # 雙籃儀表板（行進籃 / 盤整籃）
 │   ├── signals.html          # 訊號追蹤與歷史摘要
+│   ├── stocks.html           # 個股總覽與搜尋
+│   ├── stocks/股票代號.html  # 個股資訊卡、買點、日K/週K/月K
 │   ├── history.html          # 歷史報告
 │   └── daily/YYYY-MM-DD.html # 個別日期完整報告
 └── .github/workflows/
@@ -28,6 +30,8 @@ python generate_site.py
 ```
 
 `refresh_prices.py` 會從 v44 的 `.env` 或環境變數讀取 `FINMIND_TOKEN`，抓取目前報告出現過的股票近 12 個月股價，寫入 `data/prices/`。個股頁會用這份資料顯示 FinMind 最新收盤、日K、週K、月K。
+
+`generate_site.py` 會同步寫入 `data/site_reports.json`。這是 GitHub Actions 的備援資料源，避免雲端 runner 讀不到本機 OneDrive 報告時無法重建網站。
 
 ## GitHub Pages 部署步驟
 

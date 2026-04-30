@@ -28,17 +28,24 @@ from generate_site import (  # noqa: E402
     LOCAL_PRICE_DIR,
     V44_ROOT,
     find_all_reports,
+    load_reports,
     parse_report,
 )
 
 
 def collect_stock_ids() -> list[str]:
     ids = set()
-    for md in find_all_reports():
-        try:
-            report = parse_report(md)
-        except Exception:
-            continue
+    md_files = find_all_reports()
+    if md_files:
+        reports = []
+        for md in md_files:
+            try:
+                reports.append(parse_report(md))
+            except Exception:
+                continue
+    else:
+        reports = load_reports()
+    for report in reports:
         for s in report.get("stocks", []):
             sid = str(s.get("id", "")).strip()
             if sid:

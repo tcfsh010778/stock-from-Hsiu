@@ -28,7 +28,7 @@ jobs:
 
       # 3. 安裝相依套件（目前只用標準庫）
       - name: Install dependencies
-        run: pip install --upgrade pip
+        run: pip install --upgrade pip requests
 
       # 4. 執行選股腳本（輸出 MD 報告）
       #    如果你的選股腳本需要 FinMind token，在 repo Secrets 設定 FINMIND_TOKEN
@@ -52,6 +52,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/ data/prices/
+          git add docs/ data/
           git diff --cached --quiet || git commit -m "Auto update: $(date '+%Y-%m-%d')"
           git push
