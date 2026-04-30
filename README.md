@@ -15,6 +15,7 @@
 │   ├── baskets.html          # 雙籃儀表板（行進籃 / 盤整籃）
 │   ├── signals.html          # 訊號追蹤與歷史摘要
 │   ├── stocks.html           # 個股總覽與搜尋
+│   ├── radar.html            # 買點雷達：收盤價 vs 建議買點
 │   ├── stocks/股票代號.html  # 個股資訊卡、買點、日K/週K/月K
 │   ├── history.html          # 歷史報告
 │   └── daily/YYYY-MM-DD.html # 個別日期完整報告

@@ -430,6 +430,7 @@ def nav_html(active: str = "home") -> str:
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
         ("stocks",  "stocks.html",  "個股總覽"),
+        ("radar",   "radar.html",   "買點雷達"),
         ("history", "history.html", "歷史報告"),
     ]
     items = ""
@@ -1542,6 +1543,84 @@ function filterStocks(){
     return html_page("個股總覽", "stocks", body)
 
 
+def radar_bucket(gap) -> tuple[str, str, str]:
+    if gap is None:
+        return "資料不足", "tag", "買點價格無法解析"
+    if -2 <= gap <= 3:
+        return "接近買點", "tag-green", "可優先打開資訊卡確認量價"
+    if 3 < gap <= 8:
+        return "稍高等回測", "tag-yellow", "等 MA5/MA10/箱頂回測"
+    if gap > 8:
+        return "離買點過遠", "tag-red", "不追高，等整理"
+    return "跌破買點", "tag", "等重新站回或出現轉強"
+
+
+def build_buy_radar_page(reports: list[dict]) -> str:
+    stock_map = find_latest_stock_map(reports)
+    rows = []
+    for sid, s in stock_map.items():
+        daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily")
+        tech = technical_snapshot(daily, s)
+        gap = tech.get("entry_gap") if tech else None
+        bucket, cls, note = radar_bucket(gap)
+        rows.append({
+            "sid": sid,
+            "name": s.get("name", ""),
+            "basket": basket_label(classify_basket(s)),
+            "bucket": bucket,
+            "cls": cls,
+            "note": note,
+            "gap": gap,
+            "close": tech.get("close") if tech else None,
+            "entry": s.get("entry", "─"),
+            "target": s.get("target", "─"),
+            "stop": s.get("stop", "─"),
+            "trend": tech.get("trend", "─") if tech else "─",
+            "score": _to_float(s.get("score", "0")),
+        })
+    rows.sort(key=lambda x: (999 if x["gap"] is None else abs(x["gap"]), -x["score"]))
+    near = sum(1 for x in rows if x["bucket"] == "接近買點")
+    pullback = sum(1 for x in rows if x["bucket"] == "稍高等回測")
+    extended = sum(1 for x in rows if x["bucket"] == "離買點過遠")
+
+    table = ""
+    for x in rows:
+        gap_txt = "─" if x["gap"] is None else f'{x["gap"]:+.1f}%'
+        table += f"""
+<tr>
+  <td><a class="stock-link" href="stocks/{x['sid']}.html">{x['sid']} {esc(x['name'])}</a><div class="signal-dates">{esc(x['basket'])} ｜ {esc(x['trend'])}</div></td>
+  <td><span class="tag {x['cls']}">{esc(x['bucket'])}</span><div class="signal-dates">{esc(x['note'])}</div></td>
+  <td class="price-main">{fmt_num(x['close'])}</td>
+  <td>{gap_txt}</td>
+  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">守 {esc(x['stop'])}</div></td>
+</tr>"""
+
+    body = f"""
+<div class="container">
+  <div class="page-title">買點雷達</div>
+  <div class="page-sub">用 FinMind 最新收盤比對 SFZ 建議買點，優先找「能執行」而不是「已經追遠」的標的</div>
+  <div class="card">
+    <div class="section-label">Buy Radar</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-num" style="color:#3fb950">{near}</div><div class="metric-label">接近買點：優先確認</div></div>
+      <div class="metric"><div class="metric-num" style="color:#d2a520">{pullback}</div><div class="metric-label">稍高：等回測</div></div>
+      <div class="metric"><div class="metric-num" style="color:#f85149">{extended}</div><div class="metric-label">過遠：不追高</div></div>
+    </div>
+    <div class="strategy-note" style="margin-top:14px">這頁先用 SFZ 報告買點 + FinMind 收盤價建立網站版雷達。完整 v44 的 rule-first 雷達可再把 CaryBot PreBuy、MABC A/B/C、量價共振分數接進同一張表。</div>
+  </div>
+  <div class="card">
+    <div class="section-label">候選排序</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>狀態</th><th>收盤</th><th>距買點</th><th>買點/目標/防守</th></tr></thead>
+        <tbody>{table}</tbody>
+      </table>
+    </div>
+  </div>
+</div>"""
+    return html_page("買點雷達", "radar", body)
+
+
 def build_stock_pages(reports: list[dict]) -> int:
     stock_map = find_latest_stock_map(reports)
     ledger = build_signal_ledger(reports)
@@ -1607,6 +1686,8 @@ def main():
     print("   [OK] signals.html", flush=True)
     (OUTPUT_DIR / "stocks.html").write_text(build_stocks_index_page(reports), encoding="utf-8")
     print("   [OK] stocks.html", flush=True)
+    (OUTPUT_DIR / "radar.html").write_text(build_buy_radar_page(reports), encoding="utf-8")
+    print("   [OK] radar.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
     stock_page_count = build_stock_pages(reports)
@@ -1618,7 +1699,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+5+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+6+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
