@@ -475,6 +475,10 @@ def gain_color(gain_str: str) -> str:
         return ""
 
 
+def is_blank(value) -> bool:
+    return value is None or str(value).strip() in {"", "─", "-", "nan", "None"}
+
+
 def esc(value) -> str:
     return html.escape(str(value if value is not None else ""))
 
@@ -509,6 +513,7 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
     """生成股票表格 HTML"""
     rows = ""
     for i, s in enumerate(stocks, 1):
+        s = enrich_stock_fields(s)
         badge = status_badge(s["icon"], s["status"])
         gain_cls = gain_color(s["gain_6w"])
 
@@ -638,6 +643,7 @@ def split_baskets(stocks: list[dict]) -> tuple[list[dict], list[dict], list[dict
     """用現有每日報告欄位先做網站層分籃；正式版可改讀 JSON。"""
     marching, consolidation, risk = [], [], []
     for s in stocks:
+        s = enrich_stock_fields(s)
         basket = classify_basket(s)
         if basket == "risk":
             risk.append(s)
@@ -670,6 +676,7 @@ def build_signal_ledger(reports: list[dict]) -> dict[str, dict]:
     for report in sorted(reports, key=lambda r: r.get("date", "")):
         date = report.get("date", "")
         for s in report.get("stocks", []):
+            s = enrich_stock_fields(s)
             stock_id = s.get("id", "")
             if not stock_id:
                 continue
@@ -721,7 +728,7 @@ def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
         for s in report.get("stocks", []):
             sid = s.get("id", "")
             if sid:
-                item = dict(s)
+                item = enrich_stock_fields(s)
                 item["report_date"] = report.get("date", "")
                 stocks[sid] = item
     return stocks
@@ -1126,6 +1133,69 @@ def fmt_num(v, digits: int = 2) -> str:
         return f"{float(v):.{digits}f}"
     except Exception:
         return "─"
+
+
+def calc_rsi(closes: list[float], period: int = 14):
+    if len(closes) <= period:
+        return None
+    gains, losses = [], []
+    for i in range(1, len(closes)):
+        diff = closes[i] - closes[i - 1]
+        gains.append(max(diff, 0))
+        losses.append(max(-diff, 0))
+    avg_gain = sum(gains[-period:]) / period
+    avg_loss = sum(losses[-period:]) / period
+    if avg_loss == 0:
+        return 100.0
+    rs = avg_gain / avg_loss
+    return 100 - (100 / (1 + rs))
+
+
+def enrich_stock_fields(s: dict) -> dict:
+    out = dict(s)
+    sid = out.get("id", "")
+    daily = aggregate_ohlcv(read_price_history(sid), "daily")
+    if daily:
+        closes = [r["close"] for r in daily]
+        latest = daily[-1]
+        close = latest["close"]
+        if is_blank(out.get("price")):
+            out["price"] = fmt_num(close)
+        if is_blank(out.get("gain_6w")) and len(daily) >= 31:
+            base = daily[-31]["close"]
+            if base:
+                out["gain_6w"] = f"{(close / base - 1) * 100:+.2f}%"
+        if is_blank(out.get("rsi")):
+            rsi = calc_rsi(closes)
+            out["rsi"] = fmt_num(rsi, 1)
+        if is_blank(out.get("bband_pct")) and len(closes) >= 20:
+            tail = closes[-20:]
+            ma20 = sum(tail) / 20
+            std = (sum((x - ma20) ** 2 for x in tail) / 20) ** 0.5
+            upper, lower = ma20 + 2 * std, ma20 - 2 * std
+            out["bband_pct"] = fmt_num(((close - lower) / (upper - lower)) * 100 if upper != lower else None, 1)
+        if is_blank(out.get("vol_5d")) and len(daily) >= 5:
+            vol5 = sum(r.get("volume", 0) for r in daily[-5:]) / 1000
+            out["vol_5d"] = f"{vol5:,.0f}張"
+
+        tech = technical_snapshot(daily, out)
+        if is_blank(out.get("entry")) and tech.get("ma5"):
+            out["entry"] = f"{tech['ma5'] * 0.985:.2f} (MA5×98.5%)"
+        if is_blank(out.get("target")) and tech.get("resistance"):
+            out["target"] = f"{tech['resistance'] * 1.02:.2f} (壓力×102%)"
+        if is_blank(out.get("stop")) and tech.get("support"):
+            out["stop"] = f"{tech['support'] * 0.995:.2f} (支撐×99.5%)"
+        if is_blank(out.get("resistance")) and tech.get("resistance"):
+            out["resistance"] = fmt_num(tech.get("resistance"))
+        if is_blank(out.get("support")) and tech.get("support"):
+            out["support"] = fmt_num(tech.get("support"))
+
+    chip = read_chip_summary(sid)
+    if chip and is_blank(out.get("foreign_5d")):
+        foreign5 = chip.get("sum5", {}).get("foreign")
+        if foreign5 is not None:
+            out["foreign_5d"] = f"{foreign5:+,.0f}張"
+    return out
 
 
 def build_tech_panel(tech: dict) -> str:
