@@ -362,6 +362,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .linked-holding-title{font-size:12px;color:#8b949e;margin-bottom:6px;font-weight:700}
 .chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
+.tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.indicator-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.indicator-box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:8px}
 .mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
 .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
@@ -441,7 +445,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.indicator-grid{grid-template-columns:1fr}
 }
 """
 
@@ -1824,26 +1828,114 @@ def indicator_snapshot(rows: list[dict]) -> dict:
     }
 
 
-def build_indicator_table(daily: list[dict], weekly: list[dict], monthly: list[dict]) -> str:
-    rows = []
-    for label, data in [("日K", daily), ("週K", weekly), ("月K", monthly)]:
-        ind = indicator_snapshot(data)
-        rows.append(f"""
-<tr>
-  <td>{label}</td>
-  <td>{fmt_num(ind.get('k'), 1)} / {fmt_num(ind.get('d'), 1)}</td>
-  <td>{esc(ind.get('kd_state', '資料不足'))}</td>
-  <td>{fmt_num(ind.get('dif'), 2)} / {fmt_num(ind.get('dea'), 2)} / {fmt_num(ind.get('macd'), 2)}</td>
-  <td>{esc(ind.get('macd_state', '資料不足'))}</td>
-  <td>{fmt_num(ind.get('wr'), 1)}</td>
-  <td>{esc(ind.get('wr_state', '資料不足'))}</td>
-</tr>""")
+def indicator_series(rows: list[dict]) -> dict:
+    rows = rows[-120:]
+    if len(rows) < 15:
+        return {}
+    closes = [float(r["close"]) for r in rows]
+    highs = [float(r["high"]) for r in rows]
+    lows = [float(r["low"]) for r in rows]
+
+    k_vals: list[float | None] = []
+    d_vals: list[float | None] = []
+    wr_vals: list[float | None] = []
+    k = 50.0
+    d = 50.0
+    for i in range(len(rows)):
+        if i + 1 >= 9:
+            hi = max(highs[i + 1 - 9:i + 1])
+            lo = min(lows[i + 1 - 9:i + 1])
+            rsv = 50.0 if hi == lo else (closes[i] - lo) / (hi - lo) * 100
+            k = k * 2 / 3 + rsv / 3
+            d = d * 2 / 3 + k / 3
+            k_vals.append(k)
+            d_vals.append(d)
+        else:
+            k_vals.append(None)
+            d_vals.append(None)
+        if i + 1 >= 14:
+            hi14 = max(highs[i + 1 - 14:i + 1])
+            lo14 = min(lows[i + 1 - 14:i + 1])
+            wr_vals.append(None if hi14 == lo14 else (hi14 - closes[i]) / (hi14 - lo14) * -100)
+        else:
+            wr_vals.append(None)
+
+    ema12 = ema_values(closes, 12)
+    ema26 = ema_values(closes, 26)
+    dif = [(a - b) if a is not None and b is not None else None for a, b in zip(ema12, ema26)]
+    dea = ema_values([float(x or 0) for x in dif], 9)
+    hist = [(a - b) * 2 if a is not None and b is not None else None for a, b in zip(dif, dea)]
+    return {
+        "dates": [r.get("date", "") for r in rows],
+        "k": k_vals,
+        "d": d_vals,
+        "dif": dif,
+        "dea": dea,
+        "hist": hist,
+        "wr": wr_vals,
+    }
+
+
+def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], str]], height: int = 150, fixed_range: tuple[float, float] | None = None, zero_line: bool = False) -> str:
+    w, h = 300, height
+    pad_l, pad_r, pad_t, pad_b = 34, 10, 20, 22
+    values = [float(v) for _, vals, _ in series_defs for v in vals if v is not None]
+    if not values:
+        return '<div class="strategy-note">指標資料不足</div>'
+    lo, hi = fixed_range if fixed_range else (min(values), max(values))
+    if hi == lo:
+        hi += 1
+        lo -= 1
+
+    max_len = max(len(vals) for _, vals, _ in series_defs)
+    def xy(idx, val):
+        x = pad_l + idx * (w - pad_l - pad_r) / max(1, max_len - 1)
+        y = pad_t + (hi - float(val)) * (h - pad_t - pad_b) / (hi - lo)
+        return x, y
+
+    grid = ""
+    for pct in [0, .5, 1]:
+        y = pad_t + pct * (h - pad_t - pad_b)
+        v = hi - pct * (hi - lo)
+        grid += f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-pad_r}" y2="{y:.1f}" stroke="#21262d"/><text x="2" y="{y+4:.1f}" fill="#6e7681" font-size="10">{v:.0f}</text>'
+    if zero_line and lo < 0 < hi:
+        _, zy = xy(0, 0)
+        grid += f'<line x1="{pad_l}" y1="{zy:.1f}" x2="{w-pad_r}" y2="{zy:.1f}" stroke="#8b949e" stroke-dasharray="3 3"/>'
+
+    lines = ""
+    legend = ""
+    for idx, (label, vals, color) in enumerate(series_defs):
+        pts = []
+        for i, v in enumerate(vals):
+            if v is None:
+                continue
+            x, y = xy(i, v)
+            pts.append(f"{x:.1f},{y:.1f}")
+        if pts:
+            lines += f'<polyline fill="none" stroke="{color}" stroke-width="1.7" points="{" ".join(pts)}"/>'
+        legend += f'<text x="{w-92+idx*44}" y="14" fill="{color}" font-size="10">{esc(label)}</text>'
     return f"""
-<div style="overflow-x:auto;margin-top:12px">
-  <table class="stock-table">
-    <thead><tr><th>週期</th><th>K / D</th><th>KD狀態</th><th>DIF / DEA / MACD</th><th>MACD狀態</th><th>Williams %R</th><th>W%R狀態</th></tr></thead>
-    <tbody>{''.join(rows)}</tbody>
-  </table>
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {lines}
+  <text x="{pad_l}" y="14" fill="#e6edf3" font-size="11">{esc(title)}</text>
+  {legend}
+</svg>"""
+
+
+def indicator_chart_panel(rows: list[dict], label: str) -> str:
+    data = indicator_series(rows)
+    if not data:
+        return '<div class="strategy-note" style="margin-top:10px">指標資料不足。</div>'
+    kd = mini_line_svg(f"{label} KD", [("K", data["k"], "#58a6ff"), ("D", data["d"], "#d2a520")], fixed_range=(0, 100))
+    macd = mini_line_svg(f"{label} MACD", [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")], zero_line=True)
+    wr = mini_line_svg(f"{label} Williams %R", [("%R", data["wr"], "#a78bfa")], fixed_range=(-100, 0))
+    return f"""
+<div class="indicator-grid">
+  <div class="indicator-box">{kd}</div>
+  <div class="indicator-box">{macd}</div>
+  <div class="indicator-box">{wr}</div>
 </div>"""
 
 
@@ -1912,11 +2004,13 @@ def build_tech_panel(tech: dict) -> str:
             arrow = '<span class="arrow-flat">→</span>'
         ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
     return f"""
-<div class="ma-strip">{ma_strip}</div>
-<div class="info-grid">
-  <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(tech.get('volume_price','─'))}</div></div>
-  <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
-  <div class="info-cell"><div class="k">K線型態</div><div class="v">{esc(tech.get('candle_pattern','─'))}</div></div>
+<div class="tech-panel">
+  <div class="ma-strip">{ma_strip}</div>
+  <div class="tech-summary-grid">
+    <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(tech.get('volume_price','─'))}</div></div>
+    <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
+    <div class="info-cell"><div class="k">K線型態</div><div class="v">{esc(tech.get('candle_pattern','─'))}</div></div>
+  </div>
 </div>"""
 
 
@@ -2669,9 +2763,9 @@ initMainForceHover_{stock_id}();
         <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>
         <button type="button" data-btn="monthly" onclick="showChart_{stock_id}('monthly')">月K</button>
       </div>
-      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
-      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
-      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(daily, '日K')}</div>
+      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly">{chart_svg(weekly, '週K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(weekly, '週K')}</div>
+      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly">{chart_svg(monthly, '月K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>{indicator_chart_panel(monthly, '月K')}</div>
       <div class="linked-holding-panel">
         <div class="linked-holding-title">股權分配連動</div>
         {holding_stat_html}
