@@ -25,6 +25,8 @@ except Exception:
     pass
 
 from generate_site import (  # noqa: E402
+    LOCAL_CHIP_DIR,
+    LOCAL_HOLDING_DIR,
     LOCAL_PRICE_DIR,
     V44_ROOT,
     find_all_reports,
@@ -108,6 +110,33 @@ def fetch_finmind_prices(stock_id: str, months: int) -> list[dict]:
     return rows
 
 
+def fetch_finmind_dataset(stock_id: str, dataset: str, months: int) -> list[dict]:
+    token = load_finmind_token()
+    start = (date.today() - timedelta(days=int(months * 31))).strftime("%Y-%m-%d")
+    params = {"dataset": dataset, "data_id": stock_id, "start_date": start}
+    if token:
+        params["token"] = token
+    try:
+        resp = requests.get("https://api.finmindtrade.com/api/v4/data", params=params, timeout=20)
+        resp.raise_for_status()
+        return resp.json().get("data") or []
+    except Exception as exc:
+        print(f"  {stock_id} {dataset} error: {exc}")
+        return []
+
+
+def write_generic_csv(out_dir: Path, stock_id: str, rows: list[dict]) -> None:
+    if not rows:
+        return
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"{stock_id}.csv"
+    fields = list(rows[0].keys())
+    with out.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fields, extrasaction="ignore")
+        writer.writeheader()
+        writer.writerows(rows)
+
+
 def main() -> None:
     months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
     stock_ids = collect_stock_ids()
@@ -121,6 +150,12 @@ def main() -> None:
             print(f"  [{i:02d}/{len(stock_ids)}] {sid} rows={len(rows)}")
         else:
             print(f"  [{i:02d}/{len(stock_ids)}] {sid} no data")
+        chip_rows = fetch_finmind_dataset(sid, "TaiwanStockInstitutionalInvestorsBuySell", months)
+        if chip_rows:
+            write_generic_csv(LOCAL_CHIP_DIR, sid, chip_rows)
+        holding_rows = fetch_finmind_dataset(sid, "TaiwanStockHoldingSharesPer", months)
+        if holding_rows:
+            write_generic_csv(LOCAL_HOLDING_DIR, sid, holding_rows)
     print(f"[refresh_prices] done ok={ok}/{len(stock_ids)} -> {LOCAL_PRICE_DIR}")
 
 

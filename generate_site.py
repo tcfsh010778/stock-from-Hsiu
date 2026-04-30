@@ -27,8 +27,12 @@ PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
 LOCAL_DATA_DIR = Path(__file__).parent / "data"
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
+LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
+LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
+V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
+V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
 
@@ -739,7 +743,7 @@ def read_price_history(stock_id: str, limit: int = 420) -> list[dict]:
                         "high": float(row.get("high") or row.get("max") or row.get("High")),
                         "low": float(row.get("low") or row.get("min") or row.get("Low")),
                         "close": float(row.get("close") or row.get("Close")),
-                        "volume": float(row.get("Trading_Volume") or row.get("Volume") or 0),
+                        "volume": float(row.get("volume") or row.get("Trading_Volume") or row.get("Volume") or 0),
                     })
                 except Exception:
                     continue
@@ -747,6 +751,91 @@ def read_price_history(stock_id: str, limit: int = 420) -> list[dict]:
         months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
         rows = fetch_v44_price_history(stock_id, months=months)
     return rows[-limit:]
+
+
+def read_csv_rows(primary: Path, fallback: Path | None = None) -> list[dict]:
+    path = primary if primary.exists() else fallback
+    if not path or not path.exists():
+        return []
+    with path.open("r", encoding="utf-8-sig", newline="") as fh:
+        return list(csv.DictReader(fh))
+
+
+def read_chip_summary(stock_id: str) -> dict:
+    rows = read_csv_rows(LOCAL_CHIP_DIR / f"{stock_id}.csv", V44_CHIP_DIR / f"{stock_id}.csv")
+    if not rows:
+        return {}
+    by_date: dict[str, dict] = {}
+    for r in rows:
+        date = r.get("date", "")
+        name = r.get("name", "")
+        try:
+            net = (float(r.get("buy") or 0) - float(r.get("sell") or 0)) / 1000
+        except Exception:
+            continue
+        d = by_date.setdefault(date, {"foreign": 0.0, "trust": 0.0, "dealer": 0.0, "total": 0.0})
+        if "Foreign" in name:
+            d["foreign"] += net
+        elif "Investment_Trust" in name:
+            d["trust"] += net
+        elif "Dealer" in name:
+            d["dealer"] += net
+        d["total"] += net
+    if not by_date:
+        return {}
+    dates = sorted(by_date)
+    latest = by_date[dates[-1]]
+    last5 = dates[-5:]
+    sum5 = {k: sum(by_date[d].get(k, 0.0) for d in last5) for k in ["foreign", "trust", "dealer", "total"]}
+    return {"date": dates[-1], "latest": latest, "sum5": sum5}
+
+
+def _holding_group(level: str) -> str:
+    text = str(level)
+    if text in {"total", "差異數調整（說明4）"}:
+        return "other"
+    nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", text)]
+    if "more than" in text or (nums and max(nums) >= 1000001):
+        return "major"
+    if nums and max(nums) >= 400001:
+        return "large"
+    if nums and max(nums) <= 10000:
+        return "retail"
+    return "middle"
+
+
+def read_holding_summary(stock_id: str) -> dict:
+    rows = read_csv_rows(LOCAL_HOLDING_DIR / f"{stock_id}.csv", V44_HOLDING_DIR / f"{stock_id}.csv")
+    if not rows:
+        return {}
+    by_date: dict[str, list[dict]] = {}
+    for r in rows:
+        by_date.setdefault(r.get("date", ""), []).append(r)
+    dates = sorted(d for d in by_date if d)
+    if not dates:
+        return {}
+
+    def summarize(date: str) -> dict:
+        result = {"major": 0.0, "large": 0.0, "retail": 0.0, "middle": 0.0, "total_people": None}
+        for r in by_date.get(date, []):
+            level = r.get("HoldingSharesLevel", "")
+            try:
+                pct = float(r.get("percent") or 0)
+                people = int(float(r.get("people") or 0))
+            except Exception:
+                continue
+            if level == "total":
+                result["total_people"] = people
+                continue
+            group = _holding_group(level)
+            if group in result:
+                result[group] += pct
+        return result
+
+    latest_date = dates[-1]
+    latest = summarize(latest_date)
+    prev = summarize(dates[-2]) if len(dates) >= 2 else {}
+    return {"date": latest_date, "latest": latest, "prev": prev}
 
 
 def get_v44_fetcher():
@@ -858,18 +947,23 @@ def chart_svg(rows: list[dict], title: str) -> str:
     rows = rows[-160:]
     if len(rows) < 2:
         return '<div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div>'
-    w, h = 860, 280
-    pad_l, pad_r, pad_t, pad_b = 48, 18, 18, 32
+    w, h = 900, 360
+    pad_l, pad_r, pad_t, pad_b = 50, 18, 18, 26
+    price_h = 240
+    vol_top = pad_t + price_h + 18
+    vol_h = h - vol_top - pad_b
     values = [r["close"] for r in rows]
     ma20 = ma_values(rows, 20)
     ma60 = ma_values(rows, 60)
+    ma120 = ma_values(rows, 120)
+    ma240 = ma_values(rows, 240)
     lo, hi = min(values), max(values)
     if hi == lo:
         hi += 1
         lo -= 1
     def xy(idx, val):
         x = pad_l + idx * (w - pad_l - pad_r) / (len(rows) - 1)
-        y = pad_t + (hi - val) * (h - pad_t - pad_b) / (hi - lo)
+        y = pad_t + (hi - val) * price_h / (hi - lo)
         return x, y
     def poly(vals, color, width=2):
         pts = []
@@ -879,26 +973,53 @@ def chart_svg(rows: list[dict], title: str) -> str:
             x, y = xy(i, float(v))
             pts.append(f"{x:.1f},{y:.1f}")
         return f'<polyline fill="none" stroke="{color}" stroke-width="{width}" points="{" ".join(pts)}" />' if pts else ""
-    close_line = poly(values, "#58a6ff", 2.2)
     ma20_line = poly(ma20, "#d2a520", 1.7)
     ma60_line = poly(ma60, "#3fb950", 1.7)
+    ma120_line = poly(ma120, "#a78bfa", 1.5)
+    ma240_line = poly(ma240, "#f0883e", 1.5)
     grid = ""
     for pct in [0, .25, .5, .75, 1]:
-        y = pad_t + pct * (h - pad_t - pad_b)
+        y = pad_t + pct * price_h
         price = hi - pct * (hi - lo)
         grid += f'<line x1="{pad_l}" y1="{y:.1f}" x2="{w-pad_r}" y2="{y:.1f}" stroke="#21262d"/><text x="4" y="{y+4:.1f}" fill="#6e7681" font-size="11">{price:.1f}</text>'
+    step = (w - pad_l - pad_r) / max(len(rows), 1)
+    candle_w = max(2, min(8, step * 0.58))
+    candles = ""
+    vols = [r.get("volume", 0) for r in rows]
+    max_vol = max(vols) if vols else 1
+    for i, r in enumerate(rows):
+        x, y_close = xy(i, r["close"])
+        _, y_open = xy(i, r["open"])
+        _, y_high = xy(i, r["high"])
+        _, y_low = xy(i, r["low"])
+        up = r["close"] >= r["open"]
+        color = "#f85149" if up else "#3fb950"
+        body_y = min(y_open, y_close)
+        body_h = max(abs(y_close - y_open), 1.4)
+        v_h = 0 if max_vol == 0 else (r.get("volume", 0) / max_vol) * vol_h
+        candles += (
+            f'<line x1="{x:.1f}" y1="{y_high:.1f}" x2="{x:.1f}" y2="{y_low:.1f}" stroke="{color}" stroke-width="1"/>'
+            f'<rect x="{x-candle_w/2:.1f}" y="{body_y:.1f}" width="{candle_w:.1f}" height="{body_h:.1f}" fill="{color}" opacity=".78"/>'
+            f'<rect x="{x-candle_w/2:.1f}" y="{vol_top + vol_h - v_h:.1f}" width="{candle_w:.1f}" height="{v_h:.1f}" fill="{color}" opacity=".35"/>'
+        )
+    max_vol_lot = max_vol / 1000 if max_vol else 0
     last = rows[-1]
     return f"""
 <svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
   <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
   {grid}
-  {close_line}{ma20_line}{ma60_line}
+  <line x1="{pad_l}" y1="{vol_top:.1f}" x2="{w-pad_r}" y2="{vol_top:.1f}" stroke="#30363d"/>
+  <text x="4" y="{vol_top+12:.1f}" fill="#6e7681" font-size="11">量</text>
+  <text x="4" y="{vol_top+28:.1f}" fill="#6e7681" font-size="11">{max_vol_lot:.0f}張</text>
+  {candles}
+  {ma20_line}{ma60_line}{ma120_line}{ma240_line}
   <text x="{pad_l}" y="{h-8}" fill="#6e7681" font-size="11">{esc(rows[0]["date"])}</text>
-  <text x="{w-110}" y="{h-8}" fill="#6e7681" font-size="11">{esc(last["date"])}</text>
+  <text x="{w-112}" y="{h-8}" fill="#6e7681" font-size="11">{esc(last["date"])}</text>
   <text x="{pad_l}" y="14" fill="#e6edf3" font-size="12">{esc(title)} ｜ 收 {last["close"]:.2f}</text>
-  <text x="{w-210}" y="14" fill="#58a6ff" font-size="11">Close</text>
-  <text x="{w-155}" y="14" fill="#d2a520" font-size="11">MA20</text>
-  <text x="{w-100}" y="14" fill="#3fb950" font-size="11">MA60</text>
+  <text x="{w-275}" y="14" fill="#d2a520" font-size="11">MA20</text>
+  <text x="{w-220}" y="14" fill="#3fb950" font-size="11">MA60</text>
+  <text x="{w-165}" y="14" fill="#a78bfa" font-size="11">MA120</text>
+  <text x="{w-95}" y="14" fill="#f0883e" font-size="11">MA240</text>
 </svg>"""
 
 
@@ -964,6 +1085,12 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
             return None
         return sum(closes[-n:]) / n
     ma5, ma10, ma20, ma60, ma120, ma240 = [last_ma(n) for n in [5, 10, 20, 60, 120, 240]]
+    avg_vol20 = None
+    if len(rows) >= 20:
+        avg_vol20 = sum(r.get("volume", 0) for r in rows[-20:]) / 20
+    latest_vol = rows[-1].get("volume", 0)
+    volume_ratio = (latest_vol / avg_vol20) if avg_vol20 else None
+    large_volume = bool(volume_ratio and volume_ratio >= 1.8)
     recent = rows[-60:]
     support = min(r["low"] for r in recent) if recent else None
     resistance = max(r["high"] for r in recent) if recent else None
@@ -978,6 +1105,13 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "ma60": ma60,
         "ma120": ma120,
         "ma240": ma240,
+        "open": rows[-1].get("open"),
+        "high": rows[-1].get("high"),
+        "low": rows[-1].get("low"),
+        "volume": latest_vol,
+        "avg_vol20": avg_vol20,
+        "volume_ratio": volume_ratio,
+        "large_volume": large_volume,
         "support": support,
         "resistance": resistance,
         "entry_gap": entry_gap,
@@ -999,16 +1133,51 @@ def build_tech_panel(tech: dict) -> str:
         return '<div class="strategy-note">技術資料不足，等待 FinMind 快取更新。</div>'
     gap = tech.get("entry_gap")
     gap_txt = "─" if gap is None else f"{gap:+.1f}%"
+    vol_ratio = tech.get("volume_ratio")
+    vol_ratio_txt = "─" if vol_ratio is None else f"{vol_ratio:.2f}x"
+    volume_lots = (tech.get("volume") or 0) / 1000
+    vol_label = "大量K" if tech.get("large_volume") else "正常量"
     return f"""
 <div class="info-grid">
   <div class="info-cell"><div class="k">趨勢狀態</div><div class="v">{esc(tech.get('trend','─'))}</div></div>
   <div class="info-cell"><div class="k">距建議買點</div><div class="v">{gap_txt}</div></div>
-  <div class="info-cell"><div class="k">60日支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
-  <div class="info-cell"><div class="k">60日壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
+  <div class="info-cell"><div class="k">當日K線</div><div class="v">{fmt_num(tech.get('open'))}/{fmt_num(tech.get('high'))}/{fmt_num(tech.get('low'))}</div></div>
+  <div class="info-cell"><div class="k">成交量</div><div class="v {('pos' if tech.get('large_volume') else '')}">{fmt_num(volume_lots,0)}張 {vol_ratio_txt}</div></div>
   <div class="info-cell"><div class="k">MA5</div><div class="v">{fmt_num(tech.get('ma5'))}</div></div>
   <div class="info-cell"><div class="k">MA10</div><div class="v">{fmt_num(tech.get('ma10'))}</div></div>
   <div class="info-cell"><div class="k">MA20</div><div class="v">{fmt_num(tech.get('ma20'))}</div></div>
   <div class="info-cell"><div class="k">MA60</div><div class="v">{fmt_num(tech.get('ma60'))}</div></div>
+  <div class="info-cell"><div class="k">MA120</div><div class="v">{fmt_num(tech.get('ma120'))}</div></div>
+  <div class="info-cell"><div class="k">MA240</div><div class="v">{fmt_num(tech.get('ma240'))}</div></div>
+  <div class="info-cell"><div class="k">60日支撐</div><div class="v">{fmt_num(tech.get('support'))}</div></div>
+  <div class="info-cell"><div class="k">60日壓力</div><div class="v">{fmt_num(tech.get('resistance'))}</div></div>
+  <div class="info-cell"><div class="k">大量K判斷</div><div class="v">{vol_label}</div></div>
+</div>"""
+
+
+def build_chip_panel(chip: dict, holding: dict) -> str:
+    if not chip and not holding:
+        return '<div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>'
+    chip_latest = chip.get("latest", {})
+    chip_sum5 = chip.get("sum5", {})
+    h_latest = holding.get("latest", {})
+    h_prev = holding.get("prev", {})
+    major_delta = None
+    if h_latest and h_prev:
+        major_delta = h_latest.get("major", 0) - h_prev.get("major", 0)
+    people_delta = None
+    if h_latest.get("total_people") is not None and h_prev.get("total_people") is not None:
+        people_delta = h_latest.get("total_people") - h_prev.get("total_people")
+    return f"""
+<div class="info-grid">
+  <div class="info-cell"><div class="k">法人日期</div><div class="v">{esc(chip.get('date','─'))}</div></div>
+  <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
+  <div class="info-cell"><div class="k">投信買賣超</div><div class="v {('pos' if chip_latest.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('trust'),0)}張</div></div>
+  <div class="info-cell"><div class="k">三大法人5日</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
+  <div class="info-cell"><div class="k">股權日期</div><div class="v">{esc(holding.get('date','─'))}</div></div>
+  <div class="info-cell"><div class="k">大戶&gt;1000張</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
+  <div class="info-cell"><div class="k">大戶週變化</div><div class="v {('pos' if (major_delta or 0)>=0 else 'neg')}">{fmt_num(major_delta)}%</div></div>
+  <div class="info-cell"><div class="k">總股東變化</div><div class="v {('neg' if (people_delta or 0)>0 else 'pos')}">{fmt_num(people_delta,0)}人</div></div>
 </div>"""
 
 
@@ -1377,6 +1546,8 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     monthly = aggregate_ohlcv(rows, "monthly")
     latest = daily[-1] if daily else {}
     tech = technical_snapshot(daily, s)
+    chip = read_chip_summary(stock_id)
+    holding = read_holding_summary(stock_id)
     s_view = dict(s)
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
@@ -1445,6 +1616,14 @@ function showChart_{stock_id}(mode){{
     {build_tech_panel(tech)}
     <div class="strategy-note" style="margin-top:12px">
       行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">籌碼 / 股權分配</div>
+    {build_chip_panel(chip, holding)}
+    <div class="strategy-note" style="margin-top:12px">
+      大戶比例用股權分散表估算，法人買賣超用 FinMind / v44 快取計算。大量K若同時伴隨大戶比例下降、總股東上升，要特別留意邊拉邊出的風險。
     </div>
   </div>
 

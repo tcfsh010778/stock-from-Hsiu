@@ -30,7 +30,7 @@ python refresh_prices.py
 python generate_site.py
 ```
 
-`refresh_prices.py` 會從 v44 的 `.env` 或環境變數讀取 `FINMIND_TOKEN`，抓取目前報告出現過的股票近 12 個月股價，寫入 `data/prices/`。個股頁會用這份資料顯示 FinMind 最新收盤、日K、週K、月K。
+`refresh_prices.py` 會從 v44 的 `.env` 或環境變數讀取 `FINMIND_TOKEN`，抓取目前報告出現過的股票近 12 個月股價、法人買賣超、股權分配，寫入 `data/prices/`、`data/chips/`、`data/holding_shares/`。個股頁會用這些資料顯示 FinMind 最新收盤、日K/週K/月K、MA120/MA240、成交量、大量K、買賣超與大戶比例。
 
 `generate_site.py` 會同步寫入 `data/site_reports.json`。這是 GitHub Actions 的備援資料源，避免雲端 runner 讀不到本機 OneDrive 報告時無法重建網站。
 
