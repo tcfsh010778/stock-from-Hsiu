@@ -18,8 +18,13 @@ from datetime import datetime
 # ──────────────────────────────────────────────
 _WIN_REPORTS  = Path(r"C:\Users\USER\OneDrive\文件\Claude\Projects\Stock from Zero")
 _LINUX_REPORTS = Path("/sessions/adoring-amazing-mayer/mnt/Stock from Zero")
+_REPO_REPORTS = Path(__file__).parent / "reports"
 
-if sys.platform == "win32":
+if os.environ.get("REPORTS_DIR"):
+    REPORTS_DIR = Path(os.environ["REPORTS_DIR"])
+elif _REPO_REPORTS.exists():
+    REPORTS_DIR = _REPO_REPORTS
+elif sys.platform == "win32":
     REPORTS_DIR = _WIN_REPORTS
 else:
     REPORTS_DIR = _LINUX_REPORTS if _LINUX_REPORTS.exists() else _WIN_REPORTS
@@ -272,6 +277,23 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 /* Cards */
 .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
 .card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -339,6 +361,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table{font-size:12px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
 }
 """
 
@@ -346,6 +369,7 @@ def nav_html(active: str = "home") -> str:
     tabs = [
         ("home",    "index.html",   "首頁"),
         ("daily",   "daily.html",   "今日選股"),
+        ("basket",  "baskets.html", "雙籃儀表板"),
         ("history", "history.html", "歷史報告"),
     ]
     items = ""
@@ -506,9 +530,85 @@ def build_notes(notes_text: str) -> str:
     return f'<ul class="notes-list">{items_html}</ul>'
 
 
+def _to_float(value: str, default: float = 0.0) -> float:
+    try:
+        s = str(value).replace("%", "").replace("+", "").replace(",", "").strip()
+        return float(s)
+    except Exception:
+        return default
+
+
+def split_baskets(stocks: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
+    """用現有每日報告欄位先做網站層分籃；正式版可改讀 JSON。"""
+    marching, consolidation, risk = [], [], []
+    for s in stocks:
+        gain = _to_float(s.get("gain_6w", "0"))
+        score = _to_float(s.get("score", "0"))
+        icon = s.get("icon", "")
+        status = s.get("status", "")
+        if icon == "🔴" or "超買" in status:
+            risk.append(s)
+        elif icon == "🟡" or gain >= 18 or score >= 170:
+            marching.append(s)
+        else:
+            consolidation.append(s)
+    return marching, consolidation, risk
+
+
+def basket_card(s: dict, basket: str) -> str:
+    gain_cls = gain_color(s.get("gain_6w", ""))
+    if basket == "marching":
+        action = "SFZ試單/續抱"
+        tags = [
+            ("行進籃", "tag-green"),
+            ("TA3加碼觀察", "tag-yellow"),
+            ("MA20主線", "tag"),
+        ]
+    elif basket == "consolidation":
+        action = "MABC+CaryBot觀察"
+        tags = [
+            ("盤整籃", "tag-yellow"),
+            ("早買雷達", "tag"),
+            ("等轉強", "tag"),
+        ]
+    else:
+        action = "過熱不追"
+        tags = [
+            ("風險區", "tag-red"),
+            ("等回測", "tag"),
+            ("不追高", "tag"),
+        ]
+    tag_html = "".join(f'<span class="tag {cls}">{label}</span>' for label, cls in tags)
+    return f"""
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">{s.get('id','')} <span class="basket-name">{s.get('name','')}</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 {s.get('price','─')} ｜ 近6週 <span class="{gain_cls}">{s.get('gain_6w','─')}</span> ｜ 分數 {s.get('score','─')}</div>
+    </div>
+    <div class="basket-action">{action}</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 {s.get('entry','─')} ｜ 目標 {s.get('target','─')} ｜ 防守 {s.get('stop','─')}</div>
+  <div class="tag-row">{tag_html}</div>
+</div>"""
+
+
+def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: str) -> str:
+    cards = "\n".join(basket_card(s, basket) for s in stocks[:12])
+    if not cards:
+        cards = '<div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>'
+    return f"""
+<div class="card">
+  <div class="section-label">{title}</div>
+  <div class="strategy-note" style="margin-bottom:12px">{subtitle}</div>
+  {cards}
+</div>"""
+
+
 def build_index_page(reports: list[dict]) -> str:
     latest = reports[0] if reports else {}
     date_str = latest.get("date", "─")
+    marching, consolidation, risk = split_baskets(latest.get("stocks", []))
 
     # 市場概況 card
     market_card = f"""
@@ -527,10 +627,17 @@ def build_index_page(reports: list[dict]) -> str:
 
     # Top 20 精選（簡潔版）
     stocks = latest.get("stocks", [])[:20]
+    basket_summary = f"""
+<div class="grid grid-3" style="margin-bottom:16px">
+  <div class="metric"><div class="metric-num" style="color:#3fb950">{len(marching)}</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
+  <div class="metric"><div class="metric-num" style="color:#d2a520">{len(consolidation)}</div><div class="metric-label">盤整籃：MABC/CaryBot 觀察</div></div>
+  <div class="metric"><div class="metric-num" style="color:#f85149">{len(risk)}</div><div class="metric-label">過熱/風險：不追高</div></div>
+</div>"""
     table_card = f"""
 <div class="card">
   <div class="section-label">🏆 今日精選 Top 20</div>
-  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：{date_str} · 評分公式：週排名 × 外資籌碼 · <a href="daily.html">查看完整報告 →</a></p>
+  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：{date_str} · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看雙籃儀表板 →</a></p>
+  {basket_summary}
   {build_stock_table(stocks, compact=True)}
 </div>"""
 
@@ -677,6 +784,53 @@ def build_latest_daily_page(reports):
     return html_page("Today", "daily", body)
 
 
+def build_baskets_page(reports):
+    latest = reports[0] if reports else {}
+    date_str = latest.get("date", "-")
+    stocks = latest.get("stocks", [])
+    marching, consolidation, risk = split_baskets(stocks)
+
+    hero = f"""
+<div class="card">
+  <div class="section-label">Daily Strategy Stream</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num" style="color:#3fb950">{len(marching)}</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(consolidation)}</div><div class="metric-label">盤整籃：M大 ABC 先觀察，CaryBot 找早買</div></div>
+    <div class="metric"><div class="metric-num" style="color:#f85149">{len(risk)}</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
+  </div>
+</div>"""
+
+    playbook = """
+<div class="card">
+  <div class="section-label">操作框架</div>
+  <div class="grid grid-2">
+    <div class="strategy-note">
+      <strong style="color:#3fb950">行進籃</strong><br>
+      SFZ 入籃代表波段候選已成立；不等待 TA3-Soft 才買。原訊號可小試單，TA3-Strict 或箱型強突破可加碼。漲過 +10% 後用 MA20 + 短線轉弱共振，漲過 +20% 後以 MA20 主線續抱。
+    </div>
+    <div class="strategy-note">
+      <strong style="color:#d2a520">盤整籃</strong><br>
+      MABC 判斷是否值得等待，CaryBot / VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
+    </div>
+  </div>
+</div>"""
+
+    body = (
+        '<div class="container">'
+        + '<div class="page-title">雙籃選股儀表板</div>'
+        + f'<div class="page-sub">資料日期：{date_str} · 網站負責完整巡檢，Telegram 只負責重要提醒</div>'
+        + hero
+        + playbook
+        + '<div class="grid grid-2">'
+        + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching")
+        + build_basket_column("盤整籃｜MABC + CaryBot", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation")
+        + '</div>'
+        + build_basket_column("過熱/風險觀察", "強勢但不適合追價；等回測、降溫或重新整理後再評估。", risk, "risk")
+        + '</div>'
+    )
+    return html_page("雙籃儀表板", "basket", body)
+
+
 def build_history_page(reports):
     items = ""
     for r in reports:
@@ -737,6 +891,8 @@ def main():
     print("   [OK] index.html", flush=True)
     (OUTPUT_DIR / "daily.html").write_text(build_latest_daily_page(reports), encoding="utf-8")
     print("   [OK] daily.html", flush=True)
+    (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
+    print("   [OK] baskets.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
 

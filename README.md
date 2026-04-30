@@ -10,6 +10,7 @@
 ├── docs/                     # GitHub Pages 根目錄
 │   ├── index.html            # 首頁
 │   ├── daily.html            # 今日精選
+│   ├── baskets.html          # 雙籃儀表板（行進籃 / 盤整籃）
 │   ├── history.html          # 歷史報告
 │   └── daily/YYYY-MM-DD.html # 個別日期完整報告
 └── .github/workflows/
@@ -35,3 +36,17 @@ python generate_site.py
 
 每日選股報告 MD 來自 `台灣交易機器人 v44` 的排程輸出，
 路徑設定在 `generate_site.py` 的 `REPORTS_DIR`。
+
+可用環境變數覆蓋：
+
+```bash
+REPORTS_DIR=/path/to/reports python generate_site.py
+```
+
+## 策略頁
+
+`docs/baskets.html` 會把每日報告先分成：
+
+- **行進籃**：SFZ 波段候選，原訊號可試單，TA3 作加碼/確認，MA20 管理。
+- **盤整籃**：MABC + CaryBot 早買觀察，重點是量縮價穩、籌碼不離開、轉強型態。
+- **過熱/風險**：不追高，等待回測 MA5/MA10/箱頂後再處理。

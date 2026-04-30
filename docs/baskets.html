@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>雙籃儀表板 — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#3fb950}
+.neg{color:#f85149}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#3fb950;font-size:12px}
+.price-stop{color:#f85149;font-size:12px}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="daily.html" class="tab">今日選股</a>
+<a href="baskets.html" class="tab active">雙籃儀表板</a>
+<a href="history.html" class="tab">歷史報告</a>
+
+</nav>
+<div class="container"><div class="page-title">雙籃選股儀表板</div><div class="page-sub">資料日期：2026-04-30 · 網站負責完整巡檢，Telegram 只負責重要提醒</div>
+<div class="card">
+  <div class="section-label">Daily Strategy Stream</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num" style="color:#3fb950">18</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">2</div><div class="metric-label">盤整籃：M大 ABC 先觀察，CaryBot 找早買</div></div>
+    <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="section-label">操作框架</div>
+  <div class="grid grid-2">
+    <div class="strategy-note">
+      <strong style="color:#3fb950">行進籃</strong><br>
+      SFZ 入籃代表波段候選已成立；不等待 TA3-Soft 才買。原訊號可小試單，TA3-Strict 或箱型強突破可加碼。漲過 +10% 後用 MA20 + 短線轉弱共振，漲過 +20% 後以 MA20 主線續抱。
+    </div>
+    <div class="strategy-note">
+      <strong style="color:#d2a520">盤整籃</strong><br>
+      MABC 判斷是否值得等待，CaryBot / VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
+    </div>
+  </div>
+</div><div class="grid grid-2">
+<div class="card">
+  <div class="section-label">行進籃｜SFZ 波段</div>
+  <div class="strategy-note" style="margin-bottom:12px">已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。</div>
+  
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6213 <span class="basket-name">聯茂</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 200.9</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6434 <span class="basket-name">台亞</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 627.3</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6920 <span class="basket-name">黑彩</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 407.8</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6147 <span class="basket-name">頎邦</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 288.2</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">4958 <span class="basket-name">臻鼎-KY</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 160.9</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">1785 <span class="basket-name">光洋科</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 179.0</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">2426 <span class="basket-name">鼎元</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 158.6</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">8046 <span class="basket-name">南電</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 158.4</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6672 <span class="basket-name">泰鼎-KY</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 167.2</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6234 <span class="basket-name">高鐵電</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 144.3</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">2351 <span class="basket-name">順德</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 154.9</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">8027 <span class="basket-name">鈦昇科</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 156.0</div>
+    </div>
+    <div class="basket-action">SFZ試單/續抱</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+</div>
+</div>
+<div class="card">
+  <div class="section-label">盤整籃｜MABC + CaryBot</div>
+  <div class="strategy-note" style="margin-bottom:12px">尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。</div>
+  
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">4960 <span class="basket-name">奇力新</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 125.0</div>
+    </div>
+    <div class="basket-action">MABC+CaryBot觀察</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">8358 <span class="basket-name">金居</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 ─ ｜ 近6週 <span class="">─</span> ｜ 分數 155.1</div>
+    </div>
+    <div class="basket-action">MABC+CaryBot觀察</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 ─ ｜ 目標 ─ ｜ 防守 ─</div>
+  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+</div>
+</div></div>
+<div class="card">
+  <div class="section-label">過熱/風險觀察</div>
+  <div class="strategy-note" style="margin-bottom:12px">強勢但不適合追價；等回測、降溫或重新整理後再評估。</div>
+  <div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>
+</div></div>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>

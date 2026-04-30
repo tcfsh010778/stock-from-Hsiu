@@ -25,6 +25,23 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 /* Cards */
 .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
 .card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
@@ -92,6 +109,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table{font-size:12px}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -101,6 +119,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <span class="nav-brand">📊 Stockfrom脩</span>
   <a href="index.html" class="tab active">首頁</a>
 <a href="daily.html" class="tab">今日選股</a>
+<a href="baskets.html" class="tab">雙籃儀表板</a>
 <a href="history.html" class="tab">歷史報告</a>
 
 </nav>
@@ -142,7 +161,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
 <div class="card">
   <div class="section-label">🏆 今日精選 Top 20</div>
-  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：2026-04-30 · 評分公式：週排名 × 外資籌碼 · <a href="daily.html">查看完整報告 →</a></p>
+  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：2026-04-30 · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看雙籃儀表板 →</a></p>
+  
+<div class="grid grid-3" style="margin-bottom:16px">
+  <div class="metric"><div class="metric-num" style="color:#3fb950">18</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
+  <div class="metric"><div class="metric-num" style="color:#d2a520">2</div><div class="metric-label">盤整籃：MABC/CaryBot 觀察</div></div>
+  <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高</div></div>
+</div>
   <div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
