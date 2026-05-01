@@ -4151,6 +4151,295 @@ def parse_range_values(text: str) -> tuple[float | None, float | None]:
     return min(vals), max(vals)
 
 
+def _price_zone_text(low, high) -> str:
+    if low is None or high is None:
+        return "資料不足"
+    return f"{fmt_num(low)} ~ {fmt_num(high)}"
+
+
+def williams_price_zone(rows: list[dict], low_wr: float, high_wr: float, lookback: int = 14) -> tuple[float | None, float | None]:
+    if len(rows) < lookback:
+        return None, None
+    recent = rows[-lookback:]
+    hi = max(float(r.get("high", 0) or 0) for r in recent)
+    lo = min(float(r.get("low", 0) or 0) for r in recent)
+    if hi <= lo:
+        return None, None
+    prices = [hi + (wr / 100.0) * (hi - lo) for wr in [low_wr, high_wr]]
+    return min(prices), max(prices)
+
+
+def kd_rsv_price_zone(rows: list[dict], low_rsv: float, high_rsv: float, lookback: int = 9) -> tuple[float | None, float | None]:
+    if len(rows) < lookback:
+        return None, None
+    recent = rows[-lookback:]
+    hi = max(float(r.get("high", 0) or 0) for r in recent)
+    lo = min(float(r.get("low", 0) or 0) for r in recent)
+    if hi <= lo:
+        return None, None
+    prices = [lo + (rsv / 100.0) * (hi - lo) for rsv in [low_rsv, high_rsv]]
+    return min(prices), max(prices)
+
+
+def indicator_entry_zone(method: str, past_rows: list[dict], decision: dict) -> dict:
+    if method == "original":
+        low, high = parse_range_values(decision.get("entry_range"))
+        return {"low": low, "high": high, "label": decision.get("entry_range", "資料不足")}
+    if method == "wr_80_90":
+        low, high = williams_price_zone(past_rows, -90, -80, 14)
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
+    if method == "wr_70_85":
+        low, high = williams_price_zone(past_rows, -85, -70, 14)
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
+    if method == "kd_20_35":
+        low, high = kd_rsv_price_zone(past_rows, 20, 35, 9)
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
+    if method == "wr_kd_overlap":
+        wr_low, wr_high = williams_price_zone(past_rows, -90, -80, 14)
+        kd_low, kd_high = kd_rsv_price_zone(past_rows, 20, 35, 9)
+        if None in {wr_low, wr_high, kd_low, kd_high}:
+            return {"low": None, "high": None, "label": "資料不足"}
+        low, high = max(wr_low, kd_low), min(wr_high, kd_high)
+        if low > high:
+            return {"low": None, "high": None, "label": "無重疊區"}
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
+    return {"low": None, "high": None, "label": "資料不足"}
+
+
+def variant_initial_stop(entry_price: float, tech: dict, decision: dict) -> float | None:
+    ma10 = tech.get("ma10") if tech else None
+    ma20 = tech.get("ma20") if tech else None
+    large_low = (tech.get("large_volume_event") or {}).get("low") if tech else None
+    report_stop = decision.get("reference_support") or decision.get("initial_stop")
+    candidates = []
+    for value in [report_stop, large_low, ma20, ma10]:
+        if not value or value >= entry_price:
+            continue
+        risk_pct = (1 - value / entry_price) * 100
+        if 3 <= risk_pct <= 12:
+            candidates.append(value)
+    if candidates:
+        return max(candidates)
+    return entry_price * 0.94 if entry_price else None
+
+
+ENTRY_VARIANTS = [
+    ("original", "原本買入區", "原始報告買點 + MA5 + MA10"),
+    ("wr_80_90", "Williams -80~-90", "14日 Williams 低接區"),
+    ("wr_70_85", "Williams -70~-85", "較寬鬆 Williams 低接區"),
+    ("kd_20_35", "KD RSV 20~35", "9日 KD 低檔價格區"),
+    ("wr_kd_overlap", "WR/KD 重疊", "Williams 與 KD 低接區交集"),
+]
+
+
+def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars: int = 20) -> dict | None:
+    sid = s.get("id", "")
+    if not sid:
+        return None
+    s = enrich_stock_fields(dict(s))
+    s["report_date"] = report_date
+    all_rows = sorted(merge_report_close(read_price_history(sid), s), key=lambda r: r.get("date", ""))
+    past_rows = [r for r in all_rows if r.get("date", "") <= report_date]
+    future_rows = [r for r in all_rows if r.get("date", "") > report_date]
+    if not past_rows or not future_rows:
+        return None
+
+    tech = technical_snapshot(past_rows, s)
+    decision = build_trade_decision(tech, s)
+    zone = indicator_entry_zone(method, past_rows, decision)
+    entry_low, entry_high = zone.get("low"), zone.get("high")
+    target = decision.get("target")
+    if entry_low is None or entry_high is None:
+        return {
+            "method": method,
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "status": "無買區",
+            "entry_range": zone.get("label", "資料不足"),
+            "entry": None,
+            "ret": None,
+            "wait_days": None,
+            "entry_vs_signal_ret": None,
+            "exit_reason": "買入區無法計算",
+        }
+
+    fill = None
+    wait_rows = future_rows[:max_wait_bars]
+    center = (entry_low + entry_high) / 2
+    for idx, row in enumerate(wait_rows, start=1):
+        low, high = row.get("low"), row.get("high")
+        if low is None or high is None:
+            continue
+        if low <= entry_high and high >= entry_low:
+            open_price = row.get("open") or center
+            fill_price = center if low <= center <= high else min(max(open_price, entry_low), entry_high)
+            fill = {"date": row.get("date", ""), "price": fill_price, "wait_bars": idx}
+            break
+    if not fill:
+        return {
+            "method": method,
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "status": "未成交",
+            "entry_range": zone.get("label", "資料不足"),
+            "entry": None,
+            "ret": None,
+            "wait_days": None,
+            "entry_vs_signal_ret": None,
+            "exit_reason": f"{max_wait_bars}日內未觸及",
+        }
+
+    entry_price = fill["price"]
+    stop = variant_initial_stop(entry_price, tech, decision)
+    exit_date = ""
+    exit_price = None
+    exit_reason = ""
+    fill_seen = False
+    for row in future_rows:
+        if row.get("date") == fill["date"]:
+            fill_seen = True
+        if not fill_seen:
+            continue
+        low, high = row.get("low"), row.get("high")
+        if low is None or high is None:
+            continue
+        if stop and low <= stop:
+            exit_date, exit_price, exit_reason = row.get("date", ""), stop, "初始停損"
+            break
+        if target and high >= target:
+            exit_date, exit_price, exit_reason = row.get("date", ""), target, "停利"
+            break
+    if exit_price is None:
+        last = all_rows[-1]
+        exit_date, exit_price, exit_reason = last.get("date", ""), last.get("close"), "持有中"
+    ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
+    signal_close = past_rows[-1].get("close")
+    entry_vs_signal_ret = ((entry_price / signal_close - 1) * 100) if entry_price and signal_close else None
+    return {
+        "method": method,
+        "sid": sid,
+        "name": s.get("name", ""),
+        "report_date": report_date,
+        "status": "持有中" if exit_reason == "持有中" else "停利" if exit_reason == "停利" else "停損/出場",
+        "entry_range": zone.get("label", "資料不足"),
+        "entry_date": fill["date"],
+        "entry": entry_price,
+        "exit_date": exit_date,
+        "exit_price": exit_price,
+        "exit_reason": exit_reason,
+        "ret": ret,
+        "wait_days": fill.get("wait_bars"),
+        "entry_vs_signal_ret": entry_vs_signal_ret,
+        "target": target,
+        "stop": stop,
+    }
+
+
+def build_entry_variant_results(reports: list[dict]) -> list[dict]:
+    results = []
+    for report in sorted(reports, key=lambda r: r.get("date", "")):
+        report_date = report.get("date", "")
+        for s in report.get("stocks", []):
+            for method, _, _ in ENTRY_VARIANTS:
+                result = backtest_entry_variant(report_date, s, method)
+                if result:
+                    results.append(result)
+    return results
+
+
+def summarize_entry_variants(results: list[dict]) -> list[dict]:
+    summary = []
+    by_method = {method: [x for x in results if x.get("method") == method] for method, _, _ in ENTRY_VARIANTS}
+    for method, label, note in ENTRY_VARIANTS:
+        rows = by_method.get(method, [])
+        filled = [x for x in rows if x.get("entry") is not None]
+        closed = [x for x in filled if x.get("exit_reason") != "持有中"]
+        wins = [x for x in closed if (x.get("ret") or 0) > 0]
+        stops = [x for x in filled if x.get("exit_reason") == "初始停損"]
+        targets = [x for x in filled if x.get("exit_reason") == "停利"]
+        avg_ret = sum(x.get("ret") or 0 for x in filled) / len(filled) if filled else None
+        avg_closed = sum(x.get("ret") or 0 for x in closed) / len(closed) if closed else None
+        avg_wait = sum(x.get("wait_days") or 0 for x in filled) / len(filled) if filled else None
+        avg_entry_gap = sum(x.get("entry_vs_signal_ret") or 0 for x in filled) / len(filled) if filled else None
+        worst = min((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
+        best = max((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
+        fill_rate = len(filled) / len(rows) * 100 if rows else None
+        win_rate = len(wins) / len(closed) * 100 if closed else None
+        score = ((avg_ret or -999) + (win_rate or 0) / 10 + min(fill_rate or 0, 60) / 10 - abs((avg_wait or 10) - 5) / 3)
+        summary.append({
+            "method": method,
+            "label": label,
+            "note": note,
+            "signals": len(rows),
+            "filled": len(filled),
+            "closed": len(closed),
+            "fill_rate": fill_rate,
+            "win_rate": win_rate,
+            "avg_ret": avg_ret,
+            "avg_closed": avg_closed,
+            "avg_wait": avg_wait,
+            "avg_entry_gap": avg_entry_gap,
+            "best": best,
+            "worst": worst,
+            "targets": len(targets),
+            "stops": len(stops),
+            "score": score,
+        })
+    summary.sort(key=lambda x: x.get("score") or -999, reverse=True)
+    return summary
+
+
+def build_entry_variant_comparison_html(reports: list[dict]) -> str:
+    results = build_entry_variant_results(reports)
+    summary = summarize_entry_variants(results)
+    rows_html = ""
+    for x in summary:
+        rows_html += f"""
+<tr>
+  <td><strong>{esc(x['label'])}</strong><div class="signal-dates">{esc(x['note'])}</div></td>
+  <td>{x['filled']} / {x['signals']}<div class="signal-dates">{fmt_num(x['fill_rate'],1)}%</div></td>
+  <td>{fmt_num(x['win_rate'],1)}%</td>
+  <td class="{('pos' if (x.get('avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(x.get('avg_ret'),1)}%</td>
+  <td>{fmt_num(x.get('avg_wait'),1)}</td>
+  <td class="{('pos' if (x.get('avg_entry_gap') or 0) <= 0 else 'neg')}">{fmt_num(x.get('avg_entry_gap'),1)}%</td>
+  <td><span class="pos">{fmt_num(x.get('best'),1)}%</span> / <span class="neg">{fmt_num(x.get('worst'),1)}%</span></td>
+  <td>{x['targets']} / {x['stops']}</td>
+</tr>"""
+    sample_rows = ""
+    for x in sorted([r for r in results if r.get("entry") is not None], key=lambda r: (r.get("method") != summary[0]["method"], r.get("report_date", ""), r.get("sid", "")), reverse=True)[:18]:
+        ret = x.get("ret")
+        ret_cls = "pos" if ret is not None and ret > 0 else "neg" if ret is not None and ret < 0 else ""
+        label = next((label for method, label, _ in ENTRY_VARIANTS if method == x.get("method")), x.get("method", ""))
+        sample_rows += f"""
+<tr>
+  <td><a class="stock-link" href="stocks/{x['sid']}.html">{esc(x['sid'])} {esc(x['name'])}</a><div class="signal-dates">{esc(label)}｜報告 {esc(x['report_date'])}</div></td>
+  <td>{esc(x.get('entry_range','─'))}<div class="signal-dates">成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}</div></td>
+  <td>{fmt_num(x.get('entry_vs_signal_ret'),1)}%</td>
+  <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}</div></td>
+  <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
+</tr>"""
+    return f"""
+<div class="card">
+  <div class="section-label">買點版本比較</div>
+  <div class="strategy-note">同一批歷史訊號，訊號日後最多等待 20 個交易日。這裡只替換買入區，停利沿用原報告目標價，初始停損用該買入價下方最近可執行支撐或買點 -6%。</div>
+  <div style="overflow-x:auto;margin-top:12px">
+    <table class="stock-table">
+      <thead><tr><th>買點版本</th><th>成交數</th><th>勝率</th><th>平均報酬</th><th>平均等待日</th><th>相對訊號日買貴/便宜</th><th>最佳/最差</th><th>停利/停損</th></tr></thead>
+      <tbody>{rows_html}</tbody>
+    </table>
+  </div>
+  <div class="strategy-note" style="margin-top:12px">「相對訊號日買貴/便宜」為成交價相對報告日收盤價，負值代表買得比較低。成交數太低代表規則可能太嚴；成交數太高但平均報酬差，通常代表買點不夠低或濾網不足。</div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>近期成交樣本</th><th>買入區/成交</th><th>買貴/便宜</th><th>出場</th><th>報酬</th></tr></thead>
+      <tbody>{sample_rows}</tbody>
+    </table>
+  </div>
+</div>"""
+
+
 def backtest_one_signal(report_date: str, s: dict) -> dict | None:
     sid = s.get("id", "")
     if not sid:
@@ -4321,6 +4610,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
     <div class="chip-line">已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
+  {build_entry_variant_comparison_html(reports)}
   <div class="card">
     <div class="section-label">逐筆追蹤</div>
     <div style="overflow-x:auto">
