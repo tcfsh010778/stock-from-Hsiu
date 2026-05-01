@@ -521,6 +521,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tv-draw-layer.active{pointer-events:auto;cursor:crosshair}
 .tv-draw-layer line{vector-effect:non-scaling-stroke}
 .tv-draw-layer .draft{stroke-dasharray:5 4;opacity:.9}
+.tv-chip-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chip-chart{height:280px;min-height:280px}
+.tv-chip-chart.compact{height:240px;min-height:240px}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
@@ -2086,6 +2089,158 @@ def main_force_price_svg(chip_series: list[dict], price_rows: list[dict], title:
   <text x="{pad_l}" y="{h-10}" fill="#6e7681" font-size="11">{esc(rows[0].get("date",""))}</text>
   <text x="{w-112}" y="{h-10}" fill="#6e7681" font-size="11">{esc(rows[-1].get("date",""))}</text>
 </svg>"""
+
+
+def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_rows: list[dict]) -> str:
+    close_by_date = {r.get("date"): r.get("close") for r in price_rows if r.get("date")}
+    rows = []
+    last_close = None
+    for item in chip_series[-CHART_LOOKBACK_BARS:]:
+        date = item.get("date", "")
+        close = close_by_date.get(date)
+        if close is not None:
+            last_close = close
+        rows.append({
+            "date": date,
+            "foreign": item.get("foreign"),
+            "trust": item.get("trust"),
+            "dealer": item.get("dealer"),
+            "total": item.get("total"),
+            "close": last_close,
+        })
+    rows = [r for r in rows if r.get("date")]
+    if len(rows) < 2:
+        return '<div class="strategy-note">籌碼資料不足，暫時無法形成 TradingView 籌碼圖。</div>'
+    data = json.dumps(rows, ensure_ascii=False)
+    panel_id = f"chip-tv-{stock_id}"
+    script = f"""
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){{
+  const root=document.getElementById('{panel_id}');
+  const rows={data};
+  if(!root || !rows.length) return;
+  const L=window.LightweightCharts;
+  if(!L){{
+    root.innerHTML='<div class="strategy-note">TradingView Lightweight Charts 載入失敗，請檢查網路或 CDN。</div>';
+    return;
+  }}
+  const charts=[];
+  let syncing=false;
+  const maxLogical=Math.max(0,rows.length-1);
+  const gridColor='#21262d';
+  const textColor='#8b949e';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW',{{maximumFractionDigits:d,minimumFractionDigits:d}}) : '-';
+  const baseOptions=(height)=>({{
+    height,
+    layout:{{background:{{type:'solid',color:'#0d1117'}},textColor}},
+    grid:{{vertLines:{{color:gridColor}},horzLines:{{color:gridColor}}}},
+    rightPriceScale:{{borderColor:'#30363d'}},
+    leftPriceScale:{{visible:true,borderColor:'#30363d'}},
+    timeScale:{{borderColor:'#30363d',timeVisible:false,secondsVisible:false,fixLeftEdge:true,fixRightEdge:true}},
+    crosshair:{{mode:L.CrosshairMode.Normal}},
+    localization:{{locale:'zh-TW'}},
+  }});
+  function clampRange(range){{
+    if(!range) return range;
+    let from=Number(range.from), to=Number(range.to);
+    if(!Number.isFinite(from) || !Number.isFinite(to)) return range;
+    const span=to-from;
+    if(span>=maxLogical) return {{from:0,to:maxLogical}};
+    if(from<0){{ to-=from; from=0; }}
+    if(to>maxLogical){{ from-=to-maxLogical; to=maxLogical; }}
+    return {{from:Math.max(0,from),to:Math.min(maxLogical,to)}};
+  }}
+  function sameRange(a,b){{
+    return a && b && Math.abs(Number(a.from)-Number(b.from))<0.01 && Math.abs(Number(a.to)-Number(b.to))<0.01;
+  }}
+  function histData(key,colorFn){{
+    return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'}}));
+  }}
+  function lineData(key){{
+    return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key])}}));
+  }}
+  function wireRange(chart){{
+    chart.timeScale().fitContent();
+    chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{{
+      if(syncing || !range) return;
+      const next=clampRange(range);
+      syncing=true;
+      if(!sameRange(range,next)) chart.timeScale().setVisibleLogicalRange(next);
+      charts.forEach(other=>{{ if(other!==chart) other.timeScale().setVisibleLogicalRange(next); }});
+      syncing=false;
+    }});
+  }}
+  function chipTip(x){{
+    return `<b>${{x.date}}</b><br>外資 ${{fmtInt(x.foreign)}} 張<br>投信 ${{fmtInt(x.trust)}} 張<br>自營商 ${{fmtInt(x.dealer)}} 張<br>合計 ${{fmtInt(x.total)}} 張`;
+  }}
+  function forceTip(x){{
+    return `<b>${{x.date}}</b><br>主力合計 ${{fmtInt(x.total)}} 張<br>收盤價 ${{fmt(x.close)}}`;
+  }}
+  function addTip(chart, wrapper, tipFn){{
+    const tip=wrapper.querySelector('.tv-tooltip');
+    chart.subscribeCrosshairMove(param=>{{
+      if(!tip) return;
+      if(!param || !param.time){{ tip.style.display='none'; return; }}
+      const x=rows.find(r=>r.date===param.time);
+      if(!x){{ tip.style.display='none'; return; }}
+      tip.innerHTML=tipFn(x);
+      tip.style.display='block';
+    }});
+  }}
+  const chipEl=document.getElementById('{panel_id}-flow');
+  if(chipEl){{
+    const chart=L.createChart(chipEl, baseOptions(280));
+    chart.applyOptions({{rightPriceScale:{{visible:false}},leftPriceScale:{{visible:true,borderColor:'#30363d'}}}});
+    const total=chart.addSeries(L.HistogramSeries,{{priceScaleId:'left',priceFormat:{{type:'volume'}},priceLineVisible:false,lastValueVisible:false}});
+    total.setData(histData('total',x=>Number(x.total)>=0?'rgba(248,81,73,.55)':'rgba(63,185,80,.55)'));
+    [['foreign','#58a6ff'],['trust','#d2a520'],['dealer','#f85149']].forEach(([key,color])=>{{
+      const s=chart.addSeries(L.LineSeries,{{priceScaleId:'left',color,lineWidth:2,priceLineVisible:false,lastValueVisible:false}});
+      s.setData(lineData(key));
+    }});
+    charts.push(chart);
+    wireRange(chart);
+    addTip(chart, chipEl.closest('.tv-chart-panel'), chipTip);
+  }}
+  const forceEl=document.getElementById('{panel_id}-force');
+  if(forceEl){{
+    const chart=L.createChart(forceEl, baseOptions(280));
+    chart.applyOptions({{
+      rightPriceScale:{{visible:true,borderColor:'#30363d'}},
+      leftPriceScale:{{visible:true,borderColor:'#30363d'}},
+    }});
+    const force=chart.addSeries(L.HistogramSeries,{{priceScaleId:'left',priceFormat:{{type:'volume'}},priceLineVisible:false,lastValueVisible:false}});
+    force.setData(histData('total',x=>Number(x.total)>=0?'#f85149':'#3fb950'));
+    const close=chart.addSeries(L.LineSeries,{{priceScaleId:'right',color:'#58a6ff',lineWidth:2,priceLineVisible:false}});
+    close.setData(lineData('close'));
+    charts.push(chart);
+    wireRange(chart);
+    addTip(chart, forceEl.closest('.tv-chart-panel'), forceTip);
+  }}
+  window.addEventListener('resize',()=>{{
+    const flow=document.getElementById('{panel_id}-flow');
+    const force=document.getElementById('{panel_id}-force');
+    charts.forEach((chart,i)=>chart.applyOptions({{width:(i===0?flow:force)?.clientWidth || 0}}));
+  }});
+}})();
+</script>"""
+    return f"""
+<div id="{panel_id}" class="tv-chip-grid">
+  <div class="tv-chart-panel">
+    <div class="tv-chart-title">籌碼動向｜外資 / 投信 / 自營商 / 合計</div>
+    <div class="chip-line">柱狀圖為三大法人合計；折線分別為外資、投信、自營商。可縮放、拖曳，並限制在資料範圍內。</div>
+    <div id="{panel_id}-flow" class="tv-chip-chart"></div>
+    <div class="tv-tooltip"></div>
+  </div>
+  <div class="tv-chart-panel">
+    <div class="tv-chart-title">主力增減張數與收盤價關係</div>
+    <div class="chip-line">左軸為主力合計張數，右軸為收盤價；紅柱買超、綠柱賣超。</div>
+    <div id="{panel_id}-force" class="tv-chip-chart"></div>
+    <div class="tv-tooltip"></div>
+  </div>
+</div>
+{script}"""
 
 
 def read_ai_logs(stock_id: str, limit: int = 3) -> list[dict]:
@@ -4752,6 +4907,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     operation_card = build_operation_plan_card(s_view, tech, decision, sell_signal)
     chip_dates = f"法人 {chip.get('date','─')}｜股權 {holding.get('date','─') if holding else '─'}"
     lightweight_charts = mda_lightweight_chart_panel(stock_id, daily, holding_series, chip_series)
+    chip_tv_panel = chip_lightweight_flow_panel(stock_id, chip_series, daily)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
@@ -5150,10 +5306,7 @@ initMainForceHover_{stock_id}();
   <div class="card">
     <div class="section-label">10 日籌碼動向折線圖｜{esc(chip_dates)}</div>
     {build_chip_panel(chip, holding)}
-    <div class="chart-stack">
-      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
-      <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
-    </div>
+    {chip_tv_panel}
     <div class="strategy-note" style="margin-top:12px">
       外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
     </div>
