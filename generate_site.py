@@ -14,6 +14,7 @@ import csv
 import json
 import html
 import sqlite3
+import math
 from pathlib import Path
 from datetime import datetime
 
@@ -414,6 +415,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
 .chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
 .tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
@@ -1242,17 +1244,25 @@ def foreign_payload(series: list[dict]) -> list[dict]:
 
 
 def aligned_chip_payload(series: list[dict]) -> list[dict]:
-    return [
-        {
+    out = []
+    foreign_cum = 0.0
+    for item in series[-160:]:
+        foreign = item.get("foreign")
+        if foreign is not None:
+            try:
+                foreign_cum += float(foreign)
+            except Exception:
+                pass
+        out.append({
             "date": item.get("date", ""),
             "major": item.get("major"),
             "retail": item.get("retail"),
             "totalPeople": item.get("total_people"),
             "holdingDate": item.get("holding_date", ""),
-            "foreign": item.get("foreign"),
-        }
-        for item in series[-160:]
-    ]
+            "foreign": foreign,
+            "foreignCum": foreign_cum,
+        })
+    return out
 
 
 def align_chip_to_price_dates(price_rows: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
@@ -1798,8 +1808,7 @@ def chip_flow_svg(series: list[dict], title: str = "10日籌碼動向折線圖")
         neg = sum(v for v in vals if v < 0)
         total = sum(vals)
         stack_extents.extend([pos, neg, total])
-    max_abs = max(abs(v) for v in stack_extents) or 1
-    max_abs *= 1.15
+    max_abs = nice_number((max(abs(v) for v in stack_extents) or 1) * 1.15)
     zero_y = pad_t + plot_h / 2
 
     def y(v):
@@ -1808,7 +1817,7 @@ def chip_flow_svg(series: list[dict], title: str = "10日籌碼動向折線圖")
     grid = f'<line x1="{pad_l}" y1="{zero_y:.1f}" x2="{w-pad_r}" y2="{zero_y:.1f}" stroke="#8b949e" stroke-width="1"/>'
     for v in [max_abs, max_abs / 2, -max_abs / 2, -max_abs]:
         yy = y(v)
-        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="11">{v:.0f}</text>'
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="11">{compact_axis_label(v)}</text>'
 
     group_w = (w - pad_l - pad_r) / len(series)
     bar_w = max(12, min(28, group_w * 0.34))
@@ -2633,6 +2642,169 @@ def mini_line_svg(
 </svg>"""
 
 
+def nice_number(value: float) -> float:
+    value = abs(float(value or 0))
+    if value <= 0:
+        return 1.0
+    exp = math.floor(math.log10(value))
+    frac = value / (10 ** exp)
+    if frac <= 1:
+        nice = 1
+    elif frac <= 2:
+        nice = 2
+    elif frac <= 5:
+        nice = 5
+    else:
+        nice = 10
+    return nice * (10 ** exp)
+
+
+def compact_axis_label(value: float) -> str:
+    value = float(value)
+    abs_v = abs(value)
+    if abs_v >= 10000:
+        return f"{value/1000:.0f}k"
+    if abs_v >= 1000:
+        return f"{value/1000:.1f}k"
+    if abs_v >= 100:
+        return f"{value:.0f}"
+    return f"{value:.1f}".rstrip("0").rstrip(".")
+
+
+def holding_compact_svg(series: list[dict], title: str = "股權分析") -> str:
+    rows = [x for x in series[-160:] if x.get("major") is not None or x.get("retail") is not None or x.get("total_people") is not None]
+    if len(rows) < 2:
+        return '<div class="strategy-note">股權分配資料不足。</div>'
+    w, h = 900, 150
+    pad_l, pad_r, pad_t, pad_b = 50, 56, 22, 24
+    plot_h = h - pad_t - pad_b
+    pct_series = [
+        ("major", "大戶", "#f85149"),
+        ("retail", "散戶", "#3fb950"),
+    ]
+    pct_vals = [float(x.get(k)) for x in rows for k, _, _ in pct_series if x.get(k) is not None]
+    people_vals = [float(x.get("total_people")) for x in rows if x.get("total_people") is not None]
+    pct_lo, pct_hi = (min(pct_vals), max(pct_vals)) if pct_vals else (0.0, 1.0)
+    pad = max(0.4, (pct_hi - pct_lo) * 0.12)
+    pct_lo = math.floor((pct_lo - pad) * 2) / 2
+    pct_hi = math.ceil((pct_hi + pad) * 2) / 2
+    if pct_hi <= pct_lo:
+        pct_hi = pct_lo + 1
+    people_lo, people_hi = (min(people_vals), max(people_vals)) if people_vals else (0.0, 1.0)
+    people_pad = max(1.0, (people_hi - people_lo) * 0.12)
+    people_lo = math.floor((people_lo - people_pad) / 100) * 100
+    people_hi = math.ceil((people_hi + people_pad) / 100) * 100
+    if people_hi <= people_lo:
+        people_hi = people_lo + 100
+
+    def x_pos(i):
+        return pad_l + i * (w - pad_l - pad_r) / max(1, len(rows) - 1)
+
+    def y_pct(v):
+        return pad_t + (pct_hi - float(v)) * plot_h / (pct_hi - pct_lo)
+
+    def y_people(v):
+        return pad_t + (people_hi - float(v)) * plot_h / (people_hi - people_lo)
+
+    grid = ""
+    for pct in [0, .5, 1]:
+        yy = pad_t + pct * plot_h
+        pv = pct_hi - pct * (pct_hi - pct_lo)
+        hv = people_hi - pct * (people_hi - people_lo)
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/>'
+        grid += f'<text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="10">{pv:.1f}%</text>'
+        grid += f'<text x="{w-48}" y="{yy+4:.1f}" fill="#6e7681" font-size="10">{compact_axis_label(hv)}</text>'
+
+    lines = ""
+    for key, _, color in pct_series:
+        pts = []
+        for i, item in enumerate(rows):
+            if item.get(key) is None:
+                continue
+            pts.append(f"{x_pos(i):.1f},{y_pct(float(item.get(key))):.1f}")
+        if pts:
+            lines += f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{" ".join(pts)}"/>'
+    people_pts = []
+    for i, item in enumerate(rows):
+        if item.get("total_people") is None:
+            continue
+        people_pts.append(f"{x_pos(i):.1f},{y_people(float(item.get('total_people'))):.1f}")
+    if people_pts:
+        lines += f'<polyline fill="none" stroke="#58a6ff" stroke-width="1.8" stroke-dasharray="5 4" points="{" ".join(people_pts)}"/>'
+    legend = f'<text x="{w-218}" y="14" fill="#f85149" font-size="10">大戶</text><text x="{w-158}" y="14" fill="#3fb950" font-size="10">散戶</text><text x="{w-98}" y="14" fill="#58a6ff" font-size="10">股東數</text>'
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {lines}
+  <text x="{pad_l}" y="14" fill="#e6edf3" font-size="11">{esc(title)}</text>
+  {legend}
+</svg>"""
+
+
+def foreign_flow_bar_line_svg(series: list[dict], title: str = "外資買賣超 / 區間累積") -> str:
+    rows = [x for x in series[-160:] if x.get("foreign") is not None]
+    if len(rows) < 2:
+        return '<div class="strategy-note">外資買賣超資料不足。</div>'
+    w, h = 900, 150
+    pad_l, pad_r, pad_t, pad_b = 50, 56, 22, 24
+    plot_h = h - pad_t - pad_b
+    vals = [float(x.get("foreign") or 0) for x in rows]
+    running = []
+    total = 0.0
+    for v in vals:
+        total += v
+        running.append(total)
+    bar_abs = nice_number(max(abs(v) for v in vals) * 1.15)
+    line_lo, line_hi = min(running), max(running)
+    line_pad = max(1.0, (line_hi - line_lo) * 0.14)
+    line_lo = -nice_number(abs(line_lo - line_pad)) if line_lo < 0 else 0
+    line_hi = nice_number(line_hi + line_pad) if line_hi > 0 else 0
+    if line_hi <= line_lo:
+        line_hi = line_lo + 1
+    zero_y = pad_t + plot_h / 2
+
+    def x_pos(i):
+        return pad_l + i * (w - pad_l - pad_r) / max(1, len(rows) - 1)
+
+    def y_bar(v):
+        return zero_y - float(v) * (plot_h / 2) / bar_abs
+
+    def y_line(v):
+        return pad_t + (line_hi - float(v)) * plot_h / (line_hi - line_lo)
+
+    grid = f'<line x1="{pad_l}" y1="{zero_y:.1f}" x2="{w-pad_r}" y2="{zero_y:.1f}" stroke="#8b949e" stroke-dasharray="3 3"/>'
+    for v in [bar_abs, 0, -bar_abs]:
+        yy = y_bar(v)
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="3" y="{yy+4:.1f}" fill="#6e7681" font-size="10">{compact_axis_label(v)}</text>'
+    for pct in [0, .5, 1]:
+        yy = pad_t + pct * plot_h
+        lv = line_hi - pct * (line_hi - line_lo)
+        grid += f'<text x="{w-48}" y="{yy+4:.1f}" fill="#6e7681" font-size="10">{compact_axis_label(lv)}</text>'
+    step = (w - pad_l - pad_r) / len(rows)
+    bar_w = max(3, min(8, step * 0.56))
+    bars = ""
+    for i, v in enumerate(vals):
+        cx = x_pos(i)
+        yy = y_bar(v)
+        top = min(yy, zero_y)
+        bh = max(abs(zero_y - yy), 1.3)
+        color = "#f85149" if v >= 0 else "#3fb950"
+        bars += f'<rect x="{cx-bar_w/2:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{color}" opacity=".78"/>'
+    pts = " ".join(f"{x_pos(i):.1f},{y_line(v):.1f}" for i, v in enumerate(running))
+    line = f'<polyline fill="none" stroke="#58a6ff" stroke-width="2" points="{pts}"/>'
+    legend = f'<text x="{w-240}" y="14" fill="#f85149" font-size="10">買超</text><text x="{w-182}" y="14" fill="#3fb950" font-size="10">賣超</text><text x="{w-122}" y="14" fill="#58a6ff" font-size="10">累積線</text>'
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {bars}
+  {line}
+  <text x="{pad_l}" y="14" fill="#e6edf3" font-size="11">{esc(title)}（張）</text>
+  {legend}
+</svg>"""
+
+
 def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
     data = indicator_series(rows)
     if not data:
@@ -2665,15 +2837,13 @@ def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
 def chip_indicator_panel(aligned_series: list[dict]) -> str:
     panels = []
     if aligned_series:
-        panels.append(("aligned", "major", mini_line_svg("大戶持股比例", [("大戶", [float(x.get("major")) if x.get("major") is not None else None for x in aligned_series], "#f85149")], height=108)))
-        panels.append(("aligned", "retail", mini_line_svg("散戶持股比例", [("散戶", [float(x.get("retail")) if x.get("retail") is not None else None for x in aligned_series], "#3fb950")], height=108)))
-        panels.append(("aligned", "totalPeople", mini_line_svg("總股東人數", [("股東人數", [float(x.get("total_people")) if x.get("total_people") is not None else None for x in aligned_series], "#58a6ff")], height=108)))
-        panels.append(("aligned", "foreign", mini_line_svg("外資買賣超", [("外資", [float(x.get("foreign")) if x.get("foreign") is not None else None for x in aligned_series], "#d2a520")], height=108, zero_line=True)))
+        panels.append(("aligned", "holdingPack", holding_compact_svg(aligned_series, "股權分析：大戶 / 散戶 / 股東數")))
+        panels.append(("aligned", "foreignFlow", foreign_flow_bar_line_svg(aligned_series, "外資買賣超 / 區間累積")))
     if not panels:
         return '<div class="strategy-note" style="margin-top:10px">籌碼指標資料不足。</div>'
     return '<div class="chip-indicator-stack">' + "".join(
         f'<div class="indicator-box indicator-hover" data-source="{source}" data-kind="{kind}">{svg}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>'
-        for source, kind, svg in panels[:4]
+        for source, kind, svg in panels
     ) + '</div>'
 
 
@@ -2776,6 +2946,8 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
   <div class="info-cell"><div class="k">外資5日</div><div class="v {('pos' if chip_sum5.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('foreign'),0)}張</div></div>
   <div class="info-cell"><div class="k">投信5日</div><div class="v {('pos' if chip_sum5.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('trust'),0)}張</div></div>
   <div class="info-cell"><div class="k">主力5日合計</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
+</div>
+<div class="holding-info-grid">
   <div class="info-cell"><div class="k">大戶比例</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
   <div class="info-cell"><div class="k">散戶比例</div><div class="v">{fmt_num(h_latest.get('retail'))}%</div></div>
   <div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get('total_people'),0)}</div></div>
@@ -3565,10 +3737,8 @@ function indicatorHtml_{stock_id}(chart, x){{
   if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span><span>區間</span><span>${{wrState(x.wr)}}</span></div>`;
   if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span><span>區間</span><span>${{kdState(x.k,x.d)}}</span></div>`;
   if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>MACD</span><span>${{macdState(x)}}</span></div>`;
-  if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
-  if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
-  if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
-  if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span></div>`;
+  if(kind==='holdingPack') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span><span>散戶持股比例</span><span>${{pct(x.retail)}}</span><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
+  if(kind==='foreignFlow') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
   return `<div class="t-date">${{x.date || '-'}}</div>`;
 }}
 function syncIndicatorPack_{stock_id}(date, mode){{
