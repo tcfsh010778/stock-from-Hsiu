@@ -4359,14 +4359,20 @@ def summarize_entry_variants(results: list[dict]) -> list[dict]:
         wins = [x for x in closed if (x.get("ret") or 0) > 0]
         stops = [x for x in filled if x.get("exit_reason") == "初始停損"]
         targets = [x for x in filled if x.get("exit_reason") == "停利"]
+        losses = [x for x in filled if (x.get("ret") or 0) < 0]
+        current_wins = [x for x in filled if (x.get("ret") or 0) > 0]
         avg_ret = sum(x.get("ret") or 0 for x in filled) / len(filled) if filled else None
         avg_closed = sum(x.get("ret") or 0 for x in closed) / len(closed) if closed else None
+        avg_loss = sum(x.get("ret") or 0 for x in losses) / len(losses) if losses else None
         avg_wait = sum(x.get("wait_days") or 0 for x in filled) / len(filled) if filled else None
         avg_entry_gap = sum(x.get("entry_vs_signal_ret") or 0 for x in filled) / len(filled) if filled else None
         worst = min((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
         best = max((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
         fill_rate = len(filled) / len(rows) * 100 if rows else None
         win_rate = len(wins) / len(closed) * 100 if closed else None
+        current_win_rate = len(current_wins) / len(filled) * 100 if filled else None
+        loss_rate = len(losses) / len(filled) * 100 if filled else None
+        stop_rate = len(stops) / len(filled) * 100 if filled else None
         score = ((avg_ret or -999) + (win_rate or 0) / 10 + min(fill_rate or 0, 60) / 10 - abs((avg_wait or 10) - 5) / 3)
         summary.append({
             "method": method,
@@ -4377,8 +4383,12 @@ def summarize_entry_variants(results: list[dict]) -> list[dict]:
             "closed": len(closed),
             "fill_rate": fill_rate,
             "win_rate": win_rate,
+            "current_win_rate": current_win_rate,
+            "loss_rate": loss_rate,
+            "stop_rate": stop_rate,
             "avg_ret": avg_ret,
             "avg_closed": avg_closed,
+            "avg_loss": avg_loss,
             "avg_wait": avg_wait,
             "avg_entry_gap": avg_entry_gap,
             "best": best,
@@ -4400,12 +4410,12 @@ def build_entry_variant_comparison_html(reports: list[dict]) -> str:
 <tr>
   <td><strong>{esc(x['label'])}</strong><div class="signal-dates">{esc(x['note'])}</div></td>
   <td>{x['filled']} / {x['signals']}<div class="signal-dates">{fmt_num(x['fill_rate'],1)}%</div></td>
-  <td>{fmt_num(x['win_rate'],1)}%</td>
-  <td class="{('pos' if (x.get('avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(x.get('avg_ret'),1)}%</td>
-  <td>{fmt_num(x.get('avg_wait'),1)}</td>
+  <td>{fmt_num(x.get('current_win_rate'),1)}%<div class="signal-dates">已出場 {fmt_num(x.get('win_rate'),1)}%</div></td>
+  <td class="{('neg' if (x.get('loss_rate') or 0) > 35 else 'pos')}">{fmt_num(x.get('loss_rate'),1)}%</td>
+  <td class="{('neg' if (x.get('stop_rate') or 0) > 20 else '')}">{fmt_num(x.get('stop_rate'),1)}%</td>
   <td class="{('pos' if (x.get('avg_entry_gap') or 0) <= 0 else 'neg')}">{fmt_num(x.get('avg_entry_gap'),1)}%</td>
-  <td><span class="pos">{fmt_num(x.get('best'),1)}%</span> / <span class="neg">{fmt_num(x.get('worst'),1)}%</span></td>
-  <td>{x['targets']} / {x['stops']}</td>
+  <td><span class="neg">{fmt_num(x.get('worst'),1)}%</span><div class="signal-dates">均虧 {fmt_num(x.get('avg_loss'),1)}%</div></td>
+  <td>{fmt_num(x.get('avg_wait'),1)}</td>
 </tr>"""
     sample_rows = ""
     for x in sorted([r for r in results if r.get("entry") is not None], key=lambda r: (r.get("method") != summary[0]["method"], r.get("report_date", ""), r.get("sid", "")), reverse=True)[:18]:
@@ -4426,11 +4436,11 @@ def build_entry_variant_comparison_html(reports: list[dict]) -> str:
   <div class="strategy-note">同一批歷史訊號，訊號日後最多等待 20 個交易日。這裡只替換買入區，停利沿用原報告目標價，初始停損用該買入價下方最近可執行支撐或買點 -6%。</div>
   <div style="overflow-x:auto;margin-top:12px">
     <table class="stock-table">
-      <thead><tr><th>買點版本</th><th>成交數</th><th>勝率</th><th>平均報酬</th><th>平均等待日</th><th>相對訊號日買貴/便宜</th><th>最佳/最差</th><th>停利/停損</th></tr></thead>
+      <thead><tr><th>買點版本</th><th>成交數</th><th>目前勝率</th><th>虧損率</th><th>停損率</th><th>買貴/便宜</th><th>最差風險</th><th>平均等待日</th></tr></thead>
       <tbody>{rows_html}</tbody>
     </table>
   </div>
-  <div class="strategy-note" style="margin-top:12px">「相對訊號日買貴/便宜」為成交價相對報告日收盤價，負值代表買得比較低。成交數太低代表規則可能太嚴；成交數太高但平均報酬差，通常代表買點不夠低或濾網不足。</div>
+  <div class="strategy-note" style="margin-top:12px">目前勝率把持有中的未實現損益也納入；已出場勝率只看已停利/停損的單。買貴/便宜為成交價相對報告日收盤價，負值代表買得比較低。這張表重點看成交數是否夠、虧損率與停損率是否可接受、最差風險是否太深。</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>近期成交樣本</th><th>買入區/成交</th><th>買貴/便宜</th><th>出場</th><th>報酬</th></tr></thead>
