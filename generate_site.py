@@ -2708,9 +2708,11 @@ def calc_sell_signal(daily: list[dict], weekly: list[dict], chip_series: list[di
     if long_black and foreign_sell_streak >= 2:
         level, cls = "立即檢查", "exit"
         reasons.append("量大長黑且外資連賣")
-    elif profit is not None and profit > 20 and weekly_turn and last2_drop:
-        level, cls = "波段轉弱", "exit"
-        reasons.append("漲幅>20%，週K轉折且日K連兩根跌逾3%")
+    elif profit is not None and profit > 20 and ma20_gap is not None and ma20_gap < 0:
+        level, cls = "跌破MA20", "exit"
+        reasons.append("漲幅>20%，依MA20主線出場")
+        if weekly_turn and last2_drop:
+            reasons.append("週K轉折且日K連兩根跌逾3%")
     elif profit is not None and profit <= 10 and ma20_gap is not None and ma20_gap < 0:
         level, cls = "跌破MA20", "watch"
         reasons.append("漲幅10%內跌破MA20")
@@ -6225,7 +6227,7 @@ def historical_sell_exit(
         return close, f"{level}｜{reason}"
     if level == "跌破MA20" and close:
         return close, f"{level}｜{reason}"
-    if level == "月線轉弱" and close and (profit is None or profit <= 20):
+    if level == "月線轉弱" and close:
         return close, f"{level}｜{reason}"
     return None, None
 
@@ -6254,7 +6256,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
     return f"""
 <div class="card">
   <div class="section-label">{esc(title)}</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後以 MA20 主線續抱，跌破 MA20 出場；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
@@ -6327,7 +6329,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">歷史回測</div>
-  <div class="page-sub">依 Williams -65~-85 買入區、MA20 濾網、停利與初始停損追蹤訊號後績效。成交從報告日後一個交易日開始計算。</div>
+  <div class="page-sub">依 SFZ_TA3 初始買點與行進籃 Williams 回落買點追蹤訊號後績效；出場以初始停損與 MA20 主線為核心，不設固定 +10% 停利。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(results)}</div><div class="metric-label">歷史訊號</div></div>
     <div class="metric"><div class="metric-num">{len(filled)}</div><div class="metric-label">已觸及買入區</div></div>
