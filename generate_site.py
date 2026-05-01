@@ -4185,10 +4185,16 @@ def indicator_entry_zone(method: str, past_rows: list[dict], decision: dict) -> 
     if method == "original":
         low, high = parse_range_values(decision.get("entry_range"))
         return {"low": low, "high": high, "label": decision.get("entry_range", "資料不足")}
+    if method in {"wr_65_85", "wr_65_85_ma20", "wr_65_85_no_vol_down"}:
+        low, high = williams_price_zone(past_rows, -85, -65, 14)
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
+    if method == "wr_60_80":
+        low, high = williams_price_zone(past_rows, -80, -60, 14)
+        return {"low": low, "high": high, "label": _price_zone_text(low, high)}
     if method == "wr_80_90":
         low, high = williams_price_zone(past_rows, -90, -80, 14)
         return {"low": low, "high": high, "label": _price_zone_text(low, high)}
-    if method == "wr_70_85":
+    if method in {"wr_70_85", "wr_70_85_ma20", "wr_70_85_no_vol_down", "wr_70_85_b1"}:
         low, high = williams_price_zone(past_rows, -85, -70, 14)
         return {"low": low, "high": high, "label": _price_zone_text(low, high)}
     if method == "kd_20_35":
@@ -4227,6 +4233,13 @@ ENTRY_VARIANTS = [
     ("original", "原本買入區", "原始報告買點 + MA5 + MA10"),
     ("wr_80_90", "Williams -80~-90", "14日 Williams 低接區"),
     ("wr_70_85", "Williams -70~-85", "較寬鬆 Williams 低接區"),
+    ("wr_65_85", "Williams -65~-85", "放寬上緣，提高成交機會"),
+    ("wr_60_80", "Williams -60~-80", "更寬鬆 Williams 觀察區"),
+    ("wr_70_85_ma20", "WR -70~-85 + MA20", "低接區且訊號日不跌破 MA20"),
+    ("wr_70_85_no_vol_down", "WR -70~-85 + 非放量下跌", "低接區且排除放量下跌"),
+    ("wr_65_85_ma20", "WR -65~-85 + MA20", "放寬低接區且訊號日不跌破 MA20"),
+    ("wr_65_85_no_vol_down", "WR -65~-85 + 非放量下跌", "放寬低接區且排除放量下跌"),
+    ("wr_70_85_b1", "WR -70~-85 + B1未離開", "低接區且籌碼未明顯離開"),
     ("kd_20_35", "KD RSV 20~35", "9日 KD 低檔價格區"),
     ("wr_kd_overlap", "WR/KD 重疊", "Williams 與 KD 低接區交集"),
 ]
@@ -4246,6 +4259,53 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
 
     tech = technical_snapshot(past_rows, s)
     decision = build_trade_decision(tech, s)
+    close = tech.get("close")
+    ma20 = tech.get("ma20")
+    volume_price = tech.get("volume_price")
+    if method.endswith("_ma20") and close and ma20 and close < ma20:
+        return {
+            "method": method,
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "status": "濾網排除",
+            "entry_range": "MA20濾網排除",
+            "entry": None,
+            "ret": None,
+            "wait_days": None,
+            "entry_vs_signal_ret": None,
+            "exit_reason": "訊號日收盤跌破MA20",
+        }
+    if method.endswith("_no_vol_down") and volume_price == "放量下跌":
+        return {
+            "method": method,
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "status": "濾網排除",
+            "entry_range": "量價濾網排除",
+            "entry": None,
+            "ret": None,
+            "wait_days": None,
+            "entry_vs_signal_ret": None,
+            "exit_reason": "訊號日放量下跌",
+        }
+    if method.endswith("_b1"):
+        force_status = b1_force_status(s, read_chip_series(sid), read_holding_summary(sid))
+        if force_status == "B1主力已離開":
+            return {
+                "method": method,
+                "sid": sid,
+                "name": s.get("name", ""),
+                "report_date": report_date,
+                "status": "濾網排除",
+                "entry_range": "B1濾網排除",
+                "entry": None,
+                "ret": None,
+                "wait_days": None,
+                "entry_vs_signal_ret": None,
+                "exit_reason": "B1主力已離開",
+            }
     zone = indicator_entry_zone(method, past_rows, decision)
     entry_low, entry_high = zone.get("low"), zone.get("high")
     target = decision.get("target")
@@ -4373,7 +4433,16 @@ def summarize_entry_variants(results: list[dict]) -> list[dict]:
         current_win_rate = len(current_wins) / len(filled) * 100 if filled else None
         loss_rate = len(losses) / len(filled) * 100 if filled else None
         stop_rate = len(stops) / len(filled) * 100 if filled else None
-        score = ((avg_ret or -999) + (win_rate or 0) / 10 + min(fill_rate or 0, 60) / 10 - abs((avg_wait or 10) - 5) / 3)
+        if not filled:
+            score = -999
+        else:
+            fill = fill_rate or 0
+            # Prefer a usable fill rate, not a one-off perfect-looking sample.
+            fill_score = max(0, 10 - abs(fill - 18) / 2)
+            risk_score = (current_win_rate or 0) / 10 - (loss_rate or 0) / 8 - (stop_rate or 0) / 10 + (worst or 0) / 2
+            cheap_score = min(3, max(-3, -(avg_entry_gap or 0) / 1.5))
+            small_sample_penalty = 16 if len(filled) < 5 else 6 if len(filled) < 8 else 0
+            score = fill_score + risk_score + cheap_score - small_sample_penalty
         summary.append({
             "method": method,
             "label": label,

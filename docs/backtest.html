@@ -248,14 +248,74 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <thead><tr><th>買點版本</th><th>成交數</th><th>目前勝率</th><th>虧損率</th><th>停損率</th><th>買貴/便宜</th><th>最差風險</th><th>平均等待日</th></tr></thead>
       <tbody>
 <tr>
-  <td><strong>原本買入區</strong><div class="signal-dates">原始報告買點 + MA5 + MA10</div></td>
-  <td>44 / 60<div class="signal-dates">73.3%</div></td>
-  <td>50.0%<div class="signal-dates">已出場 36.8%</div></td>
-  <td class="neg">50.0%</td>
-  <td class="neg">27.3%</td>
-  <td class="neg">1.1%</td>
-  <td><span class="neg">-6.1%</span><div class="signal-dates">均虧 -3.5%</div></td>
-  <td>1.2</td>
+  <td><strong>WR -65~-85 + MA20</strong><div class="signal-dates">放寬低接區且訊號日不跌破 MA20</div></td>
+  <td>9 / 60<div class="signal-dates">15.0%</div></td>
+  <td>77.8%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">22.2%</td>
+  <td class="neg">22.2%</td>
+  <td class="pos">-3.4%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -4.5%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>Williams -70~-85</strong><div class="signal-dates">較寬鬆 Williams 低接區</div></td>
+  <td>8 / 60<div class="signal-dates">13.3%</div></td>
+  <td>75.0%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">25.0%</td>
+  <td class="neg">25.0%</td>
+  <td class="pos">-3.6%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -70~-85 + 非放量下跌</strong><div class="signal-dates">低接區且排除放量下跌</div></td>
+  <td>8 / 60<div class="signal-dates">13.3%</div></td>
+  <td>75.0%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">25.0%</td>
+  <td class="neg">25.0%</td>
+  <td class="pos">-3.6%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>Williams -65~-85</strong><div class="signal-dates">放寬上緣，提高成交機會</div></td>
+  <td>11 / 60<div class="signal-dates">18.3%</div></td>
+  <td>63.6%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="neg">36.4%</td>
+  <td class="neg">36.4%</td>
+  <td class="pos">-3.1%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -5.3%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -65~-85 + 非放量下跌</strong><div class="signal-dates">放寬低接區且排除放量下跌</div></td>
+  <td>11 / 60<div class="signal-dates">18.3%</div></td>
+  <td>63.6%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="neg">36.4%</td>
+  <td class="neg">36.4%</td>
+  <td class="pos">-3.1%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -5.3%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>Williams -60~-80</strong><div class="signal-dates">更寬鬆 Williams 觀察區</div></td>
+  <td>15 / 60<div class="signal-dates">25.0%</div></td>
+  <td>73.3%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">26.7%</td>
+  <td class="neg">26.7%</td>
+  <td class="pos">-2.2%</td>
+  <td><span class="neg">-8.0%</span><div class="signal-dates">均虧 -6.5%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -70~-85 + MA20</strong><div class="signal-dates">低接區且訊號日不跌破 MA20</div></td>
+  <td>6 / 60<div class="signal-dates">10.0%</div></td>
+  <td>83.3%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">16.7%</td>
+  <td class="">16.7%</td>
+  <td class="pos">-3.5%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
+  <td>1.0</td>
 </tr>
 <tr>
   <td><strong>WR/KD 重疊</strong><div class="signal-dates">Williams 與 KD 低接區交集</div></td>
@@ -265,6 +325,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="">0.0%</td>
   <td class="pos">-5.7%</td>
   <td><span class="neg">7.6%</span><div class="signal-dates">均虧 ─%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -70~-85 + B1未離開</strong><div class="signal-dates">低接區且籌碼未明顯離開</div></td>
+  <td>3 / 60<div class="signal-dates">5.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-4.0%</td>
+  <td><span class="neg">4.1%</span><div class="signal-dates">均虧 ─%</div></td>
   <td>1.0</td>
 </tr>
 <tr>
@@ -278,14 +348,14 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>1.1</td>
 </tr>
 <tr>
-  <td><strong>Williams -70~-85</strong><div class="signal-dates">較寬鬆 Williams 低接區</div></td>
-  <td>8 / 60<div class="signal-dates">13.3%</div></td>
-  <td>75.0%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">25.0%</td>
-  <td class="neg">25.0%</td>
-  <td class="pos">-3.6%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
-  <td>1.0</td>
+  <td><strong>原本買入區</strong><div class="signal-dates">原始報告買點 + MA5 + MA10</div></td>
+  <td>44 / 60<div class="signal-dates">73.3%</div></td>
+  <td>50.0%<div class="signal-dates">已出場 36.8%</div></td>
+  <td class="neg">50.0%</td>
+  <td class="neg">27.3%</td>
+  <td class="neg">1.1%</td>
+  <td><span class="neg">-6.1%</span><div class="signal-dates">均虧 -3.5%</div></td>
+  <td>1.2</td>
 </tr>
 <tr>
   <td><strong>Williams -80~-90</strong><div class="signal-dates">14日 Williams 低接區</div></td>
@@ -305,11 +375,81 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <thead><tr><th>近期成交樣本</th><th>買入區/成交</th><th>買貴/便宜</th><th>出場</th><th>報酬</th></tr></thead>
       <tbody>
 <tr>
+  <td><a class="stock-link" href="stocks/8358.html">8358 金居</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>355.05 ~ 372.64<div class="signal-dates">成交 2026-04-30｜372.64</div></td>
+  <td>0.8%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">4.3%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>501.48 ~ 556.51<div class="signal-dates">成交 2026-04-30｜555.00</div></td>
+  <td>0.0%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">3.8%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6672.html">6672 騰輝電子-KY</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>192.21 ~ 207.05<div class="signal-dates">成交 2026-04-30｜207.05</div></td>
+  <td>-0.5%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">5.8%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6434.html">6434 達輝光電</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>25.49 ~ 27.14<div class="signal-dates">成交 2026-04-30｜27.14</div></td>
+  <td>-5.9%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">8.5%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>177.68 ~ 183.06<div class="signal-dates">成交 2026-04-30｜180.37</div></td>
+  <td>1.6%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="neg" style="font-weight:800">-0.2%</td>
+</tr>
+<tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">Williams -70~-85｜報告 2026-04-29</div></td>
   <td>174.88 ~ 178.25<div class="signal-dates">成交 2026-04-30｜178.00</div></td>
   <td>0.3%</td>
   <td>持有中<div class="signal-dates">2026-04-30</div></td>
   <td class="pos" style="font-weight:800">1.1%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">Williams -65~-85｜報告 2026-04-29</div></td>
+  <td>174.88 ~ 179.38<div class="signal-dates">成交 2026-04-30｜177.12</div></td>
+  <td>-0.2%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.6%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">Williams -60~-80｜報告 2026-04-29</div></td>
+  <td>176.00 ~ 180.50<div class="signal-dates">成交 2026-04-30｜178.25</div></td>
+  <td>0.4%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.0%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">WR -70~-85 + MA20｜報告 2026-04-29</div></td>
+  <td>174.88 ~ 178.25<div class="signal-dates">成交 2026-04-30｜178.00</div></td>
+  <td>0.3%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.1%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">WR -70~-85 + 非放量下跌｜報告 2026-04-29</div></td>
+  <td>174.88 ~ 178.25<div class="signal-dates">成交 2026-04-30｜178.00</div></td>
+  <td>0.3%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.1%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-04-29</div></td>
+  <td>174.88 ~ 179.38<div class="signal-dates">成交 2026-04-30｜177.12</div></td>
+  <td>-0.2%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.6%</td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
@@ -319,6 +459,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="pos" style="font-weight:800">0.9%</td>
 </tr>
 <tr>
+  <td><a class="stock-link" href="stocks/6213.html">6213 聯茂</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>261.86 ~ 273.71<div class="signal-dates">成交 2026-04-30｜267.78</div></td>
+  <td>5.6%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">0.8%</td>
+</tr>
+<tr>
   <td><a class="stock-link" href="stocks/6213.html">6213 聯茂</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
   <td>260.00 ~ 269.75<div class="signal-dates">成交 2026-04-30｜264.88</div></td>
   <td>4.5%</td>
@@ -326,109 +473,32 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="pos" style="font-weight:800">1.9%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
-  <td>373.50 ~ 390.38<div class="signal-dates">成交 2026-04-30｜381.94</div></td>
-  <td>-1.2%</td>
+  <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">原本買入區｜報告 2026-04-29</div></td>
+  <td>376.99 ~ 403.60<div class="signal-dates">成交 2026-04-30｜390.30</div></td>
+  <td>1.0%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">Williams -65~-85｜報告 2026-04-29</div></td>
+  <td>348.32 ~ 375.43<div class="signal-dates">成交 2026-04-30｜375.43</div></td>
+  <td>-2.9%</td>
+  <td>持有中<div class="signal-dates">2026-04-30</div></td>
+  <td class="pos" style="font-weight:800">1.9%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">Williams -60~-80｜報告 2026-04-29</div></td>
+  <td>355.10 ~ 382.20<div class="signal-dates">成交 2026-04-30｜382.20</div></td>
+  <td>-1.1%</td>
   <td>持有中<div class="signal-dates">2026-04-30</div></td>
   <td class="pos" style="font-weight:800">0.1%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
-  <td>60.32 ~ 63.11<div class="signal-dates">成交 2026-04-30｜60.32</div></td>
-  <td>0.0%</td>
+  <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-04-29</div></td>
+  <td>348.32 ~ 375.43<div class="signal-dates">成交 2026-04-30｜375.43</div></td>
+  <td>-2.9%</td>
   <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">0.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
-  <td>514.60 ~ 537.55<div class="signal-dates">成交 2026-04-30｜530.00</div></td>
-  <td>5.6%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">1.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2455.html">2455 全新</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
-  <td>315.20 ~ 328.10<div class="signal-dates">成交 2026-04-30｜321.65</div></td>
-  <td>1.8%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">8.0%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2402.html">2402 毅嘉</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-29</div></td>
-  <td>70.28 ~ 73.04<div class="signal-dates">成交 2026-04-30｜70.28</div></td>
-  <td>2.7%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="neg" style="font-weight:800">-0.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6407.html">6407 安集</a><div class="signal-dates">Williams -70~-85｜報告 2026-04-28</div></td>
-  <td>35.11 ~ 41.21<div class="signal-dates">成交 2026-04-29｜41.21</div></td>
-  <td>-0.7%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">11.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6407.html">6407 安集</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>44.74 ~ 49.42<div class="signal-dates">成交 2026-04-29｜44.74</div></td>
-  <td>7.8%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">2.5%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6213.html">6213 聯茂</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>245.60 ~ 258.05<div class="signal-dates">成交 2026-04-29｜251.82</div></td>
-  <td>-0.7%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">7.2%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/5271.html">5271 矽力-KY</a><div class="signal-dates">Williams -80~-90｜報告 2026-04-28</div></td>
-  <td>18.91 ~ 22.92<div class="signal-dates">成交 2026-04-29｜22.92</div></td>
-  <td>-9.2%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">11.9%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/5271.html">5271 矽力-KY</a><div class="signal-dates">Williams -70~-85｜報告 2026-04-28</div></td>
-  <td>20.91 ~ 26.93<div class="signal-dates">成交 2026-04-29｜23.92</div></td>
-  <td>-5.3%</td>
-  <td>初始停損<div class="signal-dates">2026-04-29</div></td>
-  <td class="neg" style="font-weight:800">-6.0%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3673.html">3673 TPK觸控</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>60.32 ~ 63.11<div class="signal-dates">成交 2026-04-29｜61.72</div></td>
-  <td>2.7%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="neg" style="font-weight:800">-2.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">Williams -70~-85｜報告 2026-04-28</div></td>
-  <td>462.33 ~ 493.15<div class="signal-dates">成交 2026-04-29｜493.15</div></td>
-  <td>-1.3%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">8.7%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>485.40 ~ 513.83<div class="signal-dates">成交 2026-04-29｜499.61</div></td>
-  <td>0.0%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">7.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2484.html">2484 希華</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>39.20 ~ 41.45<div class="signal-dates">成交 2026-04-29｜40.33</div></td>
-  <td>-0.4%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="neg" style="font-weight:800">-1.9%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2476.html">2476 鑫創</a><div class="signal-dates">KD RSV 20~35｜報告 2026-04-28</div></td>
-  <td>109.80 ~ 113.40<div class="signal-dates">成交 2026-04-29｜113.40</div></td>
-  <td>-4.3%</td>
-  <td>持有中<div class="signal-dates">2026-04-30</div></td>
-  <td class="pos" style="font-weight:800">3.2%</td>
+  <td class="pos" style="font-weight:800">1.9%</td>
 </tr></tbody>
     </table>
   </div>
