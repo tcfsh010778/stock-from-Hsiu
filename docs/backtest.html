@@ -227,17 +227,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="page-title">歷史回測</div>
   <div class="page-sub">依 Williams -65~-85 買入區、MA20 濾網、停利與初始停損追蹤訊號後績效。成交從報告日後一個交易日開始計算。</div>
   <div class="grid grid-3">
-    <div class="metric"><div class="metric-num">60</div><div class="metric-label">歷史訊號</div></div>
-    <div class="metric"><div class="metric-num">9</div><div class="metric-label">已觸及買入區</div></div>
-    <div class="metric"><div class="metric-num">8</div><div class="metric-label">持有中</div></div>
-    <div class="metric"><div class="metric-num">0.0%</div><div class="metric-label">已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">4.8%</div><div class="metric-label">平均報酬，含持有中</div></div>
-    <div class="metric"><div class="metric-num">1.6</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">50</div><div class="metric-label">歷史訊號</div></div>
+    <div class="metric"><div class="metric-num">6</div><div class="metric-label">已觸及買入區</div></div>
+    <div class="metric"><div class="metric-num">6</div><div class="metric-label">持有中</div></div>
+    <div class="metric"><div class="metric-num">─%</div><div class="metric-label">已出場勝率</div></div>
+    <div class="metric"><div class="metric-num pos">4.5%</div><div class="metric-label">平均報酬，含持有中</div></div>
+    <div class="metric"><div class="metric-num">1.7</div><div class="metric-label">平均持有天數</div></div>
   </div>
   <div class="card">
     <div class="section-label">回測規則</div>
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
-    <div class="chip-line">已出場：1 筆｜停利/獲利：0 筆｜停損/虧損：1 筆｜平均已實現：-6.0%｜最佳：12.1%｜最差：-6.0%</div>
+    <div class="chip-line">已出場：0 筆｜停利/獲利：0 筆｜停損/虧損：0 筆｜平均已實現：─%｜最佳：7.6%｜最差：1.6%</div>
   </div>
   
 <div class="card">
@@ -249,87 +249,87 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <tbody>
 <tr>
   <td><strong>WR -65~-85 + MA20</strong><div class="signal-dates">放寬低接區且訊號日不跌破 MA20</div></td>
-  <td>9 / 60<div class="signal-dates">15.0%</div></td>
-  <td>77.8%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">22.2%</td>
-  <td class="neg">22.2%</td>
-  <td class="pos">-3.4%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -4.5%</div></td>
+  <td>6 / 50<div class="signal-dates">12.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-3.8%</td>
+  <td><span class="neg">1.6%</span><div class="signal-dates">均虧 ─%</div></td>
   <td>1.0</td>
 </tr>
 <tr>
   <td><strong>正式買入區</strong><div class="signal-dates">Williams -65~-85 + MA20濾網</div></td>
-  <td>9 / 60<div class="signal-dates">15.0%</div></td>
-  <td>77.8%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">22.2%</td>
-  <td class="neg">22.2%</td>
-  <td class="pos">-3.4%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -4.5%</div></td>
-  <td>1.0</td>
-</tr>
-<tr>
-  <td><strong>Williams -70~-85</strong><div class="signal-dates">較寬鬆 Williams 低接區</div></td>
-  <td>8 / 60<div class="signal-dates">13.3%</div></td>
-  <td>75.0%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">25.0%</td>
-  <td class="neg">25.0%</td>
-  <td class="pos">-3.6%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
-  <td>1.0</td>
-</tr>
-<tr>
-  <td><strong>WR -70~-85 + 非放量下跌</strong><div class="signal-dates">低接區且排除放量下跌</div></td>
-  <td>8 / 60<div class="signal-dates">13.3%</div></td>
-  <td>75.0%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">25.0%</td>
-  <td class="neg">25.0%</td>
-  <td class="pos">-3.6%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
-  <td>1.0</td>
-</tr>
-<tr>
-  <td><strong>Williams -65~-85</strong><div class="signal-dates">放寬上緣，提高成交機會</div></td>
-  <td>11 / 60<div class="signal-dates">18.3%</div></td>
-  <td>63.6%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">36.4%</td>
-  <td class="neg">36.4%</td>
-  <td class="pos">-3.1%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -5.3%</div></td>
-  <td>1.0</td>
-</tr>
-<tr>
-  <td><strong>WR -65~-85 + 非放量下跌</strong><div class="signal-dates">放寬低接區且排除放量下跌</div></td>
-  <td>11 / 60<div class="signal-dates">18.3%</div></td>
-  <td>63.6%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">36.4%</td>
-  <td class="neg">36.4%</td>
-  <td class="pos">-3.1%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -5.3%</div></td>
+  <td>6 / 50<div class="signal-dates">12.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-3.8%</td>
+  <td><span class="neg">1.6%</span><div class="signal-dates">均虧 ─%</div></td>
   <td>1.0</td>
 </tr>
 <tr>
   <td><strong>Williams -60~-80</strong><div class="signal-dates">更寬鬆 Williams 觀察區</div></td>
-  <td>15 / 60<div class="signal-dates">25.0%</div></td>
-  <td>73.3%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">26.7%</td>
-  <td class="neg">26.7%</td>
-  <td class="pos">-2.2%</td>
-  <td><span class="neg">-8.0%</span><div class="signal-dates">均虧 -6.5%</div></td>
-  <td>1.0</td>
-</tr>
-<tr>
-  <td><strong>WR -70~-85 + MA20</strong><div class="signal-dates">低接區且訊號日不跌破 MA20</div></td>
-  <td>6 / 60<div class="signal-dates">10.0%</div></td>
-  <td>83.3%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">16.7%</td>
-  <td class="">16.7%</td>
-  <td class="pos">-3.5%</td>
+  <td>11 / 50<div class="signal-dates">22.0%</div></td>
+  <td>90.9%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">9.1%</td>
+  <td class="">9.1%</td>
+  <td class="pos">-2.4%</td>
   <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
   <td>1.0</td>
 </tr>
 <tr>
+  <td><strong>Williams -70~-85</strong><div class="signal-dates">較寬鬆 Williams 低接區</div></td>
+  <td>5 / 50<div class="signal-dates">10.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-3.5%</td>
+  <td><span class="neg">1.1%</span><div class="signal-dates">均虧 ─%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -70~-85 + 非放量下跌</strong><div class="signal-dates">低接區且排除放量下跌</div></td>
+  <td>5 / 50<div class="signal-dates">10.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-3.5%</td>
+  <td><span class="neg">1.1%</span><div class="signal-dates">均虧 ─%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>Williams -65~-85</strong><div class="signal-dates">放寬上緣，提高成交機會</div></td>
+  <td>7 / 50<div class="signal-dates">14.0%</div></td>
+  <td>85.7%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">14.3%</td>
+  <td class="">14.3%</td>
+  <td class="pos">-3.4%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>WR -65~-85 + 非放量下跌</strong><div class="signal-dates">放寬低接區且排除放量下跌</div></td>
+  <td>7 / 50<div class="signal-dates">14.0%</div></td>
+  <td>85.7%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">14.3%</td>
+  <td class="">14.3%</td>
+  <td class="pos">-3.4%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -6.0%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
+  <td><strong>Williams -80~-90</strong><div class="signal-dates">14日 Williams 低接區</div></td>
+  <td>1 / 50<div class="signal-dates">2.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-5.8%</td>
+  <td><span class="neg">7.7%</span><div class="signal-dates">均虧 ─%</div></td>
+  <td>1.0</td>
+</tr>
+<tr>
   <td><strong>WR/KD 重疊</strong><div class="signal-dates">Williams 與 KD 低接區交集</div></td>
-  <td>1 / 60<div class="signal-dates">1.7%</div></td>
+  <td>1 / 50<div class="signal-dates">2.0%</div></td>
   <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
   <td class="pos">0.0%</td>
   <td class="">0.0%</td>
@@ -339,7 +339,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><strong>WR -70~-85 + B1未離開</strong><div class="signal-dates">低接區且籌碼未明顯離開</div></td>
-  <td>3 / 60<div class="signal-dates">5.0%</div></td>
+  <td>3 / 50<div class="signal-dates">6.0%</div></td>
   <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
   <td class="pos">0.0%</td>
   <td class="">0.0%</td>
@@ -348,24 +348,24 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>1.0</td>
 </tr>
 <tr>
-  <td><strong>KD RSV 20~35</strong><div class="signal-dates">9日 KD 低檔價格區</div></td>
-  <td>27 / 60<div class="signal-dates">45.0%</div></td>
-  <td>63.0%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">37.0%</td>
-  <td class="">18.5%</td>
-  <td class="pos">-0.1%</td>
-  <td><span class="neg">-11.4%</span><div class="signal-dates">均虧 -4.0%</div></td>
-  <td>1.1</td>
+  <td><strong>WR -70~-85 + MA20</strong><div class="signal-dates">低接區且訊號日不跌破 MA20</div></td>
+  <td>4 / 50<div class="signal-dates">8.0%</div></td>
+  <td>100.0%<div class="signal-dates">已出場 ─%</div></td>
+  <td class="pos">0.0%</td>
+  <td class="">0.0%</td>
+  <td class="pos">-3.8%</td>
+  <td><span class="neg">1.1%</span><div class="signal-dates">均虧 ─%</div></td>
+  <td>1.0</td>
 </tr>
 <tr>
-  <td><strong>Williams -80~-90</strong><div class="signal-dates">14日 Williams 低接區</div></td>
-  <td>3 / 60<div class="signal-dates">5.0%</div></td>
-  <td>66.7%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="pos">33.3%</td>
-  <td class="neg">33.3%</td>
-  <td class="pos">-8.1%</td>
-  <td><span class="neg">-8.8%</span><div class="signal-dates">均虧 -8.8%</div></td>
-  <td>1.0</td>
+  <td><strong>KD RSV 20~35</strong><div class="signal-dates">9日 KD 低檔價格區</div></td>
+  <td>23 / 50<div class="signal-dates">46.0%</div></td>
+  <td>69.6%<div class="signal-dates">已出場 0.0%</div></td>
+  <td class="pos">30.4%</td>
+  <td class="">8.7%</td>
+  <td class="pos">-0.4%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -2.6%</div></td>
+  <td>1.1</td>
 </tr></tbody>
     </table>
   </div>
@@ -528,15 +528,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-target">目 996.54</div><div class="price-stop">初停 677.27</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6920.html">6920 恆勁科技</a><div class="signal-dates">行進籃｜報告 2026-04-29</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>69.72 ~ 84.03<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 133.11</div><div class="price-stop">初停 72.26</div></td>
-</tr>
-<tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">行進籃｜報告 2026-04-29</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
   <td>371.58 ~ 423.67<div class="signal-dates">成交 ─｜─</div></td>
@@ -553,15 +544,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
   <td><div class="price-target">目 230.52</div><div class="price-stop">初停 156.04</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6434.html">6434 達輝光電</a><div class="signal-dates">行進籃｜報告 2026-04-29</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>11.63 ~ 17.94<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 39.22</div><div class="price-stop">初停 13.90</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">盤整籃｜報告 2026-04-29</div></td>
@@ -699,15 +681,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-target">目 162.18</div><div class="price-stop">初停 130.34</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6920.html">6920 銀泰科</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>59.95 ~ 76.55<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 120.87</div><div class="price-stop">初停 64.16</div></td>
-</tr>
-<tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
   <td>371.58 ~ 423.67<div class="signal-dates">成交 ─｜─</div></td>
@@ -735,24 +708,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-target">目 807.84</div><div class="price-stop">初停 539.56</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6434.html">6434 元晶</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>11.51 ~ 17.84<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 37.23</div><div class="price-stop">初停 13.79</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6407.html">6407 安集</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
-  <td>35.11 ~ 43.25<div class="signal-dates">成交 2026-04-29｜41.53</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 45.85</div></td>
-  <td class="pos" style="font-weight:800">+10.4%</td>
-  <td>1</td>
-  <td><div class="price-target">目 60.38</div><div class="price-stop">初停 36.82</div></td>
-</tr>
-<tr>
   <td><a class="stock-link" href="stocks/6213.html">6213 聯茂</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
   <td>214.68 ~ 237.57<div class="signal-dates">成交 ─｜─</div></td>
@@ -769,15 +724,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
   <td><div class="price-target">目 147.90</div><div class="price-stop">初停 102.93</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/5271.html">5271 矽力-KY</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
-  <td><span class="tag tag">濾網排除</span><div class="signal-dates">訊號日收盤跌破MA20</div></td>
-  <td>MA20濾網排除<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 51.71</div><div class="price-stop">初停 23.43</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/4960.html">4960 誠美材</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
@@ -879,15 +825,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-target">目 412.08</div><div class="price-stop">初停 264.14</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6920.html">6920 恆勁科技（半導體）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>52.98 ~ 71.22<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 120.87</div><div class="price-stop">初停 58.37</div></td>
-</tr>
-<tr>
   <td><a class="stock-link" href="stocks/6672.html">6672 騰輝電子-KY（電子零組件）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
   <td>143.55 ~ 162.95<div class="signal-dates">成交 ─｜─</div></td>
@@ -895,24 +832,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
   <td><div class="price-target">目 214.71</div><div class="price-stop">初停 144.05</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6434.html">6434 達輝光電（光電業）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>11.51 ~ 17.84<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
-  <td><div class="price-target">目 37.23</div><div class="price-stop">初停 14.20</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6407.html">6407 相互（電子零組件）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
-  <td>32.05 ~ 40.91<div class="signal-dates">成交 2026-04-27｜40.91</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 45.85</div></td>
-  <td class="pos" style="font-weight:800">+12.1%</td>
-  <td>3</td>
-  <td><div class="price-target">目 60.38</div><div class="price-stop">初停 34.29</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6213.html">6213 聯茂（電子零組件）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
@@ -949,15 +868,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
   <td><div class="price-target">目 450.33</div><div class="price-stop">初停 301.74</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/5271.html">5271 紘通（電子零組件）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>
-  <td><span class="tag tag-red">停損/出場</span><div class="signal-dates">初始停損</div></td>
-  <td>20.91 ~ 28.93<div class="signal-dates">成交 2026-04-27｜24.92</div></td>
-  <td>2026-04-27<div class="signal-dates">出場 23.43</div></td>
-  <td class="neg" style="font-weight:800">-6.0%</td>
-  <td>0</td>
-  <td><div class="price-target">目 51.71</div><div class="price-stop">初停 23.43</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3714.html">3714 富采（光電業）</a><div class="signal-dates">行進籃｜報告 2026-04-24</div></td>

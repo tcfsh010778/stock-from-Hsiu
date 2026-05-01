@@ -15,8 +15,9 @@ import json
 import html
 import sqlite3
 import math
+import urllib.request
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # ──────────────────────────────────────────────
 #  路徑設定（Windows / Linux 自動切換）
@@ -31,6 +32,7 @@ LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
 LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
 LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
+MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
@@ -47,6 +49,10 @@ else:
     REPORTS_DIR = _LINUX_REPORTS if _LINUX_REPORTS.exists() else _WIN_REPORTS
 
 OUTPUT_DIR = Path(__file__).parent / "docs"
+
+ALLOWED_MARKETS = {"上市", "上櫃"}
+TWSE_STOCK_DAY_ALL_URL = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"
+TPEX_DAILY_CLOSE_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes"
 
 # ──────────────────────────────────────────────
 #  MD 解析器
@@ -272,6 +278,88 @@ def find_all_reports() -> list[Path]:
     return [v for _, v in sorted(seen_dates.items(), reverse=True)]
 
 
+def _fetch_json(url: str):
+    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=20) as resp:
+        return json.loads(resp.read().decode("utf-8-sig"))
+
+
+def load_stock_market_map() -> dict[str, str]:
+    """Load listed/OTC market map from official daily quote APIs, with a local cache fallback."""
+    if MARKET_CACHE_PATH.exists():
+        try:
+            cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
+            updated_at = datetime.fromisoformat(cache.get("updated_at", "1970-01-01T00:00:00"))
+            if datetime.now() - updated_at < timedelta(days=1):
+                return cache.get("markets", {})
+        except Exception:
+            pass
+
+    markets: dict[str, str] = {}
+    errors: list[str] = []
+    try:
+        for row in _fetch_json(TWSE_STOCK_DAY_ALL_URL):
+            code = str(row.get("Code", "")).strip()
+            if re.fullmatch(r"\d{4}", code):
+                markets[code] = "上市"
+    except Exception as exc:
+        errors.append(f"TWSE {exc}")
+
+    try:
+        for row in _fetch_json(TPEX_DAILY_CLOSE_URL):
+            code = str(row.get("SecuritiesCompanyCode", "")).strip()
+            if re.fullmatch(r"\d{4}", code):
+                markets[code] = "上櫃"
+    except Exception as exc:
+        errors.append(f"TPEX {exc}")
+
+    if markets:
+        LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
+        MARKET_CACHE_PATH.write_text(
+            json.dumps({"updated_at": datetime.now().isoformat(timespec="seconds"), "markets": markets}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+        print(f"   [Market] loaded {len(markets)} listed/OTC codes", flush=True)
+        return markets
+
+    if MARKET_CACHE_PATH.exists():
+        cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
+        print(f"   [Market] using cached market map after fetch failure: {'; '.join(errors)}", flush=True)
+        return cache.get("markets", {})
+
+    print(f"   [Market][WARN] market map unavailable, skip listed/OTC filter: {'; '.join(errors)}", flush=True)
+    return {}
+
+
+def filter_listed_otc_reports(reports: list[dict]) -> list[dict]:
+    markets = load_stock_market_map()
+    if not markets:
+        return reports
+
+    filtered_reports = []
+    removed: list[str] = []
+    for report in reports:
+        r = dict(report)
+        kept = []
+        for stock in report.get("stocks", []):
+            sid = str(stock.get("id", "")).strip()
+            market = markets.get(sid)
+            if market in ALLOWED_MARKETS:
+                item = dict(stock)
+                item["market"] = market
+                kept.append(item)
+            else:
+                removed.append(f"{sid} {stock.get('name', '')}".strip())
+        r["stocks"] = kept
+        filtered_reports.append(r)
+
+    if removed:
+        sample = "、".join(removed[:12])
+        suffix = "..." if len(removed) > 12 else ""
+        print(f"   [Market] excluded {len(removed)} non-listed/OTC picks: {sample}{suffix}", flush=True)
+    return filtered_reports
+
+
 def load_reports() -> list[dict]:
     md_files = find_all_reports()
     reports = []
@@ -287,11 +375,11 @@ def load_reports() -> list[dict]:
         if reports:
             LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
             REPORTS_CACHE_PATH.write_text(json.dumps(reports, ensure_ascii=False, indent=2), encoding="utf-8")
-            return reports
+            return filter_listed_otc_reports(reports)
 
     if REPORTS_CACHE_PATH.exists():
         print(f"\n[Read] No MD reports found; using cache {REPORTS_CACHE_PATH}", flush=True)
-        return json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8"))
+        return filter_listed_otc_reports(json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8")))
 
     return []
 
