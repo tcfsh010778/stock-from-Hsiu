@@ -1769,7 +1769,14 @@ def chip_flow_svg(series: list[dict], title: str = "10日籌碼動向折線圖")
     pad_l, pad_r, pad_t, pad_b = 54, 18, 24, 36
     plot_h = h - pad_t - pad_b
     keys = [("foreign", "外資", "#58a6ff"), ("trust", "投信", "#d2a520"), ("dealer", "自營商", "#f85149")]
-    max_abs = max(abs(float(item.get(k, 0) or 0)) for item in series for k, _, _ in keys) or 1
+    stack_extents = []
+    for item in series:
+        vals = [float(item.get(k, 0) or 0) for k, _, _ in keys]
+        pos = sum(v for v in vals if v > 0)
+        neg = sum(v for v in vals if v < 0)
+        total = sum(vals)
+        stack_extents.extend([pos, neg, total])
+    max_abs = max(abs(v) for v in stack_extents) or 1
     max_abs *= 1.15
     zero_y = pad_t + plot_h / 2
 
@@ -1782,29 +1789,50 @@ def chip_flow_svg(series: list[dict], title: str = "10日籌碼動向折線圖")
         grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/><text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="11">{v:.0f}</text>'
 
     group_w = (w - pad_l - pad_r) / len(series)
-    bar_w = max(6, min(18, group_w / 5))
+    bar_w = max(12, min(28, group_w * 0.34))
     bars = ""
     labels = ""
+    total_points = []
     for i, item in enumerate(series):
         cx = pad_l + group_w * (i + 0.5)
-        for j, (key, _, color) in enumerate(keys):
+        pos_base = 0.0
+        neg_base = 0.0
+        total = 0.0
+        x = cx - bar_w / 2
+        for key, _, color in keys:
             v = float(item.get(key, 0) or 0)
-            x = cx + (j - 1) * (bar_w + 2) - bar_w / 2
-            yy = y(v)
-            top = min(yy, zero_y)
-            bh = max(abs(zero_y - yy), 1.5)
-            bars += f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{color}" opacity=".82"/>'
+            if v >= 0:
+                y0 = y(pos_base)
+                y1 = y(pos_base + v)
+                pos_base += v
+            else:
+                y0 = y(neg_base)
+                y1 = y(neg_base + v)
+                neg_base += v
+            total += v
+            top = min(y0, y1)
+            bh = max(abs(y0 - y1), 1.5)
+            bars += f'<rect x="{x:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{color}" opacity=".84"/>'
+        total_points.append(f"{cx:.1f},{y(total):.1f}")
         if i in {0, len(series) - 1}:
             labels += f'<text x="{cx-32:.1f}" y="{h-10}" fill="#6e7681" font-size="11">{esc(item.get("date",""))}</text>'
 
     legend = ""
     for i, (_, label, color) in enumerate(keys):
-        legend += f'<text x="{w-210+i*65}" y="16" fill="{color}" font-size="11">{label}</text>'
+        legend += f'<text x="{w-282+i*58}" y="16" fill="{color}" font-size="11">{label}</text>'
+    legend += f'<text x="{w-72}" y="16" fill="#e6edf3" font-size="11">合計線</text>'
+    total_line = f'<polyline points="{" ".join(total_points)}" fill="none" stroke="#e6edf3" stroke-width="2" opacity=".9"/>'
+    total_dots = "".join(
+        f'<circle cx="{pt.split(",")[0]}" cy="{pt.split(",")[1]}" r="2.4" fill="#e6edf3"/>'
+        for pt in total_points
+    )
     return f"""
 <svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
   <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
   {grid}
   {bars}
+  {total_line}
+  {total_dots}
   <text x="{pad_l}" y="16" fill="#e6edf3" font-size="12">{esc(title)}（張）</text>
   {legend}
   {labels}
@@ -2027,7 +2055,7 @@ def build_telegram_info_card(
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">{esc(close)}</div></div><div class="change {price_change_cls}">單日 {esc(price_change_text)}</div></div>
   <div class="telegram-phase"><h3>① 量化篩選確認</h3>{phase1}</div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3>{phase2}</div>
-  <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 AI 深度分析保留在右側。</div>
+  <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
 </div>"""
 
 
@@ -3311,15 +3339,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
         s_view["price_date"] = latest.get("date", "")
-    ai_logs = read_ai_logs(stock_id)
-    ai_html = ""
-    if ai_logs:
-        for log in ai_logs:
-            headline = f"{log['created_at']}｜{log['kind']}｜收盤 {log.get('close') or '─'}｜買點 {log.get('buy_zone') or '─'}"
-            body = (log.get("report") or "")[:1800]
-            ai_html += f'<div class="mini-report"><strong>{esc(headline)}</strong>\n\n{esc(body)}</div>'
-    else:
-        ai_html = '<div class="strategy-note">目前沒有讀到 AI 深度分析紀錄。之後只要 v44 分析寫入 SQLite，這裡會自動帶出最近紀錄。</div>'
+    quick_html = f'<div class="mini-report">{esc(quick_analysis_text(s_view, item))}</div>'
 
     event_rows = ""
     for e in item.get("events", [])[-12:][::-1]:
@@ -3726,8 +3746,8 @@ initMainForceHover_{stock_id}();
         {operation_card}
       </div>
       <div class="card" style="margin-top:12px">
-        <div class="section-label">AI 深度分析</div>
-        {ai_html}
+        <div class="section-label">Quick 分析</div>
+        {quick_html}
       </div>
     </div>
   </div>
