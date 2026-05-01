@@ -6156,6 +6156,8 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                         break
             ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
             path = trade_path_metrics(rows, signal_date, exit_date, entry_price)
+            activated_20 = bool(path.get("max_return") is not None and path["max_return"] >= 20)
+            stopped_before_activation = bool(exit_reason == "初始停損" and not activated_20)
             hold_days = None
             try:
                 hold_days = max(0, (datetime.fromisoformat(exit_date) - datetime.fromisoformat(signal_date)).days)
@@ -6176,6 +6178,8 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                 "ret": ret,
                 "max_return": path.get("max_return"),
                 "max_drawdown": path.get("max_drawdown"),
+                "activated_20": activated_20,
+                "stopped_before_activation": stopped_before_activation,
                 "hold_days": hold_days,
                 "target": target,
                 "stop": stop,
@@ -6189,6 +6193,15 @@ def summarize_trade_rows(rows: list[dict]) -> dict:
     closed = [x for x in filled if x.get("exit_reason") != "持有中"]
     wins = [x for x in closed if (x.get("ret") or 0) > 0]
     losses = [x for x in closed if (x.get("ret") or 0) <= 0]
+    activated = [x for x in filled if x.get("activated_20") or ((x.get("max_return") or 0) >= 20)]
+    activated_closed = [x for x in activated if x.get("exit_reason") != "持有中"]
+    activated_wins = [x for x in activated_closed if (x.get("ret") or 0) > 0]
+    pre_activation_stops = [
+        x for x in filled
+        if x.get("stopped_before_activation")
+        or (x.get("exit_reason") == "初始停損" and (x.get("max_return") or 0) < 20)
+    ]
+    hold_count = len([x for x in filled if x.get("hold_days") is not None])
     return {
         "signals": len(rows),
         "filled": len(filled),
@@ -6201,7 +6214,15 @@ def summarize_trade_rows(rows: list[dict]) -> dict:
         "max_return": max((x.get("max_return") for x in filled if x.get("max_return") is not None), default=None),
         "max_drawdown": min((x.get("max_drawdown") for x in filled if x.get("max_drawdown") is not None), default=None),
         "avg_drawdown": sum(x.get("max_drawdown") or 0 for x in filled) / len(filled) if filled else None,
-        "avg_hold": sum(x.get("hold_days") or 0 for x in filled if x.get("hold_days") is not None) / len([x for x in filled if x.get("hold_days") is not None]) if filled else None,
+        "avg_hold": sum(x.get("hold_days") or 0 for x in filled if x.get("hold_days") is not None) / hold_count if hold_count else None,
+        "activated": len(activated),
+        "activated_closed": len(activated_closed),
+        "activated_wins": len(activated_wins),
+        "activation_rate": len(activated) / len(filled) * 100 if filled else None,
+        "activated_win_rate": len(activated_wins) / len(activated_closed) * 100 if activated_closed else None,
+        "activated_avg_ret": sum(x.get("ret") or 0 for x in activated) / len(activated) if activated else None,
+        "pre_activation_stops": len(pre_activation_stops),
+        "pre_activation_stop_rate": len(pre_activation_stops) / len(filled) * 100 if filled else None,
         "wins": len(wins),
         "losses": len(losses),
     }
@@ -6248,6 +6269,9 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
         ret = x.get("ret")
         ret_cls = "pos" if ret is not None and ret > 0 else "neg" if ret is not None and ret < 0 else ""
         entry_heading = f"{esc(x.get('entry_title','買點'))}｜成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}"
+        activated = bool(x.get("activated_20") or ((x.get("max_return") or 0) >= 20))
+        activation_badge = "+20%已啟動" if activated else "未啟動"
+        activation_cls = "price-target" if activated else "signal-dates"
         rows_html += f"""
 <tr>
   <td><a class="stock-link" href="stocks/{x['sid']}.html">{esc(x['sid'])} {esc(x['name'])}</a><div class="signal-dates">訊號 {esc(x.get('signal_date','─'))}</div></td>
@@ -6255,7 +6279,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
   <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}｜出場 {fmt_num(x.get('exit_price'))}</div></td>
   <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
   <td><span class="pos">{fmt_num(x.get('max_return'),1)}%</span><div class="signal-dates">最大回撤 <span class="neg">{fmt_num(x.get('max_drawdown'),1)}%</span></div></td>
-  <td><div class="price-target">+20%後 MA20</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
+  <td><div class="{activation_cls}">{activation_badge}</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
 </tr>"""
     if not rows_html:
         rows_html = '<tr><td colspan="6" style="color:#8b949e">目前資料不足，還無法形成 2024 起掃描回測。</td></tr>'
@@ -6265,13 +6289,17 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
   <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
-    <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
-    <div class="metric"><div class="metric-num {('pos' if (summary.get('avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(summary.get('avg_ret'),1)}%</div><div class="metric-label">平均報酬</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">全體已出場勝率</div></div>
+    <div class="metric"><div class="metric-num {('pos' if (summary.get('avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(summary.get('avg_ret'),1)}%</div><div class="metric-label">全體平均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">{fmt_num(summary.get('activation_rate'),1)}%</div><div class="metric-label">+20%啟動率</div></div>
+    <div class="metric"><div class="metric-num pos">{fmt_num(summary.get('activated_win_rate'),1)}%</div><div class="metric-label">+20%啟動後勝率</div></div>
+    <div class="metric"><div class="metric-num {('pos' if (summary.get('activated_avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(summary.get('activated_avg_ret'),1)}%</div><div class="metric-label">+20%啟動後均報酬</div></div>
+    <div class="metric"><div class="metric-num neg">{fmt_num(summary.get('pre_activation_stop_rate'),1)}%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">{fmt_num(summary.get('max_return'),1)}%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">{fmt_num(summary.get('max_drawdown'),1)}%</div><div class="metric-label">最大回撤</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('avg_hold'),1)}</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜全體獲利 {summary['wins']} 筆｜全體虧損 {summary['losses']} 筆｜+20%啟動 {summary['activated']} 筆｜啟動後已出場 {summary['activated_closed']} 筆｜啟動後獲利 {summary['activated_wins']} 筆｜啟動前初停 {summary['pre_activation_stops']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
