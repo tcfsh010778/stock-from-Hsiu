@@ -31,11 +31,15 @@ LOCAL_DATA_DIR = Path(__file__).parent / "data"
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
 LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
 LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
+LOCAL_FOREIGN_SHAREHOLDING_DIR = LOCAL_DATA_DIR / "foreign_shareholding"
+LOCAL_MARGIN_DIR = LOCAL_DATA_DIR / "margin"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
+V44_FOREIGN_SHAREHOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "foreign_shareholding"
+V44_MARGIN_DIR = V44_ROOT / "回測" / "v6_outputs" / "margin"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
 
@@ -1313,6 +1317,36 @@ def read_holding_series(stock_id: str) -> list[dict]:
                 item[group] += pct
         series.append(item)
     return series
+
+
+def read_foreign_shareholding_series(stock_id: str) -> list[dict]:
+    rows = read_csv_rows(
+        LOCAL_FOREIGN_SHAREHOLDING_DIR / f"{stock_id}.csv",
+        V44_FOREIGN_SHAREHOLDING_DIR / f"{stock_id}.csv",
+    )
+    out = []
+    for r in rows:
+        date_str = r.get("date", "")
+        shares = _to_float(r.get("foreign_shares_lot"), None)
+        if shares is None:
+            raw_shares = _to_float(r.get("foreign_shares") or r.get("ForeignInvestmentShares"), None)
+            shares = raw_shares / 1000 if raw_shares is not None else None
+        ratio = _to_float(r.get("foreign_ratio") or r.get("ForeignInvestmentSharesRatio"), None)
+        if date_str and (shares is not None or ratio is not None):
+            out.append({"date": date_str, "foreign_shares": shares, "foreign_ratio": ratio})
+    return sorted(out, key=lambda x: x.get("date", ""))
+
+
+def read_margin_series(stock_id: str) -> list[dict]:
+    rows = read_csv_rows(LOCAL_MARGIN_DIR / f"{stock_id}.csv", V44_MARGIN_DIR / f"{stock_id}.csv")
+    out = []
+    for r in rows:
+        date_str = r.get("date", "")
+        margin = _to_float(r.get("margin_balance") or r.get("MarginPurchaseTodayBalance"), None)
+        short = _to_float(r.get("short_balance") or r.get("ShortSaleTodayBalance"), None)
+        if date_str and (margin is not None or short is not None):
+            out.append({"date": date_str, "margin_balance": margin, "short_balance": short})
+    return sorted(out, key=lambda x: x.get("date", ""))
 
 
 def holding_payload(series: list[dict]) -> list[dict]:
@@ -3736,15 +3770,21 @@ def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) ->
     }
 
 
-def mda_chart_rows(daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
+def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
     price_rows = daily[-160:]
     aligned = align_chip_to_price_dates(price_rows, holding_series, chip_series)
     aligned_by_date = {x.get("date"): x for x in aligned}
+    foreign_series = read_foreign_shareholding_series(stock_id) if stock_id else []
+    margin_series = read_margin_series(stock_id) if stock_id else []
+    foreign_by_date = {x.get("date"): x for x in foreign_series}
+    margin_by_date = {x.get("date"): x for x in margin_series}
     out = []
     foreign_cum = 0.0
     for p in price_rows:
         date = p.get("date", "")
         a = aligned_by_date.get(date, {})
+        f = foreign_by_date.get(date, {})
+        m = margin_by_date.get(date, {})
         foreign = a.get("foreign")
         if foreign is not None:
             try:
@@ -3760,8 +3800,10 @@ def mda_chart_rows(daily: list[dict], holding_series: list[dict], chip_series: l
             "volume": (float(p.get("volume") or 0) / 1000),
             "foreign": foreign,
             "foreignCum": foreign_cum,
-            "foreignShares": None,
-            "marginBalance": None,
+            "foreignShares": f.get("foreign_shares"),
+            "foreignRatio": f.get("foreign_ratio"),
+            "marginBalance": m.get("margin_balance"),
+            "shortBalance": m.get("short_balance"),
             "major": a.get("major"),
             "retail": a.get("retail"),
             "totalPeople": a.get("total_people"),
@@ -3853,7 +3895,7 @@ def mda_metric_svg(rows: list[dict], title: str, key: str, color: str = "#58a6ff
 
 
 def mda_synced_chart_panel(stock_id: str, daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> str:
-    rows = mda_chart_rows(daily, holding_series, chip_series)
+    rows = mda_chart_rows(stock_id, daily, holding_series, chip_series)
     data = json.dumps(rows, ensure_ascii=False)
     panel_id = f"mda-sync-{stock_id}"
     def panel(kind: str, svg: str) -> str:
@@ -3881,9 +3923,9 @@ const mdaData_{stock_id} = {data};
   function html(kind, x){{
     if(kind==='k') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>開</span><span>${{fmt(x.open)}}</span><span>高</span><span>${{fmt(x.high)}}</span><span>低</span><span>${{fmt(x.low)}}</span><span>收</span><span>${{fmt(x.close)}}</span></div>`;
     if(kind==='volume') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>成交量</span><span>${{fmtInt(x.volume)}} 張</span></div>`;
-    if(kind==='foreignShares') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資持股張數</span><span>${{fmtInt(x.foreignShares)}} 張</span></div>`;
+    if(kind==='foreignShares') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資持股張數</span><span>${{fmtInt(x.foreignShares)}} 張</span><span>外資持股比例</span><span>${{pct(x.foreignRatio)}}</span></div>`;
     if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
-    if(kind==='marginBalance') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>融資餘額</span><span>${{fmtInt(x.marginBalance)}} 張</span></div>`;
+    if(kind==='marginBalance') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>融資餘額</span><span>${{fmtInt(x.marginBalance)}} 張</span><span>融券餘額</span><span>${{fmtInt(x.shortBalance)}} 張</span></div>`;
     if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>千張大戶</span><span>${{pct(x.major)}}</span></div>`;
     if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股</span><span>${{pct(x.retail)}}</span></div>`;
     if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;

@@ -26,7 +26,9 @@ except Exception:
 
 from generate_site import (  # noqa: E402
     LOCAL_CHIP_DIR,
+    LOCAL_FOREIGN_SHAREHOLDING_DIR,
     LOCAL_HOLDING_DIR,
+    LOCAL_MARGIN_DIR,
     LOCAL_PRICE_DIR,
     V44_ROOT,
     find_all_reports,
@@ -137,6 +139,65 @@ def write_generic_csv(out_dir: Path, stock_id: str, rows: list[dict]) -> None:
         writer.writerows(rows)
 
 
+def write_foreign_shareholding_csv(stock_id: str, rows: list[dict]) -> None:
+    if not rows:
+        return
+    LOCAL_FOREIGN_SHAREHOLDING_DIR.mkdir(parents=True, exist_ok=True)
+    out = LOCAL_FOREIGN_SHAREHOLDING_DIR / f"{stock_id}.csv"
+    fields = ["date", "stock_id", "foreign_shares", "foreign_shares_lot", "foreign_ratio", "issued_shares"]
+    normalized = []
+    for r in rows:
+        try:
+            shares = float(r.get("ForeignInvestmentShares") or 0)
+        except Exception:
+            shares = 0.0
+        normalized.append({
+            "date": r.get("date", ""),
+            "stock_id": r.get("stock_id", stock_id),
+            "foreign_shares": int(shares),
+            "foreign_shares_lot": shares / 1000,
+            "foreign_ratio": r.get("ForeignInvestmentSharesRatio", ""),
+            "issued_shares": r.get("NumberOfSharesIssued", ""),
+        })
+    with out.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(normalized)
+
+
+def write_margin_csv(stock_id: str, rows: list[dict]) -> None:
+    if not rows:
+        return
+    LOCAL_MARGIN_DIR.mkdir(parents=True, exist_ok=True)
+    out = LOCAL_MARGIN_DIR / f"{stock_id}.csv"
+    fields = [
+        "date",
+        "stock_id",
+        "margin_balance",
+        "margin_buy",
+        "margin_sell",
+        "short_balance",
+        "short_buy",
+        "short_sell",
+    ]
+    normalized = []
+    for r in rows:
+        normalized.append({
+            "date": r.get("date", ""),
+            "stock_id": r.get("stock_id", stock_id),
+            "margin_balance": r.get("MarginPurchaseTodayBalance", ""),
+            "margin_buy": r.get("MarginPurchaseBuy", ""),
+            "margin_sell": r.get("MarginPurchaseSell", ""),
+            "short_balance": r.get("ShortSaleTodayBalance", ""),
+            "short_buy": r.get("ShortSaleBuy", ""),
+            "short_sell": r.get("ShortSaleSell", ""),
+        })
+    with out.open("w", encoding="utf-8", newline="") as fh:
+        writer = csv.DictWriter(fh, fieldnames=fields)
+        writer.writeheader()
+        writer.writerows(normalized)
+
+
 def main() -> None:
     months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
     stock_ids = collect_stock_ids()
@@ -156,6 +217,12 @@ def main() -> None:
         holding_rows = fetch_finmind_dataset(sid, "TaiwanStockHoldingSharesPer", months)
         if holding_rows:
             write_generic_csv(LOCAL_HOLDING_DIR, sid, holding_rows)
+        foreign_shareholding_rows = fetch_finmind_dataset(sid, "TaiwanStockShareholding", months)
+        if foreign_shareholding_rows:
+            write_foreign_shareholding_csv(sid, foreign_shareholding_rows)
+        margin_rows = fetch_finmind_dataset(sid, "TaiwanStockMarginPurchaseShortSale", months)
+        if margin_rows:
+            write_margin_csv(sid, margin_rows)
     print(f"[refresh_prices] done ok={ok}/{len(stock_ids)} -> {LOCAL_PRICE_DIR}")
 
 
