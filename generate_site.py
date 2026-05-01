@@ -2012,8 +2012,18 @@ def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
     data = indicator_series(rows)
     if not data:
         return '<div class="strategy-note" style="margin-top:10px">指標資料不足。</div>'
-    kd = mini_line_svg(f"{label} KD", [("K", data["k"], "#58a6ff"), ("D", data["d"], "#d2a520")], fixed_range=(0, 100))
-    macd = mini_line_svg(f"{label} MACD", [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")], zero_line=True)
+    kd = mini_line_svg(
+        f"{label} KD",
+        [("K", data["k"], "#58a6ff"), ("D", data["d"], "#d2a520")],
+        fixed_range=(0, 100),
+        guide_lines=[(80, "80 過熱/賣出觀察", "#f85149"), (20, "20 超賣/買進觀察", "#3fb950")],
+    )
+    macd = mini_line_svg(
+        f"{label} MACD",
+        [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")],
+        zero_line=True,
+        guide_lines=[(0, "0 軸 多空分界", "#8b949e")],
+    )
     wr = mini_line_svg(
         f"{label} Williams %R",
         [("%R", data["wr"], "#a78bfa")],
@@ -2714,10 +2724,12 @@ function indicatorHtml_{stock_id}(chart, x){{
   const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
   const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   const wrState=(v)=>!Number.isFinite(Number(v)) ? '-' : (Number(v) >= -20 ? '偏過熱，留意賣出/降溫' : (Number(v) <= -80 ? '偏超賣，留意反彈/買點' : '中性區'));
+  const kdState=(k,d)=>!Number.isFinite(Number(k)) || !Number.isFinite(Number(d)) ? '-' : (Number(k) >= 80 && Number(d) >= 80 ? '偏過熱，留意賣出/降溫' : (Number(k) <= 20 && Number(d) <= 20 ? '偏超賣，留意反彈/買點' : '中性區'));
+  const macdState=(x)=>!Number.isFinite(Number(x.dif)) || !Number.isFinite(Number(x.dea)) ? '-' : (Number(x.dif) > 0 && Number(x.dea) > 0 ? '0軸上方，偏多' : (Number(x.dif) < 0 && Number(x.dea) < 0 ? '0軸下方，偏空' : '接近0軸，觀察轉折'));
   const kind=chart.dataset.kind;
   if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span><span>區間</span><span>${{wrState(x.wr)}}</span></div>`;
-  if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span></div>`;
-  if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span></div>`;
+  if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span><span>區間</span><span>${{kdState(x.k,x.d)}}</span></div>`;
+  if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span><span>區間</span><span>${{macdState(x)}}</span></div>`;
   if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
   if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
   if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
