@@ -4001,10 +4001,33 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     volume_price = tech.get("volume_price", "資料不足")
     volume_basis = tech.get("volume_price_basis", "資料不足")
     synced_charts = mda_synced_chart_panel(stock_id, daily, holding_series, chip_series)
+    ma120_slope = slopes.get("ma120")
+    ma240_slope = slopes.get("ma240")
+    ma120_up = ma120_slope is not None and ma120_slope > 0
+    ma240_up = ma240_slope is not None and ma240_slope > 0
+    if ma120_up and ma240_up:
+        trend_note = "MA120、MA240 已開始向上彎，符合 M 大第一層觀察。"
+        trend_cls = "pos"
+    elif ma120_up or ma240_up:
+        trend_note = "長均線已有一條向上彎，另一條還在等待確認。"
+        trend_cls = ""
+    else:
+        trend_note = "MA120、MA240 尚未明確上彎，先降低觀察順位。"
+        trend_cls = "neg"
+    if detrend_gap is not None and detrend_gap >= 0:
+        deduct_note = f"120日扣抵值 {fmt_num(detrend_120)}，收盤高於扣抵 {fmt_num(detrend_gap, 1)}%，扣抵偏低有利均線後續彎上。"
+        deduct_cls = "pos"
+    elif detrend_gap is not None:
+        deduct_note = f"120日扣抵值 {fmt_num(detrend_120)}，收盤低於扣抵 {fmt_num(abs(detrend_gap), 1)}%，扣抵壓力還沒完全解除。"
+        deduct_cls = "neg"
+    else:
+        deduct_note = "120日扣抵資料不足，先只看 MA120 / MA240 斜率。"
+        deduct_cls = ""
 
     why = (
         _mda_line("觀察等級", f'<span class="tag {scored["tag_cls"]}">{esc(scored["action"])}</span>　分數 {fmt_num(scored["score"], 0)}')
-        + _mda_line("觀察命題", "先確認 A：MA120/MA240 是否上彎，再看 B1 是否有聰明錢慢慢接手。")
+        + _mda_line("長均線狀態", trend_note, trend_cls)
+        + _mda_line("120日扣抵", deduct_note, deduct_cls)
     )
     a_block = (
         _mda_line("MA120", f'{fmt_num(ma120)}｜斜率 {fmt_num(slopes.get("ma120"))}｜距離 {fmt_num(ma120_gap, 1)}%')
@@ -4032,7 +4055,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
 <div class="container">
   <div style="margin-bottom:8px"><a href="../mda.html" style="color:#6e7681;font-size:13px">&larr; 回 M大選股</a>　<a href="../stocks/{esc(stock_id)}.html" style="color:#6e7681;font-size:13px">一般個股頁 →</a></div>
   <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}｜M大觀察解析</div>
-  <div class="page-sub">照 M大個股分析順序：觀察命題 → A 長均線 → B1 聰明錢 → B2 賣壓 → 後續追蹤</div>
+  <div class="page-sub">照 M大個股分析順序：A 長均線 → 120日扣抵 → B1 聰明錢 → B2 賣壓 → 後續追蹤</div>
   <div class="grid grid-2">
     <div class="card"><div class="section-label">① 為什麼值得觀察</div><div class="telegram-phase">{why}</div></div>
     <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase">{a_block}</div></div>
