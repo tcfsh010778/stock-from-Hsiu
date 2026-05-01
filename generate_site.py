@@ -3442,6 +3442,10 @@ def mda_observation_checks(stock_id: str, rows: list[dict], tech: dict, chip_ser
     close = rows[-1].get("close") if rows else None
     ma120 = tech.get("ma120") if tech else None
     ma240 = tech.get("ma240") if tech else None
+    slopes = tech.get("ma_slopes") or {}
+    ma120_up = slopes.get("ma120") is not None and slopes.get("ma120") > 0
+    ma240_up = slopes.get("ma240") is not None and slopes.get("ma240") > 0
+    a_observe = ma120_up and ma240_up
     vol_ratio = tech.get("volume_ratio") if tech else None
     ma120_challenge = bool(close and ma120 and close >= ma120 * 0.97)
     ma120_vals = ma_values(rows, 120)
@@ -3482,6 +3486,8 @@ def mda_observation_checks(stock_id: str, rows: list[dict], tech: dict, chip_ser
     retail_risk = bool((retail_delta is not None and retail_delta > 0) or (people_delta is not None and people_delta > 0))
 
     positives = [
+        ("MA120上彎", ma120_up, "ok"),
+        ("MA240上彎", ma240_up, "ok"),
         ("接近/突破120日", ma120_challenge, "ok" if ma120_stand else "warn"),
         ("120/240扣抵有利", ma240_deduction, "ok"),
         ("有量挑戰關鍵線", volume_money, "ok"),
@@ -3494,10 +3500,10 @@ def mda_observation_checks(stock_id: str, rows: list[dict], tech: dict, chip_ser
     ]
     pos_count = sum(1 for _, ok, _ in positives if ok)
     risk_count = sum(1 for _, ok in risks if ok)
-    if pos_count >= 3 and risk_count <= 1:
+    if a_observe and (foreign_stopping or not main_not_back) and risk_count <= 2:
         level = "重點觀察"
         cls = "tag-green"
-    elif pos_count >= 2:
+    elif a_observe:
         level = "觀察中"
         cls = "tag-yellow"
     else:
@@ -3509,7 +3515,8 @@ def mda_observation_checks(stock_id: str, rows: list[dict], tech: dict, chip_ser
         "score": pos_count * 20 - risk_count * 8,
         "positives": positives,
         "risks": risks,
-        "line": f"MA120 {fmt_num(ma120)}｜MA240 {fmt_num(ma240)}｜量比 {fmt_num(vol_ratio, 2)}x｜外資10日 {fmt_num(foreign_10d, 0)} 張｜主力10日 {fmt_num(force_10d, 0)} 張｜大戶週變 {fmt_num(major_delta)}%｜散戶週變 {fmt_num(retail_delta)}%",
+        "a_observe": a_observe,
+        "line": f"MA120 {fmt_num(ma120)}（斜率 {fmt_num(slopes.get('ma120'))}）｜MA240 {fmt_num(ma240)}（斜率 {fmt_num(slopes.get('ma240'))}）｜量比 {fmt_num(vol_ratio, 2)}x｜外資10日 {fmt_num(foreign_10d, 0)} 張｜主力10日 {fmt_num(force_10d, 0)} 張｜大戶週變 {fmt_num(major_delta)}%｜散戶週變 {fmt_num(retail_delta)}%",
     }
 
 
@@ -3517,10 +3524,14 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
     close = rows[-1].get("close") if rows else _to_float(s.get("price"), None)
     ma20 = tech.get("ma20") if tech else None
     ma60 = tech.get("ma60") if tech else None
+    ma120 = tech.get("ma120") if tech else None
     ma240 = tech.get("ma240") if tech else None
+    ma120_slope = (tech.get("ma_slopes") or {}).get("ma120") if tech else None
     ma240_slope = (tech.get("ma_slopes") or {}).get("ma240") if tech else None
     detrend_240 = bool(len(rows) > 240 and close and rows[-241].get("close") and close > rows[-241]["close"])
-    a_ok = bool(close and ma240 and (ma240_slope is not None and ma240_slope >= 0 or close > ma240 and detrend_240))
+    ma120_up = bool(ma120 and ma120_slope is not None and ma120_slope > 0)
+    ma240_up = bool(ma240 and ma240_slope is not None and ma240_slope > 0)
+    a_ok = ma120_up and ma240_up
     a_near = bool(close and ma20 and ma60 and close > ma20 > ma60)
     a_score = 40 if a_ok else 28 if a_near else 12 if close and ma20 and close > ma20 else 0
 
@@ -3554,7 +3565,7 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
     b2_score = 15 if b2_ok else 8 if volume_price in {"量價未表態", "量能資料不足"} and not_break else 0
 
     items = [
-        ("A長多/近長多", "ok" if a_ok else "warn" if a_near else "bad"),
+        ("A：MA120/MA240上彎", "ok" if a_ok else "warn" if ma120_up or ma240_up or a_near else "bad"),
         ("B1籌碼未離開", "ok" if b1_ok else "warn" if b1_score else "bad"),
         ("B2賣壓小", "ok" if b2_ok else "warn" if b2_score else "bad"),
     ]
@@ -3648,7 +3659,7 @@ def build_mda_page(reports: list[dict]) -> str:
       <div class="market-badge {market['class']}">{esc(market['state'])}</div>
       <div>
         <div style="font-size:16px;font-weight:800;color:#e6edf3">{esc(market['note'])}</div>
-        <div class="strategy-note" style="margin-top:8px">觀察模式：先問這檔值不值得放進追蹤名單。重點看 A 是否長多或即將長多、B1 是否有聰明錢/大戶/外資慢慢接手；輔助看 120 日線是否被反覆挑戰或有效站上、120/240 扣抵是否轉有利、量能是否代表資金開始集中。這頁不顯示買進、停損、停利。</div>
+        <div class="strategy-note" style="margin-top:8px">觀察模式：第一層只看 A，MA120 與 MA240 同時上彎就納入觀察池；接著才看這些尚未發動的股票，股權結構與籌碼是否有聰明錢慢慢接手。輔助看 120 日線是否被反覆挑戰或有效站上、扣抵是否轉有利、量能是否代表資金開始集中。這頁不顯示買進、停損、停利。</div>
         <div class="grid grid-3" style="margin-top:12px">
           <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">重點觀察</div></div>
           <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">觀察中</div></div>
