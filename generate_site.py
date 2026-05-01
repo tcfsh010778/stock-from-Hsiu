@@ -1948,10 +1948,7 @@ def build_telegram_info_card(
         kd = f"K {fmt_num(indicator.get('k'), 1)} / D {fmt_num(indicator.get('d'), 1)}，{indicator.get('kd_state', '─')}"
     macd = "─"
     if indicator.get("dif") is not None and indicator.get("dea") is not None:
-        macd = (
-            f"DIF {fmt_num(indicator.get('dif'), 2)} / DEA {fmt_num(indicator.get('dea'), 2)} / "
-            f"OSC {fmt_num(indicator.get('macd'), 2)}，{indicator.get('macd_state', '─')}"
-        )
+        macd = indicator.get("macd_state", "─")
     wr = "─"
     if indicator.get("wr") is not None:
         wr = f"{fmt_num(indicator.get('wr'), 1)}，{indicator.get('wr_state', '─')}"
@@ -2419,11 +2416,11 @@ def indicator_snapshot(rows: list[dict]) -> dict:
     macd_state = "資料不足"
     if dif and dea_series and dif[-1] is not None:
         if dif[-1] > dea_series[-1] and (macd_hist or 0) > 0:
-            macd_state = "多方動能"
+            macd_state = "買進區"
         elif dif[-1] < dea_series[-1] and (macd_hist or 0) < 0:
-            macd_state = "空方動能"
+            macd_state = "賣出區"
         else:
-            macd_state = "收斂觀察"
+            macd_state = "觀察區"
 
     wr_state = "資料不足"
     if wr is not None:
@@ -3491,11 +3488,11 @@ function indicatorHtml_{stock_id}(chart, x){{
   const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   const wrState=(v)=>!Number.isFinite(Number(v)) ? '-' : (Number(v) >= -20 ? '偏過熱，留意賣出/降溫' : (Number(v) <= -80 ? '偏超賣，留意反彈/買點' : '中性區'));
   const kdState=(k,d)=>!Number.isFinite(Number(k)) || !Number.isFinite(Number(d)) ? '-' : (Number(k) >= 80 && Number(d) >= 80 ? '偏過熱，留意賣出/降溫' : (Number(k) <= 20 && Number(d) <= 20 ? '偏超賣，留意反彈/買點' : '中性區'));
-  const macdState=(x)=>!Number.isFinite(Number(x.dif)) || !Number.isFinite(Number(x.dea)) ? '-' : (Number(x.dif) > 0 && Number(x.dea) > 0 ? '0軸上方，偏多' : (Number(x.dif) < 0 && Number(x.dea) < 0 ? '0軸下方，偏空' : '接近0軸，觀察轉折'));
+  const macdState=(x)=>!Number.isFinite(Number(x.dif)) || !Number.isFinite(Number(x.dea)) ? '-' : (Number(x.dif) > Number(x.dea) && Number(x.macd) > 0 ? '買進區' : (Number(x.dif) < Number(x.dea) && Number(x.macd) < 0 ? '賣出區' : '觀察區'));
   const kind=chart.dataset.kind;
   if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span><span>區間</span><span>${{wrState(x.wr)}}</span></div>`;
   if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span><span>區間</span><span>${{kdState(x.k,x.d)}}</span></div>`;
-  if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span><span>區間</span><span>${{macdState(x)}}</span></div>`;
+  if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>MACD</span><span>${{macdState(x)}}</span></div>`;
   if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
   if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股比例</span><span>${{pct(x.retail)}}</span></div>`;
   if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
