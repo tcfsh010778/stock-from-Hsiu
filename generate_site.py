@@ -506,6 +506,13 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
 .chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
 .chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chart-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.tv-chart-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:10px;position:relative}
+.tv-chart-title{font-size:12px;font-weight:800;color:#e6edf3;margin:0 0 6px}
+.tv-chart{height:150px;min-height:150px}
+.tv-chart.main{height:360px;min-height:360px}
+.tv-chart-note{font-size:11px;color:#6e7681;margin-top:8px;line-height:1.5}
+.tv-tooltip{position:absolute;z-index:8;display:none;top:34px;left:14px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;pointer-events:none;box-shadow:0 10px 28px rgba(0,0,0,.35)}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
@@ -3978,6 +3985,143 @@ const mdaData_{stock_id} = {data};
     return f'<div id="{panel_id}" class="chart-stack">{"".join(charts)}</div>{script}'
 
 
+def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> str:
+    rows = mda_chart_rows(stock_id, daily, holding_series, chip_series)
+    data = json.dumps(rows, ensure_ascii=False)
+    panel_id = f"mda-tv-{stock_id}"
+    chart_defs = [
+        ("k", "日K", "main"),
+        ("volume", "成交量（張）", ""),
+        ("foreignShares", "外資持股張數", ""),
+        ("foreign", "外資買賣超（張）", ""),
+        ("marginBalance", "融資餘額", ""),
+        ("major", "千張大戶持股比例", ""),
+        ("retail", "散戶持股比例", ""),
+        ("totalPeople", "總股東人數", ""),
+    ]
+    panels = "".join(
+        f'''<div class="tv-chart-panel" data-kind="{kind}">
+  <div class="tv-chart-title">{esc(title)}</div>
+  <div id="{panel_id}-{kind}" class="tv-chart {cls}"></div>
+  <div class="tv-tooltip"></div>
+</div>'''
+        for kind, title, cls in chart_defs
+    )
+    script = f"""
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){{
+  const root=document.getElementById('{panel_id}');
+  const rows={data};
+  if(!root || !rows.length) return;
+  const L=window.LightweightCharts;
+  if(!L){{
+    root.innerHTML='<div class="strategy-note">TradingView Lightweight Charts 載入失敗，請檢查網路或 CDN。</div>';
+    return;
+  }}
+  const chartApis=[];
+  let syncing=false;
+  const gridColor='#21262d';
+  const textColor='#8b949e';
+  const baseOptions=(height)=>({{
+    height,
+    layout:{{background:{{type:'solid',color:'#0d1117'}},textColor}},
+    grid:{{vertLines:{{color:gridColor}},horzLines:{{color:gridColor}}}},
+    rightPriceScale:{{borderColor:'#30363d'}},
+    timeScale:{{borderColor:'#30363d',timeVisible:false,secondsVisible:false}},
+    crosshair:{{mode:L.CrosshairMode.Normal}},
+    localization:{{locale:'zh-TW'}},
+  }});
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW',{{maximumFractionDigits:d,minimumFractionDigits:d}}) : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
+  const byTime=new Map(rows.map(x=>[x.date,x]));
+  function lineData(key){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key])}})); }}
+  function histData(key, colorFn){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'}})); }}
+  function makeTooltip(kind,x){{
+    if(!x) return '';
+    if(kind==='k') return `<b>${{x.date}}</b><br>開 ${{fmt(x.open)}} 高 ${{fmt(x.high)}} 低 ${{fmt(x.low)}} 收 ${{fmt(x.close)}}`;
+    if(kind==='volume') return `<b>${{x.date}}</b><br>成交量 ${{fmtInt(x.volume)}} 張`;
+    if(kind==='foreignShares') return `<b>${{x.date}}</b><br>外資持股 ${{fmtInt(x.foreignShares)}} 張<br>比例 ${{pct(x.foreignRatio)}}`;
+    if(kind==='foreign') return `<b>${{x.date}}</b><br>外資買賣超 ${{fmtInt(x.foreign)}} 張<br>區間累積 ${{fmtInt(x.foreignCum)}} 張`;
+    if(kind==='marginBalance') return `<b>${{x.date}}</b><br>融資餘額 ${{fmtInt(x.marginBalance)}} 張<br>融券餘額 ${{fmtInt(x.shortBalance)}} 張`;
+    if(kind==='major') return `<b>${{x.date}}</b><br>千張大戶 ${{pct(x.major)}}`;
+    if(kind==='retail') return `<b>${{x.date}}</b><br>散戶持股 ${{pct(x.retail)}}`;
+    if(kind==='totalPeople') return `<b>${{x.date}}</b><br>總股東人數 ${{fmtInt(x.totalPeople)}} 人`;
+    return `<b>${{x.date}}</b>`;
+  }}
+  function addPanel(kind, title, height){{
+    const el=document.getElementById('{panel_id}-'+kind);
+    if(!el) return;
+    const chart=L.createChart(el, baseOptions(height));
+    let series=null;
+    if(kind==='k'){{
+      series=chart.addSeries(L.CandlestickSeries, {{
+        upColor:'#f85149',downColor:'#3fb950',borderUpColor:'#f85149',borderDownColor:'#3fb950',wickUpColor:'#f85149',wickDownColor:'#3fb950'
+      }});
+      series.setData(rows.map(x=>({{time:x.date,open:Number(x.open),high:Number(x.high),low:Number(x.low),close:Number(x.close)}})));
+      [[5,'#58a6ff'],[20,'#f0883e'],[60,'#3fb950'],[120,'#a78bfa'],[240,'#8b949e']].forEach(([n,c])=>{{
+        const s=chart.addSeries(L.LineSeries,{{color:c,lineWidth:1,priceLineVisible:false,lastValueVisible:false}});
+        const vals=[];
+        for(let i=0;i<rows.length;i++){{
+          if(i+1<n) continue;
+          const avg=rows.slice(i+1-n,i+1).reduce((a,b)=>a+Number(b.close||0),0)/n;
+          vals.push({{time:rows[i].date,value:avg}});
+        }}
+        s.setData(vals);
+      }});
+    }} else if(kind==='volume'){{
+      series=chart.addSeries(L.HistogramSeries,{{priceFormat:{{type:'volume'}},priceLineVisible:false,lastValueVisible:false}});
+      series.setData(histData('volume',x=>Number(x.close)>=Number(x.open)?'#f85149':'#3fb950'));
+    }} else if(kind==='foreign'){{
+      series=chart.addSeries(L.HistogramSeries,{{priceFormat:{{type:'volume'}},priceLineVisible:false,lastValueVisible:false}});
+      series.setData(histData('foreign',x=>Number(x.foreign)>=0?'#f85149':'#3fb950'));
+    }} else {{
+      const key={{foreignShares:'foreignShares',marginBalance:'marginBalance',major:'major',retail:'retail',totalPeople:'totalPeople'}}[kind];
+      const color={{foreignShares:'#7ee787',marginBalance:'#a78bfa',major:'#f85149',retail:'#3fb950',totalPeople:'#58a6ff'}}[kind] || '#58a6ff';
+      series=chart.addSeries(L.LineSeries,{{color,lineWidth:2,priceLineVisible:false}});
+      series.setData(lineData(key));
+    }}
+    chart.timeScale().fitContent();
+    chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{{
+      if(syncing || !range) return;
+      syncing=true;
+      chartApis.forEach(item=>{{ if(item.chart!==chart) item.chart.timeScale().setVisibleLogicalRange(range); }});
+      syncing=false;
+    }});
+    const wrapper=el.closest('.tv-chart-panel');
+    const tip=wrapper ? wrapper.querySelector('.tv-tooltip') : null;
+    chart.subscribeCrosshairMove(param=>{{
+      if(!tip) return;
+      if(!param || !param.time){{
+        tip.style.display='none';
+        return;
+      }}
+      const x=byTime.get(param.time);
+      tip.innerHTML=makeTooltip(kind,x);
+      tip.style.display='block';
+    }});
+    chartApis.push({{chart,el}});
+  }}
+  addPanel('k','日K',360);
+  addPanel('volume','成交量',150);
+  addPanel('foreignShares','外資持股張數',150);
+  addPanel('foreign','外資買賣超',150);
+  addPanel('marginBalance','融資餘額',150);
+  addPanel('major','千張大戶持股比例',150);
+  addPanel('retail','散戶持股比例',150);
+  addPanel('totalPeople','總股東人數',150);
+  window.addEventListener('resize',()=>chartApis.forEach(item=>item.chart.applyOptions({{width:item.el.clientWidth}})));
+}})();
+</script>"""
+    return f"""
+<div id="{panel_id}" class="tv-chart-grid">
+  {panels}
+  <div class="tv-chart-note">圖表使用 TradingView Lightweight Charts；K 線與台股籌碼資料仍由本站 FinMind 快取提供。</div>
+</div>
+{script}"""
+
+
 def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     s = enrich_stock_fields(dict(s))
     daily = aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily")
@@ -4000,7 +4144,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     detrend_gap = ((close / detrend_120 - 1) * 100) if close and detrend_120 else None
     volume_price = tech.get("volume_price", "資料不足")
     volume_basis = tech.get("volume_price_basis", "資料不足")
-    synced_charts = mda_synced_chart_panel(stock_id, daily, holding_series, chip_series)
+    synced_charts = mda_lightweight_chart_panel(stock_id, daily, holding_series, chip_series)
     ma120_slope = slopes.get("ma120")
     ma240_slope = slopes.get("ma240")
     ma120_up = ma120_slope is not None and ma120_slope > 0
