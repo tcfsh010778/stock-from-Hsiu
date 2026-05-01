@@ -3411,29 +3411,6 @@ def mda_market_regime() -> dict:
     return {"ok": ok, "state": state, "class": cls, "note": note, "ma20": ma20, "ma60": ma60}
 
 
-def mda_bottom_checks(rows: list[dict], chip_series: list[dict]) -> dict:
-    if len(rows) < 240:
-        return {"ok": False, "items": [("240日資料不足", "warn")], "summary": "底部資料不足"}
-    lows = [r.get("low") for r in rows[-4:]]
-    higher_lows = all(lows[i] is not None and lows[i] > lows[i - 1] for i in range(1, len(lows)))
-    avg20 = sum(r.get("volume", 0) for r in rows[-21:-1]) / 20 if len(rows) >= 21 else None
-    vol_shrink = bool(avg20 and rows[-1].get("volume", 0) < avg20 * 0.70)
-    low20 = min(r.get("low") for r in rows[-20:] if r.get("low") is not None)
-    price_hold = bool(rows[-1].get("close") and low20 and rows[-1]["close"] >= low20 * 0.98)
-    foreign_vals = [float(x.get("foreign") or 0) for x in chip_series[-5:]]
-    foreign_slope = bool(foreign_vals and sum(foreign_vals) > 0)
-    detrend_240 = bool(rows[-1].get("close") and rows[-241].get("close") and rows[-1]["close"] > rows[-241]["close"])
-    checks = [
-        ("低點墊高", "ok" if higher_lows else "warn"),
-        ("量縮價穩", "ok" if vol_shrink and price_hold else "warn"),
-        ("外資5日偏買", "ok" if foreign_slope else "warn"),
-        ("240扣抵向上", "ok" if detrend_240 else "bad"),
-    ]
-    ok = higher_lows and vol_shrink and price_hold and foreign_slope and detrend_240
-    summary = "底部確認" if ok else "底部未齊"
-    return {"ok": ok, "items": checks, "summary": summary}
-
-
 def mda_strict_entry(rows: list[dict]) -> dict:
     if len(rows) < 15:
         return {"ok": False, "items": [("資料不足", "warn")], "entry": None, "stop": None, "target1": None, "target2": None}
@@ -3461,30 +3438,103 @@ def mda_strict_entry(rows: list[dict]) -> dict:
     }
 
 
+def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> dict:
+    close = rows[-1].get("close") if rows else _to_float(s.get("price"), None)
+    ma20 = tech.get("ma20") if tech else None
+    ma60 = tech.get("ma60") if tech else None
+    ma240 = tech.get("ma240") if tech else None
+    ma240_slope = (tech.get("ma_slopes") or {}).get("ma240") if tech else None
+    detrend_240 = bool(len(rows) > 240 and close and rows[-241].get("close") and close > rows[-241]["close"])
+    a_ok = bool(close and ma240 and (ma240_slope is not None and ma240_slope >= 0 or close > ma240 and detrend_240))
+    a_near = bool(close and ma20 and ma60 and close > ma20 > ma60)
+    a_score = 30 if a_ok else 22 if a_near else 8 if close and ma20 and close > ma20 else 0
+
+    chip = chip_trend_metrics(chip_series, holding)
+    holding_series = read_holding_series(s.get("id", ""))
+    major_4w_delta = None
+    retail_4w_delta = None
+    latest_major = None
+    if len(holding_series) >= 5:
+        latest_major = holding_series[-1].get("major")
+        latest_retail = holding_series[-1].get("retail")
+        base_major = holding_series[-5].get("major")
+        base_retail = holding_series[-5].get("retail")
+        if latest_major is not None and base_major is not None:
+            major_4w_delta = latest_major - base_major
+        if latest_retail is not None and base_retail is not None:
+            retail_4w_delta = latest_retail - base_retail
+    elif holding:
+        latest_major = (holding.get("latest") or {}).get("major")
+    b1_ok = (
+        (major_4w_delta is not None and major_4w_delta > 0)
+        or (latest_major is not None and latest_major >= 45)
+        or (chip.get("total_10d") is not None and chip.get("total_10d") > 0 and chip.get("foreign_10d", 0) > 0)
+    )
+    b1_score = 30 if b1_ok else 15 if latest_major is not None or chip_series else 0
+
+    volume_price = tech.get("volume_price") if tech else "資料不足"
+    not_break = bool(close and ma20 and close >= ma20 * 0.97)
+    retail_not_hot = retail_4w_delta is None or retail_4w_delta <= 1.0
+    b2_ok = volume_price in {"量縮價穩", "量縮價漲", "均量上彎"} and not_break and retail_not_hot
+    b2_score = 20 if b2_ok else 12 if volume_price in {"量價未表態", "量能資料不足"} and not_break else 0
+
+    gap = tech.get("entry_gap") if tech else None
+    basket = classify_basket(s)
+    b3_ok = basket != "risk" and (gap is None or gap <= 8)
+    b3_score = 12 if b3_ok else 0
+
+    c_score = 4
+    c_note = "C待人工確認"
+    name = s.get("name", "")
+    if any(k in name for k in ["電", "半導", "光", "AI", "矽", "科", "材"]):
+        c_score = 8
+        c_note = "C科技需求"
+
+    items = [
+        ("A長多/近長多", "ok" if a_ok else "warn" if a_near else "bad"),
+        ("B1籌碼未離開", "ok" if b1_ok else "warn" if b1_score else "bad"),
+        ("B2賣壓小", "ok" if b2_ok else "warn" if b2_score else "bad"),
+        ("B3不追高", "ok" if b3_ok else "bad"),
+        (c_note, "warn" if c_score < 8 else "ok"),
+    ]
+    score = a_score + b1_score + b2_score + b3_score + c_score
+    return {
+        "score": score,
+        "items": items,
+        "a_score": a_score,
+        "b1_score": b1_score,
+        "b2_score": b2_score,
+        "b3_score": b3_score,
+        "c_score": c_score,
+        "volume_line": f"{volume_price}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足",
+        "chip_line": f"外資10日 {fmt_num(chip.get('foreign_10d'), 0)} 張｜主力10日 {fmt_num(chip.get('total_10d'), 0)} 張｜大戶4週 {fmt_num(major_4w_delta, 2)}%｜散戶4週 {fmt_num(retail_4w_delta, 2)}%",
+    }
+
+
 def mda_score_stock(s: dict, market_ok: bool) -> dict:
     daily, tech, _decision = stock_trade_context(s)
     chip_series = read_chip_series(s.get("id", ""))
-    bottom = mda_bottom_checks(daily, chip_series)
+    holding = read_holding_summary(s.get("id", ""))
+    abc = mda_abc_checks(s, daily, tech, chip_series, holding)
     strict = mda_strict_entry(daily)
     close = daily[-1].get("close") if daily else _to_float(s.get("price"), None)
     if not market_ok:
         action = "大盤停手"
         tag_cls = "tag-red"
-    elif bottom["ok"] and strict["ok"]:
-        action = "今日可進"
+    elif abc["score"] >= 78 and strict["ok"]:
+        action = "ABC可出手"
         tag_cls = "tag-green"
-    elif bottom["ok"]:
-        action = "等Strict"
+    elif abc["score"] >= 70:
+        action = "ABC優先觀察"
         tag_cls = "tag-yellow"
     else:
-        action = "底部未齊"
+        action = "ABC未齊"
         tag_cls = "tag"
 
-    score = (40 if bottom["ok"] else sum(8 for _, cls in bottom["items"] if cls == "ok")) + (40 if strict["ok"] else sum(7 for _, cls in strict["items"] if cls == "ok")) + (20 if market_ok else 0)
+    score = min(100, abc["score"] + (5 if strict["ok"] else 0))
     checks = [_m_check("2330多頭" if market_ok else "2330空頭", "ok" if market_ok else "bad")]
-    checks += [_m_check(text, cls) for text, cls in bottom["items"]]
+    checks += [_m_check(text, cls) for text, cls in abc["items"]]
     checks += [_m_check(text, cls) for text, cls in strict["items"]]
-    volume_line = f"{tech.get('volume_price', '量價資料不足')}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足"
 
     return {
         "id": s.get("id", ""),
@@ -3499,11 +3549,17 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
         "stop": fmt_num(strict.get("stop")),
         "target1": fmt_num(strict.get("target1")),
         "target2": fmt_num(strict.get("target2")),
-        "bottom": bottom["summary"],
+        "abc": "ABC完整" if abc["score"] >= 78 else "ABC觀察" if abc["score"] >= 70 else "ABC未齊",
         "strict": "Strict成立" if strict["ok"] else "Strict未觸發",
+        "a_score": abc["a_score"],
+        "b1_score": abc["b1_score"],
+        "b2_score": abc["b2_score"],
+        "b3_score": abc["b3_score"],
+        "c_score": abc["c_score"],
         "reason": " ".join(checks),
-        "chip_line": volume_line,
-        "sort": (0 if action == "今日可進" else 1 if action == "等Strict" else 2 if action == "底部未齊" else 3, -score),
+        "chip_line": abc["chip_line"],
+        "volume_line": abc["volume_line"],
+        "sort": (0 if action == "ABC可出手" else 1 if action == "ABC優先觀察" else 2 if action == "ABC未齊" else 3, -score),
     }
 
 
@@ -3513,9 +3569,9 @@ def build_mda_page(reports: list[dict]) -> str:
     market = mda_market_regime()
     scored = [mda_score_stock(enrich_stock_fields(dict(s)), bool(market.get("ok"))) for s in latest.get("stocks", [])]
     scored.sort(key=lambda x: x["sort"])
-    primary = [x for x in scored if x["action"] == "今日可進"]
-    wait = [x for x in scored if x["action"] == "等Strict"]
-    avoid = [x for x in scored if x["action"] in {"底部未齊", "大盤停手"}]
+    primary = [x for x in scored if x["action"] == "ABC可出手"]
+    wait = [x for x in scored if x["action"] == "ABC優先觀察"]
+    avoid = [x for x in scored if x["action"] in {"ABC未齊", "大盤停手"}]
 
     rows = ""
     for x in scored:
@@ -3526,8 +3582,8 @@ def build_mda_page(reports: list[dict]) -> str:
   <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
   <td><div class="price-main">{esc(x['close'])}</div><div class="{change_cls}">{esc(change_text)}</div></td>
   <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-stop">停損 SMA10 {esc(x['stop'])}</div><div class="price-target">+10% {esc(x['target1'])}｜+15% {esc(x['target2'])}</div></td>
-  <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['chip_line'])}</div></td>
-  <td><div class="signal-dates">{esc(x['bottom'])}｜{esc(x['strict'])}｜最長持有 5 日</div></td>
+  <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['volume_line'])}<br>{esc(x['chip_line'])}</div></td>
+  <td><div class="signal-dates">{esc(x['abc'])}｜{esc(x['strict'])}<br>A {x['a_score']}｜B1 {x['b1_score']}｜B2 {x['b2_score']}｜B3 {x['b3_score']}｜C {x['c_score']}</div></td>
 </tr>"""
     if not rows:
         rows = '<tr><td colspan="6" style="color:#8b949e">目前沒有上市櫃候選標的。</td></tr>'
@@ -3535,17 +3591,17 @@ def build_mda_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大選股</div>
-  <div class="page-sub">最新報告：{esc(date_str)} · 2330 Regime → 底部形成 → Strict Entry</div>
+  <div class="page-sub">最新報告：{esc(date_str)} · A 長多/近長多 → B1 吸籌 → B2 賣壓小 → B3 不追高 → C 耐心與題材</div>
   <div class="card">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
       <div class="market-badge {market['class']}">{esc(market['state'])}</div>
       <div>
         <div style="font-size:16px;font-weight:800;color:#e6edf3">{esc(market['note'])}</div>
-        <div class="strategy-note" style="margin-top:8px">規則：2330 SMA20 > SMA60 才做；底部看低點墊高、量縮價穩、外資5日偏買、240日扣抵向上；進場看 SMA5 斜率 > 0、收盤回 SMA5 ±1.5%、紅K。停損 SMA10，+10%/+15% 分批，最長持有 5 個交易日。</div>
+        <div class="strategy-note" style="margin-top:8px">規則：A 是長線多頭或即將長多；B1 是長期吸籌或主力未離開；B2 是賣壓小、量縮價穩或回測不破；B3 是不追高、耐心等回測；C 是時間與題材敘事。Strict Entry 只作為「今天是否能出手」的輔助訊號。</div>
         <div class="grid grid-3" style="margin-top:12px">
-          <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">今日可進</div></div>
-          <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">底部成形等Strict</div></div>
+          <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">ABC完整且可出手</div></div>
+          <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">ABC優先觀察</div></div>
           <div class="metric"><div class="metric-num" style="color:#f85149">{len(avoid)}</div><div class="metric-label">觀察/排除</div></div>
         </div>
       </div>
