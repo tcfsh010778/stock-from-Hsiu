@@ -6053,6 +6053,7 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
         sid = item["sid"]
         s = item["stock"]
         rows = item["rows"]
+        chip_series = read_chip_series(sid)
         i = 60
         while i < len(rows) - 1:
             row = rows[i]
@@ -6098,13 +6099,11 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                 if stop and r_low <= stop:
                     exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), stop, "初始停損", j
                     break
-                if j > i and len(rows[: j + 1]) >= 20:
-                    ma20_now = ma_values(rows[: j + 1], 20)[-1]
-                    close_now = r.get("close")
-                    if ma20_now and close_now and close_now < ma20_now:
-                        exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), close_now, "跌破MA20出場", j
+                if j > i:
+                    sell_price, sell_reason = historical_sell_exit(rows[: j + 1], chip_series, s, entry_price)
+                    if sell_price is not None and sell_reason:
+                        exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), sell_price, sell_reason, j
                         break
-                    break
             ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
             path = trade_path_metrics(rows, signal_date, exit_date, entry_price)
             hold_days = None
@@ -6157,6 +6156,31 @@ def summarize_trade_rows(rows: list[dict]) -> dict:
     }
 
 
+def historical_sell_exit(
+    daily_rows: list[dict],
+    chip_series: list[dict],
+    stock: dict,
+    entry_price: float,
+) -> tuple[float | None, str | None]:
+    if len(daily_rows) < 20 or not entry_price:
+        return None, None
+    current_date = str(daily_rows[-1].get("date", ""))
+    current_chip = [x for x in chip_series if str(x.get("date", "")) <= current_date]
+    weekly_rows = aggregate_ohlcv(daily_rows, "weekly")
+    signal = calc_sell_signal(daily_rows, weekly_rows, current_chip, stock, {"entry": entry_price})
+    close = daily_rows[-1].get("close")
+    level = signal.get("level", "")
+    reason = signal.get("reason", "")
+    profit = signal.get("profit")
+    if signal.get("class") == "exit" and close:
+        return close, f"{level}｜{reason}"
+    if level == "跌破MA20" and close:
+        return close, f"{level}｜{reason}"
+    if level == "月線轉弱" and close and (profit is None or profit <= 20):
+        return close, f"{level}｜{reason}"
+    return None, None
+
+
 def build_historical_scan_html(reports: list[dict]) -> str:
     trades = backtest_historical_scan(reports, "2024-01-01")
     summary = summarize_trade_rows(trades)
@@ -6180,7 +6204,7 @@ def build_historical_scan_html(reports: list[dict]) -> str:
     return f"""
 <div class="card">
   <div class="section-label">2024 起歷史掃描回測</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。出場改用波段邏輯：成交後先守初始停損，未停損則沿 MA20 續抱，收盤跌破 MA20 才出場；不設固定 +10% 停利。</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
