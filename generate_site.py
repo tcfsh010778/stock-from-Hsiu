@@ -6047,7 +6047,52 @@ def historical_scan_universe(reports: list[dict]) -> list[dict]:
     return out
 
 
-def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01", method: str = "wr_65_85_ma20") -> list[dict]:
+def attack_wave_confirmed(rows: list[dict], lookback: int = 12) -> bool:
+    if len(rows) < max(lookback, 25):
+        return False
+    recent = rows[-lookback:]
+    start_close = recent[0].get("close")
+    high = max((r.get("high") or 0) for r in recent)
+    ma20 = ma_values(rows, 20)[-1]
+    vol20 = sum(r.get("volume", 0) for r in rows[-20:]) / 20
+    vol5 = sum(r.get("volume", 0) for r in rows[-5:]) / 5
+    return bool(start_close and high and ma20 and rows[-1].get("close") and high / start_close >= 1.08 and rows[-1]["close"] >= ma20 and vol5 >= vol20 * 0.9)
+
+
+def historical_entry_signal(method: str, rows: list[dict], tech: dict, decision: dict) -> dict:
+    if method == "sfz_ta3":
+        strict = mda_strict_entry(rows)
+        if not strict.get("ok"):
+            return {"ok": False}
+        close = rows[-1].get("close")
+        return {
+            "ok": True,
+            "low": close,
+            "high": close,
+            "entry": close,
+            "label": "SFZ_TA3",
+            "title": "SFZ_TA3",
+            "rule": "SMA5斜率>0 / 回到SMA5±1.5% / 紅K確認",
+        }
+    if method == "wr_after_attack":
+        if not attack_wave_confirmed(rows):
+            return {"ok": False}
+        zone = indicator_entry_zone("wr_65_85_ma20", rows, decision)
+        if zone.get("low") is None or zone.get("high") is None:
+            return {"ok": False}
+        return {
+            "ok": True,
+            "low": zone.get("low"),
+            "high": zone.get("high"),
+            "entry": None,
+            "label": zone.get("label", "資料不足"),
+            "title": "攻擊波後 Williams 回測",
+            "rule": "攻擊波確認後，用 Williams -65~-85 反推回測買入區",
+        }
+    return {"ok": False}
+
+
+def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01", method: str = "sfz_ta3") -> list[dict]:
     trades = []
     for item in historical_scan_universe(reports):
         sid = item["sid"]
@@ -6072,8 +6117,11 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                 i += 1
                 continue
             decision = build_trade_decision(tech, {**s, "report_date": signal_date, "price": str(close)})
-            zone = indicator_entry_zone(method, past_rows, decision)
-            entry_low, entry_high = zone.get("low"), zone.get("high")
+            signal = historical_entry_signal(method, past_rows, tech, decision)
+            if not signal.get("ok"):
+                i += 1
+                continue
+            entry_low, entry_high = signal.get("low"), signal.get("high")
             if entry_low is None or entry_high is None:
                 i += 1
                 continue
@@ -6084,7 +6132,7 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
 
             center = (entry_low + entry_high) / 2
             open_price = row.get("open") or center
-            entry_price = center if low <= center <= high else min(max(open_price, entry_low), entry_high)
+            entry_price = signal.get("entry") or (center if low <= center <= high else min(max(open_price, entry_low), entry_high))
             stop = variant_initial_stop(entry_price, tech, decision)
             target = None
             exit_date = rows[-1].get("date", "")
@@ -6115,8 +6163,9 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                 "sid": sid,
                 "name": s.get("name", ""),
                 "signal_date": signal_date,
-                "entry_rule": "Williams -65~-85 反推買入區 + MA20濾網；日K碰到區間成交",
-                "entry_range": zone.get("label", "資料不足"),
+                "entry_title": signal.get("title", "買點"),
+                "entry_rule": signal.get("rule", ""),
+                "entry_range": signal.get("label", "資料不足"),
                 "entry_date": signal_date,
                 "entry": entry_price,
                 "exit_date": exit_date,
@@ -6181,8 +6230,8 @@ def historical_sell_exit(
     return None, None
 
 
-def build_historical_scan_html(reports: list[dict]) -> str:
-    trades = backtest_historical_scan(reports, "2024-01-01")
+def build_historical_scan_block(reports: list[dict], method: str, title: str, note: str) -> str:
+    trades = backtest_historical_scan(reports, "2024-01-01", method)
     summary = summarize_trade_rows(trades)
     first_date = min((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
     last_date = max((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
@@ -6190,10 +6239,11 @@ def build_historical_scan_html(reports: list[dict]) -> str:
     for x in sorted(trades, key=lambda r: (r.get("signal_date", ""), r.get("sid", "")), reverse=True)[:80]:
         ret = x.get("ret")
         ret_cls = "pos" if ret is not None and ret > 0 else "neg" if ret is not None and ret < 0 else ""
+        entry_heading = f"{esc(x.get('entry_title','買點'))}｜成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}"
         rows_html += f"""
 <tr>
   <td><a class="stock-link" href="stocks/{x['sid']}.html">{esc(x['sid'])} {esc(x['name'])}</a><div class="signal-dates">訊號 {esc(x.get('signal_date','─'))}</div></td>
-  <td>{esc(x.get('entry_range','─'))}<div class="signal-dates">{esc(x.get('entry_rule',''))}<br>成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}</div></td>
+  <td><strong>{entry_heading}</strong><div class="signal-dates">{esc(x.get('entry_range','─'))}<br>{esc(x.get('entry_rule',''))}</div></td>
   <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}｜出場 {fmt_num(x.get('exit_price'))}</div></td>
   <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
   <td><span class="pos">{fmt_num(x.get('max_return'),1)}%</span><div class="signal-dates">最大回撤 <span class="neg">{fmt_num(x.get('max_drawdown'),1)}%</span></div></td>
@@ -6203,8 +6253,8 @@ def build_historical_scan_html(reports: list[dict]) -> str:
         rows_html = '<tr><td colspan="6" style="color:#8b949e">目前資料不足，還無法形成 2024 起掃描回測。</td></tr>'
     return f"""
 <div class="card">
-  <div class="section-label">2024 起歷史掃描回測</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="section-label">{esc(title)}</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
@@ -6221,6 +6271,23 @@ def build_historical_scan_html(reports: list[dict]) -> str:
     </table>
   </div>
 </div>"""
+
+
+def build_historical_scan_html(reports: list[dict]) -> str:
+    return (
+        build_historical_scan_block(
+            reports,
+            "sfz_ta3",
+            "2024 起歷史掃描回測｜SFZ_TA3 買點",
+            "這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
+        )
+        + build_historical_scan_block(
+            reports,
+            "wr_after_attack",
+            "2024 起歷史掃描回測｜攻擊波後 Williams 回測",
+            "這段是另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。",
+        )
+    )
 
 
 def build_backtest_page(reports: list[dict]) -> str:
