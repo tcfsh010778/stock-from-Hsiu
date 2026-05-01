@@ -95,6 +95,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
 .telegram-line .k{color:#8b949e}
 .telegram-line .v{color:#c9d1d9}
+.telegram-price-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.telegram-price-line .k{font-size:11px;color:#8b949e}
+.telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
+.telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
 .volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
@@ -241,7 +245,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 </div><div class="grid grid-2">
 <div class="card">
-  <div class="section-label">行進籃｜SFZ 波段</div>
+  <div class="section-label" style="color:#3fb950">行進籃｜SFZ 波段</div>
   <div class="strategy-note" style="margin-bottom:12px">已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。</div>
   
 <div class="basket-card">
@@ -250,7 +254,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6434 <span class="basket-name">達輝光電</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">35.12%</span> ｜ 分數 200.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -272,7 +276,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6213 <span class="basket-name">聯茂</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">10.64%</span> ｜ 分數 190.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -294,7 +298,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3714 <span class="basket-name">富采</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">8.47%</span> ｜ 分數 180.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -316,7 +320,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">8358 <span class="basket-name">金居</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">7.56%</span> ｜ 分數 170.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -338,7 +342,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6920 <span class="basket-name">恆勁科技</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">18.36%</span> ｜ 分數 90.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -360,7 +364,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6147 <span class="basket-name">頎邦</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">14.01%</span> ｜ 分數 80.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -382,7 +386,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">1785 <span class="basket-name">光洋科</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">10.66%</span> ｜ 分數 70.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -404,7 +408,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">4960 <span class="basket-name">誠美材</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">9.81%</span> ｜ 分數 60.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -426,7 +430,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">8046 <span class="basket-name">南電</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">9.71%</span> ｜ 分數 50.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -448,7 +452,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6672 <span class="basket-name">騰輝電子-KY</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">9.46%</span> ｜ 分數 40.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -470,7 +474,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6789 <span class="basket-name">采鈺</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">9.3%</span> ｜ 分數 30.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -492,7 +496,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">2351 <span class="basket-name">順德</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">8.5%</span> ｜ 分數 20.0</div>
     </div>
-    <div class="basket-action">SFZ試單/續抱</div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -509,7 +513,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
 </div>
 <div class="card">
-  <div class="section-label">盤整籃｜MABC 觀察</div>
+  <div class="section-label" style="color:#58a6ff">盤整籃｜MABC 觀察</div>
   <div class="strategy-note" style="margin-bottom:12px">尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。</div>
   
 <div class="basket-card">
@@ -518,7 +522,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3105 <span class="basket-name">穩懋</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">6.98%</span> ｜ 分數 160.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -540,7 +544,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3673 <span class="basket-name">TPK-KY</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">6.19%</span> ｜ 分數 150.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -562,7 +566,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">2455 <span class="basket-name">全新</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">6.0%</span> ｜ 分數 140.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -584,7 +588,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">2402 <span class="basket-name">毅嘉</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">5.95%</span> ｜ 分數 130.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -606,7 +610,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6257 <span class="basket-name">矽格</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">5.47%</span> ｜ 分數 120.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -628,7 +632,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">5439 <span class="basket-name">高技</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">5.34%</span> ｜ 分數 110.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -650,7 +654,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3264 <span class="basket-name">欣銓</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">5.14%</span> ｜ 分數 100.0</div>
     </div>
-    <div class="basket-action">MABC量價觀察</div>
+    <div class="basket-action tag-blue">MABC量價觀察</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -667,9 +671,140 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
 </div></div>
 <div class="card">
-  <div class="section-label">過熱/風險觀察</div>
-  <div class="strategy-note" style="margin-bottom:12px">強勢但不適合追價；等回測、降溫或重新整理後再評估。</div>
-  <div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>
+  <div class="section-label" style="color:#f85149">過熱/風險觀察</div>
+  <div class="strategy-note" style="margin-bottom:12px">強勢但不適合追價，或已出現賣出警示；等回測、降溫或重新整理後再評估。</div>
+  
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">1785 <span class="basket-name">光洋科</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">10.66%</span> ｜ 分數 70.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">165.50</div>
+    </div>
+    <div class="basket-change neg">單日 -8.50（-4.89%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 149.62 ｜ 目標 166.77 ｜ 初始停損 134.89 ｜ <span class="price-rr rr-bad">R:R 1:1.2</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 86.66 ｜ 符合條件：行進籃 / 長多偏強 / 放量下跌 / B1主力已離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/1785.html">打開個股頁 →</a></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6147 <span class="basket-name">頎邦</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">14.01%</span> ｜ 分數 80.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">163.00</div>
+    </div>
+    <div class="basket-change pos">單日 +5.00（+3.16%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 137.01 ｜ 目標 154.53 ｜ 初始停損 128.79 ｜ <span class="price-rr rr-good">R:R 1:2.1</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 68.85 ｜ 符合條件：行進籃 / 長多偏強 / 放量下跌 / B1主力未離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/6147.html">打開個股頁 →</a></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">6434 <span class="basket-name">達輝光電</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">35.12%</span> ｜ 分數 200.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">29.45</div>
+    </div>
+    <div class="basket-change pos">單日 +0.60（+2.08%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 26.87 ｜ 目標 39.22 ｜ 初始停損 25.26 ｜ <span class="price-rr rr-good">R:R 1:7.7</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 6.37 ｜ 符合條件：行進籃 / 評分&gt;=170 / 近6週漲幅&gt;=18% / 長多偏強 / 量價平穩 / B1主力未離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/6434.html">打開個股頁 →</a></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">3714 <span class="basket-name">富采</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">8.47%</span> ｜ 分數 180.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">74.10</div>
+    </div>
+    <div class="basket-change pos">單日 +0.40（+0.54%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 68.18 ｜ 目標 82.11 ｜ 初始停損 65.13 ｜ <span class="price-rr rr-good">R:R 1:4.6</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 45.22 ｜ 符合條件：行進籃 / 評分&gt;=170 / 長多偏強 / 量縮價穩 / B1主力已離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/3714.html">打開個股頁 →</a></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">8358 <span class="basket-name">金居</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">7.56%</span> ｜ 分數 170.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">388.50</div>
+    </div>
+    <div class="basket-change pos">單日 +19.00（+5.14%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 358.64 ｜ 目標 424.32 ｜ 初始停損 327.18 ｜ <span class="price-rr rr-good">R:R 1:2.1</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 222.88 ｜ 符合條件：行進籃 / 評分&gt;=170 / 長多偏強 / 量縮價漲 / B1主力已離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 盤整籃 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/8358.html">打開個股頁 →</a></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <div class="basket-code">3264 <span class="basket-name">欣銓</span></div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">5.14%</span> ｜ 分數 100.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">195.00</div>
+    </div>
+    <div class="basket-change neg">單日 -4.50（-2.26%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 198.97 ｜ 目標 225.93 ｜ 初始停損 186.38 ｜ <span class="price-rr rr-good">R:R 1:2.1</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 145.27 ｜ 符合條件：未進入過熱區 / 長多偏強 / 量縮下跌 / B1主力未離開</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div style="margin-top:10px"><a class="history-link" href="stocks/3264.html">打開個股頁 →</a></div>
+</div>
 </div></div>
 
 <footer>

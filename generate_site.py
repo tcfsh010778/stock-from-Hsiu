@@ -392,6 +392,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
 .telegram-line .k{color:#8b949e}
 .telegram-line .v{color:#c9d1d9}
+.telegram-price-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.telegram-price-line .k{font-size:11px;color:#8b949e}
+.telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
+.telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
 .volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
@@ -1921,6 +1925,8 @@ def build_telegram_info_card(
     repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}" if events else "首次或尚未建立歷史台帳"
     close = _value_or_dash(s.get("price"))
     price_date = _value_or_dash(s.get("price_date"))
+    daily_rows = aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily")
+    price_change_text, price_change_cls = daily_change_text(daily_rows)
     score = _value_or_dash(s.get("score"))
     reason_line = basket_reason(s, tech, read_chip_series(stock_id), holding)
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
@@ -1982,7 +1988,8 @@ def build_telegram_info_card(
         + (_line_html("籌碼數字", chip_metrics_line) if chip_metrics_line else "")
     )
     phase3 = (
-        _line_html("是否進場", decision["rating"])
+        f'<div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">{esc(close)}</div></div><div class="change {price_change_cls}">單日 {esc(price_change_text)}</div></div>'
+        + _line_html("是否進場", decision["rating"])
         + _line_html("觀察價位", f"壓力 {resistance}｜支撐 {support}")
         + _line_html("較佳買入區", decision["entry_range"])
         + _line_html("停利", decision.get("target_text") or target)
@@ -1997,7 +2004,7 @@ def build_telegram_info_card(
   <div class="telegram-head">
     <div>
       <div class="telegram-title">{esc(stock_id)} {esc(s.get('name',''))} 個股資訊卡</div>
-      <div class="telegram-meta">FinMind 收盤 {esc(price_date)}：{esc(close)}｜報告日期 {esc(s.get('report_date','─'))}</div>
+      <div class="telegram-meta">收盤日期 {esc(price_date)}｜報告日期 {esc(s.get('report_date','─'))}</div>
     </div>
     <div class="telegram-rating {decision.get('rating_class','')}">{esc(decision['rating'])}</div>
   </div>
@@ -2712,6 +2719,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
     close_text = fmt_num(tech.get("close") if tech else _to_float(s.get("price", ""), None))
     if basket == "marching":
         action = "SFZ試單/續抱"
+        action_cls = "tag-green"
         tags = [
             ("行進籃", "tag-green"),
             ("TA3加碼觀察", "tag-yellow"),
@@ -2719,6 +2727,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
         ]
     elif basket == "consolidation":
         action = "MABC量價觀察"
+        action_cls = "tag-blue"
         tags = [
             ("盤整籃", "tag-blue"),
             ("早買雷達", "tag"),
@@ -2726,6 +2735,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
         ]
     else:
         action = "過熱不追"
+        action_cls = "tag-red"
         tags = [
             ("風險區", "tag-red"),
             ("等回測", "tag"),
@@ -2739,7 +2749,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
       <div class="basket-code">{s.get('id','')} <span class="basket-name">{s.get('name','')}</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="{gain_cls}">{s.get('gain_6w','─')}</span> ｜ 分數 {s.get('score','─')}</div>
     </div>
-    <div class="basket-action">{action}</div>
+    <div class="basket-action {action_cls}">{action}</div>
   </div>
   <div class="basket-price-row">
     <div>
@@ -2760,9 +2770,14 @@ def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: s
     cards = "\n".join(basket_card(s, basket, ledger) for s in stocks[:12])
     if not cards:
         cards = '<div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>'
+    title_color = {
+        "marching": "#3fb950",
+        "consolidation": "#58a6ff",
+        "risk": "#f85149",
+    }.get(basket, "#58a6ff")
     return f"""
 <div class="card">
-  <div class="section-label">{title}</div>
+  <div class="section-label" style="color:{title_color}">{title}</div>
   <div class="strategy-note" style="margin-bottom:12px">{subtitle}</div>
   {cards}
 </div>"""
@@ -2913,6 +2928,39 @@ def build_sell_alert_card(stocks: list[dict], limit: int = 6) -> str:
   <div class="strategy-note">目前網站還沒有券商持股清單，這區先用候選與訊號追蹤名單做賣出風險掃描；之後接入實際庫存後可改成只看持有中標的。</div>
   {rows}
 </div>"""
+
+
+def build_risk_watchlist(stocks: list[dict], limit: int = 6) -> list[dict]:
+    candidates = []
+    for s in stocks:
+        s = enrich_stock_fields(s)
+        rows = merge_report_close(read_price_history(s.get("id", "")), s)
+        daily = aggregate_ohlcv(rows, "daily")
+        weekly = aggregate_ohlcv(rows, "weekly")
+        tech = technical_snapshot(daily, s)
+        decision = build_trade_decision(tech, s)
+        chip_series = read_chip_series(s.get("id", ""))
+        sell_signal = calc_sell_signal(daily, weekly, chip_series, s, decision)
+        gap = tech.get("entry_gap") if tech else None
+        rr = decision.get("rr")
+        volume_price = tech.get("volume_price") if tech else ""
+        score = 0
+        if sell_signal.get("class") == "exit":
+            score += 5
+        elif sell_signal.get("class") == "watch":
+            score += 3
+        if gap is not None and gap > 8:
+            score += 2
+        if rr is not None and rr < 1.5:
+            score += 1
+        if volume_price in {"放量下跌", "量縮下跌"}:
+            score += 2
+        if score:
+            item = dict(s)
+            item["risk_score"] = score
+            candidates.append(item)
+    candidates.sort(key=lambda x: (-x.get("risk_score", 0), -_to_float(x.get("score", "0"))))
+    return candidates[:limit]
 
 
 def build_index_page(reports: list[dict]) -> str:
@@ -3092,6 +3140,7 @@ def build_baskets_page(reports):
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
     marching, consolidation, risk = split_baskets(stocks)
+    risk_watch = risk or build_risk_watchlist(stocks)
     ledger = build_signal_ledger(reports)
 
     hero = f"""
@@ -3129,7 +3178,7 @@ def build_baskets_page(reports):
         + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching", ledger)
         + build_basket_column("盤整籃｜MABC 觀察", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation", ledger)
         + '</div>'
-        + build_basket_column("過熱/風險觀察", "強勢但不適合追價；等回測、降溫或重新整理後再評估。", risk, "risk", ledger)
+        + build_basket_column("過熱/風險觀察", "強勢但不適合追價，或已出現賣出警示；等回測、降溫或重新整理後再評估。", risk_watch, "risk", ledger)
         + '</div>'
     )
     return html_page("雙籃儀表板", "basket", body)
