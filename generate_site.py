@@ -705,7 +705,7 @@ def build_notes(notes_text: str) -> str:
     def clean_note_detail(text: str) -> str:
         text = text.strip().replace(chr(10), " ")
         if "MA5×0.985" in text or "MA5×98.5%" in text:
-            return "等待明確回測或原始報告買點，不追高。"
+            return "等待 Williams 買入區或 MA20 站回，不追高。"
         text = text.replace("強勢追漲中（🟡）", "漲幅偏高")
         text = text.replace("強勢追漲中", "漲幅偏高")
         text = text.replace("健康整理（🟢）", "整理觀察")
@@ -2164,8 +2164,8 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     recent = rows[-60:]
     support = min(r["low"] for r in recent) if recent else None
     resistance = max(r["high"] for r in recent) if recent else None
-    entry = _to_float(s.get("entry", ""), None)
-    entry_gap = ((close / entry - 1) * 100) if entry else None
+    formal_entry = formal_williams_entry_zone(rows, ma20)
+    entry_gap = entry_zone_gap(close, formal_entry.get("low"), formal_entry.get("high"))
     trend = "長多偏強" if ma20 and ma60 and close > ma20 > ma60 else "短線轉強" if ma20 and close > ma20 else "整理/修正"
     return {
         "close": close,
@@ -2193,6 +2193,11 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "large_volume_event": large_volume_event,
         "support": support,
         "resistance": resistance,
+        "formal_entry_low": formal_entry.get("low"),
+        "formal_entry_high": formal_entry.get("high"),
+        "formal_entry_mid": formal_entry.get("mid"),
+        "formal_entry_filter_ok": formal_entry.get("filter_ok"),
+        "formal_entry_basis": formal_entry.get("basis"),
         "entry_gap": entry_gap,
         "trend": trend,
     }
@@ -2207,8 +2212,19 @@ def fmt_num(v, digits: int = 2) -> str:
         return "─"
 
 
+def entry_zone_gap(close: float | None, low: float | None, high: float | None) -> float | None:
+    if close is None or low is None or high is None or low <= 0 or high <= 0:
+        return None
+    if low <= close <= high:
+        return 0.0
+    anchor = high if close > high else low
+    return (close / anchor - 1) * 100
+
+
 def calc_trade_plan(tech: dict, s: dict) -> dict:
-    entry = _to_float(s.get("entry", ""), None)
+    entry = tech.get("formal_entry_mid") if tech else None
+    if entry is None:
+        entry = _to_float(s.get("entry", ""), None)
     target = _to_float(s.get("target", ""), None)
     report_stop = _to_float(s.get("stop", ""), None)
     close = tech.get("close") if tech else _to_float(s.get("price", ""), None)
@@ -2293,19 +2309,17 @@ def build_trade_decision(tech: dict, s: dict) -> dict:
             **plan,
         }
     close = tech.get("close")
-    ma5 = tech.get("ma5")
     ma10 = tech.get("ma10")
     ma20 = tech.get("ma20")
     ma60 = tech.get("ma60")
-    entry = _to_float(s.get("entry", ""), None)
     large_event = tech.get("large_volume_event") or {}
     large_low = large_event.get("low")
 
-    entry_candidates = [x for x in [entry, ma5, ma10] if x]
-    if entry_candidates:
-        low = min(entry_candidates) * 0.99
-        high = max(entry_candidates) * 1.01
-        entry_range = f"{fmt_num(low)} ~ {fmt_num(high)}"
+    entry_low = tech.get("formal_entry_low")
+    entry_high = tech.get("formal_entry_high")
+    filter_ok = tech.get("formal_entry_filter_ok")
+    if entry_low and entry_high:
+        entry_range = f"{fmt_num(entry_low)} ~ {fmt_num(entry_high)}"
     elif ma20:
         entry_range = f"{fmt_num(ma20 * 0.99)} ~ {fmt_num(ma20 * 1.01)}"
     else:
@@ -2323,19 +2337,22 @@ def build_trade_decision(tech: dict, s: dict) -> dict:
     else:
         defense = "資料不足"
 
-    entry_high = None
-    if entry_range != "資料不足":
+    if not entry_high and entry_range != "資料不足":
         nums = [_to_float(x, None) for x in re.findall(r"\d+(?:\.\d+)?", entry_range)]
         entry_high = max([x for x in nums if x is not None], default=None)
     defense_value = _to_float(defense, None)
-    gap = ((close / entry_high - 1) * 100) if close and entry_high else None
+    gap = entry_zone_gap(close, entry_low, entry_high)
 
     if close and defense_value and close < defense_value:
         rating, cls, reason = "賣出/避開", "neg", "跌破關鍵防守價位"
     elif tech.get("volume_price") == "放量下跌":
         rating, cls, reason = "觀望", "", "放量下跌，先等賣壓消化"
+    elif filter_ok is False:
+        rating, cls, reason = "觀望", "", "Williams 買點已算出，但收盤仍低於 MA20，先等站回"
+    elif gap is not None and gap < -2:
+        rating, cls, reason = "觀望", "", "跌破 Williams 買進區間，等止跌站回"
     elif gap is not None and gap <= 2:
-        rating, cls, reason = "可買進", "pos", "收盤仍在買進區間附近"
+        rating, cls, reason = "可買進", "pos", "收盤接近 Williams -65~-85 買進區間"
     elif gap is not None and gap <= 8:
         rating, cls, reason = "觀望", "", "略高於買進區間，等回測"
     else:
@@ -3984,7 +4001,7 @@ initMainForceHover_{stock_id}();
     <div style="overflow-x:auto">
       <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>{event_rows}</tbody></table>
     </div>
-    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的資料重算：原始報告買點、MA5、MA10 形成可觀察區間；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
+    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
   </div>
 </div>
 {chart_script}"""
@@ -4120,7 +4137,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">買點雷達</div>
-  <div class="page-sub">用 FinMind 最新收盤比對 SFZ 建議買點，優先找「能執行」而不是「已經追遠」的標的</div>
+  <div class="page-sub">用 FinMind 最新收盤比對 Williams -65~-85 買入區，優先找「能執行」而不是「已經追遠」的標的</div>
   <div class="card">
     <div class="section-label">Buy Radar</div>
     <div class="grid grid-3">
@@ -4128,7 +4145,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
       <div class="metric"><div class="metric-num" style="color:#d2a520">{pullback}</div><div class="metric-label">稍高：等回測</div></div>
       <div class="metric"><div class="metric-num" style="color:#f85149">{extended}</div><div class="metric-label">過遠：不追高</div></div>
     </div>
-    <div class="strategy-note" style="margin-top:14px">這頁先用 SFZ 報告買點 + FinMind 收盤價建立網站版雷達。後續可再把 MABC A/B/C、量價共振分數接進同一張表。</div>
+    <div class="strategy-note" style="margin-top:14px">這頁以 Williams -65~-85 反推價格帶，並搭配 MA20 濾網建立網站版雷達。後續可再把 MABC A/B/C、量價共振分數接進同一張表。</div>
   </div>
   <div class="card">
     <div class="section-label">候選排序</div>
@@ -4167,6 +4184,19 @@ def williams_price_zone(rows: list[dict], low_wr: float, high_wr: float, lookbac
         return None, None
     prices = [hi + (wr / 100.0) * (hi - lo) for wr in [low_wr, high_wr]]
     return min(prices), max(prices)
+
+
+def formal_williams_entry_zone(rows: list[dict], ma20: float | None = None) -> dict:
+    low, high = williams_price_zone(rows, -85, -65, 14)
+    close = rows[-1].get("close") if rows else None
+    filter_ok = bool(close and ma20 and close >= ma20)
+    return {
+        "low": low,
+        "high": high,
+        "mid": ((low + high) / 2) if low is not None and high is not None else None,
+        "filter_ok": filter_ok if ma20 is not None else None,
+        "basis": "Williams -65~-85 / 14日高低區間 + MA20濾網",
+    }
 
 
 def kd_rsv_price_zone(rows: list[dict], low_rsv: float, high_rsv: float, lookback: int = 9) -> tuple[float | None, float | None]:
@@ -4230,7 +4260,7 @@ def variant_initial_stop(entry_price: float, tech: dict, decision: dict) -> floa
 
 
 ENTRY_VARIANTS = [
-    ("original", "原本買入區", "原始報告買點 + MA5 + MA10"),
+    ("original", "正式買入區", "Williams -65~-85 + MA20濾網"),
     ("wr_80_90", "Williams -80~-90", "14日 Williams 低接區"),
     ("wr_70_85", "Williams -70~-85", "較寬鬆 Williams 低接區"),
     ("wr_65_85", "Williams -65~-85", "放寬上緣，提高成交機會"),
@@ -4262,7 +4292,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
     close = tech.get("close")
     ma20 = tech.get("ma20")
     volume_price = tech.get("volume_price")
-    if method.endswith("_ma20") and close and ma20 and close < ma20:
+    if (method == "original" or method.endswith("_ma20")) and close and ma20 and close < ma20:
         return {
             "method": method,
             "sid": sid,
@@ -4534,6 +4564,24 @@ def backtest_one_signal(report_date: str, s: dict) -> dict | None:
 
     tech = technical_snapshot(past_rows, s)
     decision = build_trade_decision(tech, s)
+    if tech.get("formal_entry_filter_ok") is False:
+        return {
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "basket": basket_label(classify_basket(s)),
+            "status": "濾網排除",
+            "entry_range": "MA20濾網排除",
+            "entry": None,
+            "exit_date": "─",
+            "exit_price": None,
+            "exit_reason": "訊號日收盤跌破MA20",
+            "ret": None,
+            "hold_days": None,
+            "latest_close": all_rows[-1].get("close") if all_rows else None,
+            "target": decision.get("target"),
+            "stop": decision.get("initial_stop"),
+        }
     entry_low, entry_high = parse_range_values(decision.get("entry_range"))
     entry = decision.get("entry")
     target = decision.get("target")
@@ -4675,7 +4723,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">歷史回測</div>
-  <div class="page-sub">依歷史報告買入區、停利與初始停損追蹤訊號後績效。成交從報告日後一個交易日開始計算。</div>
+  <div class="page-sub">依 Williams -65~-85 買入區、MA20 濾網、停利與初始停損追蹤訊號後績效。成交從報告日後一個交易日開始計算。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(results)}</div><div class="metric-label">歷史訊號</div></div>
     <div class="metric"><div class="metric-num">{len(filled)}</div><div class="metric-label">已觸及買入區</div></div>
