@@ -3634,8 +3634,8 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
 def build_mda_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
-    market = mda_market_regime()
-    scored = [mda_score_stock(enrich_stock_fields(dict(s)), bool(market.get("ok"))) for s in latest.get("stocks", [])]
+    scored = [mda_score_stock(enrich_stock_fields(dict(s)), True) for s in latest.get("stocks", [])]
+    market = {"class": "", "state": "", "note": ""}
     scored.sort(key=lambda x: x["sort"])
     primary = [x for x in scored if x["action"] == "重點觀察"]
     wait = [x for x in scored if x["action"] == "觀察中"]
@@ -3660,7 +3660,7 @@ def build_mda_page(reports: list[dict]) -> str:
 <div class="container">
   <div class="page-title">M大選股</div>
   <div class="page-sub">最新報告：{esc(date_str)} · 只做 A / B1 聰明錢觀察清單，不給買進訊號</div>
-  <div class="card">
+  <div class="card" style="display:none">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
       <div class="market-badge {market['class']}">{esc(market['state'])}</div>
@@ -3736,6 +3736,206 @@ def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) ->
     }
 
 
+def mda_chart_rows(daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
+    price_rows = daily[-160:]
+    aligned = align_chip_to_price_dates(price_rows, holding_series, chip_series)
+    aligned_by_date = {x.get("date"): x for x in aligned}
+    out = []
+    foreign_cum = 0.0
+    for p in price_rows:
+        date = p.get("date", "")
+        a = aligned_by_date.get(date, {})
+        foreign = a.get("foreign")
+        if foreign is not None:
+            try:
+                foreign_cum += float(foreign)
+            except Exception:
+                pass
+        out.append({
+            "date": date,
+            "open": p.get("open"),
+            "high": p.get("high"),
+            "low": p.get("low"),
+            "close": p.get("close"),
+            "volume": (float(p.get("volume") or 0) / 1000),
+            "foreign": foreign,
+            "foreignCum": foreign_cum,
+            "foreignShares": None,
+            "marginBalance": None,
+            "major": a.get("major"),
+            "retail": a.get("retail"),
+            "totalPeople": a.get("total_people"),
+            "holdingDate": a.get("holding_date", ""),
+        })
+    return out
+
+
+def mda_metric_svg(rows: list[dict], title: str, key: str, color: str = "#58a6ff", kind: str = "line", unit: str = "") -> str:
+    rows = rows[-160:]
+    vals = []
+    for r in rows:
+        v = r.get(key)
+        vals.append(float(v) if v is not None else None)
+    real_vals = [v for v in vals if v is not None]
+    if len(rows) < 2 or not real_vals:
+        return f'<div class="strategy-note">{esc(title)}資料尚未接入。</div>'
+    w, h = 900, 132
+    pad_l, pad_r, pad_t, pad_b = 50, 18, 18, 22
+    plot_h = h - pad_t - pad_b
+    if kind == "bar-zero":
+        max_abs = nice_number((max(abs(v) for v in real_vals) or 1) * 1.15)
+        lo, hi = -max_abs, max_abs
+    else:
+        lo, hi = min(real_vals), max(real_vals)
+        span = hi - lo
+        pad = max(1.0, span * 0.12)
+        if "%" in unit:
+            pad = max(0.3, span * 0.12)
+        lo -= pad
+        hi += pad
+        if hi <= lo:
+            hi = lo + 1
+
+    def x_pos(i):
+        return pad_l + i * (w - pad_l - pad_r) / max(1, len(rows) - 1)
+
+    def y_pos(v):
+        return pad_t + (hi - float(v)) * plot_h / (hi - lo)
+
+    grid = ""
+    for pct in [0, .5, 1]:
+        yy = pad_t + pct * plot_h
+        gv = hi - pct * (hi - lo)
+        grid += f'<line x1="{pad_l}" y1="{yy:.1f}" x2="{w-pad_r}" y2="{yy:.1f}" stroke="#21262d"/>'
+        grid += f'<text x="4" y="{yy+4:.1f}" fill="#6e7681" font-size="10">{compact_axis_label(gv)}{esc(unit)}</text>'
+    if kind == "bar-zero":
+        zy = y_pos(0)
+        grid += f'<line x1="{pad_l}" y1="{zy:.1f}" x2="{w-pad_r}" y2="{zy:.1f}" stroke="#8b949e" stroke-dasharray="3 3"/>'
+
+    marks = ""
+    if kind in {"bar", "bar-zero"}:
+        step = (w - pad_l - pad_r) / len(rows)
+        bar_w = max(2, min(7, step * 0.56))
+        zero_y = y_pos(0) if kind == "bar-zero" else y_pos(lo)
+        for i, v in enumerate(vals):
+            if v is None:
+                continue
+            x = x_pos(i)
+            y = y_pos(v)
+            top = min(y, zero_y)
+            bh = max(abs(zero_y - y), 1.4)
+            if key == "volume":
+                up = (rows[i].get("close") or 0) >= (rows[i].get("open") or 0)
+                bar_color = "#f85149" if up else "#3fb950"
+            elif kind == "bar-zero":
+                bar_color = "#f85149" if v >= 0 else "#3fb950"
+            else:
+                bar_color = color
+            marks += f'<rect x="{x-bar_w/2:.1f}" y="{top:.1f}" width="{bar_w:.1f}" height="{bh:.1f}" fill="{bar_color}" opacity=".78"/>'
+    else:
+        pts = []
+        for i, v in enumerate(vals):
+            if v is None:
+                continue
+            pts.append(f"{x_pos(i):.1f},{y_pos(v):.1f}")
+        marks = f'<polyline fill="none" stroke="{color}" stroke-width="2" points="{" ".join(pts)}"/>'
+
+    latest = rows[-1]
+    return f"""
+<svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
+  <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
+  {grid}
+  {marks}
+  <text x="{pad_l}" y="13" fill="#e6edf3" font-size="11">{esc(title)}</text>
+  <text x="{pad_l}" y="{h-6}" fill="#6e7681" font-size="10">{esc(rows[0].get("date",""))}</text>
+  <text x="{w-112}" y="{h-6}" fill="#6e7681" font-size="10">{esc(latest.get("date",""))}</text>
+</svg>"""
+
+
+def mda_synced_chart_panel(stock_id: str, daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> str:
+    rows = mda_chart_rows(daily, holding_series, chip_series)
+    data = json.dumps(rows, ensure_ascii=False)
+    panel_id = f"mda-sync-{stock_id}"
+    def panel(kind: str, svg: str) -> str:
+        return f'<div class="indicator-box indicator-hover mda-sync-panel" data-kind="{kind}">{svg}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>'
+    charts = [
+        panel("k", chart_svg(daily, "日K")),
+        panel("volume", mda_metric_svg(rows, "成交量（張）", "volume", "#8b949e", "bar", "張")),
+        panel("foreignShares", mda_metric_svg(rows, "外資持股張數", "foreignShares", "#7ee787", "line", "張")),
+        panel("foreign", mda_metric_svg(rows, "外資買賣超（張）", "foreign", "#f85149", "bar-zero", "張")),
+        panel("marginBalance", mda_metric_svg(rows, "融資餘額", "marginBalance", "#a78bfa", "line", "張")),
+        panel("major", mda_metric_svg(rows, "千張大戶持股比例", "major", "#f85149", "line", "%")),
+        panel("retail", mda_metric_svg(rows, "散戶持股比例", "retail", "#3fb950", "line", "%")),
+        panel("totalPeople", mda_metric_svg(rows, "總股東人數", "totalPeople", "#58a6ff", "line", "人")),
+    ]
+    script = f"""
+<script>
+const mdaData_{stock_id} = {data};
+(function(){{
+  const root=document.getElementById('{panel_id}');
+  if(!root) return;
+  const data=mdaData_{stock_id} || [];
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
+  function html(kind, x){{
+    if(kind==='k') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>開</span><span>${{fmt(x.open)}}</span><span>高</span><span>${{fmt(x.high)}}</span><span>低</span><span>${{fmt(x.low)}}</span><span>收</span><span>${{fmt(x.close)}}</span></div>`;
+    if(kind==='volume') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>成交量</span><span>${{fmtInt(x.volume)}} 張</span></div>`;
+    if(kind==='foreignShares') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資持股張數</span><span>${{fmtInt(x.foreignShares)}} 張</span></div>`;
+    if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
+    if(kind==='marginBalance') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>融資餘額</span><span>${{fmtInt(x.marginBalance)}} 張</span></div>`;
+    if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>千張大戶</span><span>${{pct(x.major)}}</span></div>`;
+    if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股</span><span>${{pct(x.retail)}}</span></div>`;
+    if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
+    return `<div class="t-date">${{x.date || '-'}}</div>`;
+  }}
+  function position(chart, idx, htmlText){{
+    const line=chart.querySelector('.chart-crosshair');
+    const tip=chart.querySelector('.chart-tooltip');
+    if(!line || !tip || data.length < 2) return;
+    const rect=chart.getBoundingClientRect();
+    const left=rect.width * 50 / 900;
+    const right=rect.width * (900 - 18) / 900;
+    const x=left + (right-left) * idx / Math.max(1, data.length-1);
+    line.style.display='block';
+    line.style.left=`${{x}}px`;
+    tip.innerHTML=htmlText;
+    tip.style.display='block';
+    const tw=tip.offsetWidth || 210;
+    let tx=x + 14;
+    if(tx + tw > rect.width) tx=x - tw - 14;
+    tip.style.left=`${{Math.max(6, tx)}}px`;
+    tip.style.top='10px';
+  }}
+  function sync(idx){{
+    const item=data[idx];
+    root.querySelectorAll('.mda-sync-panel').forEach(chart=>position(chart, idx, html(chart.dataset.kind, item)));
+  }}
+  function clear(){{
+    root.querySelectorAll('.mda-sync-panel').forEach(chart=>{{
+      const line=chart.querySelector('.chart-crosshair');
+      const tip=chart.querySelector('.chart-tooltip');
+      if(line) line.style.display='none';
+      if(tip) tip.style.display='none';
+    }});
+  }}
+  root.querySelectorAll('.mda-sync-panel').forEach(chart=>{{
+    chart.addEventListener('mousemove', ev=>{{
+      if(data.length < 2) return;
+      const rect=chart.getBoundingClientRect();
+      const left=rect.width * 50 / 900;
+      const right=rect.width * (900 - 18) / 900;
+      const x=Math.max(left, Math.min(right, ev.clientX - rect.left));
+      const idx=Math.max(0, Math.min(data.length-1, Math.round(((x-left)/Math.max(1,right-left))*(data.length-1))));
+      sync(idx);
+    }});
+    chart.addEventListener('mouseleave', clear);
+  }});
+}})();
+</script>"""
+    return f'<div id="{panel_id}" class="chart-stack">{"".join(charts)}</div>{script}'
+
+
 def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     s = enrich_stock_fields(dict(s))
     daily = aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily")
@@ -3743,8 +3943,8 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     chip_series = read_chip_series(stock_id)
     chip = read_chip_summary(stock_id)
     holding = read_holding_summary(stock_id)
-    market = mda_market_regime()
-    scored = mda_score_stock(s, bool(market.get("ok")))
+    holding_series = read_holding_series(stock_id)
+    scored = mda_score_stock(s, True)
     abc = mda_abc_checks(s, daily, tech, chip_series, holding)
     obs = mda_observation_checks(stock_id, daily, tech, chip_series, holding)
     money = mda_chip_structure(stock_id, chip_series, holding)
@@ -3758,12 +3958,11 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     detrend_gap = ((close / detrend_120 - 1) * 100) if close and detrend_120 else None
     volume_price = tech.get("volume_price", "資料不足")
     volume_basis = tech.get("volume_price_basis", "資料不足")
-    chart_id = f"mda_chart_{stock_id}"
+    synced_charts = mda_synced_chart_panel(stock_id, daily, holding_series, chip_series)
 
     why = (
         _mda_line("觀察等級", f'<span class="tag {scored["tag_cls"]}">{esc(scored["action"])}</span>　分數 {fmt_num(scored["score"], 0)}')
         + _mda_line("觀察命題", "先確認 A：MA120/MA240 是否上彎，再看 B1 是否有聰明錢慢慢接手。")
-        + _mda_line("大盤前提", f'{esc(market.get("state", "─"))}｜{esc(market.get("note", ""))}')
     )
     a_block = (
         _mda_line("MA120", f'{fmt_num(ma120)}｜斜率 {fmt_num(slopes.get("ma120"))}｜距離 {fmt_num(ma120_gap, 1)}%')
@@ -3800,16 +3999,8 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
   </div>
   <div class="card"><div class="section-label">⑤ 接下來觀察什麼</div><div class="telegram-phase">{next_watch}</div></div>
   <div class="card">
-    <div class="section-label">日K 與 120日扣抵</div>
-    <div id="{chart_id}" class="chart-box"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
-  </div>
-  <div class="card">
-    <div class="section-label">籌碼 / 股權結構</div>
-    {build_chip_panel(chip, holding)}
-    <div class="chart-stack" style="margin-top:12px">
-      <div class="chart-box">{chip_flow_svg(chip_series, "10日籌碼動向折線圖")}</div>
-      <div class="chart-box">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}</div>
-    </div>
+    <div class="section-label">日K / 籌碼 / 股權結構連動圖</div>
+    {synced_charts}
   </div>
 </div>"""
     return html_page(f"{stock_id} M大觀察解析", "mda", body, nav_prefix="../")
