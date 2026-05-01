@@ -1106,7 +1106,7 @@ def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
     return stocks
 
 
-def read_price_history(stock_id: str, limit: int = 420) -> list[dict]:
+def read_price_history(stock_id: str, limit: int = 760) -> list[dict]:
     path = LOCAL_PRICE_DIR / f"{stock_id}.csv"
     if not path.exists():
         path = V44_PRICE_DIR / f"{stock_id}.csv"
@@ -2532,7 +2532,7 @@ def calc_trade_plan(tech: dict, s: dict) -> dict:
     close = tech.get("close") if tech else _to_float(s.get("price", ""), None)
     ma10 = tech.get("ma10") if tech else None
     ma20 = tech.get("ma20") if tech else None
-    large_event = tech.get("large_volume_event", {}) if tech else {}
+    large_event = (tech.get("large_volume_event") or {}) if tech else {}
     large_low = large_event.get("low")
 
     if entry is None and close:
@@ -5590,6 +5590,20 @@ def variant_initial_stop(entry_price: float, tech: dict, decision: dict) -> floa
     return entry_price * 0.94 if entry_price else None
 
 
+def trade_path_metrics(rows: list[dict], entry_date: str, exit_date: str, entry_price: float | None) -> dict:
+    if not rows or not entry_price:
+        return {"max_return": None, "max_drawdown": None}
+    path = [r for r in rows if entry_date <= str(r.get("date", "")) <= exit_date]
+    if not path:
+        return {"max_return": None, "max_drawdown": None}
+    max_high = max((float(r.get("high") or entry_price) for r in path), default=entry_price)
+    min_low = min((float(r.get("low") or entry_price) for r in path), default=entry_price)
+    return {
+        "max_return": (max_high / entry_price - 1) * 100,
+        "max_drawdown": (min_low / entry_price - 1) * 100,
+    }
+
+
 ENTRY_VARIANTS = [
     ("original", "正式買入區", "Williams -65~-85 + MA20濾網"),
     ("wr_80_90", "Williams -80~-90", "14日 Williams 低接區"),
@@ -5738,6 +5752,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
     ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
     signal_close = past_rows[-1].get("close")
     entry_vs_signal_ret = ((entry_price / signal_close - 1) * 100) if entry_price and signal_close else None
+    path = trade_path_metrics(all_rows, fill["date"], exit_date, entry_price)
     return {
         "method": method,
         "sid": sid,
@@ -5753,6 +5768,8 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
         "ret": ret,
         "wait_days": fill.get("wait_bars"),
         "entry_vs_signal_ret": entry_vs_signal_ret,
+        "max_return": path.get("max_return"),
+        "max_drawdown": path.get("max_drawdown"),
         "target": target,
         "stop": stop,
     }
@@ -5980,6 +5997,7 @@ def backtest_one_signal(report_date: str, s: dict) -> dict | None:
         exit_reason = "持有中"
 
     ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
+    path = trade_path_metrics(all_rows, fill["date"], exit_date, entry_price)
     hold_days = None
     try:
         hold_days = max(0, (datetime.fromisoformat(exit_date) - datetime.fromisoformat(fill["date"])).days)
@@ -5999,6 +6017,8 @@ def backtest_one_signal(report_date: str, s: dict) -> dict | None:
         "exit_price": exit_price,
         "exit_reason": exit_reason,
         "ret": ret,
+        "max_return": path.get("max_return"),
+        "max_drawdown": path.get("max_drawdown"),
         "hold_days": hold_days,
         "latest_close": all_rows[-1].get("close") if all_rows else None,
         "target": target,
@@ -6015,6 +6035,164 @@ def build_backtest_results(reports: list[dict]) -> list[dict]:
             if result:
                 results.append(result)
     return results
+
+
+def historical_scan_universe(reports: list[dict]) -> list[dict]:
+    stock_map = find_latest_stock_map(reports)
+    out = []
+    for sid, s in sorted(stock_map.items()):
+        rows = sorted(read_price_history(sid), key=lambda r: r.get("date", ""))
+        if len(rows) >= 80:
+            out.append({"sid": sid, "stock": enrich_stock_fields(dict(s)), "rows": rows})
+    return out
+
+
+def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01", method: str = "wr_65_85_ma20") -> list[dict]:
+    trades = []
+    for item in historical_scan_universe(reports):
+        sid = item["sid"]
+        s = item["stock"]
+        rows = item["rows"]
+        i = 60
+        while i < len(rows) - 1:
+            row = rows[i]
+            signal_date = row.get("date", "")
+            if signal_date < start_date:
+                i += 1
+                continue
+            past_rows = rows[: i + 1]
+            tech = technical_snapshot(past_rows, {**s, "report_date": signal_date, "price": str(row.get("close", ""))})
+            close = tech.get("close")
+            ma20 = tech.get("ma20")
+            if not close or not ma20 or close < ma20:
+                i += 1
+                continue
+            if tech.get("volume_price") == "放量下跌":
+                i += 1
+                continue
+            decision = build_trade_decision(tech, {**s, "report_date": signal_date, "price": str(close)})
+            zone = indicator_entry_zone(method, past_rows, decision)
+            entry_low, entry_high = zone.get("low"), zone.get("high")
+            if entry_low is None or entry_high is None:
+                i += 1
+                continue
+            low, high = row.get("low"), row.get("high")
+            if low is None or high is None or not (low <= entry_high and high >= entry_low):
+                i += 1
+                continue
+
+            center = (entry_low + entry_high) / 2
+            open_price = row.get("open") or center
+            entry_price = center if low <= center <= high else min(max(open_price, entry_low), entry_high)
+            stop = variant_initial_stop(entry_price, tech, decision)
+            target = entry_price * 1.10
+            exit_date = rows[-1].get("date", "")
+            exit_price = rows[-1].get("close")
+            exit_reason = "持有中"
+            exit_idx = len(rows) - 1
+            for j in range(i, len(rows)):
+                r = rows[j]
+                r_low, r_high = r.get("low"), r.get("high")
+                if r_low is None or r_high is None:
+                    continue
+                if stop and r_low <= stop:
+                    exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), stop, "初始停損", j
+                    break
+                if target and r_high >= target:
+                    exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), target, "停利+10%", j
+                    break
+            ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
+            path = trade_path_metrics(rows, signal_date, exit_date, entry_price)
+            hold_days = None
+            try:
+                hold_days = max(0, (datetime.fromisoformat(exit_date) - datetime.fromisoformat(signal_date)).days)
+            except Exception:
+                pass
+            trades.append({
+                "sid": sid,
+                "name": s.get("name", ""),
+                "signal_date": signal_date,
+                "entry_rule": "Williams -65~-85 反推買入區 + MA20濾網；日K碰到區間成交",
+                "entry_range": zone.get("label", "資料不足"),
+                "entry_date": signal_date,
+                "entry": entry_price,
+                "exit_date": exit_date,
+                "exit_price": exit_price,
+                "exit_reason": exit_reason,
+                "ret": ret,
+                "max_return": path.get("max_return"),
+                "max_drawdown": path.get("max_drawdown"),
+                "hold_days": hold_days,
+                "target": target,
+                "stop": stop,
+            })
+            i = max(exit_idx + 1, i + 20)
+    return trades
+
+
+def summarize_trade_rows(rows: list[dict]) -> dict:
+    filled = [x for x in rows if x.get("entry") is not None]
+    closed = [x for x in filled if x.get("exit_reason") != "持有中"]
+    wins = [x for x in closed if (x.get("ret") or 0) > 0]
+    losses = [x for x in closed if (x.get("ret") or 0) <= 0]
+    return {
+        "signals": len(rows),
+        "filled": len(filled),
+        "closed": len(closed),
+        "open": len([x for x in filled if x.get("exit_reason") == "持有中"]),
+        "win_rate": len(wins) / len(closed) * 100 if closed else None,
+        "avg_ret": sum(x.get("ret") or 0 for x in filled) / len(filled) if filled else None,
+        "best": max((x.get("ret") for x in filled if x.get("ret") is not None), default=None),
+        "worst": min((x.get("ret") for x in filled if x.get("ret") is not None), default=None),
+        "max_return": max((x.get("max_return") for x in filled if x.get("max_return") is not None), default=None),
+        "max_drawdown": min((x.get("max_drawdown") for x in filled if x.get("max_drawdown") is not None), default=None),
+        "avg_drawdown": sum(x.get("max_drawdown") or 0 for x in filled) / len(filled) if filled else None,
+        "avg_hold": sum(x.get("hold_days") or 0 for x in filled if x.get("hold_days") is not None) / len([x for x in filled if x.get("hold_days") is not None]) if filled else None,
+        "wins": len(wins),
+        "losses": len(losses),
+    }
+
+
+def build_historical_scan_html(reports: list[dict]) -> str:
+    trades = backtest_historical_scan(reports, "2024-01-01")
+    summary = summarize_trade_rows(trades)
+    first_date = min((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
+    last_date = max((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
+    rows_html = ""
+    for x in sorted(trades, key=lambda r: (r.get("signal_date", ""), r.get("sid", "")), reverse=True)[:80]:
+        ret = x.get("ret")
+        ret_cls = "pos" if ret is not None and ret > 0 else "neg" if ret is not None and ret < 0 else ""
+        rows_html += f"""
+<tr>
+  <td><a class="stock-link" href="stocks/{x['sid']}.html">{esc(x['sid'])} {esc(x['name'])}</a><div class="signal-dates">訊號 {esc(x.get('signal_date','─'))}</div></td>
+  <td>{esc(x.get('entry_range','─'))}<div class="signal-dates">{esc(x.get('entry_rule',''))}<br>成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}</div></td>
+  <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}｜出場 {fmt_num(x.get('exit_price'))}</div></td>
+  <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
+  <td><span class="pos">{fmt_num(x.get('max_return'),1)}%</span><div class="signal-dates">最大回撤 <span class="neg">{fmt_num(x.get('max_drawdown'),1)}%</span></div></td>
+  <td><div class="price-target">目 {fmt_num(x.get('target'))}</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
+</tr>"""
+    if not rows_html:
+        rows_html = '<tr><td colspan="6" style="color:#8b949e">目前資料不足，還無法形成 2024 起掃描回測。</td></tr>'
+    return f"""
+<div class="card">
+  <div class="section-label">2024 起歷史掃描回測</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。歷史掃描沒有原報告目標價，因此停利用成交價 +10%，初始停損沿用本站可執行停損函式。</div>
+  <div class="grid grid-3" style="margin-top:12px">
+    <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
+    <div class="metric"><div class="metric-num {('pos' if (summary.get('avg_ret') or 0) >= 0 else 'neg')}">{fmt_num(summary.get('avg_ret'),1)}%</div><div class="metric-label">平均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">{fmt_num(summary.get('max_return'),1)}%</div><div class="metric-label">最大曾有報酬</div></div>
+    <div class="metric"><div class="metric-num neg">{fmt_num(summary.get('max_drawdown'),1)}%</div><div class="metric-label">最大回撤</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(summary.get('avg_hold'),1)}</div><div class="metric-label">平均持有天數</div></div>
+  </div>
+  <div class="chip-line">已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>目標/初停</th></tr></thead>
+      <tbody>{rows_html}</tbody>
+    </table>
+  </div>
+</div>"""
 
 
 def build_backtest_page(reports: list[dict]) -> str:
@@ -6068,6 +6246,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
     <div class="chip-line">已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
+  {build_historical_scan_html(reports)}
   {build_entry_variant_comparison_html(reports)}
   <div class="card">
     <div class="section-label">逐筆追蹤</div>
