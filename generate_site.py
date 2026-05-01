@@ -510,10 +510,17 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tv-chart-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
 .tv-chart-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:10px;position:relative}
 .tv-chart-title{font-size:12px;font-weight:800;color:#e6edf3;margin:0 0 6px}
-.tv-chart{height:150px;min-height:150px}
+.tv-chart{height:150px;min-height:150px;position:relative}
 .tv-chart.main{height:360px;min-height:360px}
 .tv-chart-note{font-size:11px;color:#6e7681;margin-top:8px;line-height:1.5}
 .tv-tooltip{position:absolute;z-index:8;display:none;top:34px;left:14px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;pointer-events:none;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+.tv-draw-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:-2px 0 8px}
+.tv-draw-btn{border:1px solid #30363d;background:#161b22;color:#8b949e;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.tv-draw-btn:hover,.tv-draw-btn.active{border-color:#58a6ff;color:#58a6ff;background:#0d2142}
+.tv-draw-layer{position:absolute;inset:0;z-index:7;pointer-events:none}
+.tv-draw-layer.active{pointer-events:auto;cursor:crosshair}
+.tv-draw-layer line{vector-effect:non-scaling-stroke}
+.tv-draw-layer .draft{stroke-dasharray:5 4;opacity:.9}
 .holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
 .holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
 .tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
@@ -4000,14 +4007,22 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
         ("retail", "散戶持股比例", ""),
         ("totalPeople", "總股東人數", ""),
     ]
-    panels = "".join(
-        f'''<div class="tv-chart-panel" data-kind="{kind}">
+    panel_html = []
+    for kind, title, cls in chart_defs:
+        toolbar = ""
+        if kind == "k":
+            toolbar = f'''<div class="tv-draw-toolbar" data-draw-toolbar="{panel_id}">
+    <button type="button" class="tv-draw-btn" data-draw-tool="trend">趨勢線</button>
+    <button type="button" class="tv-draw-btn" data-draw-tool="arrow">箭頭</button>
+    <button type="button" class="tv-draw-btn" data-draw-tool="clear">清除畫線</button>
+  </div>'''
+        panel_html.append(f'''<div class="tv-chart-panel" data-kind="{kind}">
   <div class="tv-chart-title">{esc(title)}</div>
+  {toolbar}
   <div id="{panel_id}-{kind}" class="tv-chart {cls}"></div>
   <div class="tv-tooltip"></div>
-</div>'''
-        for kind, title, cls in chart_defs
-    )
+</div>''')
+    panels = "".join(panel_html)
     script = f"""
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <script>
@@ -4030,7 +4045,7 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     layout:{{background:{{type:'solid',color:'#0d1117'}},textColor}},
     grid:{{vertLines:{{color:gridColor}},horzLines:{{color:gridColor}}}},
     rightPriceScale:{{borderColor:'#30363d'}},
-    timeScale:{{borderColor:'#30363d',timeVisible:false,secondsVisible:false}},
+    timeScale:{{borderColor:'#30363d',timeVisible:false,secondsVisible:false,fixLeftEdge:true,fixRightEdge:true}},
     crosshair:{{mode:L.CrosshairMode.Normal}},
     localization:{{locale:'zh-TW'}},
   }});
@@ -4038,8 +4053,26 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
   const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW',{{maximumFractionDigits:d,minimumFractionDigits:d}}) : '-';
   const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   const byTime=new Map(rows.map(x=>[x.date,x]));
+  const maxLogical=Math.max(0,rows.length-1);
+  const drawingKey='stockDrawings:{panel_id}';
+  let activeDrawTool=null;
+  let mainDrawApi=null;
   function lineData(key){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key])}})); }}
   function histData(key, colorFn){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'}})); }}
+  function clampLogicalRange(range){{
+    if(!range) return range;
+    let from=Number(range.from);
+    let to=Number(range.to);
+    if(!Number.isFinite(from) || !Number.isFinite(to)) return range;
+    const span=to-from;
+    if(span>=maxLogical) return {{from:0,to:maxLogical}};
+    if(from<0){{ to-=from; from=0; }}
+    if(to>maxLogical){{ from-=to-maxLogical; to=maxLogical; }}
+    return {{from:Math.max(0,from),to:Math.min(maxLogical,to)}};
+  }}
+  function isSameRange(a,b){{
+    return a && b && Math.abs(Number(a.from)-Number(b.from))<0.01 && Math.abs(Number(a.to)-Number(b.to))<0.01;
+  }}
   function makeTooltip(kind,x){{
     if(!x) return '';
     if(kind==='k') return `<b>${{x.date}}</b><br>開 ${{fmt(x.open)}} 高 ${{fmt(x.high)}} 低 ${{fmt(x.low)}} 收 ${{fmt(x.close)}}`;
@@ -4086,6 +4119,110 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
       showTip(item,x);
     }});
   }}
+  function normalizeTime(t){{
+    if(!t) return null;
+    if(typeof t==='string') return t;
+    if(typeof t==='object' && t.year) return `${{t.year}}-${{String(t.month).padStart(2,'0')}}-${{String(t.day).padStart(2,'0')}}`;
+    return String(t);
+  }}
+  function loadDrawings(){{
+    try{{ return JSON.parse(localStorage.getItem(drawingKey) || '[]').filter(x=>x && x.start && x.end); }}
+    catch(e){{ return []; }}
+  }}
+  function saveDrawings(drawings){{
+    localStorage.setItem(drawingKey, JSON.stringify(drawings.slice(-80)));
+  }}
+  function setDrawingButtons(mode){{
+    root.querySelectorAll('.tv-draw-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.drawTool===mode));
+  }}
+  function updateDrawingMode(mode){{
+    activeDrawTool=mode;
+    setDrawingButtons(mode);
+    if(mainDrawApi){{
+      mainDrawApi.layer.classList.toggle('active', !!mode);
+      mainDrawApi.chart.applyOptions({{handleScroll:!mode,handleScale:!mode}});
+    }}
+  }}
+  function setupDrawing(item){{
+    const layer=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    layer.classList.add('tv-draw-layer');
+    layer.setAttribute('aria-label','畫線圖層');
+    layer.innerHTML='<defs><marker id="{panel_id}-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#f2cc60"></path></marker></defs>';
+    item.el.appendChild(layer);
+    const api={{...item,layer}};
+    mainDrawApi=api;
+    let draft=null;
+    const color='#f2cc60';
+    function pointFromEvent(ev){{
+      const box=layer.getBoundingClientRect();
+      const x=ev.clientX-box.left;
+      const y=ev.clientY-box.top;
+      const time=normalizeTime(item.chart.timeScale().coordinateToTime(x));
+      const price=item.series.coordinateToPrice(y);
+      if(!time || !Number.isFinite(Number(price))) return null;
+      return {{x,y,time,price:Number(price)}};
+    }}
+    function lineNode(d, cls=''){{
+      const x1=item.chart.timeScale().timeToCoordinate(d.start.time);
+      const x2=item.chart.timeScale().timeToCoordinate(d.end.time);
+      const y1=item.series.priceToCoordinate(Number(d.start.price));
+      const y2=item.series.priceToCoordinate(Number(d.end.price));
+      if(x1==null || x2==null || y1==null || y2==null) return null;
+      const n=document.createElementNS('http://www.w3.org/2000/svg','line');
+      n.setAttribute('x1',x1); n.setAttribute('y1',y1);
+      n.setAttribute('x2',x2); n.setAttribute('y2',y2);
+      n.setAttribute('stroke',color); n.setAttribute('stroke-width','2');
+      n.setAttribute('fill','none');
+      if(d.type==='arrow') n.setAttribute('marker-end','url(#{panel_id}-arrow)');
+      if(cls) n.classList.add(cls);
+      return n;
+    }}
+    function render(extra=null){{
+      layer.setAttribute('width', item.el.clientWidth);
+      layer.setAttribute('height', item.el.clientHeight);
+      Array.from(layer.querySelectorAll('line')).forEach(n=>n.remove());
+      loadDrawings().forEach(d=>{{ const n=lineNode(d); if(n) layer.appendChild(n); }});
+      if(extra){{ const n=lineNode(extra,'draft'); if(n) layer.appendChild(n); }}
+    }}
+    layer.addEventListener('pointerdown',ev=>{{
+      if(!activeDrawTool) return;
+      const p=pointFromEvent(ev);
+      if(!p) return;
+      ev.preventDefault();
+      layer.setPointerCapture(ev.pointerId);
+      draft={{type:activeDrawTool,start:{{time:p.time,price:p.price}},end:{{time:p.time,price:p.price}}}};
+      render(draft);
+    }});
+    layer.addEventListener('pointermove',ev=>{{
+      if(!draft) return;
+      const p=pointFromEvent(ev);
+      if(!p) return;
+      draft.end={{time:p.time,price:p.price}};
+      render(draft);
+    }});
+    layer.addEventListener('pointerup',ev=>{{
+      if(!draft) return;
+      const p=pointFromEvent(ev);
+      if(p) draft.end={{time:p.time,price:p.price}};
+      const drawings=loadDrawings();
+      drawings.push(draft);
+      saveDrawings(drawings);
+      draft=null;
+      render();
+    }});
+    const toolbar=root.querySelector('[data-draw-toolbar="{panel_id}"]');
+    if(toolbar){{
+      toolbar.addEventListener('click',ev=>{{
+        const btn=ev.target.closest('[data-draw-tool]');
+        if(!btn) return;
+        const tool=btn.dataset.drawTool;
+        if(tool==='clear'){{ saveDrawings([]); updateDrawingMode(null); render(); return; }}
+        updateDrawingMode(activeDrawTool===tool ? null : tool);
+      }});
+    }}
+    item.chart.timeScale().subscribeVisibleLogicalRangeChange(()=>render());
+    render();
+  }}
   function addPanel(kind, title, height){{
     const el=document.getElementById('{panel_id}-'+kind);
     if(!el) return;
@@ -4121,8 +4258,12 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     chart.timeScale().fitContent();
     chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{{
       if(syncing || !range) return;
+      const next=clampLogicalRange(range);
       syncing=true;
-      chartApis.forEach(item=>{{ if(item.chart!==chart) item.chart.timeScale().setVisibleLogicalRange(range); }});
+      if(!isSameRange(range,next)){{
+        chart.timeScale().setVisibleLogicalRange(next);
+      }}
+      chartApis.forEach(item=>{{ if(item.chart!==chart) item.chart.timeScale().setVisibleLogicalRange(next); }});
       syncing=false;
     }});
     const wrapper=el.closest('.tv-chart-panel');
@@ -4139,7 +4280,9 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
       syncAllCrosshairs(param.time);
       crosshairSyncing=false;
     }});
-    chartApis.push({{chart,el,series,kind,tip}});
+    const item={{chart,el,series,kind,tip}};
+    chartApis.push(item);
+    if(kind==='k') setupDrawing(item);
   }}
   addPanel('k','日K',360);
   addPanel('volume','成交量',150);
