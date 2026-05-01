@@ -1946,7 +1946,14 @@ def indicator_series(rows: list[dict]) -> dict:
     }
 
 
-def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], str]], height: int = 118, fixed_range: tuple[float, float] | None = None, zero_line: bool = False) -> str:
+def mini_line_svg(
+    title: str,
+    series_defs: list[tuple[str, list[float | None], str]],
+    height: int = 118,
+    fixed_range: tuple[float, float] | None = None,
+    zero_line: bool = False,
+    guide_lines: list[tuple[float, str, str]] | None = None,
+) -> str:
     w, h = 900, height
     pad_l, pad_r, pad_t, pad_b = 50, 18, 20, 22
     values = [float(v) for _, vals, _ in series_defs for v in vals if v is not None]
@@ -1971,6 +1978,13 @@ def mini_line_svg(title: str, series_defs: list[tuple[str, list[float | None], s
     if zero_line and lo < 0 < hi:
         _, zy = xy(0, 0)
         grid += f'<line x1="{pad_l}" y1="{zy:.1f}" x2="{w-pad_r}" y2="{zy:.1f}" stroke="#8b949e" stroke-dasharray="3 3"/>'
+    for guide_value, guide_label, guide_color in guide_lines or []:
+        if lo <= guide_value <= hi:
+            _, gy = xy(0, guide_value)
+            grid += (
+                f'<line x1="{pad_l}" y1="{gy:.1f}" x2="{w-pad_r}" y2="{gy:.1f}" stroke="{guide_color}" stroke-dasharray="5 4" opacity=".75"/>'
+                f'<text x="{pad_l+6}" y="{gy-4:.1f}" fill="{guide_color}" font-size="10">{esc(guide_label)}</text>'
+            )
 
     lines = ""
     legend = ""
@@ -2000,7 +2014,12 @@ def indicator_chart_panel(rows: list[dict], label: str, mode: str) -> str:
         return '<div class="strategy-note" style="margin-top:10px">指標資料不足。</div>'
     kd = mini_line_svg(f"{label} KD", [("K", data["k"], "#58a6ff"), ("D", data["d"], "#d2a520")], fixed_range=(0, 100))
     macd = mini_line_svg(f"{label} MACD", [("DIF", data["dif"], "#58a6ff"), ("DEA", data["dea"], "#d2a520"), ("M", data["hist"], "#f85149")], zero_line=True)
-    wr = mini_line_svg(f"{label} Williams %R", [("%R", data["wr"], "#a78bfa")], fixed_range=(-100, 0))
+    wr = mini_line_svg(
+        f"{label} Williams %R",
+        [("%R", data["wr"], "#a78bfa")],
+        fixed_range=(-100, 0),
+        guide_lines=[(-20, "-20 過熱/賣出觀察", "#f85149"), (-80, "-80 超賣/買進觀察", "#3fb950")],
+    )
     return f"""<div class="indicator-stack">
   <div class="indicator-box indicator-hover" data-source="price" data-mode="{esc(mode)}" data-kind="wr">{wr}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
   <div class="indicator-box indicator-hover" data-source="price" data-mode="{esc(mode)}" data-kind="kd">{kd}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
@@ -2694,8 +2713,9 @@ function indicatorHtml_{stock_id}(chart, x){{
   const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
   const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
   const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
+  const wrState=(v)=>!Number.isFinite(Number(v)) ? '-' : (Number(v) >= -20 ? '偏過熱，留意賣出/降溫' : (Number(v) <= -80 ? '偏超賣，留意反彈/買點' : '中性區'));
   const kind=chart.dataset.kind;
-  if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span></div>`;
+  if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span><span>區間</span><span>${{wrState(x.wr)}}</span></div>`;
   if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span></div>`;
   if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>DIF</span><span>${{fmt(x.dif,2)}}</span><span>MACD</span><span>${{fmt(x.dea,2)}}</span><span>OSC</span><span>${{fmt(x.macd,2)}}</span></div>`;
   if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span></div>`;
