@@ -59,7 +59,7 @@ REPORTS_DIR=/path/to/reports python generate_site.py
 `docs/baskets.html` 會把每日報告先分成：
 
 - **行進籃**：SFZ 波段候選，原訊號可試單，TA3 作加碼/確認，MA20 管理。
-- **盤整籃**：MABC + CaryBot 早買觀察，重點是量縮價穩、籌碼不離開、轉強型態。
+- **盤整籃**：MABC + 量價早買觀察，重點是量縮價穩、籌碼不離開、轉強型態。
 - **過熱/風險**：不追高，等待回測 MA5/MA10/箱頂後再處理。
 
 ## 訊號追蹤
