@@ -38,9 +38,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
-.market-badge.pos{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
 .market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
-.market-badge.neg{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.market-badge.neg{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
 .check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
 .check-item .k{font-size:11px;color:#6e7681}
@@ -179,14 +179,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 /* Price info */
 .price-main{font-weight:700;font-size:14px;color:#e6edf3}
 .price-change{font-size:12px}
-.pos{color:#3fb950}
-.neg{color:#f85149}
+.pos{color:#f85149}
+.neg{color:#3fb950}
 
 /* Entry/Target/Stop */
 .price-row{display:flex;flex-direction:column;gap:2px}
 .price-entry{color:#58a6ff;font-size:12px}
-.price-target{color:#3fb950;font-size:12px}
-.price-stop{color:#f85149;font-size:12px}
+.price-target{color:#f85149;font-size:12px}
+.price-stop{color:#3fb950;font-size:12px}
 .price-support{color:#8b949e;font-size:12px}
 .price-rr{font-size:12px;font-weight:800}
 .m-score{font-size:24px;font-weight:900;color:#e6edf3}
@@ -261,12 +261,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">回測規則</div>
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
-    <div class="chip-line">已出場：0 筆｜停利/獲利：0 筆｜停損/虧損：0 筆｜平均已實現：─%｜最佳：7.6%｜最差：1.6%</div>
+    <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：0 筆｜停利/獲利：0 筆｜停損/虧損：0 筆｜平均已實現：─%｜最佳：7.6%｜最差：1.6%</div>
   </div>
   
 <div class="card">
-  <div class="section-label">2024 起歷史掃描回測｜SFZ_TA3 買點</div>
-  <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-04-29。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="section-label">SFZ 選股｜2024 起歷史掃描回測｜SFZ_TA3 買點</div>
+  <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-04-29。前提是 SFZ 選股池，不是全市場掃描。這不是人工報告訊號，而是用目前 SFZ 選股池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">295</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">20.1%</div><div class="metric-label">已出場勝率</div></div>
@@ -275,7 +275,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="metric"><div class="metric-num neg">-10.8%</div><div class="metric-label">最大回撤</div></div>
     <div class="metric"><div class="metric-num">12.3</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">已出場 288 筆｜持有中 7 筆｜獲利 58 筆｜虧損 230 筆｜最佳實現 119.4%｜最差實現 -10.2%｜平均回撤 -3.8%</div>
+  <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場 288 筆｜持有中 7 筆｜獲利 58 筆｜虧損 230 筆｜最佳實現 119.4%｜最差實現 -10.2%｜平均回撤 -3.8%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>續抱/初停</th></tr></thead>
@@ -924,8 +924,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 </div>
 <div class="card">
-  <div class="section-label">2024 起歷史掃描回測｜攻擊波後 Williams 回測</div>
-  <div class="strategy-note">資料範圍 2024-07-16 ~ 2026-04-27。這段是另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="section-label">SFZ 選股｜2024 起歷史掃描回測｜攻擊波後 Williams 回測</div>
+  <div class="strategy-note">資料範圍 2024-07-16 ~ 2026-04-27。前提是 SFZ 選股池，不是全市場掃描。這段是 SFZ 選股後的另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">116</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">49.1%</div><div class="metric-label">已出場勝率</div></div>
@@ -934,7 +934,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="metric"><div class="metric-num neg">-9.6%</div><div class="metric-label">最大回撤</div></div>
     <div class="metric"><div class="metric-num">10.8</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">已出場 112 筆｜持有中 4 筆｜獲利 55 筆｜虧損 57 筆｜最佳實現 181.9%｜最差實現 -8.9%｜平均回撤 -2.0%</div>
+  <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場 112 筆｜持有中 4 筆｜獲利 55 筆｜虧損 57 筆｜最佳實現 181.9%｜最差實現 -8.9%｜平均回撤 -2.0%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>續抱/初停</th></tr></thead>

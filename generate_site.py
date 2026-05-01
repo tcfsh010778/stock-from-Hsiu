@@ -431,9 +431,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
-.market-badge.pos{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
 .market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
-.market-badge.neg{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.market-badge.neg{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
 .check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
 .check-item .k{font-size:11px;color:#6e7681}
@@ -572,14 +572,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 /* Price info */
 .price-main{font-weight:700;font-size:14px;color:#e6edf3}
 .price-change{font-size:12px}
-.pos{color:#3fb950}
-.neg{color:#f85149}
+.pos{color:#f85149}
+.neg{color:#3fb950}
 
 /* Entry/Target/Stop */
 .price-row{display:flex;flex-direction:column;gap:2px}
 .price-entry{color:#58a6ff;font-size:12px}
-.price-target{color:#3fb950;font-size:12px}
-.price-stop{color:#f85149;font-size:12px}
+.price-target{color:#f85149;font-size:12px}
+.price-stop{color:#3fb950;font-size:12px}
 .price-support{color:#8b949e;font-size:12px}
 .price-rr{font-size:12px;font-weight:800}
 .m-score{font-size:24px;font-weight:900;color:#e6edf3}
@@ -6254,7 +6254,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
     return f"""
 <div class="card">
   <div class="section-label">{esc(title)}</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後等週K轉折且日K連兩根跌逾3%；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
@@ -6263,7 +6263,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
     <div class="metric"><div class="metric-num neg">{fmt_num(summary.get('max_drawdown'),1)}%</div><div class="metric-label">最大回撤</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('avg_hold'),1)}</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
+  <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>續抱/初停</th></tr></thead>
@@ -6278,14 +6278,14 @@ def build_historical_scan_html(reports: list[dict]) -> str:
         build_historical_scan_block(
             reports,
             "sfz_ta3",
-            "2024 起歷史掃描回測｜SFZ_TA3 買點",
-            "這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
+            "SFZ 選股｜2024 起歷史掃描回測｜SFZ_TA3 買點",
+            "這不是人工報告訊號，而是用目前 SFZ 選股池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
         )
         + build_historical_scan_block(
             reports,
             "wr_after_attack",
-            "2024 起歷史掃描回測｜攻擊波後 Williams 回測",
-            "這段是另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。",
+            "SFZ 選股｜2024 起歷史掃描回測｜攻擊波後 Williams 回測",
+            "這段是 SFZ 選股後的另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。",
         )
     )
 
@@ -6339,7 +6339,7 @@ def build_backtest_page(reports: list[dict]) -> str:
   <div class="card">
     <div class="section-label">回測規則</div>
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
-    <div class="chip-line">已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
+    <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
   {build_historical_scan_html(reports)}
   {build_entry_variant_comparison_html(reports)}
