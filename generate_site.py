@@ -782,24 +782,46 @@ def b1_force_status(s: dict, chip_series: list[dict] | None = None, holding: dic
     if not chip_series and not holding:
         return "B1資料不足"
     metrics = chip_trend_metrics(chip_series or [], holding or {})
+    holding_series = read_holding_series(sid) if sid else []
     total_10d = metrics.get("total_10d")
     foreign_10d = metrics.get("foreign_10d")
     major_delta = metrics.get("major_delta")
-    weak_votes = 0
-    strong_votes = 0
-    if total_10d is not None:
-        strong_votes += total_10d >= 0
-        weak_votes += total_10d < 0
-    if foreign_10d is not None:
-        strong_votes += foreign_10d >= 0
-        weak_votes += foreign_10d < 0
-    if major_delta is not None:
-        strong_votes += major_delta >= -0.05
-        weak_votes += major_delta < -0.05
-    if weak_votes >= 2:
+    retail_delta = metrics.get("retail_delta")
+    major_4w_delta = None
+    retail_4w_delta = None
+    latest_major = None
+    if len(holding_series) >= 5:
+        latest_major = holding_series[-1].get("major")
+        latest_retail = holding_series[-1].get("retail")
+        base_major = holding_series[-5].get("major")
+        base_retail = holding_series[-5].get("retail")
+        if latest_major is not None and base_major is not None:
+            major_4w_delta = latest_major - base_major
+        if latest_retail is not None and base_retail is not None:
+            retail_4w_delta = latest_retail - base_retail
+    elif holding:
+        latest_major = (holding.get("latest") or {}).get("major")
+
+    structure_ok = (
+        (major_4w_delta is not None and major_4w_delta >= 0.5)
+        or (latest_major is not None and latest_major >= 55 and (major_delta is None or major_delta >= -0.3))
+    )
+    structure_bad = (
+        (major_4w_delta is not None and major_4w_delta <= -1.0)
+        or (major_delta is not None and major_delta <= -0.8)
+    )
+    retail_bad = (
+        (retail_4w_delta is not None and retail_4w_delta >= 1.0)
+        or (retail_delta is not None and retail_delta >= 0.8)
+    )
+    flow_bad = (total_10d is not None and total_10d < 0) and (foreign_10d is not None and foreign_10d < 0)
+
+    if structure_bad and (retail_bad or flow_bad):
         return "B1主力已離開"
-    if strong_votes:
+    if structure_ok:
         return "B1主力未離開"
+    if flow_bad:
+        return "B1短線轉弱"
     return "B1資料不足"
 
 
@@ -1957,7 +1979,7 @@ def build_telegram_info_card(
     chip_sum5 = chip.get("sum5", {}) if chip else {}
     h_latest = holding.get("latest", {}) if holding else {}
     foreign5 = s.get("foreign_5d")
-    if is_blank(foreign5) and chip_sum5.get("foreign") is not None:
+    if chip_sum5.get("foreign") is not None:
         foreign5 = f"{chip_sum5.get('foreign'):+,.0f}張"
     force_line = (
         f"外資5日 {_value_or_dash(foreign5)}；"
@@ -1969,10 +1991,6 @@ def build_telegram_info_card(
         sum10 = chip.get("sum10", {})
         chip_metrics_line = f"外資10日 {fmt_num(sum10.get('foreign'),0)} 張；主力10日 {fmt_num(sum10.get('total'),0)} 張"
 
-    target = _value_or_dash(s.get("target"))
-    stop = _value_or_dash(s.get("stop"))
-    resistance = _value_or_dash(s.get("resistance") or fmt_num(tech.get("resistance")))
-    support = _value_or_dash(s.get("support") or fmt_num(tech.get("support")))
     operation_note = {
         "行進籃": "SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。",
         "盤整籃": "MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。",
@@ -1996,17 +2014,6 @@ def build_telegram_info_card(
         + _line_html("籌碼", force_line, _signed_class(foreign5))
         + (_line_html("籌碼數字", chip_metrics_line) if chip_metrics_line else "")
     )
-    phase3 = (
-        _line_html("是否進場", decision["rating"])
-        + _line_html("觀察價位", f"壓力 {resistance}｜支撐 {support}")
-        + _line_html("較佳買入區", decision["entry_range"])
-        + _line_html("停利", decision.get("target_text") or target)
-        + _line_html("初始停損", f"{decision.get('initial_stop_text','─')}（{decision.get('initial_stop_label','─')}，{decision.get('stop_pct_text','─')}）")
-        + _line_html("參考支撐", f"{decision.get('reference_support_text','─')}｜原報告 {stop}")
-        + _line_html("R:R", decision.get("rr_text", "─"), decision.get("rr_class", ""))
-        + (_line_html("賣出警示", f"{sell_signal.get('level')}｜{sell_signal.get('reason')}", sell_signal.get("class", "")) if sell_signal else "")
-        + _line_html("追蹤重點", operation_note)
-    )
     return f"""
 <div class="telegram-report-card">
   <div class="telegram-head">
@@ -2019,9 +2026,30 @@ def build_telegram_info_card(
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">{esc(close)}</div></div><div class="change {price_change_cls}">單日 {esc(price_change_text)}</div></div>
   <div class="telegram-phase"><h3>① 量化篩選確認</h3>{phase1}</div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3>{phase2}</div>
-  <div class="telegram-phase"><h3>③ 操作規劃</h3>{phase3}</div>
-  <div class="telegram-note">這張卡整理量化篩選、技術籌碼與操作規劃；AI 深度分析保留在右側。</div>
+  <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 AI 深度分析保留在右側。</div>
 </div>"""
+
+
+def build_operation_plan_card(s: dict, tech: dict, decision: dict, sell_signal: dict | None = None) -> str:
+    basket = basket_label(classify_basket(s))
+    resistance = _value_or_dash(s.get("resistance") or fmt_num(tech.get("resistance")))
+    operation_note = {
+        "行進籃": "SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。",
+        "盤整籃": "MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。",
+        "過熱/風險": "偏熱或風險區：不追高，等降溫、回測支撐不破，再重新評估。",
+    }.get(basket, "先等資料補齊，再回到買點、失敗線與目標價判斷。")
+    return (
+        '<div class="telegram-phase" style="margin-top:0">'
+        + _line_html("是否進場", decision["rating"], decision.get("rating_class", ""))
+        + _line_html("壓力 / 近支撐", f"壓力 {resistance}｜近支撐 {decision.get('initial_stop_text','─')}")
+        + _line_html("較佳買入區", decision["entry_range"])
+        + _line_html("停利", decision.get("target_text") or _value_or_dash(s.get("target")))
+        + _line_html("初始停損", f"{decision.get('initial_stop_text','─')}（{decision.get('initial_stop_label','─')}，{decision.get('stop_pct_text','─')}）")
+        + _line_html("R:R", decision.get("rr_text", "─"), decision.get("rr_class", ""))
+        + (_line_html("賣出警示", f"{sell_signal.get('level')}｜{sell_signal.get('reason')}", sell_signal.get("class", "")) if sell_signal else "")
+        + _line_html("追蹤重點", operation_note)
+        + "</div>"
+    )
 
 
 def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
@@ -2690,7 +2718,6 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
         f"大戶週變化 {fmt_num(major_delta)}%｜散戶週變化 {fmt_num(retail_delta)}%"
     )
     return f"""<div class="info-grid">
-  <div class="info-cell"><div class="k">法人日期</div><div class="v">{esc(chip.get('date','─'))}</div></div>
   <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
   <div class="info-cell"><div class="k">投信買賣超</div><div class="v {('pos' if chip_latest.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('trust'),0)}張</div></div>
   <div class="info-cell"><div class="k">自營商買賣超</div><div class="v {('pos' if chip_latest.get('dealer',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('dealer'),0)}張</div></div>
@@ -2701,7 +2728,6 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
   <div class="info-cell"><div class="k">大戶比例</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
   <div class="info-cell"><div class="k">散戶比例</div><div class="v">{fmt_num(h_latest.get('retail'))}%</div></div>
   <div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get('total_people'),0)}</div></div>
-  <div class="info-cell"><div class="k">股權日期</div><div class="v">{esc(holding.get('date','─') if holding else '─')}</div></div>
 </div>
 <div class="chip-line">{esc(chip_note)}</div>"""
 
@@ -2759,7 +2785,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
     <div class="basket-change {change_cls}">單日 {change_text}</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 {plan['entry_text']} ｜ 目標 {plan['target_text']} ｜ 初始停損 {plan['initial_stop_text']} ｜ <span class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 {plan['reference_support_text']} ｜ 符合條件：{esc(reason)}</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 {plan['initial_stop_text']} ｜ 符合條件：{esc(reason)}</div>
   <div class="tag-row">{tag_html}</div>
   {signal_summary_html(s.get('id',''), ledger or {})}
 </div>"""
@@ -3329,6 +3355,8 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
         "monthly": aligned_chip_payload(monthly_chip_indicators),
     }, ensure_ascii=False)
     main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
+    operation_card = build_operation_plan_card(s_view, tech, decision, sell_signal)
+    chip_dates = f"法人 {chip.get('date','─')}｜股權 {holding.get('date','─') if holding else '─'}"
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
@@ -3691,9 +3719,15 @@ initMainForceHover_{stock_id}();
       <div class="section-label">資訊卡</div>
       {telegram_card}
     </div>
-    <div class="card">
-      <div class="section-label">AI 深度分析</div>
-      {ai_html}
+    <div>
+      <div class="card">
+        <div class="section-label">操作規劃</div>
+        {operation_card}
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="section-label">AI 深度分析</div>
+        {ai_html}
+      </div>
     </div>
   </div>
 
@@ -3720,10 +3754,10 @@ initMainForceHover_{stock_id}();
   </div>
 
   <div class="card">
-    <div class="section-label">10 日籌碼動向折射圖</div>
+    <div class="section-label">10 日籌碼動向折線圖｜{esc(chip_dates)}</div>
     {build_chip_panel(chip, holding)}
     <div class="chart-stack">
-      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折射圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
+      <div id="{chip_flow_id}" class="chart-box hover-chart">{chip_flow_svg(chip_series, "10日籌碼動向折線圖")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
       <div id="{main_force_id}" class="chart-box hover-chart">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div>
     </div>
     <div class="strategy-note" style="margin-top:12px">
