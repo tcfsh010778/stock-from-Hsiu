@@ -400,11 +400,6 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
-.volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
-.volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
-.volume-guide-item.active{border-color:#58a6ff;background:rgba(88,166,255,.09)}
-.volume-guide-title{font-size:12px;font-weight:800;color:#e6edf3}
-.volume-guide-desc{font-size:11px;color:#8b949e;line-height:1.55;margin-top:3px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -503,7 +498,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -1399,7 +1394,7 @@ def volume_price_relation(rows: list[dict], volume_ratio: float | None) -> str:
         return "量縮價穩"
     if avg_turning_up:
         return "均量上彎"
-    return "未符合四種"
+    return "量價未表態"
 
 
 def volume_price_basis(rows: list[dict], volume_ratio: float | None) -> str:
@@ -1426,7 +1421,7 @@ def volume_price_reading(label: str) -> str:
         "量增價漲": "常態上漲，多頭順勢；若爆大量要注意高點。",
         "量縮價穩": "盤整蓄力，等突破方向確認。",
         "均量上彎": "趨勢出量訊號，搭配量增價漲確認攻擊啟動。",
-        "未符合四種": "不列入四種強勢量價，先等量縮價穩、轉強或均量上彎再評估。",
+        "量價未表態": "尚未出現明確量價優勢，先等量縮價穩、轉強或均量上彎再評估。",
     }.get(label, "資料不足，先等量價結構明確。")
 
 
@@ -2671,29 +2666,15 @@ def build_tech_panel(tech: dict) -> str:
         else:
             arrow = '<span class="arrow-flat">→</span>'
         ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
-    guide_items = [
-        ("量縮價漲", "最強，飆股型態，惜售無人賣，抱緊。"),
-        ("量增價漲", "常態上漲，多頭順勢；爆大量要注意高點。"),
-        ("量縮價穩", "盤整蓄力，等突破方向確認。"),
-        ("均量上彎", "趨勢出量訊號，搭配量增價漲確認攻擊啟動。"),
-    ]
-    volume_guide = "".join(
-        f"""<div class="volume-guide-item {'active' if volume_price == title else ''}">
-  <div class="volume-guide-title">{esc(title)}</div>
-  <div class="volume-guide-desc">{esc(desc)}</div>
-</div>"""
-        for title, desc in guide_items
-    )
     return f"""
 <div class="tech-panel">
   <div class="ma-strip">{ma_strip}</div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">四種量價評分</div><div class="v">{esc(volume_price)}</div></div>
+    <div class="info-cell"><div class="k">量價評分</div><div class="v">{esc(volume_price)}</div></div>
     <div class="info-cell"><div class="k">判斷依據</div><div class="v">{esc(volume_basis)}</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
   </div>
-</div>
-<div class="volume-guide">{volume_guide}</div>"""
+</div>"""
 
 
 def build_chip_panel(chip: dict, holding: dict) -> str:

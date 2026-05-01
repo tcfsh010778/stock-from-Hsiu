@@ -103,11 +103,6 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
-.volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
-.volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
-.volume-guide-item.active{border-color:#58a6ff;background:rgba(88,166,255,.09)}
-.volume-guide-title{font-size:12px;font-weight:800;color:#e6edf3}
-.volume-guide-desc{font-size:11px;color:#8b949e;line-height:1.55;margin-top:3px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -206,7 +201,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -272,24 +267,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="tech-panel">
   <div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">380.80 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">345.10 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">295.10 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">225.72 <span class="arrow-up">▲</span></div></div></div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">四種量價評分</div><div class="v">均量上彎</div></div>
+    <div class="info-cell"><div class="k">量價評分</div><div class="v">均量上彎</div></div>
     <div class="info-cell"><div class="k">判斷依據</div><div class="v">單日 9.92% / 量比 0.90x / 紅K / 5日均量較前5日 +21.6%</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">短中多頭排列</div></div>
   </div>
 </div>
-<div class="volume-guide"><div class="volume-guide-item ">
-  <div class="volume-guide-title">量縮價漲</div>
-  <div class="volume-guide-desc">最強，飆股型態，惜售無人賣，抱緊。</div>
-</div><div class="volume-guide-item ">
-  <div class="volume-guide-title">量增價漲</div>
-  <div class="volume-guide-desc">常態上漲，多頭順勢；爆大量要注意高點。</div>
-</div><div class="volume-guide-item ">
-  <div class="volume-guide-title">量縮價穩</div>
-  <div class="volume-guide-desc">盤整蓄力，等突破方向確認。</div>
-</div><div class="volume-guide-item active">
-  <div class="volume-guide-title">均量上彎</div>
-  <div class="volume-guide-desc">趨勢出量訊號，搭配量增價漲確認攻擊啟動。</div>
-</div></div>
     <div class="strategy-note" style="margin-top:12px">
       行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、量價轉強買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
     </div>

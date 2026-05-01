@@ -103,11 +103,6 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
-.volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
-.volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
-.volume-guide-item.active{border-color:#58a6ff;background:rgba(88,166,255,.09)}
-.volume-guide-title{font-size:12px;font-weight:800;color:#e6edf3}
-.volume-guide-desc{font-size:11px;color:#8b949e;line-height:1.55;margin-top:3px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -206,7 +201,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -242,8 +237,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
     <div class="telegram-rating pos">可買進</div>
   </div>
-  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score 100.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v pos">可買進｜收盤仍在買進區間附近</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 長多偏強 / 未符合四種 / B1主力未離開</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 1 次，最近 2026-04-29</div></div></div>
-  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">多方趨勢</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">未符合四種</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -2.26% / 量比 0.55x / 黑K / 5日均量較前5日 -32.8%</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">不列入四種強勢量價，先等量縮價穩、轉強或均量上彎再評估。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 53.4 / D 58.9，偏弱</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">DIF 10.99 / DEA 11.12 / OSC -0.26，空方動能</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-53.0，中性</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v neg">外資5日 -367 張；三大法人當日 -527 張；大戶 63.80% / 散戶 12.13%</div></div><div class="telegram-line"><div class="k">籌碼數字</div><div class="v">外資10日 5139 張；主力10日 7961 張</div></div></div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score 100.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v pos">可買進｜收盤仍在買進區間附近</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 長多偏強 / 量價未表態 / B1主力未離開</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 1 次，最近 2026-04-29</div></div></div>
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">多方趨勢</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量價未表態</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -2.26% / 量比 0.55x / 黑K / 5日均量較前5日 -32.8%</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">尚未出現明確量價優勢，先等量縮價穩、轉強或均量上彎再評估。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 53.4 / D 58.9，偏弱</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">DIF 10.99 / DEA 11.12 / OSC -0.26，空方動能</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-53.0，中性</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v neg">外資5日 -367 張；三大法人當日 -527 張；大戶 63.80% / 散戶 12.13%</div></div><div class="telegram-line"><div class="k">籌碼數字</div><div class="v">外資10日 5139 張；主力10日 7961 張</div></div></div>
   <div class="telegram-phase"><h3>③ 操作規劃</h3><div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">195.00</div></div><div class="change neg">單日 -4.50（-2.26%）</div></div><div class="telegram-line"><div class="k">是否進場</div><div class="v">可買進</div></div><div class="telegram-line"><div class="k">觀察價位</div><div class="v">壓力 221.5｜支撐 146.0</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">195.03 ~ 201.39</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">225.93</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">186.38（MA20，-6.3%）</div></div><div class="telegram-line"><div class="k">參考支撐</div><div class="v">145.27｜原報告 145.27</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-good">1:2.1</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜距MA20 +4.6%</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。</div></div></div>
   <div class="telegram-note">這張卡整理量化篩選、技術籌碼與操作規劃；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
 </div>
@@ -272,24 +267,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="tech-panel">
   <div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">199.40 <span class="arrow-down">▼</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">197.00 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">186.38 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">163.54 <span class="arrow-up">▲</span></div></div></div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">四種量價評分</div><div class="v">未符合四種</div></div>
+    <div class="info-cell"><div class="k">量價評分</div><div class="v">量價未表態</div></div>
     <div class="info-cell"><div class="k">判斷依據</div><div class="v">單日 -2.26% / 量比 0.55x / 黑K / 5日均量較前5日 -32.8%</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">多方趨勢</div></div>
   </div>
 </div>
-<div class="volume-guide"><div class="volume-guide-item ">
-  <div class="volume-guide-title">量縮價漲</div>
-  <div class="volume-guide-desc">最強，飆股型態，惜售無人賣，抱緊。</div>
-</div><div class="volume-guide-item ">
-  <div class="volume-guide-title">量增價漲</div>
-  <div class="volume-guide-desc">常態上漲，多頭順勢；爆大量要注意高點。</div>
-</div><div class="volume-guide-item ">
-  <div class="volume-guide-title">量縮價穩</div>
-  <div class="volume-guide-desc">盤整蓄力，等突破方向確認。</div>
-</div><div class="volume-guide-item ">
-  <div class="volume-guide-title">均量上彎</div>
-  <div class="volume-guide-desc">趨勢出量訊號，搭配量增價漲確認攻擊啟動。</div>
-</div></div>
     <div class="strategy-note" style="margin-top:12px">
       行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、量價轉強買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
     </div>
