@@ -560,6 +560,12 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .price-stop{color:#f85149;font-size:12px}
 .price-support{color:#8b949e;font-size:12px}
 .price-rr{font-size:12px;font-weight:800}
+.m-score{font-size:24px;font-weight:900;color:#e6edf3}
+.m-checks{display:flex;flex-wrap:wrap;gap:6px}
+.m-check{display:inline-flex;align-items:center;border:1px solid #30363d;border-radius:999px;padding:2px 8px;font-size:11px;color:#c9d1d9;background:#0d1117}
+.m-check.ok{border-color:rgba(63,185,80,.45);color:#3fb950}
+.m-check.warn{border-color:rgba(210,153,34,.45);color:#d2a520}
+.m-check.bad{border-color:rgba(248,81,73,.45);color:#f85149}
 
 /* Notes */
 .notes-list{list-style:none;padding:0}
@@ -600,6 +606,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",    "index.html",   "首頁"),
         ("daily",   "daily.html",   "今日選股"),
+        ("mda",     "mda.html",     "M大選股"),
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
         ("stocks",  "stocks.html",  "個股總覽"),
@@ -3380,6 +3387,183 @@ def build_index_page(reports: list[dict]) -> str:
     return html_page("首頁", "home", body)
 
 
+def _m_check(text: str, cls: str = "") -> str:
+    return f'<span class="m-check {cls}">{esc(text)}</span>'
+
+
+def sma_at(rows: list[dict], window: int, offset: int = 0) -> float | None:
+    vals = ma_values(rows, window)
+    idx = len(vals) - 1 - offset
+    return vals[idx] if 0 <= idx < len(vals) else None
+
+
+def mda_market_regime() -> dict:
+    rows = aggregate_ohlcv(read_price_history("2330"), "daily")
+    if len(rows) < 60:
+        return {"ok": False, "state": "資料不足", "class": "neu", "note": "2330 日線資料不足，暫不放大訊號", "ma20": None, "ma60": None}
+    ma20 = sma_at(rows, 20)
+    ma60 = sma_at(rows, 60)
+    close = rows[-1].get("close")
+    ok = bool(ma20 and ma60 and ma20 > ma60)
+    state = "多頭可做" if ok else "空頭停手"
+    cls = "pos" if ok else "neg"
+    note = f"2330 收盤 {fmt_num(close)}｜SMA20 {fmt_num(ma20)}｜SMA60 {fmt_num(ma60)}"
+    return {"ok": ok, "state": state, "class": cls, "note": note, "ma20": ma20, "ma60": ma60}
+
+
+def mda_bottom_checks(rows: list[dict], chip_series: list[dict]) -> dict:
+    if len(rows) < 240:
+        return {"ok": False, "items": [("240日資料不足", "warn")], "summary": "底部資料不足"}
+    lows = [r.get("low") for r in rows[-4:]]
+    higher_lows = all(lows[i] is not None and lows[i] > lows[i - 1] for i in range(1, len(lows)))
+    avg20 = sum(r.get("volume", 0) for r in rows[-21:-1]) / 20 if len(rows) >= 21 else None
+    vol_shrink = bool(avg20 and rows[-1].get("volume", 0) < avg20 * 0.70)
+    low20 = min(r.get("low") for r in rows[-20:] if r.get("low") is not None)
+    price_hold = bool(rows[-1].get("close") and low20 and rows[-1]["close"] >= low20 * 0.98)
+    foreign_vals = [float(x.get("foreign") or 0) for x in chip_series[-5:]]
+    foreign_slope = bool(foreign_vals and sum(foreign_vals) > 0)
+    detrend_240 = bool(rows[-1].get("close") and rows[-241].get("close") and rows[-1]["close"] > rows[-241]["close"])
+    checks = [
+        ("低點墊高", "ok" if higher_lows else "warn"),
+        ("量縮價穩", "ok" if vol_shrink and price_hold else "warn"),
+        ("外資5日偏買", "ok" if foreign_slope else "warn"),
+        ("240扣抵向上", "ok" if detrend_240 else "bad"),
+    ]
+    ok = higher_lows and vol_shrink and price_hold and foreign_slope and detrend_240
+    summary = "底部確認" if ok else "底部未齊"
+    return {"ok": ok, "items": checks, "summary": summary}
+
+
+def mda_strict_entry(rows: list[dict]) -> dict:
+    if len(rows) < 15:
+        return {"ok": False, "items": [("資料不足", "warn")], "entry": None, "stop": None, "target1": None, "target2": None}
+    close = rows[-1].get("close")
+    open_ = rows[-1].get("open")
+    ma5 = sma_at(rows, 5)
+    ma5_prev = sma_at(rows, 5, 5)
+    ma10 = sma_at(rows, 10)
+    slope_positive = bool(ma5 and ma5_prev and ma5 > ma5_prev)
+    pullback_ma5 = bool(close and ma5 and abs(close - ma5) / ma5 < 0.015)
+    red_k = bool(close and open_ and close > open_)
+    ok = slope_positive and pullback_ma5 and red_k
+    checks = [
+        ("SMA5斜率>0", "ok" if slope_positive else "bad"),
+        ("回到SMA5±1.5%", "ok" if pullback_ma5 else "warn"),
+        ("紅K", "ok" if red_k else "bad"),
+    ]
+    return {
+        "ok": ok,
+        "items": checks,
+        "entry": close if ok else None,
+        "stop": ma10,
+        "target1": close * 1.10 if ok and close else None,
+        "target2": close * 1.15 if ok and close else None,
+    }
+
+
+def mda_score_stock(s: dict, market_ok: bool) -> dict:
+    daily, tech, _decision = stock_trade_context(s)
+    chip_series = read_chip_series(s.get("id", ""))
+    bottom = mda_bottom_checks(daily, chip_series)
+    strict = mda_strict_entry(daily)
+    close = daily[-1].get("close") if daily else _to_float(s.get("price"), None)
+    if not market_ok:
+        action = "大盤停手"
+        tag_cls = "tag-red"
+    elif bottom["ok"] and strict["ok"]:
+        action = "今日可進"
+        tag_cls = "tag-green"
+    elif bottom["ok"]:
+        action = "等Strict"
+        tag_cls = "tag-yellow"
+    else:
+        action = "底部未齊"
+        tag_cls = "tag"
+
+    score = (40 if bottom["ok"] else sum(8 for _, cls in bottom["items"] if cls == "ok")) + (40 if strict["ok"] else sum(7 for _, cls in strict["items"] if cls == "ok")) + (20 if market_ok else 0)
+    checks = [_m_check("2330多頭" if market_ok else "2330空頭", "ok" if market_ok else "bad")]
+    checks += [_m_check(text, cls) for text, cls in bottom["items"]]
+    checks += [_m_check(text, cls) for text, cls in strict["items"]]
+    volume_line = f"{tech.get('volume_price', '量價資料不足')}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足"
+
+    return {
+        "id": s.get("id", ""),
+        "name": s.get("name", ""),
+        "market": s.get("market", ""),
+        "score": score,
+        "action": action,
+        "tag_cls": tag_cls,
+        "close": fmt_num(close),
+        "change": daily_change_text(daily),
+        "entry": fmt_num(strict.get("entry")),
+        "stop": fmt_num(strict.get("stop")),
+        "target1": fmt_num(strict.get("target1")),
+        "target2": fmt_num(strict.get("target2")),
+        "bottom": bottom["summary"],
+        "strict": "Strict成立" if strict["ok"] else "Strict未觸發",
+        "reason": " ".join(checks),
+        "chip_line": volume_line,
+        "sort": (0 if action == "今日可進" else 1 if action == "等Strict" else 2 if action == "底部未齊" else 3, -score),
+    }
+
+
+def build_mda_page(reports: list[dict]) -> str:
+    latest = latest_stock_report(reports)
+    date_str = latest.get("date", "─")
+    market = mda_market_regime()
+    scored = [mda_score_stock(enrich_stock_fields(dict(s)), bool(market.get("ok"))) for s in latest.get("stocks", [])]
+    scored.sort(key=lambda x: x["sort"])
+    primary = [x for x in scored if x["action"] == "今日可進"]
+    wait = [x for x in scored if x["action"] == "等Strict"]
+    avoid = [x for x in scored if x["action"] in {"底部未齊", "大盤停手"}]
+
+    rows = ""
+    for x in scored:
+        change_text, change_cls = x["change"]
+        rows += f"""
+<tr>
+  <td><a class="stock-link" href="stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}</div></td>
+  <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
+  <td><div class="price-main">{esc(x['close'])}</div><div class="{change_cls}">{esc(change_text)}</div></td>
+  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-stop">停損 SMA10 {esc(x['stop'])}</div><div class="price-target">+10% {esc(x['target1'])}｜+15% {esc(x['target2'])}</div></td>
+  <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['chip_line'])}</div></td>
+  <td><div class="signal-dates">{esc(x['bottom'])}｜{esc(x['strict'])}｜最長持有 5 日</div></td>
+</tr>"""
+    if not rows:
+        rows = '<tr><td colspan="6" style="color:#8b949e">目前沒有上市櫃候選標的。</td></tr>'
+
+    body = f"""
+<div class="container">
+  <div class="page-title">M大選股</div>
+  <div class="page-sub">最新報告：{esc(date_str)} · 2330 Regime → 底部形成 → Strict Entry</div>
+  <div class="card">
+    <div class="section-label">M 大盤前提</div>
+    <div class="market-light">
+      <div class="market-badge {market['class']}">{esc(market['state'])}</div>
+      <div>
+        <div style="font-size:16px;font-weight:800;color:#e6edf3">{esc(market['note'])}</div>
+        <div class="strategy-note" style="margin-top:8px">規則：2330 SMA20 > SMA60 才做；底部看低點墊高、量縮價穩、外資5日偏買、240日扣抵向上；進場看 SMA5 斜率 > 0、收盤回 SMA5 ±1.5%、紅K。停損 SMA10，+10%/+15% 分批，最長持有 5 個交易日。</div>
+        <div class="grid grid-3" style="margin-top:12px">
+          <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">今日可進</div></div>
+          <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">底部成形等Strict</div></div>
+          <div class="metric"><div class="metric-num" style="color:#f85149">{len(avoid)}</div><div class="metric-label">觀察/排除</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">候選清單</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>狀態/分數</th><th>收盤</th><th>進出計畫</th><th>三層檢核</th><th>備註</th></tr></thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
+  </div>
+</div>"""
+    return html_page("M大選股", "mda", body)
+
+
 def build_daily_page(report: dict) -> str:
     """生成單日完整報告頁"""
     date_str = report.get("date", "─")
@@ -4903,6 +5087,8 @@ def main():
     print("   [OK] index.html", flush=True)
     (OUTPUT_DIR / "daily.html").write_text(build_latest_daily_page(reports), encoding="utf-8")
     print("   [OK] daily.html", flush=True)
+    (OUTPUT_DIR / "mda.html").write_text(build_mda_page(reports), encoding="utf-8")
+    print("   [OK] mda.html", flush=True)
     (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
     print("   [OK] baskets.html", flush=True)
     (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
@@ -4924,7 +5110,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+7+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+8+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
