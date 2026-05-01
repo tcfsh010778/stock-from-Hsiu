@@ -293,6 +293,11 @@ def load_reports() -> list[dict]:
     return []
 
 
+def latest_stock_report(reports: list[dict]) -> dict:
+    """Return the newest report that actually contains stock picks."""
+    return next((r for r in reports if r.get("stocks")), reports[0] if reports else {})
+
+
 # ──────────────────────────────────────────────
 #  HTML 元件
 # ──────────────────────────────────────────────
@@ -2329,7 +2334,7 @@ def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: s
 
 
 def build_index_page(reports: list[dict]) -> str:
-    latest = reports[0] if reports else {}
+    latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
     marching, consolidation, risk = split_baskets(latest.get("stocks", []))
 
@@ -2469,7 +2474,7 @@ def build_daily_page(report: dict) -> str:
 
 
 def build_latest_daily_page(reports):
-    latest = reports[0] if reports else {}
+    latest = latest_stock_report(reports)
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
 
@@ -2508,7 +2513,7 @@ def build_latest_daily_page(reports):
 
 
 def build_baskets_page(reports):
-    latest = reports[0] if reports else {}
+    latest = latest_stock_report(reports)
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
     marching, consolidation, risk = split_baskets(stocks)
@@ -2557,7 +2562,7 @@ def build_baskets_page(reports):
 
 def build_signals_page(reports):
     ledger = build_signal_ledger(reports)
-    latest = reports[0] if reports else {}
+    latest = latest_stock_report(reports)
     latest_date = latest.get("date", "-")
     latest_ids = {s.get("id") for s in latest.get("stocks", [])}
     total_events = sum(len(x["events"]) for x in ledger.values())
