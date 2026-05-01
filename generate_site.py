@@ -512,6 +512,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("signals", "signals.html", "訊號追蹤"),
         ("stocks",  "stocks.html",  "個股總覽"),
         ("radar",   "radar.html",   "買點雷達"),
+        ("backtest", "backtest.html", "歷史回測"),
         ("history", "history.html", "歷史報告"),
     ]
     items = ""
@@ -3928,6 +3929,197 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     return html_page("買點雷達", "radar", body)
 
 
+def parse_range_values(text: str) -> tuple[float | None, float | None]:
+    nums = [_to_float(x, None) for x in re.findall(r"\d+(?:\.\d+)?", str(text or ""))]
+    vals = [x for x in nums if x is not None]
+    if not vals:
+        return None, None
+    return min(vals), max(vals)
+
+
+def backtest_one_signal(report_date: str, s: dict) -> dict | None:
+    sid = s.get("id", "")
+    if not sid:
+        return None
+    s = enrich_stock_fields(dict(s))
+    s["report_date"] = report_date
+    all_rows = merge_report_close(read_price_history(sid), s)
+    all_rows = sorted(all_rows, key=lambda r: r.get("date", ""))
+    past_rows = [r for r in all_rows if r.get("date", "") <= report_date]
+    future_rows = [r for r in all_rows if r.get("date", "") > report_date]
+    if not past_rows or not future_rows:
+        return None
+
+    tech = technical_snapshot(past_rows, s)
+    decision = build_trade_decision(tech, s)
+    entry_low, entry_high = parse_range_values(decision.get("entry_range"))
+    entry = decision.get("entry")
+    target = decision.get("target")
+    stop = decision.get("initial_stop")
+    if entry_low is None or entry_high is None or entry is None or stop is None:
+        return None
+
+    fill = None
+    for row in future_rows:
+        low, high = row.get("low"), row.get("high")
+        if low is None or high is None:
+            continue
+        if low <= entry_high and high >= entry_low:
+            open_price = row.get("open") or entry
+            fill_price = entry if low <= entry <= high else min(max(open_price, entry_low), entry_high)
+            if stop and fill_price <= stop:
+                continue
+            fill = {"date": row.get("date", ""), "price": fill_price, "row": row}
+            break
+
+    if not fill:
+        last = all_rows[-1] if all_rows else {}
+        return {
+            "sid": sid,
+            "name": s.get("name", ""),
+            "report_date": report_date,
+            "basket": basket_label(classify_basket(s)),
+            "status": "未成交",
+            "entry_range": decision.get("entry_range", "─"),
+            "entry": None,
+            "exit_date": "─",
+            "exit_price": None,
+            "exit_reason": "未觸及買入區",
+            "ret": None,
+            "hold_days": None,
+            "latest_close": last.get("close"),
+            "target": target,
+            "stop": stop,
+        }
+
+    entry_price = fill["price"]
+    exit_date = ""
+    exit_price = None
+    exit_reason = ""
+    fill_seen = False
+    for row in future_rows:
+        if row.get("date") == fill["date"]:
+            fill_seen = True
+        if not fill_seen:
+            continue
+        low, high = row.get("low"), row.get("high")
+        if low is None or high is None:
+            continue
+        if stop and low <= stop:
+            exit_date, exit_price, exit_reason = row.get("date", ""), stop, "初始停損"
+            break
+        if target and high >= target:
+            exit_date, exit_price, exit_reason = row.get("date", ""), target, "停利"
+            break
+
+    if exit_price is None:
+        last = all_rows[-1]
+        exit_date = last.get("date", "")
+        exit_price = last.get("close")
+        exit_reason = "持有中"
+
+    ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
+    hold_days = None
+    try:
+        hold_days = max(0, (datetime.fromisoformat(exit_date) - datetime.fromisoformat(fill["date"])).days)
+    except Exception:
+        pass
+    status = "持有中" if exit_reason == "持有中" else "停利" if exit_reason == "停利" else "停損/出場"
+    return {
+        "sid": sid,
+        "name": s.get("name", ""),
+        "report_date": report_date,
+        "basket": basket_label(classify_basket(s)),
+        "status": status,
+        "entry_range": decision.get("entry_range", "─"),
+        "entry_date": fill["date"],
+        "entry": entry_price,
+        "exit_date": exit_date,
+        "exit_price": exit_price,
+        "exit_reason": exit_reason,
+        "ret": ret,
+        "hold_days": hold_days,
+        "latest_close": all_rows[-1].get("close") if all_rows else None,
+        "target": target,
+        "stop": stop,
+    }
+
+
+def build_backtest_results(reports: list[dict]) -> list[dict]:
+    results = []
+    for report in sorted(reports, key=lambda r: r.get("date", "")):
+        report_date = report.get("date", "")
+        for s in report.get("stocks", []):
+            result = backtest_one_signal(report_date, s)
+            if result:
+                results.append(result)
+    return results
+
+
+def build_backtest_page(reports: list[dict]) -> str:
+    results = build_backtest_results(reports)
+    filled = [x for x in results if x.get("entry") is not None]
+    closed = [x for x in filled if x.get("exit_reason") != "持有中"]
+    open_positions = [x for x in filled if x.get("exit_reason") == "持有中"]
+    wins = [x for x in closed if (x.get("ret") or 0) > 0]
+    losses = [x for x in closed if (x.get("ret") or 0) <= 0]
+    avg_ret = sum(x.get("ret") or 0 for x in filled) / len(filled) if filled else None
+    avg_closed = sum(x.get("ret") or 0 for x in closed) / len(closed) if closed else None
+    win_rate = len(wins) / len(closed) * 100 if closed else None
+    best = max((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
+    worst = min((x.get("ret") for x in filled if x.get("ret") is not None), default=None)
+    avg_hold = sum(x.get("hold_days") or 0 for x in filled if x.get("hold_days") is not None) / len([x for x in filled if x.get("hold_days") is not None]) if filled else None
+
+    rows_html = ""
+    for x in sorted(results, key=lambda r: (r.get("report_date", ""), r.get("sid", "")), reverse=True):
+        ret = x.get("ret")
+        ret_cls = "pos" if ret is not None and ret > 0 else "neg" if ret is not None and ret < 0 else ""
+        status_cls = "tag-green" if x.get("status") == "停利" else "tag-red" if x.get("status") == "停損/出場" else "tag-yellow" if x.get("status") == "持有中" else "tag"
+        href = f"stocks/{x['sid']}.html"
+        rows_html += f"""
+<tr>
+  <td><a class="stock-link" href="{href}">{esc(x['sid'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['basket'])}｜報告 {esc(x['report_date'])}</div></td>
+  <td><span class="tag {status_cls}">{esc(x['status'])}</span><div class="signal-dates">{esc(x.get('exit_reason',''))}</div></td>
+  <td>{esc(x.get('entry_range','─'))}<div class="signal-dates">成交 {esc(x.get('entry_date','─'))}｜{fmt_num(x.get('entry'))}</div></td>
+  <td>{esc(x.get('exit_date','─'))}<div class="signal-dates">出場 {fmt_num(x.get('exit_price'))}</div></td>
+  <td class="{ret_cls}" style="font-weight:800">{'─' if ret is None else f'{ret:+.1f}%'}</td>
+  <td>{'─' if x.get('hold_days') is None else str(x.get('hold_days'))}</td>
+  <td><div class="price-target">目 {fmt_num(x.get('target'))}</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
+</tr>"""
+
+    if not rows_html:
+        rows_html = '<tr><td colspan="7" style="color:#8b949e">目前資料不足，還無法形成回測結果。</td></tr>'
+
+    body = f"""
+<div class="container">
+  <div class="page-title">歷史回測</div>
+  <div class="page-sub">依歷史報告買入區、停利與初始停損追蹤訊號後績效。成交從報告日後一個交易日開始計算。</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{len(results)}</div><div class="metric-label">歷史訊號</div></div>
+    <div class="metric"><div class="metric-num">{len(filled)}</div><div class="metric-label">已觸及買入區</div></div>
+    <div class="metric"><div class="metric-num">{len(open_positions)}</div><div class="metric-label">持有中</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(win_rate,1)}%</div><div class="metric-label">已出場勝率</div></div>
+    <div class="metric"><div class="metric-num {('pos' if (avg_ret or 0) >= 0 else 'neg')}">{fmt_num(avg_ret,1)}%</div><div class="metric-label">平均報酬，含持有中</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(avg_hold,1)}</div><div class="metric-label">平均持有天數</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">回測規則</div>
+    <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
+    <div class="chip-line">已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
+  </div>
+  <div class="card">
+    <div class="section-label">逐筆追蹤</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>狀態</th><th>買入區/成交</th><th>出場</th><th>報酬</th><th>天數</th><th>目標/初停</th></tr></thead>
+        <tbody>{rows_html}</tbody>
+      </table>
+    </div>
+  </div>
+</div>"""
+    return html_page("歷史回測", "backtest", body)
+
+
 def build_stock_pages(reports: list[dict]) -> int:
     stock_map = find_latest_stock_map(reports)
     ledger = build_signal_ledger(reports)
@@ -3966,6 +4158,7 @@ def build_history_page(reports):
     body = (
         '<div class="container">'
         + f'<div class="page-title">History ({len(reports)} reports)</div>'
+        + '<div class="page-sub"><a href="backtest.html">查看歷史回測 →</a></div>'
         + '<div class="card">' + items + '</div>'
         + '</div>'
     )
@@ -3999,6 +4192,8 @@ def main():
     print("   [OK] stocks.html", flush=True)
     (OUTPUT_DIR / "radar.html").write_text(build_buy_radar_page(reports), encoding="utf-8")
     print("   [OK] radar.html", flush=True)
+    (OUTPUT_DIR / "backtest.html").write_text(build_backtest_page(reports), encoding="utf-8")
+    print("   [OK] backtest.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
     stock_page_count = build_stock_pages(reports)
@@ -4010,7 +4205,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+6+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+7+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
