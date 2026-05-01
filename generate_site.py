@@ -1997,8 +1997,7 @@ def build_telegram_info_card(
         + (_line_html("籌碼數字", chip_metrics_line) if chip_metrics_line else "")
     )
     phase3 = (
-        f'<div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">{esc(close)}</div></div><div class="change {price_change_cls}">單日 {esc(price_change_text)}</div></div>'
-        + _line_html("是否進場", decision["rating"])
+        _line_html("是否進場", decision["rating"])
         + _line_html("觀察價位", f"壓力 {resistance}｜支撐 {support}")
         + _line_html("較佳買入區", decision["entry_range"])
         + _line_html("停利", decision.get("target_text") or target)
@@ -2017,10 +2016,11 @@ def build_telegram_info_card(
     </div>
     <div class="telegram-rating {decision.get('rating_class','')}">{esc(decision['rating'])}</div>
   </div>
+  <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">{esc(close)}</div></div><div class="change {price_change_cls}">單日 {esc(price_change_text)}</div></div>
   <div class="telegram-phase"><h3>① 量化篩選確認</h3>{phase1}</div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3>{phase2}</div>
   <div class="telegram-phase"><h3>③ 操作規劃</h3>{phase3}</div>
-  <div class="telegram-note">這張卡整理量化篩選、技術籌碼與操作規劃；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
+  <div class="telegram-note">這張卡整理量化篩選、技術籌碼與操作規劃；AI 深度分析保留在右側。</div>
 </div>"""
 
 
@@ -3292,7 +3292,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
             body = (log.get("report") or "")[:1800]
             ai_html += f'<div class="mini-report"><strong>{esc(headline)}</strong>\n\n{esc(body)}</div>'
     else:
-        ai_html = '<div class="strategy-note">目前沒有讀到 v44 AI 分析紀錄。之後只要 v44 的快速分析或 AI深度分析寫入 SQLite，這裡會自動帶出最近紀錄。</div>'
+        ai_html = '<div class="strategy-note">目前沒有讀到 AI 深度分析紀錄。之後只要 v44 分析寫入 SQLite，這裡會自動帶出最近紀錄。</div>'
 
     event_rows = ""
     for e in item.get("events", [])[-12:][::-1]:
@@ -3681,14 +3681,6 @@ initChipFlowHover_{stock_id}();
 initMainForceHover_{stock_id}();
 </script>"""
     telegram_card = build_telegram_info_card(stock_id, s_view, tech, chip, holding, decision, item, sell_signal)
-    sell_alert_html = f"""
-<div class="alert-row" style="grid-template-columns:1fr;margin-top:12px">
-  <div>
-    <span class="alert-level {sell_signal.get('class','')}">{esc(sell_signal.get('level','─'))}</span>
-    <div class="signal-dates" style="margin-top:6px">MA20距離 {'─' if sell_signal.get('ma20_gap') is None else f"{sell_signal.get('ma20_gap'):+.1f}%"} ｜ 買點損益 {'─' if sell_signal.get('profit') is None else f"{sell_signal.get('profit'):+.1f}%"} ｜ {esc(sell_signal.get('reason',''))}</div>
-  </div>
-</div>"""
-
     body = f"""
 <div class="container">
   <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
@@ -3700,9 +3692,8 @@ initMainForceHover_{stock_id}();
       {telegram_card}
     </div>
     <div class="card">
-      <div class="section-label">快速分析</div>
-      <div class="mini-report">{esc(quick_analysis_text(s_view, item))}</div>
-      {sell_alert_html}
+      <div class="section-label">AI 深度分析</div>
+      {ai_html}
     </div>
   </div>
 
@@ -3740,16 +3731,10 @@ initMainForceHover_{stock_id}();
     </div>
   </div>
 
-  <div class="grid grid-2">
-    <div class="card">
-      <div class="section-label">歷史訊號</div>
-      <div style="overflow-x:auto">
-        <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>{event_rows}</tbody></table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="section-label">v44 AI / 快速分析紀錄</div>
-      {ai_html}
+  <div class="card">
+    <div class="section-label">歷史訊號</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>{event_rows}</tbody></table>
     </div>
   </div>
 </div>
