@@ -6150,7 +6150,7 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                     exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), stop, "初始停損", j
                     break
                 if j > i:
-                    sell_price, sell_reason = historical_sell_exit(rows[: j + 1], chip_series, s, entry_price)
+                    sell_price, sell_reason = historical_sell_exit(rows[: j + 1], chip_series, s, entry_price, i, 20)
                     if sell_price is not None and sell_reason:
                         exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), sell_price, sell_reason, j
                         break
@@ -6212,8 +6212,12 @@ def historical_sell_exit(
     chip_series: list[dict],
     stock: dict,
     entry_price: float,
+    entry_index: int,
+    activation_pct: float = 20,
 ) -> tuple[float | None, str | None]:
     if len(daily_rows) < 20 or not entry_price:
+        return None, None
+    if entry_index < 0 or entry_index >= len(daily_rows):
         return None, None
     current_date = str(daily_rows[-1].get("date", ""))
     current_chip = [x for x in chip_series if str(x.get("date", "")) <= current_date]
@@ -6222,13 +6226,15 @@ def historical_sell_exit(
     close = daily_rows[-1].get("close")
     level = signal.get("level", "")
     reason = signal.get("reason", "")
-    profit = signal.get("profit")
-    if signal.get("class") == "exit" and close:
+    current_ma20 = ma_values(daily_rows, 20)[-1] if len(daily_rows) >= 20 else None
+    trade_rows = daily_rows[entry_index:]
+    high_water = max((r.get("high") or entry_price) for r in trade_rows) if trade_rows else entry_price
+    high_ret = ((high_water / entry_price - 1) * 100) if high_water and entry_price else None
+
+    if level == "立即檢查" and close:
         return close, f"{level}｜{reason}"
-    if level == "跌破MA20" and close:
-        return close, f"{level}｜{reason}"
-    if level == "月線轉弱" and close:
-        return close, f"{level}｜{reason}"
+    if high_ret is not None and high_ret >= activation_pct and close and current_ma20 and close < current_ma20:
+        return close, f"跌破MA20｜曾漲過{activation_pct:.0f}%後啟動MA20續抱"
     return None, None
 
 
@@ -6249,14 +6255,14 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
   <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}｜出場 {fmt_num(x.get('exit_price'))}</div></td>
   <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
   <td><span class="pos">{fmt_num(x.get('max_return'),1)}%</span><div class="signal-dates">最大回撤 <span class="neg">{fmt_num(x.get('max_drawdown'),1)}%</span></div></td>
-  <td><div class="price-target">續抱 MA20</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
+  <td><div class="price-target">+20%後 MA20</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
 </tr>"""
     if not rows_html:
         rows_html = '<tr><td colspan="6" style="color:#8b949e">目前資料不足，還無法形成 2024 起掃描回測。</td></tr>'
     return f"""
 <div class="card">
   <div class="section-label">{esc(title)}</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用網站賣出訊號：先守初始停損；漲幅10%內跌破 MA20 可出場；漲幅超過20%後以 MA20 主線續抱，跌破 MA20 出場；量大長黑且外資連賣則立即出場；不設固定 +10% 停利。</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
@@ -6268,7 +6274,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
   <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
-      <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>續抱/初停</th></tr></thead>
+      <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
       <tbody>{rows_html}</tbody>
     </table>
   </div>
@@ -6329,7 +6335,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">歷史回測</div>
-  <div class="page-sub">依 SFZ_TA3 初始買點與行進籃 Williams 回落買點追蹤訊號後績效；出場以初始停損與 MA20 主線為核心，不設固定 +10% 停利。</div>
+  <div class="page-sub">依 SFZ_TA3 初始買點與行進籃 Williams 回落買點追蹤訊號後績效；出場以初始停損與「曾漲過 +20% 後 MA20 主線」為核心，不設固定 +10% 停利。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(results)}</div><div class="metric-label">歷史訊號</div></div>
     <div class="metric"><div class="metric-num">{len(filled)}</div><div class="metric-label">已觸及買入區</div></div>
