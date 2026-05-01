@@ -41,6 +41,7 @@ V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
 V44_FOREIGN_SHAREHOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "foreign_shareholding"
 V44_MARGIN_DIR = V44_ROOT / "回測" / "v6_outputs" / "margin"
+V44_BACKTEST_OUTPUT_DIR = V44_ROOT / "回測" / "v6_outputs"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
 
@@ -6314,16 +6315,91 @@ def build_historical_scan_html(reports: list[dict]) -> str:
         build_historical_scan_block(
             reports,
             "sfz_ta3",
-            "SFZ 選股｜波段初始買點｜SFZ_TA3",
-            "這段是尚未完全發動、波段趨勢一開始的買點；用目前 SFZ 選股池逐日掃描，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
+            "網站壓力測試｜逐日掃描版 SFZ_TA3",
+            "這段不是原 168 筆回測；它是用目前網站候選池逐日掃描 2024 起所有符合點，條件較簡化，所以會重複觸發並放大啟動前停損風險。",
         )
         + build_historical_scan_block(
             reports,
             "wr_after_attack",
-            "SFZ 選股｜行進籃回落買點｜Williams",
-            "這段是已經走一段攻擊波、進入行進籃後的回落買點，不與 SFZ_TA3 初始買點混用；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區。",
+            "網站壓力測試｜行進籃 Williams 回落",
+            "這段同樣是網站逐日掃描版；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區，不等同原 SFZ 168 訊號母體。",
         )
     )
+
+
+def _read_backtest_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8-sig", newline="") as f:
+            return list(csv.DictReader(f))
+    except Exception:
+        return []
+
+
+def _find_backtest_row(path: Path, **criteria) -> dict:
+    for row in _read_backtest_csv(path):
+        if all(str(row.get(k, "")) == str(v) for k, v in criteria.items()):
+            return row
+    return {}
+
+
+def _metric_from_row(row: dict, key: str, suffix: str = "%") -> str:
+    if not row or row.get(key) in {None, ""}:
+        return "─"
+    try:
+        return f"{float(row[key]):.1f}{suffix}"
+    except Exception:
+        return esc(str(row.get(key)))
+
+
+def _num_from_row(row: dict, key: str) -> str:
+    if not row or row.get(key) in {None, ""}:
+        return "─"
+    try:
+        return str(int(float(row[key])))
+    except Exception:
+        return esc(str(row.get(key)))
+
+
+def build_original_sfz_backtest_reference_html() -> str:
+    ma_path = V44_BACKTEST_OUTPUT_DIR / "sfz_ma_trailing_after_activation_summary.csv"
+    wait_path = V44_BACKTEST_OUTPUT_DIR / "sfz_signal_wait_ta3_entry_summary.csv"
+    unique_path = V44_BACKTEST_OUTPUT_DIR / "sfz_ta3_unique_entry_exit_compare.csv"
+    ma10 = _find_backtest_row(ma_path, year="ALL", basket_type="ALL", ma_line="MA20", activation_pct="10")
+    ma20 = _find_backtest_row(ma_path, year="ALL", basket_type="ALL", ma_line="MA20", activation_pct="20")
+    strict20 = _find_backtest_row(wait_path, mode="Strict+漲過20%後MA20")
+    unique20 = _find_backtest_row(unique_path, mode="TA3唯一進場+漲過20%後MA20")
+    rows = [
+        ("原 168 訊號｜漲過10%後 MA20", ma10, "signals", "原 SFZ/v42 入籃訊號，只有已觸發 +10% 的子集合。"),
+        ("原 168 訊號｜漲過20%後 MA20", ma20, "signals", "原 SFZ/v42 入籃訊號，只有已觸發 +20% 的子集合。"),
+        ("原訊號後等 20 日｜Strict+20% MA20", strict20, "filled", "訊號日後最多等 20 個交易日，等到 Strict 才進場。"),
+        ("TA3 唯一進場｜+20% MA20", unique20, "signals", "去除同日同檔重複 setup 後的 TA3 進場。"),
+    ]
+    trs = ""
+    for label, row, count_key, desc in rows:
+        trs += f"""
+<tr>
+  <td><strong>{esc(label)}</strong><div class="signal-dates">{esc(desc)}</div></td>
+  <td>{_num_from_row(row, count_key)}</td>
+  <td>{_metric_from_row(row, "win_rate")}</td>
+  <td class="{('pos' if float(row.get('avg_ret') or 0) >= 0 else 'neg') if row else ''}">{_metric_from_row(row, "avg_ret")}</td>
+  <td>{_metric_from_row(row, "median_ret")}</td>
+  <td>{_metric_from_row(row, "loss_over_5pct")}</td>
+  <td>{_metric_from_row(row, "avg_days", "")}</td>
+</tr>"""
+    return f"""
+<div class="card">
+  <div class="section-label">原始回測基準｜不是網站逐日掃描</div>
+  <div class="strategy-note">這裡直接讀取 <code>{esc(str(V44_BACKTEST_OUTPUT_DIR))}</code> 內先前產出的回測摘要。之前漂亮的數字主要來自「原 168 筆 SFZ/v42 訊號」與「啟動後 MA20」；不是把目前候選股每天重複掃描。</div>
+  <div class="chip-line">停損差異：原始 MA20 trailing 沒有固定初始停損，未觸發 +10%/+20% 則以 90 日到期計算；TA3 結構停損則看破近 5 日結構低點、跌破 MA33 且未脫離成本、或箱型假突破。下方網站壓力測試才是用 3%~12% 支撐停損，找不到就預設 6%。</div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>策略母體</th><th>樣本</th><th>勝率</th><th>平均報酬</th><th>中位數</th><th>-5%以上虧損</th><th>平均天數</th></tr></thead>
+      <tbody>{trs}</tbody>
+    </table>
+  </div>
+</div>"""
 
 
 def build_backtest_page(reports: list[dict]) -> str:
@@ -6363,7 +6439,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">歷史回測</div>
-  <div class="page-sub">依 SFZ_TA3 初始買點與行進籃 Williams 回落買點追蹤訊號後績效；出場以初始停損與「曾漲過 +20% 後 MA20 主線」為核心，不設固定 +10% 停利。</div>
+  <div class="page-sub">先看原始 168 筆 SFZ 回測基準，再看網站逐日掃描壓力測試；兩者分母不同，不能直接混成同一個勝率。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(results)}</div><div class="metric-label">歷史訊號</div></div>
     <div class="metric"><div class="metric-num">{len(filled)}</div><div class="metric-label">已觸及買入區</div></div>
@@ -6377,6 +6453,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
     <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
+  {build_original_sfz_backtest_reference_html()}
   {build_historical_scan_html(reports)}
   {build_entry_variant_comparison_html(reports)}
   <div class="card">

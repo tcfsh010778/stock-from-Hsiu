@@ -249,7 +249,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
 <div class="container">
   <div class="page-title">歷史回測</div>
-  <div class="page-sub">依 SFZ_TA3 初始買點與行進籃 Williams 回落買點追蹤訊號後績效；出場以初始停損與「曾漲過 +20% 後 MA20 主線」為核心，不設固定 +10% 停利。</div>
+  <div class="page-sub">先看原始 168 筆 SFZ 回測基準，再看網站逐日掃描壓力測試；兩者分母不同，不能直接混成同一個勝率。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">50</div><div class="metric-label">歷史訊號</div></div>
     <div class="metric"><div class="metric-num">6</div><div class="metric-label">已觸及買入區</div></div>
@@ -265,8 +265,56 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
   
 <div class="card">
-  <div class="section-label">SFZ 選股｜波段初始買點｜SFZ_TA3</div>
-  <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-04-29。前提是 SFZ 選股池，不是全市場掃描。這段是尚未完全發動、波段趨勢一開始的買點；用目前 SFZ 選股池逐日掃描，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
+  <div class="section-label">原始回測基準｜不是網站逐日掃描</div>
+  <div class="strategy-note">這裡直接讀取 <code>C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs</code> 內先前產出的回測摘要。之前漂亮的數字主要來自「原 168 筆 SFZ/v42 訊號」與「啟動後 MA20」；不是把目前候選股每天重複掃描。</div>
+  <div class="chip-line">停損差異：原始 MA20 trailing 沒有固定初始停損，未觸發 +10%/+20% 則以 90 日到期計算；TA3 結構停損則看破近 5 日結構低點、跌破 MA33 且未脫離成本、或箱型假突破。下方網站壓力測試才是用 3%~12% 支撐停損，找不到就預設 6%。</div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>策略母體</th><th>樣本</th><th>勝率</th><th>平均報酬</th><th>中位數</th><th>-5%以上虧損</th><th>平均天數</th></tr></thead>
+      <tbody>
+<tr>
+  <td><strong>原 168 訊號｜漲過10%後 MA20</strong><div class="signal-dates">原 SFZ/v42 入籃訊號，只有已觸發 +10% 的子集合。</div></td>
+  <td>125</td>
+  <td>80.0%</td>
+  <td class="pos">13.4%</td>
+  <td>7.4%</td>
+  <td>7.2%</td>
+  <td>32.9</td>
+</tr>
+<tr>
+  <td><strong>原 168 訊號｜漲過20%後 MA20</strong><div class="signal-dates">原 SFZ/v42 入籃訊號，只有已觸發 +20% 的子集合。</div></td>
+  <td>100</td>
+  <td>99.0%</td>
+  <td class="pos">23.9%</td>
+  <td>18.7%</td>
+  <td>1.0%</td>
+  <td>43.7</td>
+</tr>
+<tr>
+  <td><strong>原訊號後等 20 日｜Strict+20% MA20</strong><div class="signal-dates">訊號日後最多等 20 個交易日，等到 Strict 才進場。</div></td>
+  <td>10</td>
+  <td>90.0%</td>
+  <td class="pos">22.2%</td>
+  <td>22.6%</td>
+  <td>0.0%</td>
+  <td>42.8</td>
+</tr>
+<tr>
+  <td><strong>TA3 唯一進場｜+20% MA20</strong><div class="signal-dates">去除同日同檔重複 setup 後的 TA3 進場。</div></td>
+  <td>18</td>
+  <td>83.3%</td>
+  <td class="pos">18.6%</td>
+  <td>18.2%</td>
+  <td>5.6%</td>
+  <td>40.6</td>
+</tr></tbody>
+    </table>
+  </div>
+</div>
+  
+<div class="card">
+  <div class="section-label">網站壓力測試｜逐日掃描版 SFZ_TA3</div>
+  <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-04-29。前提是 SFZ 選股池，不是全市場掃描。這段不是原 168 筆回測；它是用目前網站候選池逐日掃描 2024 起所有符合點，條件較簡化，所以會重複觸發並放大啟動前停損風險。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">252</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">25.8%</div><div class="metric-label">全體已出場勝率</div></div>
@@ -928,8 +976,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 </div>
 <div class="card">
-  <div class="section-label">SFZ 選股｜行進籃回落買點｜Williams</div>
-  <div class="strategy-note">資料範圍 2024-07-16 ~ 2026-04-27。前提是 SFZ 選股池，不是全市場掃描。這段是已經走一段攻擊波、進入行進籃後的回落買點，不與 SFZ_TA3 初始買點混用；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
+  <div class="section-label">網站壓力測試｜行進籃 Williams 回落</div>
+  <div class="strategy-note">資料範圍 2024-07-16 ~ 2026-04-27。前提是 SFZ 選股池，不是全市場掃描。這段同樣是網站逐日掃描版；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區，不等同原 SFZ 168 訊號母體。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">106</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">46.9%</div><div class="metric-label">全體已出場勝率</div></div>
