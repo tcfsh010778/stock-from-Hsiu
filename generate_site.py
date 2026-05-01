@@ -3438,6 +3438,72 @@ def mda_strict_entry(rows: list[dict]) -> dict:
     }
 
 
+def mda_observation_checks(stock_id: str, rows: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> dict:
+    close = rows[-1].get("close") if rows else None
+    ma120 = tech.get("ma120") if tech else None
+    ma240 = tech.get("ma240") if tech else None
+    vol_ratio = tech.get("volume_ratio") if tech else None
+    ma120_challenge = bool(close and ma120 and close >= ma120 * 0.97)
+    ma120_stand = bool(close and ma120 and close >= ma120)
+    ma240_deduction = bool(len(rows) > 240 and close and rows[-241].get("close") and close > rows[-241]["close"])
+    volume_money = bool(vol_ratio and vol_ratio >= 1.15 and ma120_challenge)
+
+    holding_series = read_holding_series(stock_id) if stock_id else []
+    if not holding_series and holding:
+        latest = holding.get("latest") or {}
+        prev = holding.get("prev") or {}
+        holding_series = [
+            {"major": prev.get("major"), "retail": prev.get("retail"), "total_people": prev.get("total_people")},
+            {"major": latest.get("major"), "retail": latest.get("retail"), "total_people": latest.get("total_people")},
+        ]
+    major_delta = retail_delta = people_delta = None
+    if len(holding_series) >= 2:
+        last, prev = holding_series[-1], holding_series[-2]
+        if last.get("major") is not None and prev.get("major") is not None:
+            major_delta = last["major"] - prev["major"]
+        if last.get("retail") is not None and prev.get("retail") is not None:
+            retail_delta = last["retail"] - prev["retail"]
+        if last.get("total_people") is not None and prev.get("total_people") is not None:
+            people_delta = last["total_people"] - prev["total_people"]
+
+    foreign_10d = sum(float(x.get("foreign") or 0) for x in chip_series[-10:])
+    force_10d = sum(float(x.get("total") or 0) for x in chip_series[-10:])
+    foreign_stopping = bool(foreign_10d >= 0 or (chip_series and chip_series[-1].get("foreign", 0) >= 0))
+    main_not_back = bool((major_delta is not None and major_delta < 0) or force_10d < 0)
+    retail_risk = bool((retail_delta is not None and retail_delta > 0) or (people_delta is not None and people_delta > 0))
+
+    positives = [
+        ("挑戰/站穩120日", ma120_challenge, "ok" if ma120_stand else "warn"),
+        ("120/240扣抵有利", ma240_deduction, "ok"),
+        ("有量挑戰關鍵線", volume_money, "ok"),
+        ("外資停止賣或偏買", foreign_stopping, "ok"),
+    ]
+    risks = [
+        ("主力大戶未明顯回來", main_not_back),
+        ("散戶/股東人數增加", retail_risk),
+        ("尚未站穩120日", not ma120_stand),
+    ]
+    pos_count = sum(1 for _, ok, _ in positives if ok)
+    risk_count = sum(1 for _, ok in risks if ok)
+    if pos_count >= 3 and risk_count <= 1:
+        level = "重點觀察"
+        cls = "tag-green"
+    elif pos_count >= 2:
+        level = "觀察中"
+        cls = "tag-yellow"
+    else:
+        level = "暫緩觀察"
+        cls = "tag"
+    return {
+        "level": level,
+        "tag_cls": cls,
+        "score": pos_count * 20 - risk_count * 8,
+        "positives": positives,
+        "risks": risks,
+        "line": f"MA120 {fmt_num(ma120)}｜MA240 {fmt_num(ma240)}｜量比 {fmt_num(vol_ratio, 2)}x｜外資10日 {fmt_num(foreign_10d, 0)} 張｜主力10日 {fmt_num(force_10d, 0)} 張｜大戶週變 {fmt_num(major_delta)}%｜散戶週變 {fmt_num(retail_delta)}%",
+    }
+
+
 def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> dict:
     close = rows[-1].get("close") if rows else _to_float(s.get("price"), None)
     ma20 = tech.get("ma20") if tech else None
@@ -3517,24 +3583,20 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
     holding = read_holding_summary(s.get("id", ""))
     abc = mda_abc_checks(s, daily, tech, chip_series, holding)
     strict = mda_strict_entry(daily)
+    observation = mda_observation_checks(s.get("id", ""), daily, tech, chip_series, holding)
     close = daily[-1].get("close") if daily else _to_float(s.get("price"), None)
     if not market_ok:
         action = "大盤停手"
         tag_cls = "tag-red"
-    elif abc["score"] >= 78 and strict["ok"]:
-        action = "ABC可出手"
-        tag_cls = "tag-green"
-    elif abc["score"] >= 70:
-        action = "ABC優先觀察"
-        tag_cls = "tag-yellow"
     else:
-        action = "ABC未齊"
-        tag_cls = "tag"
+        action = observation["level"]
+        tag_cls = observation["tag_cls"]
 
-    score = min(100, abc["score"] + (5 if strict["ok"] else 0))
+    score = min(100, max(0, abc["score"] * 0.55 + observation["score"] * 0.45))
     checks = [_m_check("2330多頭" if market_ok else "2330空頭", "ok" if market_ok else "bad")]
     checks += [_m_check(text, cls) for text, cls in abc["items"]]
-    checks += [_m_check(text, cls) for text, cls in strict["items"]]
+    checks += [_m_check(text, cls if ok else "bad") for text, ok, cls in observation["positives"]]
+    risk_checks = [_m_check(text, "bad" if ok else "ok") for text, ok in observation["risks"]]
 
     return {
         "id": s.get("id", ""),
@@ -3545,21 +3607,19 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
         "tag_cls": tag_cls,
         "close": fmt_num(close),
         "change": daily_change_text(daily),
-        "entry": fmt_num(strict.get("entry")),
-        "stop": fmt_num(strict.get("stop")),
-        "target1": fmt_num(strict.get("target1")),
-        "target2": fmt_num(strict.get("target2")),
         "abc": "ABC完整" if abc["score"] >= 78 else "ABC觀察" if abc["score"] >= 70 else "ABC未齊",
-        "strict": "Strict成立" if strict["ok"] else "Strict未觸發",
+        "strict": "Strict觀察成立" if strict["ok"] else "Strict未觸發",
+        "observation": observation["level"],
         "a_score": abc["a_score"],
         "b1_score": abc["b1_score"],
         "b2_score": abc["b2_score"],
         "b3_score": abc["b3_score"],
         "c_score": abc["c_score"],
         "reason": " ".join(checks),
+        "risk_reason": " ".join(risk_checks),
         "chip_line": abc["chip_line"],
-        "volume_line": abc["volume_line"],
-        "sort": (0 if action == "ABC可出手" else 1 if action == "ABC優先觀察" else 2 if action == "ABC未齊" else 3, -score),
+        "volume_line": observation["line"],
+        "sort": (0 if action == "重點觀察" else 1 if action == "觀察中" else 2 if action == "暫緩觀察" else 3, -score),
     }
 
 
@@ -3569,9 +3629,9 @@ def build_mda_page(reports: list[dict]) -> str:
     market = mda_market_regime()
     scored = [mda_score_stock(enrich_stock_fields(dict(s)), bool(market.get("ok"))) for s in latest.get("stocks", [])]
     scored.sort(key=lambda x: x["sort"])
-    primary = [x for x in scored if x["action"] == "ABC可出手"]
-    wait = [x for x in scored if x["action"] == "ABC優先觀察"]
-    avoid = [x for x in scored if x["action"] in {"ABC未齊", "大盤停手"}]
+    primary = [x for x in scored if x["action"] == "重點觀察"]
+    wait = [x for x in scored if x["action"] == "觀察中"]
+    avoid = [x for x in scored if x["action"] in {"暫緩觀察", "大盤停手"}]
 
     rows = ""
     for x in scored:
@@ -3581,8 +3641,8 @@ def build_mda_page(reports: list[dict]) -> str:
   <td><a class="stock-link" href="stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}</div></td>
   <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
   <td><div class="price-main">{esc(x['close'])}</div><div class="{change_cls}">{esc(change_text)}</div></td>
-  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-stop">停損 SMA10 {esc(x['stop'])}</div><div class="price-target">+10% {esc(x['target1'])}｜+15% {esc(x['target2'])}</div></td>
-  <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['volume_line'])}<br>{esc(x['chip_line'])}</div></td>
+  <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['volume_line'])}</div></td>
+  <td><div class="m-checks">{x['risk_reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['chip_line'])}</div></td>
   <td><div class="signal-dates">{esc(x['abc'])}｜{esc(x['strict'])}<br>A {x['a_score']}｜B1 {x['b1_score']}｜B2 {x['b2_score']}｜B3 {x['b3_score']}｜C {x['c_score']}</div></td>
 </tr>"""
     if not rows:
@@ -3591,18 +3651,18 @@ def build_mda_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大選股</div>
-  <div class="page-sub">最新報告：{esc(date_str)} · A 長多/近長多 → B1 吸籌 → B2 賣壓小 → B3 不追高 → C 耐心與題材</div>
+  <div class="page-sub">最新報告：{esc(date_str)} · 只做觀察清單，不給買進訊號</div>
   <div class="card">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
       <div class="market-badge {market['class']}">{esc(market['state'])}</div>
       <div>
         <div style="font-size:16px;font-weight:800;color:#e6edf3">{esc(market['note'])}</div>
-        <div class="strategy-note" style="margin-top:8px">規則：A 是長線多頭或即將長多；B1 是長期吸籌或主力未離開；B2 是賣壓小、量縮價穩或回測不破；B3 是不追高、耐心等回測；C 是時間與題材敘事。Strict Entry 只作為「今天是否能出手」的輔助訊號。</div>
+        <div class="strategy-note" style="margin-top:8px">觀察模式：先問這檔值不值得放進追蹤名單。重點看是否反覆挑戰或站穩 120 日線、120/240 扣抵是否轉有利、底部大量區是否被市場承接、外資或主力是否停止離開；風險看大戶還沒回來、散戶或股東人數持續增加。這頁不顯示買進、停損、停利。</div>
         <div class="grid grid-3" style="margin-top:12px">
-          <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">ABC完整且可出手</div></div>
-          <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">ABC優先觀察</div></div>
-          <div class="metric"><div class="metric-num" style="color:#f85149">{len(avoid)}</div><div class="metric-label">觀察/排除</div></div>
+          <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">重點觀察</div></div>
+          <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">觀察中</div></div>
+          <div class="metric"><div class="metric-num" style="color:#f85149">{len(avoid)}</div><div class="metric-label">暫緩觀察</div></div>
         </div>
       </div>
     </div>
@@ -3611,7 +3671,7 @@ def build_mda_page(reports: list[dict]) -> str:
     <div class="section-label">候選清單</div>
     <div style="overflow-x:auto">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>狀態/分數</th><th>收盤</th><th>進出計畫</th><th>三層檢核</th><th>備註</th></tr></thead>
+        <thead><tr><th>個股</th><th>觀察等級</th><th>收盤</th><th>值得觀察的跡象</th><th>主要風險</th><th>ABC拆分</th></tr></thead>
         <tbody>{rows}</tbody>
       </table>
     </div>
