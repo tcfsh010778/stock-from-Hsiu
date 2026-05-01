@@ -31,6 +31,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
 .basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
 .basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
@@ -141,6 +149,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .price-entry{color:#58a6ff;font-size:12px}
 .price-target{color:#3fb950;font-size:12px}
 .price-stop{color:#f85149;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
 
 /* Notes */
 .notes-list{list-style:none;padding:0}
@@ -171,7 +181,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -222,7 +232,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
   <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
-  <th>評分</th><th>進場/目標/停損</th>
+  <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
 <tr>
@@ -240,9 +250,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#8b949e">─</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">200.0</span></td>
   <td>
-    <div class="price-entry">📌 49.66（MA5×0.985回測）</div>
-    <div class="price-target">🎯 60.38（壓力×1.02）</div>
-    <div class="price-stop">🛑 23.73（支撐×0.995）</div>
+    <div class="price-entry">進 49.66</div>
+    <div class="price-target">目 60.38</div>
+    <div class="price-stop">初停 47.19</div>
+    <div class="price-support">支撐 23.73</div>
+    <div class="price-rr rr-good">R:R 1:4.3</div>
   </td>
 </tr>
 <tr>
@@ -260,9 +272,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+42張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">190.0</span></td>
   <td>
-    <div class="price-entry">📌 68.63（MA5×0.985回測）</div>
-    <div class="price-target">🎯 79.46（壓力×1.02）</div>
-    <div class="price-stop">🛑 45.32（支撐×0.995）</div>
+    <div class="price-entry">進 68.63</div>
+    <div class="price-target">目 79.46</div>
+    <div class="price-stop">初停 65.13</div>
+    <div class="price-support">支撐 45.32</div>
+    <div class="price-rr rr-good">R:R 1:3.1</div>
   </td>
 </tr>
 <tr>
@@ -280,9 +294,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-1,160張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">180.0</span></td>
   <td>
-    <div class="price-entry">📌 554.85（MA5×0.985回測）</div>
-    <div class="price-target">🎯 629.34（壓力×1.02）</div>
-    <div class="price-stop">🛑 349.74（支撐×0.995）</div>
+    <div class="price-entry">進 554.85</div>
+    <div class="price-target">目 629.34</div>
+    <div class="price-stop">初停 491.82</div>
+    <div class="price-support">支撐 349.74</div>
+    <div class="price-rr rr-bad">R:R 1:1.2</div>
   </td>
 </tr>
 <tr>
@@ -300,9 +316,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-7,035張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">170.0</span></td>
   <td>
-    <div class="price-entry">📌 62.19（MA5×0.985回測）</div>
-    <div class="price-target">🎯 73.54（壓力×1.02）</div>
-    <div class="price-stop">🛑 43.18（支撐×0.995）</div>
+    <div class="price-entry">進 62.19</div>
+    <div class="price-target">目 73.54</div>
+    <div class="price-stop">初停 58.98</div>
+    <div class="price-support">支撐 43.18</div>
+    <div class="price-rr rr-good">R:R 1:3.5</div>
   </td>
 </tr>
 <tr>
@@ -320,9 +338,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#8b949e">─</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">160.0</span></td>
   <td>
-    <div class="price-entry">📌 34.3（MA5×0.985回測）</div>
-    <div class="price-target">🎯 51.71（壓力×1.02）</div>
-    <div class="price-stop">🛑 15.97（支撐×0.995）</div>
+    <div class="price-entry">進 34.30</div>
+    <div class="price-target">目 51.71</div>
+    <div class="price-stop">初停 32.34</div>
+    <div class="price-support">支撐 15.97</div>
+    <div class="price-rr rr-good">R:R 1:8.9</div>
   </td>
 </tr>
 <tr>
@@ -340,9 +360,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+353張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">150.0</span></td>
   <td>
-    <div class="price-entry">📌 42.82（MA5×0.985回測）</div>
-    <div class="price-target">🎯 50.24（壓力×1.02）</div>
-    <div class="price-stop">🛑 27.96（支撐×0.995）</div>
+    <div class="price-entry">進 42.82</div>
+    <div class="price-target">目 50.24</div>
+    <div class="price-stop">初停 37.80</div>
+    <div class="price-support">支撐 27.96</div>
+    <div class="price-rr rr-mid">R:R 1:1.5</div>
   </td>
 </tr>
 <tr>
@@ -360,9 +382,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#8b949e">─</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">140.0</span></td>
   <td>
-    <div class="price-entry">📌 28.05（MA5×0.985回測）</div>
-    <div class="price-target">🎯 37.23（壓力×1.02）</div>
-    <div class="price-stop">🛑 6.69（支撐×0.995）</div>
+    <div class="price-entry">進 28.05</div>
+    <div class="price-target">目 37.23</div>
+    <div class="price-stop">初停 26.37</div>
+    <div class="price-support">支撐 6.69</div>
+    <div class="price-rr rr-good">R:R 1:5.5</div>
   </td>
 </tr>
 <tr>
@@ -380,9 +404,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#8b949e">─</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">130.0</span></td>
   <td>
-    <div class="price-entry">📌 98.74（MA5×0.985回測）</div>
-    <div class="price-target">🎯 120.87（壓力×1.02）</div>
-    <div class="price-stop">🛑 37.96（支撐×0.995）</div>
+    <div class="price-entry">進 98.74</div>
+    <div class="price-target">目 120.87</div>
+    <div class="price-stop">初停 92.82</div>
+    <div class="price-support">支撐 37.96</div>
+    <div class="price-rr rr-good">R:R 1:3.7</div>
   </td>
 </tr>
 <tr>
@@ -400,9 +426,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-14,927張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">120.0</span></td>
   <td>
-    <div class="price-entry">📌 135.34（MA5×0.985回測）</div>
-    <div class="price-target">🎯 147.9（壓力×1.02）</div>
-    <div class="price-stop">🛑 69.15（支撐×0.995）</div>
+    <div class="price-entry">進 135.34</div>
+    <div class="price-target">目 147.90</div>
+    <div class="price-stop">初停 119.72</div>
+    <div class="price-support">支撐 69.15</div>
+    <div class="price-rr rr-bad">R:R 1:0.8</div>
   </td>
 </tr>
 <tr>
@@ -420,9 +448,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+5,198張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">110.0</span></td>
   <td>
-    <div class="price-entry">📌 275.5（MA5×0.985回測）</div>
-    <div class="price-target">🎯 302.94（壓力×1.02）</div>
-    <div class="price-stop">🛑 143.28（支撐×0.995）</div>
+    <div class="price-entry">進 275.50</div>
+    <div class="price-target">目 302.94</div>
+    <div class="price-stop">初停 250.50</div>
+    <div class="price-support">支撐 143.28</div>
+    <div class="price-rr rr-bad">R:R 1:1.1</div>
   </td>
 </tr>
 <tr>
@@ -440,9 +470,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-13,313張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
-    <div class="price-entry">📌 327.22（MA5×0.985回測）</div>
-    <div class="price-target">🎯 365.67（壓力×1.02）</div>
-    <div class="price-stop">🛑 205.47（支撐×0.995）</div>
+    <div class="price-entry">進 327.22</div>
+    <div class="price-target">目 365.67</div>
+    <div class="price-stop">初停 295.10</div>
+    <div class="price-support">支撐 205.47</div>
+    <div class="price-rr rr-bad">R:R 1:1.2</div>
   </td>
 </tr>
 <tr>
@@ -460,9 +492,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+2,375張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
-    <div class="price-entry">📌 197.59（MA5×0.985回測）</div>
-    <div class="price-target">🎯 214.71（壓力×1.02）</div>
-    <div class="price-stop">🛑 124.87（支撐×0.995）</div>
+    <div class="price-entry">進 197.59</div>
+    <div class="price-target">目 214.71</div>
+    <div class="price-stop">初停 185.50</div>
+    <div class="price-support">支撐 124.87</div>
+    <div class="price-rr rr-bad">R:R 1:1.4</div>
   </td>
 </tr>
 <tr>
@@ -480,9 +514,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-3,120張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">80.0</span></td>
   <td>
-    <div class="price-entry">📌 518.41（MA5×0.985回測）</div>
-    <div class="price-target">🎯 577.32（壓力×1.02）</div>
-    <div class="price-stop">🛑 302.48（支撐×0.995）</div>
+    <div class="price-entry">進 518.41</div>
+    <div class="price-target">目 577.32</div>
+    <div class="price-stop">初停 487.31</div>
+    <div class="price-support">支撐 302.48</div>
+    <div class="price-rr rr-mid">R:R 1:1.9</div>
   </td>
 </tr>
 <tr>
@@ -500,9 +536,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-8,235張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
   <td>
-    <div class="price-entry">📌 147.95（MA5×0.985回測）</div>
-    <div class="price-target">🎯 159.63（壓力×1.02）</div>
-    <div class="price-stop">🛑 87.26（支撐×0.995）</div>
+    <div class="price-entry">進 147.95</div>
+    <div class="price-target">目 159.63</div>
+    <div class="price-stop">初停 134.89</div>
+    <div class="price-support">支撐 87.26</div>
+    <div class="price-rr rr-bad">R:R 1:0.9</div>
   </td>
 </tr>
 <tr>
@@ -520,9 +558,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+251張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">60.0</span></td>
   <td>
-    <div class="price-entry">📌 40.05（MA5×0.985回測）</div>
-    <div class="price-target">🎯 45.85（壓力×1.02）</div>
-    <div class="price-stop">🛑 19.65（支撐×0.995）</div>
+    <div class="price-entry">進 40.05</div>
+    <div class="price-target">目 45.85</div>
+    <div class="price-stop">初停 37.65</div>
+    <div class="price-support">支撐 19.65</div>
+    <div class="price-rr rr-good">R:R 1:2.4</div>
   </td>
 </tr>
 <tr>
@@ -540,9 +580,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-2,281張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">50.0</span></td>
   <td>
-    <div class="price-entry">📌 149.92（MA5×0.985回測）</div>
-    <div class="price-target">🎯 169.32（壓力×1.02）</div>
-    <div class="price-stop">🛑 93.93（支撐×0.995）</div>
+    <div class="price-entry">進 149.92</div>
+    <div class="price-target">目 169.32</div>
+    <div class="price-stop">初停 144.50</div>
+    <div class="price-support">支撐 93.93</div>
+    <div class="price-rr rr-good">R:R 1:3.6</div>
   </td>
 </tr>
 <tr>
@@ -560,9 +602,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-197張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.0</span></td>
   <td>
-    <div class="price-entry">📌 149.13（MA5×0.985回測）</div>
-    <div class="price-target">🎯 162.18（壓力×1.02）</div>
-    <div class="price-stop">🛑 130.34（支撐×0.995）</div>
+    <div class="price-entry">進 149.13</div>
+    <div class="price-target">目 162.18</div>
+    <div class="price-stop">初停 140.18</div>
+    <div class="price-support">支撐 130.34</div>
+    <div class="price-rr rr-mid">R:R 1:1.5</div>
   </td>
 </tr>
 <tr>
@@ -580,9 +624,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-6,302張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">30.0</span></td>
   <td>
-    <div class="price-entry">📌 77.42（MA5×0.985回測）</div>
-    <div class="price-target">🎯 85.58（壓力×1.02）</div>
-    <div class="price-stop">🛑 55.32（支撐×0.995）</div>
+    <div class="price-entry">進 77.42</div>
+    <div class="price-target">目 85.58</div>
+    <div class="price-stop">初停 69.93</div>
+    <div class="price-support">支撐 55.32</div>
+    <div class="price-rr rr-bad">R:R 1:1.1</div>
   </td>
 </tr>
 <tr>
@@ -600,9 +646,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#f85149">-1,019張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">20.0</span></td>
   <td>
-    <div class="price-entry">📌 119.18（MA5×0.985回測）</div>
-    <div class="price-target">🎯 125.97（壓力×1.02）</div>
-    <div class="price-stop">🛑 81.09（支撐×0.995）</div>
+    <div class="price-entry">進 119.18</div>
+    <div class="price-target">目 125.97</div>
+    <div class="price-stop">初停 108.25</div>
+    <div class="price-support">支撐 81.09</div>
+    <div class="price-rr rr-bad">R:R 1:0.6</div>
   </td>
 </tr>
 <tr>
@@ -620,9 +668,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="hide-mobile" style="color:#3fb950">+411張</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">10.0</span></td>
   <td>
-    <div class="price-entry">📌 756.09（MA5×0.985回測）</div>
-    <div class="price-target">🎯 807.84（壓力×1.02）</div>
-    <div class="price-stop">🛑 437.8（支撐×0.995）</div>
+    <div class="price-entry">進 756.09</div>
+    <div class="price-target">目 807.84</div>
+    <div class="price-stop">初停 710.72</div>
+    <div class="price-support">支撐 437.80</div>
+    <div class="price-rr rr-bad">R:R 1:1.1</div>
   </td>
 </tr></tbody>
 </table>

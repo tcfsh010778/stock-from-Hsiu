@@ -31,6 +31,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
 .basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
 .basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
@@ -141,6 +149,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .price-entry{color:#58a6ff;font-size:12px}
 .price-target{color:#3fb950;font-size:12px}
 .price-stop{color:#f85149;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
 
 /* Notes */
 .notes-list{list-style:none;padding:0}
@@ -171,7 +181,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -201,6 +211,92 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
   
 <div class="card">
+  <div class="section-label">今日可執行清單</div>
+  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；距離較近但還沒到位的放在等待區。</div>
+  <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
+  <div class="action-list">
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">60.40</div></div>
+  <div><div class="label">距買點</div><div class="value">+0.2%</div></div>
+  <div><div class="label">買點</div><div class="value">60.28</div></div>
+  <div><div class="label">初停</div><div class="value">56.66</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:4.5</div></div>
+</div>
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/5439.html">5439 高技</a>
+    <div class="note">盤整籃｜未進入過熱區 / 量縮價穩 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">382.50</div></div>
+  <div><div class="label">距買點</div><div class="value">+0.3%</div></div>
+  <div><div class="label">買點</div><div class="value">381.29</div></div>
+  <div><div class="label">初停</div><div class="value">364.95</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:5.6</div></div>
+</div>
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/6213.html">6213 聯茂</a>
+    <div class="note">行進籃｜評分&gt;=170 / 長多偏強 / 量縮價漲</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">270.00</div></div>
+  <div><div class="label">距買點</div><div class="value">+0.3%</div></div>
+  <div><div class="label">買點</div><div class="value">269.10</div></div>
+  <div><div class="label">初停</div><div class="value">250.50</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:2.6</div></div>
+</div>
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/2402.html">2402 毅嘉</a>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">70.20</div></div>
+  <div><div class="label">距買點</div><div class="value">-0.5%</div></div>
+  <div><div class="label">買點</div><div class="value">70.53</div></div>
+  <div><div class="label">初停</div><div class="value">67.09</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:4.7</div></div>
+</div>
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/3105.html">3105 穩懋</a>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">536.00</div></div>
+  <div><div class="label">距買點</div><div class="value">+0.8%</div></div>
+  <div><div class="label">買點</div><div class="value">531.70</div></div>
+  <div><div class="label">初停</div><div class="value">491.82</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:3.0</div></div>
+</div></div>
+  <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
+  <div class="action-list">
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/2351.html">2351 順德</a>
+    <div class="note">行進籃｜原報告強勢追蹤 / 長多偏強</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">154.00</div></div>
+  <div><div class="label">距買點</div><div class="value">+3.3%</div></div>
+  <div><div class="label">買點</div><div class="value">149.03</div></div>
+  <div><div class="label">初停</div><div class="value">144.50</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:5.9</div></div>
+</div>
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/2455.html">2455 全新</a>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">347.50</div></div>
+  <div><div class="label">距買點</div><div class="value">+4.6%</div></div>
+  <div><div class="label">買點</div><div class="value">332.14</div></div>
+  <div><div class="label">初停</div><div class="value">321.00</div></div>
+  <div><div class="label">R:R</div><div class="value rr-good">1:5.3</div></div>
+</div></div>
+</div>
+  
+<div class="card">
   <div class="section-label">🔍 篩選漏斗</div>
   
   <div style="margin-top:12px;font-size:12px;color:#6e7681">從全市場 2,000+ 檔，六大技術條件篩選至最終 <strong style="color:#58a6ff">20 檔</strong></div>
@@ -218,7 +314,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
-  <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/停損</th>
+  <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
 <tr>
@@ -233,7 +329,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 26.87</div>
     <div class="price-target">目 39.22</div>
-    <div class="price-stop">損 6.37</div>
+    <div class="price-stop">初停 25.26</div>
+    <div class="price-rr rr-good">R:R 1:7.7</div>
   </td>
 </tr>
 <tr>
@@ -246,9 +343,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="pos">10.64%</td>
   <td><span style="color:#58a6ff;font-weight:700">190.0</span></td>
   <td>
-    <div class="price-entry">進 269.1</div>
+    <div class="price-entry">進 269.10</div>
     <div class="price-target">目 318.24</div>
-    <div class="price-stop">損 139.8</div>
+    <div class="price-stop">初停 250.50</div>
+    <div class="price-rr rr-good">R:R 1:2.6</div>
   </td>
 </tr>
 <tr>
@@ -263,7 +361,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 68.18</div>
     <div class="price-target">目 82.11</div>
-    <div class="price-stop">損 45.22</div>
+    <div class="price-stop">初停 65.13</div>
+    <div class="price-rr rr-good">R:R 1:4.6</div>
   </td>
 </tr>
 <tr>
@@ -278,7 +377,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 358.64</div>
     <div class="price-target">目 424.32</div>
-    <div class="price-stop">損 222.88</div>
+    <div class="price-stop">初停 327.18</div>
+    <div class="price-rr rr-good">R:R 1:2.1</div>
   </td>
 </tr>
 <tr>
@@ -291,9 +391,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="pos">6.98%</td>
   <td><span style="color:#58a6ff;font-weight:700">160.0</span></td>
   <td>
-    <div class="price-entry">進 531.7</div>
+    <div class="price-entry">進 531.70</div>
     <div class="price-target">目 649.74</div>
-    <div class="price-stop">損 338.3</div>
+    <div class="price-stop">初停 491.82</div>
+    <div class="price-rr rr-good">R:R 1:3.0</div>
   </td>
 </tr>
 <tr>
@@ -307,8 +408,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span style="color:#58a6ff;font-weight:700">150.0</span></td>
   <td>
     <div class="price-entry">進 60.28</div>
-    <div class="price-target">目 76.7</div>
-    <div class="price-stop">損 42.98</div>
+    <div class="price-target">目 76.70</div>
+    <div class="price-stop">初停 56.66</div>
+    <div class="price-rr rr-good">R:R 1:4.5</div>
   </td>
 </tr>
 <tr>
@@ -323,7 +425,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 332.14</div>
     <div class="price-target">目 391.68</div>
-    <div class="price-stop">損 245.27</div>
+    <div class="price-stop">初停 321.00</div>
+    <div class="price-rr rr-good">R:R 1:5.3</div>
   </td>
 </tr>
 <tr>
@@ -337,8 +440,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span style="color:#58a6ff;font-weight:700">130.0</span></td>
   <td>
     <div class="price-entry">進 70.53</div>
-    <div class="price-target">目 86.7</div>
-    <div class="price-stop">損 48.61</div>
+    <div class="price-target">目 86.70</div>
+    <div class="price-stop">初停 67.09</div>
+    <div class="price-rr rr-good">R:R 1:4.7</div>
   </td>
 </tr>
 <tr>
@@ -353,7 +457,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 179.47</div>
     <div class="price-target">目 197.88</div>
-    <div class="price-stop">損 136.81</div>
+    <div class="price-stop">初停 167.00</div>
+    <div class="price-rr rr-mid">R:R 1:1.5</div>
   </td>
 </tr>
 <tr>
@@ -368,7 +473,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 381.29</div>
     <div class="price-target">目 472.77</div>
-    <div class="price-stop">損 266.66</div>
+    <div class="price-stop">初停 364.95</div>
+    <div class="price-rr rr-good">R:R 1:5.6</div>
   </td>
 </tr>
 <tr>
@@ -383,7 +489,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 198.97</div>
     <div class="price-target">目 225.93</div>
-    <div class="price-stop">損 145.27</div>
+    <div class="price-stop">初停 186.38</div>
+    <div class="price-rr rr-good">R:R 1:2.1</div>
   </td>
 </tr>
 <tr>
@@ -398,7 +505,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 101.91</div>
     <div class="price-target">目 133.11</div>
-    <div class="price-stop">損 36.96</div>
+    <div class="price-stop">初停 95.80</div>
+    <div class="price-rr rr-good">R:R 1:5.1</div>
   </td>
 </tr>
 <tr>
@@ -413,7 +521,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 137.01</div>
     <div class="price-target">目 154.53</div>
-    <div class="price-stop">損 68.85</div>
+    <div class="price-stop">初停 128.79</div>
+    <div class="price-rr rr-good">R:R 1:2.1</div>
   </td>
 </tr>
 <tr>
@@ -428,7 +537,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 149.62</div>
     <div class="price-target">目 166.77</div>
-    <div class="price-stop">損 86.66</div>
+    <div class="price-stop">初停 134.89</div>
+    <div class="price-rr rr-bad">R:R 1:1.2</div>
   </td>
 </tr>
 <tr>
@@ -443,7 +553,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 39.83</div>
     <div class="price-target">目 48.96</div>
-    <div class="price-stop">損 19.5</div>
+    <div class="price-stop">初停 37.44</div>
+    <div class="price-rr rr-good">R:R 1:3.8</div>
   </td>
 </tr>
 <tr>
@@ -458,7 +569,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 850.45</div>
     <div class="price-target">目 996.54</div>
-    <div class="price-stop">損 519.39</div>
+    <div class="price-stop">初停 799.42</div>
+    <div class="price-rr rr-good">R:R 1:2.9</div>
   </td>
 </tr>
 <tr>
@@ -473,7 +585,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 201.53</div>
     <div class="price-target">目 230.52</div>
-    <div class="price-stop">損 121.89</div>
+    <div class="price-stop">初停 185.50</div>
+    <div class="price-rr rr-mid">R:R 1:1.8</div>
   </td>
 </tr>
 <tr>
@@ -488,7 +601,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 529.83</div>
     <div class="price-target">目 604.86</div>
-    <div class="price-stop">損 298.0</div>
+    <div class="price-stop">初停 498.04</div>
+    <div class="price-rr rr-good">R:R 1:2.4</div>
   </td>
 </tr>
 <tr>
@@ -503,7 +617,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 149.03</div>
     <div class="price-target">目 175.95</div>
-    <div class="price-stop">損 93.83</div>
+    <div class="price-stop">初停 144.50</div>
+    <div class="price-rr rr-good">R:R 1:5.9</div>
   </td>
 </tr>
 <tr>
@@ -518,7 +633,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div class="price-entry">進 41.93</div>
     <div class="price-target">目 49.01</div>
-    <div class="price-stop">損 27.46</div>
+    <div class="price-stop">初停 39.41</div>
+    <div class="price-rr rr-good">R:R 1:2.8</div>
   </td>
 </tr></tbody>
 </table>

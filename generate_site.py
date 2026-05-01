@@ -328,6 +328,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
 .basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
 .basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
@@ -438,6 +446,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .price-entry{color:#58a6ff;font-size:12px}
 .price-target{color:#3fb950;font-size:12px}
 .price-stop{color:#f85149;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
 
 /* Notes */
 .notes-list{list-style:none;padding:0}
@@ -468,7 +478,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -561,6 +571,8 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
     rows = ""
     for i, s in enumerate(stocks, 1):
         s = enrich_stock_fields(s)
+        _, tech, decision = stock_trade_context(s)
+        plan = decision
         badge = status_badge(s["icon"], s["status"])
         gain_cls = gain_color(s["gain_6w"])
 
@@ -576,9 +588,10 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
   <td class="{gain_cls}">{s['gain_6w']}</td>
   <td><span style="color:#58a6ff;font-weight:700">{s['score']}</span></td>
   <td>
-    <div class="price-entry">進 {s['entry']}</div>
-    <div class="price-target">目 {s['target']}</div>
-    <div class="price-stop">損 {s['stop']}</div>
+    <div class="price-entry">進 {plan['entry_text']}</div>
+    <div class="price-target">目 {plan['target_text']}</div>
+    <div class="price-stop">初停 {plan['initial_stop_text']}</div>
+    <div class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</div>
   </td>
 </tr>"""
         else:
@@ -598,22 +611,24 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
   <td class="hide-mobile" style="color:{'#3fb950' if s['foreign_5d'].startswith('+') else '#f85149' if s['foreign_5d'].startswith('-') else '#8b949e'}">{s['foreign_5d']}</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">{s['score']}</span></td>
   <td>
-    <div class="price-entry">📌 {s['entry']}</div>
-    <div class="price-target">🎯 {s['target']}</div>
-    <div class="price-stop">🛑 {s['stop']}</div>
+    <div class="price-entry">進 {plan['entry_text']}</div>
+    <div class="price-target">目 {plan['target_text']}</div>
+    <div class="price-stop">初停 {plan['initial_stop_text']}</div>
+    <div class="price-support">支撐 {plan['reference_support_text']}</div>
+    <div class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</div>
   </td>
 </tr>"""
 
     if compact:
         header = """<tr>
-  <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/停損</th>
+  <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
     else:
         header = """<tr>
   <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
   <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
-  <th>評分</th><th>進場/目標/停損</th>
+  <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
 
     return f"""<div style="overflow-x:auto">
@@ -697,6 +712,57 @@ def basket_label(basket: str) -> str:
         "consolidation": "盤整籃",
         "risk": "過熱/風險",
     }.get(basket, "未分類")
+
+
+def stock_trade_context(s: dict) -> tuple[list[dict], dict, dict]:
+    sid = s.get("id", "")
+    daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily") if sid else []
+    tech = technical_snapshot(daily, s) if daily else {}
+    decision = build_trade_decision(tech, s)
+    return daily, tech, decision
+
+
+def basket_reason(s: dict, tech: dict | None = None) -> str:
+    basket = classify_basket(s)
+    gain = _to_float(s.get("gain_6w", "0"))
+    score = _to_float(s.get("score", "0"))
+    status = s.get("status", "")
+    icon = s.get("icon", "")
+    tech = tech or {}
+    checks = []
+    trend = tech.get("trend") or tech.get("trend_pattern")
+    volume_price = tech.get("volume_price")
+
+    if basket == "marching":
+        if icon == "🟡":
+            checks.append("原報告強勢追蹤")
+        if score >= 170:
+            checks.append("評分>=170")
+        if gain >= 18:
+            checks.append("近6週漲幅>=18%")
+        if trend and "多" in str(trend):
+            checks.append(str(trend))
+        if volume_price in ["量縮價漲", "量增價漲", "均量上彎"]:
+            checks.append(volume_price)
+    elif basket == "consolidation":
+        checks.append("未進入過熱區")
+        if volume_price in ["量縮價穩", "均量上彎"]:
+            checks.append(volume_price)
+        if trend:
+            checks.append(str(trend))
+        checks.append("等 MABC/CaryBot 確認")
+    else:
+        if icon == "🔴" or "超買" in status:
+            checks.append("原報告風險/超買")
+        if gain >= 18:
+            checks.append("漲幅偏大")
+        checks.append("不追高，等回測")
+
+    seen = []
+    for item in checks:
+        if item and item not in seen:
+            seen.append(item)
+    return " / ".join(seen[:4]) if seen else "等待更多技術與籌碼確認"
 
 
 def split_baskets(stocks: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
@@ -1735,6 +1801,7 @@ def build_telegram_info_card(
     price_date = _value_or_dash(s.get("price_date"))
     score = _value_or_dash(s.get("score"))
     status = _value_or_dash(s.get("status"))
+    reason_line = basket_reason(s, tech)
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
     volume_price = _value_or_dash(tech.get("volume_price"))
     volume_reading = volume_price_reading(volume_price)
@@ -1777,6 +1844,7 @@ def build_telegram_info_card(
     phase1 = (
         _line_html("篩選結論", f"{basket}｜{status}｜Score {score}")
         + _line_html("操作評價", f"{decision['rating']}｜{decision['reason']}", decision.get("rating_class", ""))
+        + _line_html("分籃理由", reason_line)
         + _line_html("台帳", repeat_note)
     )
     phase2 = (
@@ -1791,8 +1859,10 @@ def build_telegram_info_card(
         _line_html("是否進場", decision["rating"])
         + _line_html("觀察價位", f"壓力 {resistance}｜支撐 {support}")
         + _line_html("較佳買入區", decision["entry_range"])
-        + _line_html("停利", target)
-        + _line_html("停損", f"{decision['defense']}｜原報告 {stop}")
+        + _line_html("停利", decision.get("target_text") or target)
+        + _line_html("初始停損", f"{decision.get('initial_stop_text','─')}（{decision.get('initial_stop_label','─')}，{decision.get('stop_pct_text','─')}）")
+        + _line_html("參考支撐", f"{decision.get('reference_support_text','─')}｜原報告 {stop}")
+        + _line_html("R:R", decision.get("rr_text", "─"), decision.get("rr_class", ""))
         + _line_html("追蹤重點", operation_note)
     )
     return f"""
@@ -1905,9 +1975,91 @@ def fmt_num(v, digits: int = 2) -> str:
         return "─"
 
 
+def calc_trade_plan(tech: dict, s: dict) -> dict:
+    entry = _to_float(s.get("entry", ""), None)
+    target = _to_float(s.get("target", ""), None)
+    report_stop = _to_float(s.get("stop", ""), None)
+    close = tech.get("close") if tech else _to_float(s.get("price", ""), None)
+    ma10 = tech.get("ma10") if tech else None
+    ma20 = tech.get("ma20") if tech else None
+    large_event = tech.get("large_volume_event", {}) if tech else {}
+    large_low = large_event.get("low")
+
+    if entry is None and close:
+        entry = close
+
+    reference_support = None
+    for value in [report_stop, tech.get("support") if tech else None, ma20]:
+        if value:
+            reference_support = value
+            break
+
+    candidates: list[tuple[str, float]] = []
+    for label, value in [
+        ("原始防守", report_stop),
+        ("爆量K低點", large_low),
+        ("MA20", ma20),
+        ("MA10", ma10),
+    ]:
+        if not entry or not value or value >= entry:
+            continue
+        risk_pct = (1 - value / entry) * 100
+        if 3 <= risk_pct <= 12:
+            candidates.append((label, value))
+
+    if candidates:
+        stop_label, initial_stop = max(candidates, key=lambda item: item[1])
+    elif entry:
+        stop_label, initial_stop = "買點-6%", entry * 0.94
+    else:
+        stop_label, initial_stop = "資料不足", None
+
+    rr = None
+    stop_pct = None
+    if entry and initial_stop and target and target > entry and initial_stop < entry:
+        rr = (target - entry) / (entry - initial_stop)
+        stop_pct = (initial_stop / entry - 1) * 100
+    elif entry and initial_stop and initial_stop < entry:
+        stop_pct = (initial_stop / entry - 1) * 100
+
+    rr_class = ""
+    if rr is not None:
+        if rr >= 2:
+            rr_class = "rr-good"
+        elif rr >= 1.45:
+            rr_class = "rr-mid"
+        else:
+            rr_class = "rr-bad"
+
+    return {
+        "entry": entry,
+        "target": target,
+        "initial_stop": initial_stop,
+        "initial_stop_label": stop_label,
+        "reference_support": reference_support,
+        "rr": rr,
+        "stop_pct": stop_pct,
+        "entry_text": fmt_num(entry),
+        "target_text": fmt_num(target),
+        "initial_stop_text": fmt_num(initial_stop),
+        "reference_support_text": fmt_num(reference_support),
+        "rr_text": "─" if rr is None else f"1:{rr:.1f}",
+        "rr_class": rr_class,
+        "stop_pct_text": "─" if stop_pct is None else f"{stop_pct:.1f}%",
+    }
+
+
 def build_trade_decision(tech: dict, s: dict) -> dict:
     if not tech:
-        return {"rating": "觀望", "rating_class": "", "entry_range": "資料不足", "defense": "資料不足", "reason": "等待價格快取更新"}
+        plan = calc_trade_plan({}, s)
+        return {
+            "rating": "觀望",
+            "rating_class": "",
+            "entry_range": "資料不足",
+            "defense": "資料不足",
+            "reason": "等待價格快取更新",
+            **plan,
+        }
     close = tech.get("close")
     ma5 = tech.get("ma5")
     ma10 = tech.get("ma10")
@@ -1957,12 +2109,14 @@ def build_trade_decision(tech: dict, s: dict) -> dict:
     else:
         rating, cls, reason = "觀望", "", "距買進區間偏遠，不追價"
 
+    plan = calc_trade_plan(tech, s)
     return {
         "rating": rating,
         "rating_class": cls,
         "entry_range": entry_range,
         "defense": defense,
         "reason": reason,
+        **plan,
     }
 
 
@@ -2343,6 +2497,8 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
 
 def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
     gain_cls = gain_color(s.get("gain_6w", ""))
+    _, tech, plan = stock_trade_context(s)
+    reason = basket_reason(s, tech)
     if basket == "marching":
         action = "SFZ試單/續抱"
         tags = [
@@ -2374,7 +2530,8 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
     </div>
     <div class="basket-action">{action}</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 {s.get('entry','─')} ｜ 目標 {s.get('target','─')} ｜ 防守 {s.get('stop','─')}</div>
+  <div style="font-size:12px;color:#c9d1d9">買點 {plan['entry_text']} ｜ 目標 {plan['target_text']} ｜ 初始停損 {plan['initial_stop_text']} ｜ <span class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 {plan['reference_support_text']} ｜ 符合條件：{esc(reason)}</div>
   <div class="tag-row">{tag_html}</div>
   {signal_summary_html(s.get('id',''), ledger or {})}
   <div style="margin-top:10px"><a class="history-link" href="{stock_href(s.get('id',''))}">打開個股頁 →</a></div>
@@ -2390,6 +2547,61 @@ def build_basket_column(title: str, subtitle: str, stocks: list[dict], basket: s
   <div class="section-label">{title}</div>
   <div class="strategy-note" style="margin-bottom:12px">{subtitle}</div>
   {cards}
+</div>"""
+
+
+def build_action_rows(items: list[dict], empty_text: str) -> str:
+    if not items:
+        return f'<div class="strategy-note" style="margin-top:10px">{empty_text}</div>'
+    html_rows = ""
+    for x in items:
+        gap_txt = "─" if x["gap"] is None else f'{x["gap"]:+.1f}%'
+        html_rows += f"""
+<div class="action-row">
+  <div>
+    <a class="stock-link" href="stocks/{x['sid']}.html">{x['sid']} {esc(x['name'])}</a>
+    <div class="note">{esc(x['basket'])}｜{esc(x['reason'])}</div>
+  </div>
+  <div><div class="label">收盤</div><div class="value">{fmt_num(x['close'])}</div></div>
+  <div><div class="label">距買點</div><div class="value">{gap_txt}</div></div>
+  <div><div class="label">買點</div><div class="value">{x['plan']['entry_text']}</div></div>
+  <div><div class="label">初停</div><div class="value">{x['plan']['initial_stop_text']}</div></div>
+  <div><div class="label">R:R</div><div class="value {x['plan']['rr_class']}">{x['plan']['rr_text']}</div></div>
+</div>"""
+    return f'<div class="action-list">{html_rows}</div>'
+
+
+def build_today_action_card(stocks: list[dict]) -> str:
+    items = []
+    for s in stocks:
+        s = enrich_stock_fields(s)
+        _, tech, decision = stock_trade_context(s)
+        gap = tech.get("entry_gap") if tech else None
+        if gap is None:
+            continue
+        items.append({
+            "sid": s.get("id", ""),
+            "name": s.get("name", ""),
+            "basket": basket_label(classify_basket(s)),
+            "reason": basket_reason(s, tech),
+            "gap": gap,
+            "close": tech.get("close"),
+            "score": _to_float(s.get("score", "0")),
+            "plan": decision,
+        })
+    executable = [x for x in items if -3 <= x["gap"] <= 3]
+    waiting = [x for x in items if 3 < x["gap"] <= 8 or -8 <= x["gap"] < -3]
+    executable.sort(key=lambda x: (0 if (x["plan"].get("rr") or 0) >= 1.5 else 1, abs(x["gap"]), -x["score"]))
+    waiting.sort(key=lambda x: (abs(x["gap"]), -x["score"]))
+
+    return f"""
+<div class="card">
+  <div class="section-label">今日可執行清單</div>
+  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；距離較近但還沒到位的放在等待區。</div>
+  <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
+  {build_action_rows(executable[:5], "今日沒有收盤落在買點 ±3% 內的標的。")}
+  <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
+  {build_action_rows(waiting[:5], "目前沒有接近但尚未到位的候選。")}
 </div>"""
 
 
@@ -2454,6 +2666,7 @@ def build_index_page(reports: list[dict]) -> str:
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">每個交易日自動更新 · 最新報告：{date_str}</div>
   {market_card}
+  {build_today_action_card(latest.get("stocks", []))}
   {filter_card}
   {table_card}
   {history_card}
@@ -3192,6 +3405,9 @@ def build_stocks_index_page(reports: list[dict]) -> str:
     for sid, s in sorted(stock_map.items()):
         rows = merge_report_close(read_price_history(sid), s)
         latest = rows[-1] if rows else {}
+        daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily")
+        tech = technical_snapshot(daily, s)
+        decision = build_trade_decision(tech, s)
         price = latest.get("close")
         date = latest.get("date", "")
         item = {
@@ -3200,9 +3416,12 @@ def build_stocks_index_page(reports: list[dict]) -> str:
             "basket": basket_label(classify_basket(s)),
             "price": fmt_num(price),
             "price_date": date,
-            "entry": s.get("entry", "─"),
-            "target": s.get("target", "─"),
-            "stop": s.get("stop", "─"),
+            "entry": decision.get("entry_text", "─"),
+            "target": decision.get("target_text", "─"),
+            "stop": decision.get("initial_stop_text", "─"),
+            "support": decision.get("reference_support_text", "─"),
+            "rr": decision.get("rr_text", "─"),
+            "rr_class": decision.get("rr_class", ""),
             "score": s.get("score", "─"),
             "events": len(ledger.get(sid, {}).get("events", [])),
         }
@@ -3216,7 +3435,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
   <td><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">{esc(x['price_date'])}</div></td>
   <td>{esc(x['basket'])}</td>
   <td class="price-main">{esc(x['price'])}</td>
-  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">守 {esc(x['stop'])}</div></td>
+  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">初停 {esc(x['stop'])}</div><div class="price-support">支撐 {esc(x['support'])}</div><div class="price-rr {x['rr_class']}">R:R {esc(x['rr'])}</div></td>
   <td>{esc(x['score'])}</td>
   <td>{x['events']} 次</td>
 </tr>"""
@@ -3239,7 +3458,7 @@ function filterStocks(){
     <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、行進籃、盤整籃..." oninput="filterStocks()">
     <div style="overflow-x:auto">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/防守</th><th>分數</th><th>訊號</th></tr></thead>
+        <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/初停/R:R</th><th>分數</th><th>訊號</th></tr></thead>
         <tbody id="stockRows">{rows_html}</tbody>
       </table>
     </div>
@@ -3267,6 +3486,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     for sid, s in stock_map.items():
         daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily")
         tech = technical_snapshot(daily, s)
+        decision = build_trade_decision(tech, s)
         gap = tech.get("entry_gap") if tech else None
         bucket, cls, note = radar_bucket(gap)
         rows.append({
@@ -3278,9 +3498,12 @@ def build_buy_radar_page(reports: list[dict]) -> str:
             "note": note,
             "gap": gap,
             "close": tech.get("close") if tech else None,
-            "entry": s.get("entry", "─"),
-            "target": s.get("target", "─"),
-            "stop": s.get("stop", "─"),
+            "entry": decision.get("entry_text", "─"),
+            "target": decision.get("target_text", "─"),
+            "stop": decision.get("initial_stop_text", "─"),
+            "support": decision.get("reference_support_text", "─"),
+            "rr": decision.get("rr_text", "─"),
+            "rr_class": decision.get("rr_class", ""),
             "trend": tech.get("trend", "─") if tech else "─",
             "score": _to_float(s.get("score", "0")),
         })
@@ -3298,7 +3521,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
   <td><span class="tag {x['cls']}">{esc(x['bucket'])}</span><div class="signal-dates">{esc(x['note'])}</div></td>
   <td class="price-main">{fmt_num(x['close'])}</td>
   <td>{gap_txt}</td>
-  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">守 {esc(x['stop'])}</div></td>
+  <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">初停 {esc(x['stop'])}</div><div class="price-support">支撐 {esc(x['support'])}</div><div class="price-rr {x['rr_class']}">R:R {esc(x['rr'])}</div></td>
 </tr>"""
 
     body = f"""
@@ -3318,7 +3541,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     <div class="section-label">候選排序</div>
     <div style="overflow-x:auto">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>狀態</th><th>收盤</th><th>距買點</th><th>買點/目標/防守</th></tr></thead>
+        <thead><tr><th>個股</th><th>狀態</th><th>收盤</th><th>距買點</th><th>買點/目標/初停/R:R</th></tr></thead>
         <tbody>{table}</tbody>
       </table>
     </div>
