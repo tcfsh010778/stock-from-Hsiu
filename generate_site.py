@@ -104,6 +104,7 @@ def _parse_format_v1(text: str, result: dict) -> dict:
             "entry":         ext("📌 進場參考"),
             "target":        ext("🎯 目標價"),
             "stop":          ext("🛑 停損價"),
+            "score_source":   "原始報告 Score",
         })
     return result
 
@@ -193,6 +194,7 @@ def _parse_format_v2(text: str, result: dict) -> dict:
                 "entry":         entry_p,
                 "target":        target,
                 "stop":          stop,
+                "score_source":   "排名換算（第1名200，每名-10）",
             })
             stock_no += 1
 
@@ -901,6 +903,23 @@ def load_push_log() -> dict[tuple[str, str], list[dict]]:
     return rows
 
 
+def event_trade_snapshot(s: dict, report_date: str) -> dict:
+    event_stock = enrich_stock_fields(dict(s))
+    event_stock["report_date"] = report_date
+    sid = event_stock.get("id", "")
+    rows = []
+    if sid:
+        rows = merge_report_close(read_price_history(sid), event_stock)
+        rows = sorted(rows, key=lambda r: r.get("date", ""))
+        rows = [r for r in rows if r.get("date", "") <= report_date]
+    tech = technical_snapshot(rows, event_stock) if rows else {}
+    decision = build_trade_decision(tech, event_stock)
+    return {
+        "buy_zone": decision.get("entry_range") or decision.get("entry_text") or event_stock.get("entry", "─"),
+        "raw_entry": event_stock.get("entry", "─"),
+    }
+
+
 def build_signal_ledger(reports: list[dict]) -> dict[str, dict]:
     push_log = load_push_log()
     ledger: dict[str, dict] = {}
@@ -919,12 +938,15 @@ def build_signal_ledger(reports: list[dict]) -> dict[str, dict]:
             })
             logs = push_log.get((date, stock_id), [])
             pushed = any((x.get("status", "").lower() in {"ok", "sent", "success", "pushed", "done"} or x.get("sent_at")) for x in logs)
+            trade_snapshot = event_trade_snapshot(s, date)
             item["events"].append({
                 "date": date,
                 "basket": classify_basket(s),
-                "entry": s.get("entry", "─"),
+                "entry": trade_snapshot["buy_zone"],
+                "raw_entry": trade_snapshot["raw_entry"],
                 "price": s.get("price", "─"),
                 "score": s.get("score", "─"),
+                "score_source": s.get("score_source", "原始報告 Score"),
                 "pushed": pushed,
                 "log_count": len(logs),
             })
@@ -3283,7 +3305,7 @@ def build_signals_page(reports):
   </td>
   <td><strong>{len(events)}</strong> 次</td>
   <td>{events[0]['date']}<br><span style="color:#8b949e">最近 {latest_event['date']}</span></td>
-  <td>買點 {latest_event['entry']}<br><span style="color:#8b949e">收盤 {latest_event['price']} ｜ 分數 {latest_event['score']}</span></td>
+  <td>買入區 {latest_event['entry']}<br><span style="color:#8b949e">原始買點 {latest_event.get('raw_entry','─')} ｜ 收盤 {latest_event['price']} ｜ 原始分數 {latest_event['score']}</span></td>
   <td>{push_status}</td>
   <td><div class="signal-dates">{dates}</div></td>
 </tr>"""
@@ -3308,7 +3330,7 @@ def build_signals_page(reports):
     <div style="overflow-x:auto">
       <table class="stock-table signal-table">
         <thead>
-          <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買點</th><th>推播</th><th>出現日期</th></tr>
+          <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買入區</th><th>推播</th><th>出現日期</th></tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
@@ -3343,9 +3365,10 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
 
     event_rows = ""
     for e in item.get("events", [])[-12:][::-1]:
+        source = e.get("score_source", "原始報告 Score")
         event_rows += f"""
 <tr>
-  <td>{e['date']}</td><td>{basket_label(e['basket'])}</td><td>{e['entry']}</td><td>{e['price']}</td><td>{e['score']}</td>
+  <td>{e['date']}</td><td>{basket_label(e['basket'])}</td><td>{e['entry']}<div class="signal-dates">原始 {e.get('raw_entry','─')}</div></td><td>{e['price']}</td><td>{e['score']}<div class="signal-dates">{source}</div></td>
 </tr>"""
     if not event_rows:
         event_rows = '<tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr>'
@@ -3789,8 +3812,9 @@ initMainForceHover_{stock_id}();
   <div class="card">
     <div class="section-label">歷史訊號</div>
     <div style="overflow-x:auto">
-      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>{event_rows}</tbody></table>
+      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>{event_rows}</tbody></table>
     </div>
+    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的資料重算：原始報告買點、MA5、MA10 形成可觀察區間；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
   </div>
 </div>
 {chart_script}"""

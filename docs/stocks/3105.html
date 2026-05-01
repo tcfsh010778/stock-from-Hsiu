@@ -528,14 +528,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">歷史訊號</div>
     <div style="overflow-x:auto">
-      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買點</th><th>收盤</th><th>分數</th></tr></thead><tbody>
+      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>
 <tr>
-  <td>2026-04-29</td><td>盤整籃</td><td>531.7</td><td>499.5</td><td>160.0</td>
+  <td>2026-04-29</td><td>盤整籃</td><td>515.00 ~ 549.39<div class="signal-dates">原始 531.7</div></td><td>499.5</td><td>160.0<div class="signal-dates">排名換算（第1名200，每名-10）</div></td>
 </tr>
 <tr>
-  <td>2026-04-28</td><td>行進籃</td><td>554.85（MA5×0.985回測）</td><td>492.5</td><td>180.0</td>
+  <td>2026-04-28</td><td>行進籃</td><td>533.02 ~ 560.40<div class="signal-dates">原始 554.85（MA5×0.985回測）</div></td><td>492.5</td><td>180.0<div class="signal-dates">排名換算（第1名200，每名-10）</div></td>
 </tr></tbody></table>
     </div>
+    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的資料重算：原始報告買點、MA5、MA10 形成可觀察區間；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
   </div>
 </div>
 
