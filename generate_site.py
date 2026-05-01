@@ -337,6 +337,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
 .signal-foot strong{color:#e6edf3}
 .signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
 .signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
@@ -348,6 +350,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
 .info-cell .k{font-size:11px;color:#6e7681}
 .info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -444,7 +458,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
 }
 """
 
@@ -1627,6 +1643,122 @@ def read_ai_logs(stock_id: str, limit: int = 3) -> list[dict]:
     ]
 
 
+def _value_or_dash(value) -> str:
+    if value is None:
+        return "─"
+    text = str(value).strip()
+    return text if text else "─"
+
+
+def _line_html(label: str, value: str, cls: str = "") -> str:
+    cls_attr = f' {cls}' if cls else ""
+    return (
+        '<div class="telegram-line">'
+        f'<div class="k">{esc(label)}</div>'
+        f'<div class="v{cls_attr}">{esc(value)}</div>'
+        '</div>'
+    )
+
+
+def _signed_class(value) -> str:
+    n = _to_float(value, None)
+    if n is None:
+        return ""
+    return "pos" if n >= 0 else "neg"
+
+
+def build_telegram_info_card(
+    stock_id: str,
+    s: dict,
+    tech: dict,
+    chip: dict,
+    holding: dict,
+    decision: dict,
+    ledger_item: dict | None,
+) -> str:
+    """Build a compact card that mirrors the Telegram deep-analysis rhythm."""
+    indicator = indicator_snapshot(aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily"))
+    basket = basket_label(classify_basket(s))
+    events = ledger_item.get("events", []) if ledger_item else []
+    repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}" if events else "首次或尚未建立歷史台帳"
+    close = _value_or_dash(s.get("price"))
+    price_date = _value_or_dash(s.get("price_date"))
+    score = _value_or_dash(s.get("score"))
+    status = _value_or_dash(s.get("status"))
+    trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
+    volume_price = _value_or_dash(tech.get("volume_price"))
+    candle = _value_or_dash(tech.get("candle_pattern"))
+    kd = "─"
+    if indicator.get("k") is not None and indicator.get("d") is not None:
+        kd = f"K {fmt_num(indicator.get('k'), 1)} / D {fmt_num(indicator.get('d'), 1)}，{indicator.get('kd_state', '─')}"
+    macd = "─"
+    if indicator.get("dif") is not None and indicator.get("dea") is not None:
+        macd = (
+            f"DIF {fmt_num(indicator.get('dif'), 2)} / DEA {fmt_num(indicator.get('dea'), 2)} / "
+            f"OSC {fmt_num(indicator.get('macd'), 2)}，{indicator.get('macd_state', '─')}"
+        )
+    wr = "─"
+    if indicator.get("wr") is not None:
+        wr = f"{fmt_num(indicator.get('wr'), 1)}，{indicator.get('wr_state', '─')}"
+
+    chip_latest = chip.get("latest", {}) if chip else {}
+    chip_sum5 = chip.get("sum5", {}) if chip else {}
+    h_latest = holding.get("latest", {}) if holding else {}
+    foreign5 = s.get("foreign_5d")
+    if is_blank(foreign5) and chip_sum5.get("foreign") is not None:
+        foreign5 = f"{chip_sum5.get('foreign'):+,.0f}張"
+    force_line = (
+        f"外資5日 {_value_or_dash(foreign5)}；"
+        f"三大法人當日 {fmt_num(chip_latest.get('total'), 0)} 張；"
+        f"大戶 {fmt_num(h_latest.get('major'))}% / 散戶 {fmt_num(h_latest.get('retail'))}%"
+    )
+
+    target = _value_or_dash(s.get("target"))
+    stop = _value_or_dash(s.get("stop"))
+    resistance = _value_or_dash(s.get("resistance") or fmt_num(tech.get("resistance")))
+    support = _value_or_dash(s.get("support") or fmt_num(tech.get("support")))
+    operation_note = {
+        "行進籃": "SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。",
+        "盤整籃": "MABC/CaryBot 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。",
+        "過熱/風險": "偏熱或風險區：不追高，等降溫、回測支撐不破，再重新評估。",
+    }.get(basket, "先等資料補齊，再回到買點、失敗線與目標價判斷。")
+
+    phase1 = (
+        _line_html("篩選結論", f"{basket}｜{status}｜Score {score}")
+        + _line_html("操作評價", f"{decision['rating']}｜{decision['reason']}", decision.get("rating_class", ""))
+        + _line_html("台帳", repeat_note)
+    )
+    phase2 = (
+        _line_html("技術結構", f"{trend}；{volume_price}；{candle}")
+        + _line_html("KD", kd)
+        + _line_html("MACD", macd)
+        + _line_html("Williams", wr)
+        + _line_html("籌碼", force_line, _signed_class(foreign5))
+    )
+    phase3 = (
+        _line_html("是否進場", decision["rating"])
+        + _line_html("觀察價位", f"壓力 {resistance}｜支撐 {support}")
+        + _line_html("較佳買入區", decision["entry_range"])
+        + _line_html("停利", target)
+        + _line_html("停損", f"{decision['defense']}｜原報告 {stop}")
+        + _line_html("追蹤重點", operation_note)
+    )
+    return f"""
+<div class="telegram-report-card">
+  <div class="telegram-head">
+    <div>
+      <div class="telegram-title">{esc(stock_id)} {esc(s.get('name',''))} Telegram 版資訊卡</div>
+      <div class="telegram-meta">FinMind 收盤 {esc(price_date)}：{esc(close)}｜報告日期 {esc(s.get('report_date','─'))}</div>
+    </div>
+    <div class="telegram-rating {decision.get('rating_class','')}">{esc(decision['rating'])}</div>
+  </div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3>{phase1}</div>
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3>{phase2}</div>
+  <div class="telegram-phase"><h3>③ 操作規劃</h3>{phase3}</div>
+  <div class="telegram-note">這張卡沿用 Telegram 報告的三段式節奏；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
+</div>"""
+
+
 def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
     basket = basket_label(classify_basket(s))
     events = ledger_item.get("events", []) if ledger_item else []
@@ -2458,10 +2590,12 @@ def build_signals_page(reports):
             if PUSH_LOG_PATH.exists()
             else '<span class="push-wait">待串接</span>'
         )
+        href = f"stocks/{esc(item['id'])}.html"
         rows += f"""
-<tr>
+<tr class="clickable-row" onclick="location.href='{href}'">
   <td>
-    <div style="font-weight:700">{item['id']} {item['name']}</div>
+    <div><a class="stock-link" href="{href}" onclick="event.stopPropagation()">{esc(item['id'])} {esc(item['name'])}</a></div>
+    <div class="signal-dates"><a href="{href}" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row">{latest_mark}<span class="tag">{basket}</span></div>
   </td>
   <td><strong>{len(events)}</strong> 次</td>
@@ -2917,6 +3051,7 @@ function initMainForceHover_{stock_id}(){{
 initChipFlowHover_{stock_id}();
 initMainForceHover_{stock_id}();
 </script>"""
+    telegram_card = build_telegram_info_card(stock_id, s_view, tech, chip, holding, decision, item)
 
     body = f"""
 <div class="container">
@@ -2926,18 +3061,7 @@ initMainForceHover_{stock_id}();
   <div class="detail-hero">
     <div class="card">
       <div class="section-label">資訊卡</div>
-      <div class="info-grid">
-        <div class="info-cell"><div class="k">FinMind收盤 {esc(s_view.get('price_date',''))}</div><div class="v">{esc(s_view.get('price','─'))}</div></div>
-        <div class="info-cell"><div class="k">操作評價</div><div class="v {decision['rating_class']}">{esc(decision['rating'])}</div></div>
-        <div class="info-cell"><div class="k">分類</div><div class="v">{basket_label(classify_basket(s))}</div></div>
-        <div class="info-cell"><div class="k">買進區間</div><div class="v">{esc(decision['entry_range'])}</div></div>
-        <div class="info-cell"><div class="k">關鍵防守價位</div><div class="v">{esc(decision['defense'])}</div></div>
-        <div class="info-cell"><div class="k">判斷理由</div><div class="v">{esc(decision['reason'])}</div></div>
-        <div class="info-cell"><div class="k">外資近5日</div><div class="v">{esc(s.get('foreign_5d','─'))}</div></div>
-      </div>
-      <div class="pill-row">
-        <span class="tag tag-green">SFZ</span><span class="tag tag-yellow">MABC/CaryBot</span><span class="tag">v44資料</span>
-      </div>
+      {telegram_card}
     </div>
     <div class="card">
       <div class="section-label">快速分析</div>

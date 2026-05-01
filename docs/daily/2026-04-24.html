@@ -45,6 +45,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
 .signal-foot strong{color:#e6edf3}
 .signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
 .signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
@@ -56,6 +58,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
 .info-cell .k{font-size:11px;color:#6e7681}
 .info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -152,7 +166,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
 }
 </style>
 </head>

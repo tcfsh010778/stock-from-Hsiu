@@ -45,6 +45,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
 .signal-foot strong{color:#e6edf3}
 .signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
 .signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
@@ -56,6 +58,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
 .info-cell .k{font-size:11px;color:#6e7681}
 .info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -152,7 +166,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
 }
 </style>
 </head>
@@ -176,8 +192,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">Signal Ledger</div>
     <div class="grid grid-3">
-      <div class="metric"><div class="metric-num" style="color:#58a6ff">38</div><div class="metric-label">歷史唯一個股</div></div>
-      <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">今日仍在追蹤</div></div>
+      <div class="metric"><div class="metric-num" style="color:#58a6ff">34</div><div class="metric-label">歷史唯一個股</div></div>
+      <div class="metric"><div class="metric-num" style="color:#3fb950">0</div><div class="metric-label">今日仍在追蹤</div></div>
       <div class="metric"><div class="metric-num" style="font-size:16px"><span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span></div><div class="metric-label">推播覆蓋率</div></div>
     </div>
     <div class="strategy-note" style="margin-top:14px">
@@ -192,229 +208,34 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
           <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買點</th><th>推播</th><th>出現日期</th></tr>
         </thead>
         <tbody>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6434.html'">
   <td>
-    <div style="font-weight:700">6434 台亞</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 25.49 (MA5×98.5%)<br><span style="color:#8b949e">收盤 29.45 ｜ 分數 627.3</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">3714 富采</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 69.07 (MA5×98.5%)<br><span style="color:#8b949e">收盤 74.10 ｜ 分數 131.4</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6920 黑彩</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 108.63 (MA5×98.5%)<br><span style="color:#8b949e">收盤 128.50 ｜ 分數 407.8</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6147 頎邦</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 145.98 (MA5×98.5%)<br><span style="color:#8b949e">收盤 163.00 ｜ 分數 288.2</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6672 泰鼎-KY</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 207.34 (MA5×98.5%)<br><span style="color:#8b949e">收盤 219.00 ｜ 分數 167.2</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6213 聯茂</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 259.65 (MA5×98.5%)<br><span style="color:#8b949e">收盤 270.00 ｜ 分數 200.9</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">1785 光洋科</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>4</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 157.21 (MA5×98.5%)<br><span style="color:#8b949e">收盤 165.50 ｜ 分數 179.0</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">8358 金居</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div><a class="stock-link" href="stocks/6434.html" onclick="event.stopPropagation()">6434 達輝光電</a></div>
+    <div class="signal-dates"><a href="stocks/6434.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>3</strong> 次</td>
-  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 357.56 (MA5×98.5%)<br><span style="color:#8b949e">收盤 388.50 ｜ 分數 155.1</span></td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 26.87<br><span style="color:#8b949e">收盤 26.0 ｜ 分數 200.0</span></td>
   <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-24、2026-04-29、2026-04-30</div></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/3714.html'">
   <td>
-    <div style="font-weight:700">6789 采鈺</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div><a class="stock-link" href="stocks/3714.html" onclick="event.stopPropagation()">3714 富采</a></div>
+    <div class="signal-dates"><a href="stocks/3714.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>3</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 554.75 (MA5×98.5%)<br><span style="color:#8b949e">收盤 576.00 ｜ 分數 138.9</span></td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 68.18<br><span style="color:#8b949e">收盤 71.3 ｜ 分數 180.0</span></td>
   <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-29、2026-04-30</div></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/3673.html'">
   <td>
-    <div style="font-weight:700">4960 奇力新</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>3</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 38.27 (MA5×98.5%)<br><span style="color:#8b949e">收盤 39.00 ｜ 分數 125.0</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">2351 順德</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>3</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 146.86 (MA5×98.5%)<br><span style="color:#8b949e">收盤 154.00 ｜ 分數 154.9</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">4958 臻鼎-KY</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>2</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 375.09 (MA5×98.5%)<br><span style="color:#8b949e">收盤 421.00 ｜ 分數 160.9</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">8027 鈦昇科</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>2</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 167.06 (MA5×98.5%)<br><span style="color:#8b949e">收盤 193.50 ｜ 分數 156.0</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6531 愛普</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>2</strong> 次</td>
-  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 788.20 (MA5×98.5%)<br><span style="color:#8b949e">收盤 840.00 ｜ 分數 125.3</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-28、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">8046 南電</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>2</strong> 次</td>
-  <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 914.08 (MA5×98.5%)<br><span style="color:#8b949e">收盤 1005.00 ｜ 分數 158.4</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">6234 高鐵電</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>2</strong> 次</td>
-  <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 45.98 (MA5×98.5%)<br><span style="color:#8b949e">收盤 52.80 ｜ 分數 144.3</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-29、2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">2426 鼎元</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>1</strong> 次</td>
-  <td>2026-04-30<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 52.76 (MA5×98.5%)<br><span style="color:#8b949e">收盤 57.30 ｜ 分數 158.6</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">1727 中華化</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>1</strong> 次</td>
-  <td>2026-04-30<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 75.83 (MA5×98.5%)<br><span style="color:#8b949e">收盤 81.50 ｜ 分數 123.5</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">2464 建通</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>1</strong> 次</td>
-  <td>2026-04-30<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 103.07 (MA5×98.5%)<br><span style="color:#8b949e">收盤 113.50 ｜ 分數 124.0</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">8064 億力-KY</div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
-  </td>
-  <td><strong>1</strong> 次</td>
-  <td>2026-04-30<br><span style="color:#8b949e">最近 2026-04-30</span></td>
-  <td>買點 88.24 (MA5×98.5%)<br><span style="color:#8b949e">收盤 104.00 ｜ 分數 127.6</span></td>
-  <td><span class="push-wait">待串接</span></td>
-  <td><div class="signal-dates">2026-04-30</div></td>
-</tr>
-<tr>
-  <td>
-    <div style="font-weight:700">3673 TPK-KY</div>
+    <div><a class="stock-link" href="stocks/3673.html" onclick="event.stopPropagation()">3673 TPK-KY</a></div>
+    <div class="signal-dates"><a href="stocks/3673.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>3</strong> 次</td>
@@ -423,9 +244,82 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6920.html'">
   <td>
-    <div style="font-weight:700">2402 毅嘉</div>
+    <div><a class="stock-link" href="stocks/6920.html" onclick="event.stopPropagation()">6920 恆勁科技</a></div>
+    <div class="signal-dates"><a href="stocks/6920.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>3</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 101.91<br><span style="color:#8b949e">收盤 104.5 ｜ 分數 90.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/6147.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/6147.html" onclick="event.stopPropagation()">6147 頎邦</a></div>
+    <div class="signal-dates"><a href="stocks/6147.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>3</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 137.01<br><span style="color:#8b949e">收盤 144.0 ｜ 分數 80.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/6672.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/6672.html" onclick="event.stopPropagation()">6672 騰輝電子-KY</a></div>
+    <div class="signal-dates"><a href="stocks/6672.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>3</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 201.53<br><span style="color:#8b949e">收盤 207.5 ｜ 分數 40.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/6213.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/6213.html" onclick="event.stopPropagation()">6213 聯茂</a></div>
+    <div class="signal-dates"><a href="stocks/6213.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>3</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 269.1<br><span style="color:#8b949e">收盤 253.5 ｜ 分數 190.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/1785.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/1785.html" onclick="event.stopPropagation()">1785 光洋科</a></div>
+    <div class="signal-dates"><a href="stocks/1785.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>3</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 149.62<br><span style="color:#8b949e">收盤 163.5 ｜ 分數 70.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/8358.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/8358.html" onclick="event.stopPropagation()">8358 金居</a></div>
+    <div class="signal-dates"><a href="stocks/8358.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>2</strong> 次</td>
+  <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 358.64<br><span style="color:#8b949e">收盤 362.0 ｜ 分數 170.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/2402.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/2402.html" onclick="event.stopPropagation()">2402 毅嘉</a></div>
+    <div class="signal-dates"><a href="stocks/2402.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -434,9 +328,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/5439.html'">
   <td>
-    <div style="font-weight:700">5439 高技</div>
+    <div><a class="stock-link" href="stocks/5439.html" onclick="event.stopPropagation()">5439 高技</a></div>
+    <div class="signal-dates"><a href="stocks/5439.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -445,9 +340,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/3105.html'">
   <td>
-    <div style="font-weight:700">3105 穩懋</div>
+    <div><a class="stock-link" href="stocks/3105.html" onclick="event.stopPropagation()">3105 穩懋</a></div>
+    <div class="signal-dates"><a href="stocks/3105.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -456,9 +352,46 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6789.html'">
   <td>
-    <div style="font-weight:700">2455 全新</div>
+    <div><a class="stock-link" href="stocks/6789.html" onclick="event.stopPropagation()">6789 采鈺</a></div>
+    <div class="signal-dates"><a href="stocks/6789.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>2</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 529.83<br><span style="color:#8b949e">收盤 562.0 ｜ 分數 30.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/4960.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/4960.html" onclick="event.stopPropagation()">4960 誠美材</a></div>
+    <div class="signal-dates"><a href="stocks/4960.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>2</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 39.83<br><span style="color:#8b949e">收盤 39.8 ｜ 分數 60.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/2351.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/2351.html" onclick="event.stopPropagation()">2351 順德</a></div>
+    <div class="signal-dates"><a href="stocks/2351.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>2</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 149.03<br><span style="color:#8b949e">收盤 146.5 ｜ 分數 20.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/2455.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/2455.html" onclick="event.stopPropagation()">2455 全新</a></div>
+    <div class="signal-dates"><a href="stocks/2455.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -467,9 +400,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6257.html'">
   <td>
-    <div style="font-weight:700">6257 矽格</div>
+    <div><a class="stock-link" href="stocks/6257.html" onclick="event.stopPropagation()">6257 矽格</a></div>
+    <div class="signal-dates"><a href="stocks/6257.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -478,9 +412,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/3264.html'">
   <td>
-    <div style="font-weight:700">3264 欣銓</div>
+    <div><a class="stock-link" href="stocks/3264.html" onclick="event.stopPropagation()">3264 欣銓</a></div>
+    <div class="signal-dates"><a href="stocks/3264.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -489,9 +424,34 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/8046.html'">
   <td>
-    <div style="font-weight:700">6407 安集　｜　🟢 健康整理　｜　綜合評分：38.32</div>
+    <div><a class="stock-link" href="stocks/8046.html" onclick="event.stopPropagation()">8046 南電</a></div>
+    <div class="signal-dates"><a href="stocks/8046.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>1</strong> 次</td>
+  <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 850.45<br><span style="color:#8b949e">收盤 932.0 ｜ 分數 50.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/6234.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/6234.html" onclick="event.stopPropagation()">6234 高僑</a></div>
+    <div class="signal-dates"><a href="stocks/6234.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>1</strong> 次</td>
+  <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-29</span></td>
+  <td>買點 41.93<br><span style="color:#8b949e">收盤 43.7 ｜ 分數 10.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-29</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/6407.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/6407.html" onclick="event.stopPropagation()">6407 安集　｜　🟢 健康整理　｜　綜合評分：38.32</a></div>
+    <div class="signal-dates"><a href="stocks/6407.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -500,9 +460,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/5271.html'">
   <td>
-    <div style="font-weight:700">5271 矽力-KY　｜　🟢 健康整理　｜　綜合評分：11.2</div>
+    <div><a class="stock-link" href="stocks/5271.html" onclick="event.stopPropagation()">5271 矽力-KY　｜　🟢 健康整理　｜　綜合評分：11.2</a></div>
+    <div class="signal-dates"><a href="stocks/5271.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -511,9 +472,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/2484.html'">
   <td>
-    <div style="font-weight:700">2484 希華　｜　🟢 健康整理　｜　綜合評分：25.98</div>
+    <div><a class="stock-link" href="stocks/2484.html" onclick="event.stopPropagation()">2484 希華　｜　🟢 健康整理　｜　綜合評分：25.98</a></div>
+    <div class="signal-dates"><a href="stocks/2484.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
@@ -522,9 +484,34 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/4958.html'">
   <td>
-    <div style="font-weight:700">3162 精確　｜　🟡 強勢追漲中　｜　綜合評分：37.56</div>
+    <div><a class="stock-link" href="stocks/4958.html" onclick="event.stopPropagation()">4958 臻鼎-KY　｜　🟡 強勢追漲中　｜　綜合評分：24.84</a></div>
+    <div class="signal-dates"><a href="stocks/4958.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>1</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
+  <td>買點 327.22（MA5×0.985回測）<br><span style="color:#8b949e">收盤 358.5 ｜ 分數 100.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/8027.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/8027.html" onclick="event.stopPropagation()">8027 鈺太　｜　🟡 強勢追漲中　｜　綜合評分：27.68</a></div>
+    <div class="signal-dates"><a href="stocks/8027.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>1</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
+  <td>買點 149.13（MA5×0.985回測）<br><span style="color:#8b949e">收盤 159.0 ｜ 分數 40.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/3162.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/3162.html" onclick="event.stopPropagation()">3162 精確　｜　🟡 強勢追漲中　｜　綜合評分：37.56</a></div>
+    <div class="signal-dates"><a href="stocks/3162.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -533,9 +520,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/2476.html'">
   <td>
-    <div style="font-weight:700">2476 鑫創　｜　🟡 強勢追漲中　｜　綜合評分：21.02</div>
+    <div><a class="stock-link" href="stocks/2476.html" onclick="event.stopPropagation()">2476 鑫創　｜　🟡 強勢追漲中　｜　綜合評分：21.02</a></div>
+    <div class="signal-dates"><a href="stocks/2476.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -544,9 +532,22 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6531.html'">
   <td>
-    <div style="font-weight:700">1711 永光（化學工業）</div>
+    <div><a class="stock-link" href="stocks/6531.html" onclick="event.stopPropagation()">6531 愛普　｜　🟡 強勢追漲中　｜　綜合評分：25.82</a></div>
+    <div class="signal-dates"><a href="stocks/6531.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+  </td>
+  <td><strong>1</strong> 次</td>
+  <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
+  <td>買點 756.09（MA5×0.985回測）<br><span style="color:#8b949e">收盤 753.0 ｜ 分數 10.0</span></td>
+  <td><span class="push-wait">待串接</span></td>
+  <td><div class="signal-dates">2026-04-28</div></td>
+</tr>
+<tr class="clickable-row" onclick="location.href='stocks/1711.html'">
+  <td>
+    <div><a class="stock-link" href="stocks/1711.html" onclick="event.stopPropagation()">1711 永光（化學工業）</a></div>
+    <div class="signal-dates"><a href="stocks/1711.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -555,9 +556,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/3221.html'">
   <td>
-    <div style="font-weight:700">3221 台嘉碩（通信網路）</div>
+    <div><a class="stock-link" href="stocks/3221.html" onclick="event.stopPropagation()">3221 台嘉碩（通信網路）</a></div>
+    <div class="signal-dates"><a href="stocks/3221.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -566,9 +568,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/1309.html'">
   <td>
-    <div style="font-weight:700">1309 台達化（塑膠工業）</div>
+    <div><a class="stock-link" href="stocks/1309.html" onclick="event.stopPropagation()">1309 台達化（塑膠工業）</a></div>
+    <div class="signal-dates"><a href="stocks/1309.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -577,9 +580,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/2340.html'">
   <td>
-    <div style="font-weight:700">2340 台亞（半導體）</div>
+    <div><a class="stock-link" href="stocks/2340.html" onclick="event.stopPropagation()">2340 台亞（半導體）</a></div>
+    <div class="signal-dates"><a href="stocks/2340.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -588,9 +592,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/2337.html'">
   <td>
-    <div style="font-weight:700">2337 旺宏（半導體）</div>
+    <div><a class="stock-link" href="stocks/2337.html" onclick="event.stopPropagation()">2337 旺宏（半導體）</a></div>
+    <div class="signal-dates"><a href="stocks/2337.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
@@ -599,9 +604,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr>
+<tr class="clickable-row" onclick="location.href='stocks/6127.html'">
   <td>
-    <div style="font-weight:700">6127 九豪（電子零組件）</div>
+    <div><a class="stock-link" href="stocks/6127.html" onclick="event.stopPropagation()">6127 九豪（電子零組件）</a></div>
+    <div class="signal-dates"><a href="stocks/6127.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>

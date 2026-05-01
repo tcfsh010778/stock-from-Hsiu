@@ -45,6 +45,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
 .signal-foot strong{color:#e6edf3}
 .signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
 .signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
@@ -56,6 +58,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
 .info-cell .k{font-size:11px;color:#6e7681}
 .info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -152,7 +166,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
 }
 </style>
 </head>
@@ -173,7 +189,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="card">
   <div class="section-label">Daily Strategy Stream</div>
   <div class="grid grid-3">
-    <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
+    <div class="metric"><div class="metric-num" style="color:#3fb950">0</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
     <div class="metric"><div class="metric-num" style="color:#d2a520">0</div><div class="metric-label">盤整籃：M大 ABC 先觀察，CaryBot 找早買</div></div>
     <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
   </div>
@@ -194,174 +210,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="card">
   <div class="section-label">行進籃｜SFZ 波段</div>
   <div class="strategy-note" style="margin-bottom:12px">已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。</div>
-  
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6213 <span class="basket-name">聯茂</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 270.00 ｜ 近6週 <span class="pos">+75.32%</span> ｜ 分數 200.9</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 259.65 (MA5×98.5%) ｜ 目標 318.24 (壓力×102%) ｜ 防守 101.49 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6213.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">4960 <span class="basket-name">奇力新</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 39.00 ｜ 近6週 <span class="pos">+49.14%</span> ｜ 分數 125.0</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 38.27 (MA5×98.5%) ｜ 目標 48.96 (壓力×102%) ｜ 防守 13.13 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-28 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/4960.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">8358 <span class="basket-name">金居</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 388.50 ｜ 近6週 <span class="pos">+47.72%</span> ｜ 分數 155.1</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 357.56 (MA5×98.5%) ｜ 目標 424.32 (壓力×102%) ｜ 防守 211.94 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 盤整籃 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/8358.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6434 <span class="basket-name">台亞</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 29.45 ｜ 近6週 <span class="pos">+373.47%</span> ｜ 分數 627.3</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 25.49 (MA5×98.5%) ｜ 目標 39.22 (壓力×102%) ｜ 防守 3.97 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6434.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6920 <span class="basket-name">黑彩</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 128.50 ｜ 近6週 <span class="pos">+192.71%</span> ｜ 分數 407.8</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 108.63 (MA5×98.5%) ｜ 目標 135.15 (壓力×102%) ｜ 防守 27.96 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6920.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6147 <span class="basket-name">頎邦</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 163.00 ｜ 近6週 <span class="pos">+149.24%</span> ｜ 分數 288.2</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 145.98 (MA5×98.5%) ｜ 目標 176.46 (壓力×102%) ｜ 防守 49.95 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6147.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">4958 <span class="basket-name">臻鼎-KY</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 421.00 ｜ 近6週 <span class="pos">+112.63%</span> ｜ 分數 160.9</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 375.09 (MA5×98.5%) ｜ 目標 429.42 (壓力×102%) ｜ 防守 156.71 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-28 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/4958.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">1785 <span class="basket-name">光洋科</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 165.50 ｜ 近6週 <span class="pos">+82.67%</span> ｜ 分數 179.0</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 157.21 (MA5×98.5%) ｜ 目標 183.60 (壓力×102%) ｜ 防守 56.22 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/1785.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">2426 <span class="basket-name">鼎元</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 57.30 ｜ 近6週 <span class="pos">+55.71%</span> ｜ 分數 158.6</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 52.76 (MA5×98.5%) ｜ 目標 65.99 (壓力×102%) ｜ 防守 17.81 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-04-30 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/2426.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">8046 <span class="basket-name">南電</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 1005.00 ｜ 近6週 <span class="pos">+84.74%</span> ｜ 分數 158.4</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 914.08 (MA5×98.5%) ｜ 目標 1025.10 (壓力×102%) ｜ 防守 354.72 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/8046.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6672 <span class="basket-name">泰鼎-KY</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 219.00 ｜ 近6週 <span class="pos">+113.66%</span> ｜ 分數 167.2</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 207.34 (MA5×98.5%) ｜ 目標 231.54 (壓力×102%) ｜ 防守 84.28 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6672.html">打開個股頁 →</a></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <div class="basket-code">6234 <span class="basket-name">高鐵電</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 52.80 ｜ 近6週 <span class="pos">+90.61%</span> ｜ 分數 144.3</div>
-    </div>
-    <div class="basket-action">SFZ試單/續抱</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 45.98 (MA5×98.5%) ｜ 目標 53.86 (壓力×102%) ｜ 防守 23.88 (支撐×99.5%)</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-30 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-  <div style="margin-top:10px"><a class="history-link" href="stocks/6234.html">打開個股頁 →</a></div>
-</div>
+  <div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>
 </div>
 <div class="card">
   <div class="section-label">盤整籃｜MABC + CaryBot</div>

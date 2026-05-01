@@ -45,6 +45,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
 .signal-foot strong{color:#e6edf3}
 .signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
 .signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
 .push-ok{color:#3fb950;font-weight:700}
 .push-wait{color:#d2a520;font-weight:700}
@@ -56,6 +58,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
 .info-cell .k{font-size:11px;color:#6e7681}
 .info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -152,7 +166,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
 }
 </style>
 </head>
@@ -176,32 +192,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
 <div class="card">
   <div class="section-label">📰 大盤市況</div>
-  <div class="market-text">台股加權指數 4/29 收盤 **39,303.50 點**，下跌 218.23 點，呈現高檔震盪格局。外資 4/27 積極回補南亞科（2408，+36,559張）、旺宏（2337，+29,694張），顯示記憶體族群資金回流；AI 推論需求持續催化半導體供應鏈訂單，創意（3443）、博磊（3581）等 AI 概念股動能延續。盤面主流仍為 AI 伺服器、高速傳輸、先進封裝三大主線，惟指數在 39,000 點附近已有壓力，短線應注意量縮整理訊號。</div>
+  <div class="market-text"></div>
 </div>
   
 <div class="card">
   <div class="section-label">🔍 篩選漏斗</div>
-  <div class="filter-steps">
-<div class="filter-step">
-  <div class="step-count" style="color:#58a6ff">902 檔</div>
-  <div class="step-label">初篩</div>
-  <div class="step-cond">股價 20-1000 元、近5日量≥2,000張</div>
-</div>
-<div class="filter-step">
-  <div class="step-count" style="color:#3fb950">200 檔</div>
-  <div class="step-label">候選池</div>
-  <div class="step-cond">依成交量取前 200</div>
-</div>
-<div class="filter-step">
-  <div class="step-count" style="color:#f0883e">91 檔</div>
-  <div class="step-label">技術篩選</div>
-  <div class="step-cond">通過 6/6 條件</div>
-</div>
-<div class="filter-step">
-  <div class="step-count" style="color:#a78bfa">**20 檔**</div>
-  <div class="step-label">最終精選</div>
-  <div class="step-cond">評分排序取前 20</div>
-</div></div>
+  
   <div style="margin-top:12px;font-size:12px;color:#6e7681">從全市場 2,000+ 檔，六大技術條件篩選至最終 <strong style="color:#58a6ff">20 檔</strong></div>
 </div>
   
@@ -210,7 +206,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：2026-04-30 · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看雙籃儀表板 →</a></p>
   
 <div class="grid grid-3" style="margin-bottom:16px">
-  <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
+  <div class="metric"><div class="metric-num" style="color:#3fb950">0</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
   <div class="metric"><div class="metric-num" style="color:#d2a520">0</div><div class="metric-label">盤整籃：MABC/CaryBot 觀察</div></div>
   <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高</div></div>
 </div>
@@ -219,307 +215,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <thead><tr>
   <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/停損</th>
 </tr></thead>
-<tbody>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#1</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6213.html">6213 聯茂</a></div>
-    <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
-  </td>
-  <td class="price-main">270.00</td>
-  <td class="pos">+75.32%</td>
-  <td><span style="color:#58a6ff;font-weight:700">200.9</span></td>
-  <td>
-    <div class="price-entry">進 259.65 (MA5×98.5%)</div>
-    <div class="price-target">目 318.24 (壓力×102%)</div>
-    <div class="price-stop">損 101.49 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#2</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/4960.html">4960 奇力新</a></div>
-    <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
-  </td>
-  <td class="price-main">39.00</td>
-  <td class="pos">+49.14%</td>
-  <td><span style="color:#58a6ff;font-weight:700">125.0</span></td>
-  <td>
-    <div class="price-entry">進 38.27 (MA5×98.5%)</div>
-    <div class="price-target">目 48.96 (壓力×102%)</div>
-    <div class="price-stop">損 13.13 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#3</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8358.html">8358 金居</a></div>
-    <div style="margin-top:3px"><span class="badge badge-green">健康整理</span></div>
-  </td>
-  <td class="price-main">388.50</td>
-  <td class="pos">+47.72%</td>
-  <td><span style="color:#58a6ff;font-weight:700">155.1</span></td>
-  <td>
-    <div class="price-entry">進 357.56 (MA5×98.5%)</div>
-    <div class="price-target">目 424.32 (壓力×102%)</div>
-    <div class="price-stop">損 211.94 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#4</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6434.html">6434 台亞</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">29.45</td>
-  <td class="pos">+373.47%</td>
-  <td><span style="color:#58a6ff;font-weight:700">627.3</span></td>
-  <td>
-    <div class="price-entry">進 25.49 (MA5×98.5%)</div>
-    <div class="price-target">目 39.22 (壓力×102%)</div>
-    <div class="price-stop">損 3.97 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6920.html">6920 黑彩</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">128.50</td>
-  <td class="pos">+192.71%</td>
-  <td><span style="color:#58a6ff;font-weight:700">407.8</span></td>
-  <td>
-    <div class="price-entry">進 108.63 (MA5×98.5%)</div>
-    <div class="price-target">目 135.15 (壓力×102%)</div>
-    <div class="price-stop">損 27.96 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6147.html">6147 頎邦</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">163.00</td>
-  <td class="pos">+149.24%</td>
-  <td><span style="color:#58a6ff;font-weight:700">288.2</span></td>
-  <td>
-    <div class="price-entry">進 145.98 (MA5×98.5%)</div>
-    <div class="price-target">目 176.46 (壓力×102%)</div>
-    <div class="price-stop">損 49.95 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">421.00</td>
-  <td class="pos">+112.63%</td>
-  <td><span style="color:#58a6ff;font-weight:700">160.9</span></td>
-  <td>
-    <div class="price-entry">進 375.09 (MA5×98.5%)</div>
-    <div class="price-target">目 429.42 (壓力×102%)</div>
-    <div class="price-stop">損 156.71 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1785.html">1785 光洋科</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">165.50</td>
-  <td class="pos">+82.67%</td>
-  <td><span style="color:#58a6ff;font-weight:700">179.0</span></td>
-  <td>
-    <div class="price-entry">進 157.21 (MA5×98.5%)</div>
-    <div class="price-target">目 183.60 (壓力×102%)</div>
-    <div class="price-stop">損 56.22 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2426.html">2426 鼎元</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">57.30</td>
-  <td class="pos">+55.71%</td>
-  <td><span style="color:#58a6ff;font-weight:700">158.6</span></td>
-  <td>
-    <div class="price-entry">進 52.76 (MA5×98.5%)</div>
-    <div class="price-target">目 65.99 (壓力×102%)</div>
-    <div class="price-stop">損 17.81 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8046.html">8046 南電</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">1005.00</td>
-  <td class="pos">+84.74%</td>
-  <td><span style="color:#58a6ff;font-weight:700">158.4</span></td>
-  <td>
-    <div class="price-entry">進 914.08 (MA5×98.5%)</div>
-    <div class="price-target">目 1025.10 (壓力×102%)</div>
-    <div class="price-stop">損 354.72 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6672.html">6672 泰鼎-KY</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">219.00</td>
-  <td class="pos">+113.66%</td>
-  <td><span style="color:#58a6ff;font-weight:700">167.2</span></td>
-  <td>
-    <div class="price-entry">進 207.34 (MA5×98.5%)</div>
-    <div class="price-target">目 231.54 (壓力×102%)</div>
-    <div class="price-stop">損 84.28 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6234.html">6234 高鐵電</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">52.80</td>
-  <td class="pos">+90.61%</td>
-  <td><span style="color:#58a6ff;font-weight:700">144.3</span></td>
-  <td>
-    <div class="price-entry">進 45.98 (MA5×98.5%)</div>
-    <div class="price-target">目 53.86 (壓力×102%)</div>
-    <div class="price-stop">損 23.88 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2351.html">2351 順德</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">154.00</td>
-  <td class="pos">+64.18%</td>
-  <td><span style="color:#58a6ff;font-weight:700">154.9</span></td>
-  <td>
-    <div class="price-entry">進 146.86 (MA5×98.5%)</div>
-    <div class="price-target">目 175.95 (壓力×102%)</div>
-    <div class="price-stop">損 74.62 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8027.html">8027 鈦昇科</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">193.50</td>
-  <td class="pos">+80.00%</td>
-  <td><span style="color:#58a6ff;font-weight:700">156.0</span></td>
-  <td>
-    <div class="price-entry">進 167.06 (MA5×98.5%)</div>
-    <div class="price-target">目 197.37 (壓力×102%)</div>
-    <div class="price-stop">損 85.37 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6789.html">6789 采鈺</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">576.00</td>
-  <td class="pos">+69.41%</td>
-  <td><span style="color:#58a6ff;font-weight:700">138.9</span></td>
-  <td>
-    <div class="price-entry">進 554.75 (MA5×98.5%)</div>
-    <div class="price-target">目 604.86 (壓力×102%)</div>
-    <div class="price-stop">損 268.15 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#16</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1727.html">1727 中華化</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">81.50</td>
-  <td class="pos">+46.85%</td>
-  <td><span style="color:#58a6ff;font-weight:700">123.5</span></td>
-  <td>
-    <div class="price-entry">進 75.83 (MA5×98.5%)</div>
-    <div class="price-target">目 86.29 (壓力×102%)</div>
-    <div class="price-stop">損 39.45 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#17</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2464.html">2464 建通</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">113.50</td>
-  <td class="pos">+43.49%</td>
-  <td><span style="color:#58a6ff;font-weight:700">124.0</span></td>
-  <td>
-    <div class="price-entry">進 103.07 (MA5×98.5%)</div>
-    <div class="price-target">目 120.36 (壓力×102%)</div>
-    <div class="price-stop">損 61.59 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#18</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/3714.html">3714 富采</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">74.10</td>
-  <td class="pos">+53.89%</td>
-  <td><span style="color:#58a6ff;font-weight:700">131.4</span></td>
-  <td>
-    <div class="price-entry">進 69.07 (MA5×98.5%)</div>
-    <div class="price-target">目 82.11 (壓力×102%)</div>
-    <div class="price-stop">損 34.33 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#19</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6531.html">6531 愛普</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">840.00</td>
-  <td class="pos">+44.83%</td>
-  <td><span style="color:#58a6ff;font-weight:700">125.3</span></td>
-  <td>
-    <div class="price-entry">進 788.20 (MA5×98.5%)</div>
-    <div class="price-target">目 920.04 (壓力×102%)</div>
-    <div class="price-stop">損 389.54 (支撐×99.5%)</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#20</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8064.html">8064 億力-KY</a></div>
-    <div style="margin-top:3px"><span class="badge badge-yellow">強勢追漲</span></div>
-  </td>
-  <td class="price-main">104.00</td>
-  <td class="pos">+58.05%</td>
-  <td><span style="color:#58a6ff;font-weight:700">127.6</span></td>
-  <td>
-    <div class="price-entry">進 88.24 (MA5×98.5%)</div>
-    <div class="price-target">目 106.08 (壓力×102%)</div>
-    <div class="price-stop">損 43.08 (支撐×99.5%)</div>
-  </td>
-</tr></tbody>
+<tbody></tbody>
 </table>
 </div>
 </div>
@@ -530,7 +226,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="history-item">
   <div>
     <div class="history-date">2026-04-30</div>
-    <div class="history-meta">精選 20 檔</div>
+    <div class="history-meta">精選 0 檔</div>
   </div>
   <a href="daily/2026-04-30.html" class="history-link">查看報告 →</a>
 </div>
