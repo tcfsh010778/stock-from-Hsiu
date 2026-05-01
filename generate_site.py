@@ -354,6 +354,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
 .basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-title-link{display:inline-flex;align-items:baseline;gap:6px;color:#e6edf3;text-decoration:none;border-bottom:1px solid transparent}
+.basket-title-link:hover{color:#58a6ff;border-bottom-color:#58a6ff}
+.basket-title-link:hover .basket-name{color:#58a6ff}
 .basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
 .basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
 .basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
@@ -2746,7 +2749,10 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
 <div class="basket-card">
   <div class="basket-head">
     <div>
-      <div class="basket-code">{s.get('id','')} <span class="basket-name">{s.get('name','')}</span></div>
+      <a class="basket-title-link" href="{stock_href(s.get('id',''))}" title="打開 {esc(s.get('id',''))} {esc(s.get('name',''))} 個股資訊頁">
+        <span class="basket-code">{esc(s.get('id',''))}</span>
+        <span class="basket-name">{esc(s.get('name',''))}</span>
+      </a>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="{gain_cls}">{s.get('gain_6w','─')}</span> ｜ 分數 {s.get('score','─')}</div>
     </div>
     <div class="basket-action {action_cls}">{action}</div>
@@ -2762,7 +2768,6 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
   <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 {plan['reference_support_text']} ｜ 符合條件：{esc(reason)}</div>
   <div class="tag-row">{tag_html}</div>
   {signal_summary_html(s.get('id',''), ledger or {})}
-  <div style="margin-top:10px"><a class="history-link" href="{stock_href(s.get('id',''))}">打開個股頁 →</a></div>
 </div>"""
 
 
