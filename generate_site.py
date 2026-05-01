@@ -1775,9 +1775,10 @@ def chart_svg(rows: list[dict], title: str) -> str:
             f'<rect x="{x-candle_w/2:.1f}" y="{body_y:.1f}" width="{candle_w:.1f}" height="{body_h:.1f}" fill="{color}" opacity=".78"/>'
             f'<rect x="{x-candle_w/2:.1f}" y="{vol_top + vol_h - v_h:.1f}" width="{candle_w:.1f}" height="{v_h:.1f}" fill="{color}" opacity=".35"/>'
         )
-    deduct_colors = {5: "#58a6ff", 10: "#d2a520", 20: "#f0883e", 60: "#3fb950"}
+    deduct_colors = {5: "#58a6ff", 10: "#d2a520", 20: "#f0883e", 60: "#3fb950", 120: "#a78bfa"}
     deduct_marks = ""
-    for period in [60, 20, 10, 5]:
+    deduct_periods = [120, 60, 20, 10, 5] if title == "日K" else [60, 20, 10, 5]
+    for period in deduct_periods:
         idx = len(rows) - period
         if idx < 0 or idx >= len(rows):
             continue
@@ -2247,7 +2248,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     ma_windows = [5, 10, 20, 60, 120, 240]
     ma_pairs = {n: latest_ma_and_slope(rows, n) for n in ma_windows}
     ma5, ma10, ma20, ma60, ma120, ma240 = [ma_pairs[n][0] for n in ma_windows]
-    ma_trends = {f"ma{n}": ma_trend_direction(rows, n) for n in [5, 10, 20, 60]}
+    ma_trends = {f"ma{n}": ma_trend_direction(rows, n) for n in ma_windows}
     bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
     avg_vol20 = None
     if len(rows) >= 20:
@@ -2261,6 +2262,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
     resistance = max(r["high"] for r in recent) if recent else None
     formal_entry = formal_williams_entry_zone(rows, ma20)
     entry_gap = entry_zone_gap(close, formal_entry.get("low"), formal_entry.get("high"))
+    detrend_120 = rows[-121].get("close") if len(rows) > 120 else None
     trend = "長多偏強" if ma20 and ma60 and close > ma20 > ma60 else "短線轉強" if ma20 and close > ma20 else "整理/修正"
     return {
         "close": close,
@@ -2274,6 +2276,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "bb_lower": bb_lower[-1] if bb_lower else None,
         "ma_trends": ma_trends,
         "ma_slopes": {f"ma{n}": ma_pairs[n][1] for n in ma_windows},
+        "detrend_120": detrend_120,
         "open": rows[-1].get("open"),
         "high": rows[-1].get("high"),
         "low": rows[-1].get("low"),
@@ -3012,7 +3015,7 @@ def build_tech_panel(tech: dict) -> str:
     volume_price = tech.get("volume_price", "─")
     volume_basis = tech.get("volume_price_basis", "─")
     ma_strip = ""
-    for n in [5, 10, 20, 60]:
+    for n in [5, 10, 20, 60, 120, 240]:
         val = tech.get(f"ma{n}")
         direction = ma_trends.get(f"ma{n}")
         if direction is None:
@@ -3024,6 +3027,9 @@ def build_tech_panel(tech: dict) -> str:
         else:
             arrow = '<span class="arrow-flat">→</span>'
         ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
+    close = tech.get("close")
+    detrend_120 = tech.get("detrend_120")
+    detrend_gap = ((close / detrend_120 - 1) * 100) if close and detrend_120 else None
     return f"""
 <div class="tech-panel">
   <div class="ma-strip">{ma_strip}</div>
@@ -3031,6 +3037,7 @@ def build_tech_panel(tech: dict) -> str:
     <div class="info-cell"><div class="k">量價評分</div><div class="v">{esc(volume_price)}</div></div>
     <div class="info-cell"><div class="k">判斷依據</div><div class="v">{esc(volume_basis)}</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
+    <div class="info-cell"><div class="k">120日扣抵值</div><div class="v">{fmt_num(detrend_120)}</div><div class="signal-dates">收盤距扣抵 {fmt_num(detrend_gap, 1)}%</div></div>
   </div>
 </div>"""
 
