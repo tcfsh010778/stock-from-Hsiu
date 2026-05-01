@@ -70,6 +70,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-line .k{color:#8b949e}
 .telegram-line .v{color:#c9d1d9}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.volume-guide-item.active{border-color:#58a6ff;background:rgba(88,166,255,.09)}
+.volume-guide-title{font-size:12px;font-weight:800;color:#e6edf3}
+.volume-guide-desc{font-size:11px;color:#8b949e;line-height:1.55;margin-top:3px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -166,7 +171,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -203,7 +208,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="telegram-rating ">觀望</div>
   </div>
   <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">行進籃｜健康整理｜Score 170.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜略高於買進區間，等回測</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 2 次，最近 2026-04-29</div></div></div>
-  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">技術結構</div><div class="v">多方趨勢；量縮上漲；小實體整理</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 57.7 / D 60.5，偏弱</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">DIF 30.97 / DEA 28.75 / OSC 4.43，多方動能</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-19.6，偏熱</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v pos">外資5日 +6,645 張；三大法人當日 2235 張；大戶 48.92% / 散戶 26.99%</div></div></div>
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">技術結構</div><div class="v">多方趨勢；量縮價漲；小實體整理</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">最強，飆股型態，惜售無人賣，抱緊。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 57.7 / D 60.5，偏弱</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">DIF 30.97 / DEA 28.75 / OSC 4.43，多方動能</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-19.6，偏熱</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v pos">外資5日 +6,645 張；三大法人當日 2235 張；大戶 48.92% / 散戶 26.99%</div></div></div>
   <div class="telegram-phase"><h3>③ 操作規劃</h3><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">觀察價位</div><div class="v">壓力 416.0｜支撐 224.0</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">355.05 ~ 378.09</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">424.32</div></div><div class="telegram-line"><div class="k">停損</div><div class="v">385.00（近期大量K低點）｜原報告 222.88</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。</div></div></div>
   <div class="telegram-note">這張卡沿用 Telegram 報告的三段式節奏；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
 </div>
@@ -225,11 +230,24 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="tech-panel">
   <div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">363.00 <span class="arrow-down">▼</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">374.35 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">327.18 <span class="arrow-up">▲</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">279.18 <span class="arrow-up">▲</span></div></div></div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">量價關係</div><div class="v">量縮上漲</div></div>
+    <div class="info-cell"><div class="k">量價關係</div><div class="v">量縮價漲</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">多方趨勢</div></div>
     <div class="info-cell"><div class="k">K線型態</div><div class="v">小實體整理</div></div>
   </div>
 </div>
+<div class="volume-guide"><div class="volume-guide-item active">
+  <div class="volume-guide-title">量縮價漲</div>
+  <div class="volume-guide-desc">最強，飆股型態，惜售無人賣，抱緊。</div>
+</div><div class="volume-guide-item ">
+  <div class="volume-guide-title">量增價漲</div>
+  <div class="volume-guide-desc">常態上漲，多頭順勢；爆大量要注意高點。</div>
+</div><div class="volume-guide-item ">
+  <div class="volume-guide-title">量縮價穩</div>
+  <div class="volume-guide-desc">盤整蓄力，等突破方向確認。</div>
+</div><div class="volume-guide-item ">
+  <div class="volume-guide-title">均量上彎</div>
+  <div class="volume-guide-desc">趨勢出量訊號，搭配量增價漲確認攻擊啟動。</div>
+</div></div>
     <div class="strategy-note" style="margin-top:12px">
       行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
     </div>

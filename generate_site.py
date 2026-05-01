@@ -367,6 +367,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-line .k{color:#8b949e}
 .telegram-line .v{color:#c9d1d9}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.volume-guide{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.volume-guide-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.volume-guide-item.active{border-color:#58a6ff;background:rgba(88,166,255,.09)}
+.volume-guide-title{font-size:12px;font-weight:800;color:#e6edf3}
+.volume-guide-desc{font-size:11px;color:#8b949e;line-height:1.55;margin-top:3px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -463,7 +468,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -1173,23 +1178,50 @@ def ma_trend_direction(rows: list[dict], window: int) -> int | None:
     return 1 if slope > 0 else -1
 
 
-def volume_price_relation(row: dict, volume_ratio: float | None) -> str:
+def volume_price_relation(rows: list[dict], volume_ratio: float | None) -> str:
+    row = rows[-1] if rows else {}
     close = row.get("close")
     open_ = row.get("open")
     if close is None or open_ is None:
         return "資料不足"
-    up = close >= open_
     if volume_ratio is None:
         return "量能資料不足"
-    if volume_ratio >= 1.8 and up:
-        return "放量上漲"
-    if volume_ratio >= 1.8 and not up:
+    prev_close = rows[-2].get("close") if len(rows) >= 2 else open_
+    day_change = ((close / prev_close - 1) * 100) if prev_close else 0
+    up = close > open_ and day_change >= 0
+    stable = abs(day_change) <= 1.5
+    avg5 = None
+    prev_avg5 = None
+    if len(rows) >= 10:
+        avg5 = sum(r.get("volume", 0) for r in rows[-5:]) / 5
+        prev_avg5 = sum(r.get("volume", 0) for r in rows[-10:-5]) / 5
+    avg_turning_up = bool(avg5 and prev_avg5 and avg5 >= prev_avg5 * 1.08)
+
+    if volume_ratio >= 1.8 and close < open_:
         return "放量下跌"
-    if volume_ratio <= 0.7 and up:
-        return "量縮上漲"
-    if volume_ratio <= 0.7 and not up:
+    if volume_ratio <= 0.85 and up:
+        return "量縮價漲"
+    if volume_ratio >= 1.15 and up:
+        return "量增價漲"
+    if volume_ratio <= 0.9 and stable:
+        return "量縮價穩"
+    if avg_turning_up:
+        return "均量上彎"
+    if volume_ratio <= 0.7 and close < open_:
         return "量縮下跌"
     return "量價平穩"
+
+
+def volume_price_reading(label: str) -> str:
+    return {
+        "量縮價漲": "最強，飆股型態，惜售無人賣，抱緊。",
+        "量增價漲": "常態上漲，多頭順勢；若爆大量要注意高點。",
+        "量縮價穩": "盤整蓄力，等突破方向確認。",
+        "均量上彎": "趨勢出量訊號，搭配量增價漲確認攻擊啟動。",
+        "放量下跌": "賣壓放大，先等籌碼與價格穩住。",
+        "量縮下跌": "仍在探底或弱整理，不當成 B2 成立。",
+        "量價平穩": "尚未表態，先看突破或轉弱方向。",
+    }.get(label, "資料不足，先等量價結構明確。")
 
 
 def trend_pattern(rows: list[dict], ma5, ma10, ma20, ma60) -> str:
@@ -1705,6 +1737,7 @@ def build_telegram_info_card(
     status = _value_or_dash(s.get("status"))
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
     volume_price = _value_or_dash(tech.get("volume_price"))
+    volume_reading = volume_price_reading(volume_price)
     candle = _value_or_dash(tech.get("candle_pattern"))
     kd = "─"
     if indicator.get("k") is not None and indicator.get("d") is not None:
@@ -1748,6 +1781,7 @@ def build_telegram_info_card(
     )
     phase2 = (
         _line_html("技術結構", f"{trend}；{volume_price}；{candle}")
+        + _line_html("量價判讀", volume_reading)
         + _line_html("KD", kd)
         + _line_html("MACD", macd)
         + _line_html("Williams", wr)
@@ -1850,7 +1884,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "volume": latest_vol,
         "avg_vol20": avg_vol20,
         "volume_ratio": volume_ratio,
-        "volume_price": volume_price_relation(rows[-1], volume_ratio),
+        "volume_price": volume_price_relation(rows, volume_ratio),
         "trend_pattern": trend_pattern(rows, ma5, ma10, ma20, ma60),
         "candle_pattern": candle_pattern(rows),
         "large_volume": large_volume,
@@ -2251,6 +2285,7 @@ def build_tech_panel(tech: dict) -> str:
     if not tech:
         return '<div class="strategy-note">技術資料不足，等待 FinMind 快取更新。</div>'
     ma_trends = tech.get("ma_trends") or {}
+    volume_price = tech.get("volume_price", "─")
     ma_strip = ""
     for n in [5, 10, 20, 60]:
         val = tech.get(f"ma{n}")
@@ -2264,15 +2299,29 @@ def build_tech_panel(tech: dict) -> str:
         else:
             arrow = '<span class="arrow-flat">→</span>'
         ma_strip += f'<div class="ma-pill"><div class="ma-name">MA{n}</div><div class="ma-value">{fmt_num(val)} {arrow}</div></div>'
+    guide_items = [
+        ("量縮價漲", "最強，飆股型態，惜售無人賣，抱緊。"),
+        ("量增價漲", "常態上漲，多頭順勢；爆大量要注意高點。"),
+        ("量縮價穩", "盤整蓄力，等突破方向確認。"),
+        ("均量上彎", "趨勢出量訊號，搭配量增價漲確認攻擊啟動。"),
+    ]
+    volume_guide = "".join(
+        f"""<div class="volume-guide-item {'active' if volume_price == title else ''}">
+  <div class="volume-guide-title">{esc(title)}</div>
+  <div class="volume-guide-desc">{esc(desc)}</div>
+</div>"""
+        for title, desc in guide_items
+    )
     return f"""
 <div class="tech-panel">
   <div class="ma-strip">{ma_strip}</div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(tech.get('volume_price','─'))}</div></div>
+    <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(volume_price)}</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
     <div class="info-cell"><div class="k">K線型態</div><div class="v">{esc(tech.get('candle_pattern','─'))}</div></div>
   </div>
-</div>"""
+</div>
+<div class="volume-guide">{volume_guide}</div>"""
 
 
 def build_chip_panel(chip: dict, holding: dict) -> str:
