@@ -4045,9 +4045,49 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
         + _mda_line("判斷依據", esc(volume_basis))
         + _mda_line("賣壓觀察", "量縮價穩或縮量不破線，代表賣壓有機會變小。" if abc.get("b2_score", 0) >= 8 else "量價尚未證明賣壓收斂，先只觀察。")
     )
+    chip_ok = (
+        (money.get("major_4w") is not None and money.get("major_4w") > 0)
+        and (money.get("retail_4w") is None or money.get("retail_4w") <= 0)
+        and (money.get("people_4w") is None or money.get("people_4w") <= 0)
+    )
+    chip_bad = (
+        (money.get("major_4w") is not None and money.get("major_4w") < 0)
+        or (money.get("retail_4w") is not None and money.get("retail_4w") > 0)
+        or (money.get("people_4w") is not None and money.get("people_4w") > 0)
+    )
+    if chip_ok:
+        chip_answer = "偏正向：大戶比例續增，散戶比例或股東人數沒有同步增加，籌碼較像往聰明錢集中。"
+        chip_answer_cls = "pos"
+    elif chip_bad:
+        chip_answer = "偏保守：大戶沒有明顯續增，或散戶/股東人數同步增加，暫時不要把它當成籌碼集中。"
+        chip_answer_cls = "neg"
+    else:
+        chip_answer = "待確認：股權結構變化不夠明確，先繼續追蹤大戶是否續增、散戶是否下降。"
+        chip_answer_cls = ""
+
+    recent_lows = [x.get("low") for x in daily[-10:] if x.get("low") is not None]
+    prev_lows = [x.get("low") for x in daily[-25:-10] if x.get("low") is not None]
+    recent_low = min(recent_lows) if recent_lows else None
+    prev_low = min(prev_lows) if prev_lows else None
+    not_break_low = recent_low is not None and prev_low is not None and recent_low >= prev_low * 0.98
+    challenge_ma = bool(close and ((ma120 and close >= ma120 * 0.97) or (ma240 and close >= ma240 * 0.97)))
+    volume_ok = volume_price in {"量縮價漲", "量增價漲", "量縮價穩", "均量上彎"}
+    if not_break_low and challenge_ma:
+        price_answer = "偏正向：量縮時價格沒有破低，目前仍能靠近或挑戰關鍵均線。"
+        price_answer_cls = "pos"
+    elif not_break_low and volume_ok:
+        price_answer = "待突破：量價沒有轉壞，價格也沒有破低，下一步看放量時能否挑戰關鍵均線。"
+        price_answer_cls = ""
+    elif not_break_low:
+        price_answer = "先觀察：價格暫時沒有破低，但量價訊號還不夠強，等有量攻擊再確認。"
+        price_answer_cls = ""
+    else:
+        price_answer = "偏弱：近期價格已有破低疑慮，量縮不破低這個條件尚未成立。"
+        price_answer_cls = "neg"
+
     next_watch = (
-        _mda_line("籌碼", "觀察大戶比例能否續增、散戶比例或股東人數不要同步增加。")
-        + _mda_line("量價", "觀察量縮時價格不破低，有量時能否重新挑戰關鍵均線。")
+        _mda_line("籌碼答案", chip_answer, chip_answer_cls)
+        + _mda_line("量價答案", price_answer, price_answer_cls)
     )
 
     body = f"""
