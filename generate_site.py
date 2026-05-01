@@ -28,6 +28,7 @@ _REPO_REPORTS = Path(__file__).parent / "reports"
 PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
 LOCAL_DATA_DIR = Path(__file__).parent / "data"
+CHART_LOOKBACK_BARS = 520
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
 LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
 LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
@@ -1116,7 +1117,7 @@ def read_price_history(stock_id: str, limit: int = 420) -> list[dict]:
                 except Exception:
                     continue
     if not rows:
-        months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
+        months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
         rows = fetch_v44_price_history(stock_id, months=months)
     return rows[-limit:]
 
@@ -1382,7 +1383,7 @@ def foreign_payload(series: list[dict]) -> list[dict]:
 def aligned_chip_payload(series: list[dict]) -> list[dict]:
     out = []
     foreign_cum = 0.0
-    for item in series[-160:]:
+    for item in series[-CHART_LOOKBACK_BARS:]:
         foreign = item.get("foreign")
         if foreign is not None:
             try:
@@ -1403,7 +1404,7 @@ def aligned_chip_payload(series: list[dict]) -> list[dict]:
 
 def align_chip_to_price_dates(price_rows: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
     """Use trading dates as the x-axis; carry the latest weekly holding data forward."""
-    dates = [r.get("date", "") for r in price_rows[-160:] if r.get("date")]
+    dates = [r.get("date", "") for r in price_rows[-CHART_LOOKBACK_BARS:] if r.get("date")]
     if not dates:
         return []
     holding_sorted = sorted([x for x in holding_series if x.get("date")], key=lambda x: x.get("date", ""))
@@ -1694,7 +1695,7 @@ def bollinger_values(rows: list[dict], window: int = 20, width: float = 2.0) -> 
 
 
 def chart_payload(rows: list[dict]) -> list[dict]:
-    rows = rows[-160:]
+    rows = rows[-CHART_LOOKBACK_BARS:]
     ma_map = {n: ma_values(rows, n) for n in (5, 10, 20, 60)}
     bb_upper, bb_lower = bollinger_values(rows, 20, 2.0)
     closes = [float(r["close"]) for r in rows]
@@ -1754,7 +1755,7 @@ def chart_payload(rows: list[dict]) -> list[dict]:
 
 
 def chart_svg(rows: list[dict], title: str) -> str:
-    rows = rows[-160:]
+    rows = rows[-CHART_LOOKBACK_BARS:]
     if len(rows) < 2:
         return '<div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div>'
     w, h = 900, 360
@@ -2828,7 +2829,7 @@ def compact_axis_label(value: float) -> str:
 
 
 def holding_compact_svg(series: list[dict], title: str = "股權分析") -> str:
-    rows = [x for x in series[-160:] if x.get("major") is not None or x.get("retail") is not None or x.get("total_people") is not None]
+    rows = [x for x in series[-CHART_LOOKBACK_BARS:] if x.get("major") is not None or x.get("retail") is not None or x.get("total_people") is not None]
     if len(rows) < 2:
         return '<div class="strategy-note">股權分配資料不足。</div>'
     w, h = 900, 150
@@ -2899,7 +2900,7 @@ def holding_compact_svg(series: list[dict], title: str = "股權分析") -> str:
 
 
 def foreign_flow_bar_line_svg(series: list[dict], title: str = "外資買賣超 / 區間累積") -> str:
-    rows = [x for x in series[-160:] if x.get("foreign") is not None]
+    rows = [x for x in series[-CHART_LOOKBACK_BARS:] if x.get("foreign") is not None]
     if len(rows) < 2:
         return '<div class="strategy-note">外資買賣超資料不足。</div>'
     w, h = 900, 150
@@ -3778,7 +3779,7 @@ def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) ->
 
 
 def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict], chip_series: list[dict]) -> list[dict]:
-    price_rows = daily[-160:]
+    price_rows = daily[-CHART_LOOKBACK_BARS:]
     aligned = align_chip_to_price_dates(price_rows, holding_series, chip_series)
     aligned_by_date = {x.get("date"): x for x in aligned}
     foreign_series = read_foreign_shareholding_series(stock_id) if stock_id else []
@@ -3820,7 +3821,7 @@ def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict],
 
 
 def mda_metric_svg(rows: list[dict], title: str, key: str, color: str = "#58a6ff", kind: str = "line", unit: str = "") -> str:
-    rows = rows[-160:]
+    rows = rows[-CHART_LOOKBACK_BARS:]
     vals = []
     for r in rows:
         v = r.get(key)
@@ -4607,6 +4608,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
     operation_card = build_operation_plan_card(s_view, tech, decision, sell_signal)
     chip_dates = f"法人 {chip.get('date','─')}｜股權 {holding.get('date','─') if holding else '─'}"
+    lightweight_charts = mda_lightweight_chart_panel(stock_id, daily, holding_series, chip_series)
     chart_script = f"""
 <script>
 const chartData_{stock_id} = {chart_data};
@@ -4989,7 +4991,8 @@ initMainForceHover_{stock_id}();
 
   <div class="card">
     <div class="section-label">日K / 週K / 月K</div>
-    <div id="{chart_id}" class="chart-box">
+    {lightweight_charts}
+    <div id="{chart_id}" class="chart-box" style="display:none">
       <div class="chart-tabs">
         <button type="button" class="active" data-btn="daily" onclick="showChart_{stock_id}('daily')">日K</button>
         <button type="button" data-btn="weekly" onclick="showChart_{stock_id}('weekly')">週K</button>

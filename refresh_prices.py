@@ -17,7 +17,7 @@ from datetime import date, timedelta
 import requests
 
 os.environ.setdefault("V44_LIVE_FETCH", "1")
-os.environ.setdefault("V44_FETCH_MONTHS", "12")
+os.environ.setdefault("V44_FETCH_MONTHS", "24")
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -199,7 +199,7 @@ def write_margin_csv(stock_id: str, rows: list[dict]) -> None:
 
 
 def main() -> None:
-    months = int(os.environ.get("V44_FETCH_MONTHS", "12"))
+    months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
     stock_ids = collect_stock_ids()
     print(f"[refresh_prices] stocks={len(stock_ids)} months={months}")
     ok = 0
