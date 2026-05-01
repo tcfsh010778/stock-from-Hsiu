@@ -4021,6 +4021,7 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
   }}
   const chartApis=[];
   let syncing=false;
+  let crosshairSyncing=false;
   const gridColor='#21262d';
   const textColor='#8b949e';
   const baseOptions=(height)=>({{
@@ -4049,6 +4050,40 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     if(kind==='retail') return `<b>${{x.date}}</b><br>散戶持股 ${{pct(x.retail)}}`;
     if(kind==='totalPeople') return `<b>${{x.date}}</b><br>總股東人數 ${{fmtInt(x.totalPeople)}} 人`;
     return `<b>${{x.date}}</b>`;
+  }}
+  function valueForKind(kind,x){{
+    if(!x) return 0;
+    const map={{
+      k:x.close,
+      volume:x.volume,
+      foreignShares:x.foreignShares,
+      foreign:x.foreign,
+      marginBalance:x.marginBalance,
+      major:x.major,
+      retail:x.retail,
+      totalPeople:x.totalPeople,
+    }};
+    const v=Number(map[kind]);
+    return Number.isFinite(v) ? v : 0;
+  }}
+  function showTip(item,x){{
+    if(!item.tip) return;
+    item.tip.innerHTML=makeTooltip(item.kind,x);
+    item.tip.style.display='block';
+  }}
+  function clearAllCrosshairs(){{
+    chartApis.forEach(item=>{{
+      item.chart.clearCrosshairPosition();
+      if(item.tip) item.tip.style.display='none';
+    }});
+  }}
+  function syncAllCrosshairs(time){{
+    const x=byTime.get(time);
+    if(!x) return;
+    chartApis.forEach(item=>{{
+      item.chart.setCrosshairPosition(valueForKind(item.kind,x), time, item.series);
+      showTip(item,x);
+    }});
   }}
   function addPanel(kind, title, height){{
     const el=document.getElementById('{panel_id}-'+kind);
@@ -4092,16 +4127,18 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     const wrapper=el.closest('.tv-chart-panel');
     const tip=wrapper ? wrapper.querySelector('.tv-tooltip') : null;
     chart.subscribeCrosshairMove(param=>{{
-      if(!tip) return;
+      if(crosshairSyncing) return;
       if(!param || !param.time){{
-        tip.style.display='none';
+        crosshairSyncing=true;
+        clearAllCrosshairs();
+        crosshairSyncing=false;
         return;
       }}
-      const x=byTime.get(param.time);
-      tip.innerHTML=makeTooltip(kind,x);
-      tip.style.display='block';
+      crosshairSyncing=true;
+      syncAllCrosshairs(param.time);
+      crosshairSyncing=false;
     }});
-    chartApis.push({{chart,el}});
+    chartApis.push({{chart,el,series,kind,tip}});
   }}
   addPanel('k','日K',360);
   addPanel('volume','成交量',150);
