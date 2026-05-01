@@ -6085,7 +6085,7 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
             open_price = row.get("open") or center
             entry_price = center if low <= center <= high else min(max(open_price, entry_low), entry_high)
             stop = variant_initial_stop(entry_price, tech, decision)
-            target = entry_price * 1.10
+            target = None
             exit_date = rows[-1].get("date", "")
             exit_price = rows[-1].get("close")
             exit_reason = "持有中"
@@ -6098,8 +6098,12 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
                 if stop and r_low <= stop:
                     exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), stop, "初始停損", j
                     break
-                if target and r_high >= target:
-                    exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), target, "停利+10%", j
+                if j > i and len(rows[: j + 1]) >= 20:
+                    ma20_now = ma_values(rows[: j + 1], 20)[-1]
+                    close_now = r.get("close")
+                    if ma20_now and close_now and close_now < ma20_now:
+                        exit_date, exit_price, exit_reason, exit_idx = r.get("date", ""), close_now, "跌破MA20出場", j
+                        break
                     break
             ret = ((exit_price / entry_price - 1) * 100) if entry_price and exit_price else None
             path = trade_path_metrics(rows, signal_date, exit_date, entry_price)
@@ -6169,14 +6173,14 @@ def build_historical_scan_html(reports: list[dict]) -> str:
   <td>{esc(x.get('exit_reason',''))}<div class="signal-dates">{esc(x.get('exit_date','─'))}｜出場 {fmt_num(x.get('exit_price'))}</div></td>
   <td class="{ret_cls}" style="font-weight:800">{fmt_num(ret,1)}%</td>
   <td><span class="pos">{fmt_num(x.get('max_return'),1)}%</span><div class="signal-dates">最大回撤 <span class="neg">{fmt_num(x.get('max_drawdown'),1)}%</span></div></td>
-  <td><div class="price-target">目 {fmt_num(x.get('target'))}</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
+  <td><div class="price-target">續抱 MA20</div><div class="price-stop">初停 {fmt_num(x.get('stop'))}</div></td>
 </tr>"""
     if not rows_html:
         rows_html = '<tr><td colspan="6" style="color:#8b949e">目前資料不足，還無法形成 2024 起掃描回測。</td></tr>'
     return f"""
 <div class="card">
   <div class="section-label">2024 起歷史掃描回測</div>
-  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。歷史掃描沒有原報告目標價，因此停利用成交價 +10%，初始停損沿用本站可執行停損函式。</div>
+  <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。這不是人工報告訊號，而是用目前上市櫃候選池逐日掃描：買點為 Williams -65~-85 反推價格區，且訊號日收盤需站上 MA20；日 K 碰到買入區視為成交。出場改用波段邏輯：成交後先守初始停損，未停損則沿 MA20 續抱，收盤跌破 MA20 才出場；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">{fmt_num(summary.get('win_rate'),1)}%</div><div class="metric-label">已出場勝率</div></div>
@@ -6188,7 +6192,7 @@ def build_historical_scan_html(reports: list[dict]) -> str:
   <div class="chip-line">已出場 {summary['closed']} 筆｜持有中 {summary['open']} 筆｜獲利 {summary['wins']} 筆｜虧損 {summary['losses']} 筆｜最佳實現 {fmt_num(summary.get('best'),1)}%｜最差實現 {fmt_num(summary.get('worst'),1)}%｜平均回撤 {fmt_num(summary.get('avg_drawdown'),1)}%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
-      <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>目標/初停</th></tr></thead>
+      <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>續抱/初停</th></tr></thead>
       <tbody>{rows_html}</tbody>
     </table>
   </div>
