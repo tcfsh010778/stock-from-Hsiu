@@ -6070,9 +6070,9 @@ def historical_entry_signal(method: str, rows: list[dict], tech: dict, decision:
             "low": close,
             "high": close,
             "entry": close,
-            "label": "SFZ_TA3",
-            "title": "SFZ_TA3",
-            "rule": "SMA5斜率>0 / 回到SMA5±1.5% / 紅K確認",
+            "label": "波段初始買點",
+            "title": "SFZ_TA3 初始買點",
+            "rule": "尚未完全發動時找波段趨勢的一開始：SMA5斜率>0 / 回到SMA5±1.5% / 紅K確認",
         }
     if method == "wr_after_attack":
         if not attack_wave_confirmed(rows):
@@ -6086,8 +6086,8 @@ def historical_entry_signal(method: str, rows: list[dict], tech: dict, decision:
             "high": zone.get("high"),
             "entry": None,
             "label": zone.get("label", "資料不足"),
-            "title": "攻擊波後 Williams 回測",
-            "rule": "攻擊波確認後，用 Williams -65~-85 反推回測買入區",
+            "title": "行進籃 Williams 回落買點",
+            "rule": "已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點",
         }
     return {"ok": False}
 
@@ -6278,14 +6278,14 @@ def build_historical_scan_html(reports: list[dict]) -> str:
         build_historical_scan_block(
             reports,
             "sfz_ta3",
-            "SFZ 選股｜2024 起歷史掃描回測｜SFZ_TA3 買點",
-            "這不是人工報告訊號，而是用目前 SFZ 選股池逐日掃描：主買點為 SFZ_TA3，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
+            "SFZ 選股｜波段初始買點｜SFZ_TA3",
+            "這段是尚未完全發動、波段趨勢一開始的買點；用目前 SFZ 選股池逐日掃描，條件是 SMA5 斜率向上、回到 SMA5 附近且紅K確認。",
         )
         + build_historical_scan_block(
             reports,
             "wr_after_attack",
-            "SFZ 選股｜2024 起歷史掃描回測｜攻擊波後 Williams 回測",
-            "這段是 SFZ 選股後的另一個買點，不與 SFZ_TA3 混用：先確認攻擊波已經出現，再用 Williams -65~-85 反推回測區。",
+            "SFZ 選股｜行進籃回落買點｜Williams",
+            "這段是已經走一段攻擊波、進入行進籃後的回落買點，不與 SFZ_TA3 初始買點混用；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區。",
         )
     )
 
