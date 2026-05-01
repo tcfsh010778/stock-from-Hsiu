@@ -1382,7 +1382,7 @@ def volume_price_relation(rows: list[dict], volume_ratio: float | None) -> str:
         return "量能資料不足"
     prev_close = rows[-2].get("close") if len(rows) >= 2 else open_
     day_change = ((close / prev_close - 1) * 100) if prev_close else 0
-    up = close > open_ and day_change >= 0
+    up = day_change > 0
     stable = abs(day_change) <= 1.5
     avg5 = None
     prev_avg5 = None
@@ -1391,8 +1391,6 @@ def volume_price_relation(rows: list[dict], volume_ratio: float | None) -> str:
         prev_avg5 = sum(r.get("volume", 0) for r in rows[-10:-5]) / 5
     avg_turning_up = bool(avg5 and prev_avg5 and avg5 >= prev_avg5 * 1.08)
 
-    if volume_ratio >= 1.8 and close < open_:
-        return "放量下跌"
     if volume_ratio <= 0.85 and up:
         return "量縮價漲"
     if volume_ratio >= 1.15 and up:
@@ -1401,9 +1399,25 @@ def volume_price_relation(rows: list[dict], volume_ratio: float | None) -> str:
         return "量縮價穩"
     if avg_turning_up:
         return "均量上彎"
-    if volume_ratio <= 0.7 and close < open_:
-        return "量縮下跌"
-    return "量價平穩"
+    return "未符合四種"
+
+
+def volume_price_basis(rows: list[dict], volume_ratio: float | None) -> str:
+    if not rows:
+        return "資料不足"
+    row = rows[-1]
+    close = row.get("close")
+    open_ = row.get("open")
+    prev_close = rows[-2].get("close") if len(rows) >= 2 else open_
+    day_change = ((close / prev_close - 1) * 100) if close and prev_close else None
+    body_dir = "紅K" if close and open_ and close > open_ else "黑K" if close and open_ and close < open_ else "平盤K"
+    avg_note = "5日均量資料不足"
+    if len(rows) >= 10:
+        avg5 = sum(r.get("volume", 0) for r in rows[-5:]) / 5
+        prev_avg5 = sum(r.get("volume", 0) for r in rows[-10:-5]) / 5
+        if prev_avg5:
+            avg_note = f"5日均量較前5日 {((avg5 / prev_avg5 - 1) * 100):+.1f}%"
+    return f"單日 {fmt_num(day_change, 2)}% / 量比 {fmt_num(volume_ratio, 2)}x / {body_dir} / {avg_note}"
 
 
 def volume_price_reading(label: str) -> str:
@@ -1412,9 +1426,7 @@ def volume_price_reading(label: str) -> str:
         "量增價漲": "常態上漲，多頭順勢；若爆大量要注意高點。",
         "量縮價穩": "盤整蓄力，等突破方向確認。",
         "均量上彎": "趨勢出量訊號，搭配量增價漲確認攻擊啟動。",
-        "放量下跌": "賣壓放大，先等籌碼與價格穩住。",
-        "量縮下跌": "仍在探底或弱整理，不當成 B2 成立。",
-        "量價平穩": "尚未表態，先看突破或轉弱方向。",
+        "未符合四種": "不列入四種強勢量價，先等量縮價穩、轉強或均量上彎再評估。",
     }.get(label, "資料不足，先等量價結構明確。")
 
 
@@ -1934,8 +1946,8 @@ def build_telegram_info_card(
     reason_line = basket_reason(s, tech, read_chip_series(stock_id), holding)
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
     volume_price = _value_or_dash(tech.get("volume_price"))
+    volume_basis = _value_or_dash(tech.get("volume_price_basis"))
     volume_reading = volume_price_reading(volume_price)
-    candle = _value_or_dash(tech.get("candle_pattern"))
     kd = "─"
     if indicator.get("k") is not None and indicator.get("d") is not None:
         kd = f"K {fmt_num(indicator.get('k'), 1)} / D {fmt_num(indicator.get('d'), 1)}，{indicator.get('kd_state', '─')}"
@@ -1982,7 +1994,9 @@ def build_telegram_info_card(
         + _line_html("台帳", repeat_note)
     )
     phase2 = (
-        _line_html("技術結構", f"{trend}；{volume_price}；{candle}")
+        _line_html("趨勢結構", trend)
+        + _line_html("量價關係", volume_price)
+        + _line_html("判斷依據", volume_basis)
         + _line_html("量價判讀", volume_reading)
         + _line_html("KD", kd)
         + _line_html("MACD", macd)
@@ -2092,6 +2106,7 @@ def technical_snapshot(rows: list[dict], s: dict) -> dict:
         "avg_vol20": avg_vol20,
         "volume_ratio": volume_ratio,
         "volume_price": volume_price_relation(rows, volume_ratio),
+        "volume_price_basis": volume_price_basis(rows, volume_ratio),
         "trend_pattern": trend_pattern(rows, ma5, ma10, ma20, ma60),
         "candle_pattern": candle_pattern(rows),
         "large_volume": large_volume,
@@ -2642,6 +2657,7 @@ def build_tech_panel(tech: dict) -> str:
         return '<div class="strategy-note">技術資料不足，等待 FinMind 快取更新。</div>'
     ma_trends = tech.get("ma_trends") or {}
     volume_price = tech.get("volume_price", "─")
+    volume_basis = tech.get("volume_price_basis", "─")
     ma_strip = ""
     for n in [5, 10, 20, 60]:
         val = tech.get(f"ma{n}")
@@ -2672,9 +2688,9 @@ def build_tech_panel(tech: dict) -> str:
 <div class="tech-panel">
   <div class="ma-strip">{ma_strip}</div>
   <div class="tech-summary-grid">
-    <div class="info-cell"><div class="k">量價關係</div><div class="v">{esc(volume_price)}</div></div>
+    <div class="info-cell"><div class="k">四種量價評分</div><div class="v">{esc(volume_price)}</div></div>
+    <div class="info-cell"><div class="k">判斷依據</div><div class="v">{esc(volume_basis)}</div></div>
     <div class="info-cell"><div class="k">趨勢型態</div><div class="v">{esc(tech.get('trend_pattern','─'))}</div></div>
-    <div class="info-cell"><div class="k">K線型態</div><div class="v">{esc(tech.get('candle_pattern','─'))}</div></div>
   </div>
 </div>
 <div class="volume-guide">{volume_guide}</div>"""
