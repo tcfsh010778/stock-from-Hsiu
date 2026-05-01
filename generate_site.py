@@ -6402,6 +6402,62 @@ def build_original_sfz_backtest_reference_html() -> str:
 </div>"""
 
 
+def build_ta3_box_split_reference_html() -> str:
+    summary_path = V44_BACKTEST_OUTPUT_DIR / "sfz_signal_wait_ta3_entry_summary.csv"
+    setup_path = V44_BACKTEST_OUTPUT_DIR / "sfz_signal_wait_ta3_entry_by_setup.csv"
+    strict = _find_backtest_row(summary_path, mode="Strict+漲過20%後MA20")
+    soft = _find_backtest_row(summary_path, mode="Soft+漲過20%後MA20")
+    setup_rows = _read_backtest_csv(setup_path)
+    wanted = [
+        ("Strict:箱型突破直接買", "Strict｜箱型突破直接買", "樣本少，但目前表現最好；比較適合當強加碼。"),
+        ("Strict:箱型突破後回測買", "Strict｜箱型突破後回測買", "目前沒有樣本，不下結論。"),
+        ("Soft:TA3-Soft短箱突破直接買", "Soft｜短箱突破直接買", "攻擊性較高，報酬漂亮但 -5% 虧損仍有 25%。"),
+        ("Soft:TA3-Soft短箱突破後回測", "Soft｜短箱突破後回測", "較穩，但目前只有 2 筆，不能定案。"),
+    ]
+    setup_by_mode = {r.get("mode", ""): r for r in setup_rows}
+    setup_html = ""
+    for key, label, note in wanted:
+        row = setup_by_mode.get(key, {})
+        setup_html += f"""
+<tr>
+  <td><strong>{esc(label)}</strong><div class="signal-dates">{esc(note)}</div></td>
+  <td>{_num_from_row(row, "filled")}</td>
+  <td>{_metric_from_row(row, "win_rate")}</td>
+  <td class="{('pos' if float(row.get('avg_ret') or 0) >= 0 else 'neg') if row else ''}">{_metric_from_row(row, "avg_ret")}</td>
+  <td>{_metric_from_row(row, "median_ret")}</td>
+  <td>{_metric_from_row(row, "loss_over_5pct")}</td>
+</tr>"""
+    fill_html = f"""
+<tr><td>TA3-Strict</td><td>168</td><td>{_num_from_row(strict, "filled")}</td><td>{_metric_from_row(strict, "fill_rate")}</td><td>{_metric_from_row(strict, "win_rate")}</td><td>{_metric_from_row(strict, "avg_ret")}</td></tr>
+<tr><td>TA3-Soft</td><td>168</td><td>{_num_from_row(soft, "filled")}</td><td>{_metric_from_row(soft, "fill_rate")}</td><td>{_metric_from_row(soft, "win_rate")}</td><td>{_metric_from_row(soft, "avg_ret")}</td></tr>"""
+    return f"""
+<div class="card">
+  <div class="section-label">TA3 拆分基準｜原 168 訊號後等待 1-20 日</div>
+  <div class="strategy-note">這段對應你貼的拆分結果：先用原 168 筆 SFZ/v42 訊號當母體，訊號日後 1-20 日等待 TA3 買點；箱型突破再拆成「直接買」與「突破後回測」。出場統一看「漲過20%後 MA20」。</div>
+  <div class="grid grid-2">
+    <div class="strategy-note">
+      <strong>等到買點比例</strong>
+      <div style="overflow-x:auto;margin-top:10px">
+        <table class="stock-table">
+          <thead><tr><th>買點層級</th><th>原訊號數</th><th>等到買點</th><th>Fill rate</th><th>勝率</th><th>平均報酬</th></tr></thead>
+          <tbody>{fill_html}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="strategy-note">
+      <strong>操作解讀</strong>
+      <div class="chip-line">最佳用法仍是：原 SFZ 訊號日先試單；TA3-Soft 當續抱或小加碼；TA3-Strict 當強加碼。Soft 等買點不適合完全取代原訊號日買進，因為同批比較下略差。</div>
+    </div>
+  </div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>箱型拆分買點</th><th>筆數</th><th>勝率</th><th>平均報酬</th><th>中位數</th><th>-5%以上虧損</th></tr></thead>
+      <tbody>{setup_html}</tbody>
+    </table>
+  </div>
+</div>"""
+
+
 def build_backtest_page(reports: list[dict]) -> str:
     results = build_backtest_results(reports)
     filled = [x for x in results if x.get("entry") is not None]
@@ -6454,6 +6510,7 @@ def build_backtest_page(reports: list[dict]) -> str:
     <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
   {build_original_sfz_backtest_reference_html()}
+  {build_ta3_box_split_reference_html()}
   {build_historical_scan_html(reports)}
   {build_entry_variant_comparison_html(reports)}
   <div class="card">

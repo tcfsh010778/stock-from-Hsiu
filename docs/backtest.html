@@ -313,6 +313,66 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
   
 <div class="card">
+  <div class="section-label">TA3 拆分基準｜原 168 訊號後等待 1-20 日</div>
+  <div class="strategy-note">這段對應你貼的拆分結果：先用原 168 筆 SFZ/v42 訊號當母體，訊號日後 1-20 日等待 TA3 買點；箱型突破再拆成「直接買」與「突破後回測」。出場統一看「漲過20%後 MA20」。</div>
+  <div class="grid grid-2">
+    <div class="strategy-note">
+      <strong>等到買點比例</strong>
+      <div style="overflow-x:auto;margin-top:10px">
+        <table class="stock-table">
+          <thead><tr><th>買點層級</th><th>原訊號數</th><th>等到買點</th><th>Fill rate</th><th>勝率</th><th>平均報酬</th></tr></thead>
+          <tbody>
+<tr><td>TA3-Strict</td><td>168</td><td>10</td><td>6.0%</td><td>90.0%</td><td>22.2%</td></tr>
+<tr><td>TA3-Soft</td><td>168</td><td>84</td><td>50.0%</td><td>65.5%</td><td>9.9%</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="strategy-note">
+      <strong>操作解讀</strong>
+      <div class="chip-line">最佳用法仍是：原 SFZ 訊號日先試單；TA3-Soft 當續抱或小加碼；TA3-Strict 當強加碼。Soft 等買點不適合完全取代原訊號日買進，因為同批比較下略差。</div>
+    </div>
+  </div>
+  <div style="overflow-x:auto;margin-top:14px">
+    <table class="stock-table">
+      <thead><tr><th>箱型拆分買點</th><th>筆數</th><th>勝率</th><th>平均報酬</th><th>中位數</th><th>-5%以上虧損</th></tr></thead>
+      <tbody>
+<tr>
+  <td><strong>Strict｜箱型突破直接買</strong><div class="signal-dates">樣本少，但目前表現最好；比較適合當強加碼。</div></td>
+  <td>3</td>
+  <td>100.0%</td>
+  <td class="pos">34.2%</td>
+  <td>33.3%</td>
+  <td>0.0%</td>
+</tr>
+<tr>
+  <td><strong>Strict｜箱型突破後回測買</strong><div class="signal-dates">目前沒有樣本，不下結論。</div></td>
+  <td>─</td>
+  <td>─</td>
+  <td class="">─</td>
+  <td>─</td>
+  <td>─</td>
+</tr>
+<tr>
+  <td><strong>Soft｜短箱突破直接買</strong><div class="signal-dates">攻擊性較高，報酬漂亮但 -5% 虧損仍有 25%。</div></td>
+  <td>4</td>
+  <td>75.0%</td>
+  <td class="pos">24.1%</td>
+  <td>19.9%</td>
+  <td>25.0%</td>
+</tr>
+<tr>
+  <td><strong>Soft｜短箱突破後回測</strong><div class="signal-dates">較穩，但目前只有 2 筆，不能定案。</div></td>
+  <td>2</td>
+  <td>100.0%</td>
+  <td class="pos">15.2%</td>
+  <td>15.2%</td>
+  <td>0.0%</td>
+</tr></tbody>
+    </table>
+  </div>
+</div>
+  
+<div class="card">
   <div class="section-label">網站壓力測試｜逐日掃描版 SFZ_TA3</div>
   <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-04-29。前提是 SFZ 選股池，不是全市場掃描。這段不是原 168 筆回測；它是用目前網站候選池逐日掃描 2024 起所有符合點，條件較簡化，所以會重複觸發並放大啟動前停損風險。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
