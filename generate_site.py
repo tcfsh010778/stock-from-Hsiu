@@ -3646,7 +3646,7 @@ def build_mda_page(reports: list[dict]) -> str:
         change_text, change_cls = x["change"]
         rows += f"""
 <tr>
-  <td><a class="stock-link" href="stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}</div></td>
+  <td><a class="stock-link" href="mda_stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}｜M大解析頁</div></td>
   <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
   <td><div class="price-main">{esc(x['close'])}</div><div class="{change_cls}">{esc(change_text)}</div></td>
   <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['volume_line'])}</div></td>
@@ -3686,6 +3686,151 @@ def build_mda_page(reports: list[dict]) -> str:
   </div>
 </div>"""
     return html_page("M大選股", "mda", body)
+
+
+def _mda_line(label: str, value: str, cls: str = "") -> str:
+    return f'<div class="telegram-line"><div class="k">{esc(label)}</div><div class="v {cls}">{value}</div></div>'
+
+
+def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) -> dict:
+    holding_series = read_holding_series(stock_id)
+    major_4w = retail_4w = people_4w = None
+    if len(holding_series) >= 5:
+        last, base = holding_series[-1], holding_series[-5]
+        if last.get("major") is not None and base.get("major") is not None:
+            major_4w = last["major"] - base["major"]
+        if last.get("retail") is not None and base.get("retail") is not None:
+            retail_4w = last["retail"] - base["retail"]
+        if last.get("total_people") is not None and base.get("total_people") is not None:
+            people_4w = last["total_people"] - base["total_people"]
+    h_latest = (holding.get("latest") or {}) if holding else {}
+    foreign_10d = sum(float(x.get("foreign") or 0) for x in chip_series[-10:])
+    force_10d = sum(float(x.get("total") or 0) for x in chip_series[-10:])
+    good = (
+        (major_4w is not None and major_4w > 0)
+        and (retail_4w is None or retail_4w <= 0)
+    )
+    bad = (
+        (major_4w is not None and major_4w < 0)
+        and (retail_4w is not None and retail_4w > 0)
+    )
+    if good:
+        reading = "大戶增加、散戶減少，較接近聰明錢結構"
+        cls = "pos"
+    elif bad:
+        reading = "大戶減少、散戶增加，避免跟散戶站一起"
+        cls = "neg"
+    else:
+        reading = "籌碼方向尚未完全一致，列入觀察但不急著下結論"
+        cls = ""
+    return {
+        "major_4w": major_4w,
+        "retail_4w": retail_4w,
+        "people_4w": people_4w,
+        "latest_major": h_latest.get("major"),
+        "latest_retail": h_latest.get("retail"),
+        "foreign_10d": foreign_10d,
+        "force_10d": force_10d,
+        "reading": reading,
+        "class": cls,
+    }
+
+
+def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
+    s = enrich_stock_fields(dict(s))
+    daily = aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily")
+    tech = technical_snapshot(daily, s) if daily else {}
+    chip_series = read_chip_series(stock_id)
+    chip = read_chip_summary(stock_id)
+    holding = read_holding_summary(stock_id)
+    market = mda_market_regime()
+    scored = mda_score_stock(s, bool(market.get("ok")))
+    abc = mda_abc_checks(s, daily, tech, chip_series, holding)
+    obs = mda_observation_checks(stock_id, daily, tech, chip_series, holding)
+    money = mda_chip_structure(stock_id, chip_series, holding)
+    close = tech.get("close")
+    ma120 = tech.get("ma120")
+    ma240 = tech.get("ma240")
+    slopes = tech.get("ma_slopes") or {}
+    detrend_120 = tech.get("detrend_120")
+    ma120_gap = ((close / ma120 - 1) * 100) if close and ma120 else None
+    ma240_gap = ((close / ma240 - 1) * 100) if close and ma240 else None
+    detrend_gap = ((close / detrend_120 - 1) * 100) if close and detrend_120 else None
+    volume_price = tech.get("volume_price", "資料不足")
+    volume_basis = tech.get("volume_price_basis", "資料不足")
+    chart_id = f"mda_chart_{stock_id}"
+
+    why = (
+        _mda_line("觀察等級", f'<span class="tag {scored["tag_cls"]}">{esc(scored["action"])}</span>　分數 {fmt_num(scored["score"], 0)}')
+        + _mda_line("觀察命題", "先確認 A：MA120/MA240 是否上彎，再看 B1 是否有聰明錢慢慢接手。")
+        + _mda_line("大盤前提", f'{esc(market.get("state", "─"))}｜{esc(market.get("note", ""))}')
+    )
+    a_block = (
+        _mda_line("MA120", f'{fmt_num(ma120)}｜斜率 {fmt_num(slopes.get("ma120"))}｜距離 {fmt_num(ma120_gap, 1)}%')
+        + _mda_line("MA240", f'{fmt_num(ma240)}｜斜率 {fmt_num(slopes.get("ma240"))}｜距離 {fmt_num(ma240_gap, 1)}%')
+        + _mda_line("120日扣抵", f'{fmt_num(detrend_120)}｜收盤距扣抵 {fmt_num(detrend_gap, 1)}%')
+        + _mda_line("A判讀", "MA120 與 MA240 同時上彎，先納入觀察池。" if abc.get("a_score", 0) >= 40 else "長均線尚未同時上彎，觀察順位降低。", "pos" if abc.get("a_score", 0) >= 40 else "neg")
+    )
+    b1_block = (
+        _mda_line("大戶/散戶", f'大戶4週 {fmt_num(money["major_4w"])}%｜散戶4週 {fmt_num(money["retail_4w"])}%｜股東4週 {fmt_num(money["people_4w"], 0)} 人')
+        + _mda_line("法人籌碼", f'外資10日 {fmt_num(money["foreign_10d"], 0)} 張｜主力10日 {fmt_num(money["force_10d"], 0)} 張')
+        + _mda_line("B1判讀", esc(money["reading"]), money["class"])
+    )
+    b2_block = (
+        _mda_line("量價", esc(volume_price))
+        + _mda_line("判斷依據", esc(volume_basis))
+        + _mda_line("賣壓觀察", "量縮價穩或縮量不破線，代表賣壓有機會變小。" if abc.get("b2_score", 0) >= 8 else "量價尚未證明賣壓收斂，先只觀察。")
+    )
+    next_watch = (
+        _mda_line("下一步1", "觀察 MA120/MA240 是否持續上彎，不因短線震盪轉弱。")
+        + _mda_line("下一步2", "觀察大戶比例能否續增、散戶比例或股東人數不要同步增加。")
+        + _mda_line("下一步3", "觀察量縮時價格不破低，有量時能否重新挑戰關鍵均線。")
+    )
+
+    body = f"""
+<div class="container">
+  <div style="margin-bottom:8px"><a href="../mda.html" style="color:#6e7681;font-size:13px">&larr; 回 M大選股</a>　<a href="../stocks/{esc(stock_id)}.html" style="color:#6e7681;font-size:13px">一般個股頁 →</a></div>
+  <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}｜M大觀察解析</div>
+  <div class="page-sub">照 M大個股分析順序：觀察命題 → A 長均線 → B1 聰明錢 → B2 賣壓 → 後續追蹤</div>
+  <div class="grid grid-2">
+    <div class="card"><div class="section-label">① 為什麼值得觀察</div><div class="telegram-phase">{why}</div></div>
+    <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase">{a_block}</div></div>
+    <div class="card"><div class="section-label">③ B1：聰明錢與股權結構</div><div class="telegram-phase">{b1_block}</div></div>
+    <div class="card"><div class="section-label">④ B2：賣壓是否變小</div><div class="telegram-phase">{b2_block}</div></div>
+  </div>
+  <div class="card"><div class="section-label">⑤ 接下來觀察什麼</div><div class="telegram-phase">{next_watch}</div></div>
+  <div class="card">
+    <div class="section-label">日K 與 120日扣抵</div>
+    <div id="{chart_id}" class="chart-box"><div class="hover-chart" data-mode="daily">{chart_svg(daily, '日K')}<div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">籌碼 / 股權結構</div>
+    {build_chip_panel(chip, holding)}
+    <div class="chart-stack" style="margin-top:12px">
+      <div class="chart-box">{chip_flow_svg(chip_series, "10日籌碼動向折線圖")}</div>
+      <div class="chart-box">{main_force_price_svg(chip_series, daily, "主力增減張數與收盤價關係")}</div>
+    </div>
+  </div>
+</div>"""
+    return html_page(f"{stock_id} M大觀察解析", "mda", body, nav_prefix="../")
+
+
+def build_mda_stock_pages(reports: list[dict]) -> int:
+    latest = latest_stock_report(reports)
+    out_dir = OUTPUT_DIR / "mda_stocks"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    valid = {f"{s.get('id')}.html" for s in latest.get("stocks", []) if s.get("id")}
+    for old_file in out_dir.glob("*.html"):
+        if old_file.name not in valid:
+            old_file.unlink()
+    count = 0
+    for s in latest.get("stocks", []):
+        sid = s.get("id", "")
+        if not sid:
+            continue
+        (out_dir / f"{sid}.html").write_text(build_mda_stock_detail_page(sid, s), encoding="utf-8")
+        count += 1
+    return count
 
 
 def build_daily_page(report: dict) -> str:
@@ -5227,6 +5372,8 @@ def main():
     print("   [OK] history.html", flush=True)
     stock_page_count = build_stock_pages(reports)
     print(f"   [OK] stocks/*.html ({stock_page_count})", flush=True)
+    mda_stock_page_count = build_mda_stock_pages(reports)
+    print(f"   [OK] mda_stocks/*.html ({mda_stock_page_count})", flush=True)
 
     for r in reports:
         html = build_daily_page(r)
@@ -5234,7 +5381,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+8+stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+8+stock_page_count+mda_stock_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
