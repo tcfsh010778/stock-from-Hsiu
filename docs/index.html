@@ -36,6 +36,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
 .rr-good{color:#3fb950!important}
 .rr-mid{color:#d2a520!important}
 .rr-bad{color:#f85149!important}
@@ -47,6 +61,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
 .tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
 .tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
 .tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
 .strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
@@ -181,7 +196,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -206,8 +221,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="page-sub">每個交易日自動更新 · 最新報告：2026-04-29</div>
   
 <div class="card">
-  <div class="section-label">📰 大盤市況</div>
-  <div class="market-text">台股加權指數收盤 **39,521 點**，維持多頭格局。外資 4/27 大買超前五名：南亞科(2408) +36,559張、旺宏(2337) +29,694張、鴻海(2317) +19,579張，資金持續流向記憶體與AI供應鏈。2026年高盛重申看好台積電、鴻海、緯創等25檔台廠，AI半導體、散熱、光收發模組、PCB族群仍是外資主要加碼方向。整體市場情緒偏多，惟指數高位需留意短線震盪。</div>
+  <div class="section-label">大盤燈號</div>
+  <div class="market-light">
+    <div class="market-badge pos">多</div>
+    <div>
+      <div style="font-size:16px;font-weight:800;color:#e6edf3">可做但控部位</div>
+      <div class="strategy-note" style="margin-top:4px">大盤指數資料尚未接入時，先用候選池結構與可執行買點做風控前提；缺資料會明確顯示。</div>
+      <div class="check-grid" style="margin-top:10px"><div class="check-item"><div class="k">候選結構</div><div class="v pos">行進籃 13 / 盤整籃 7</div></div><div class="check-item"><div class="k">可執行買點</div><div class="v pos">8 檔落在買點±3%</div></div><div class="check-item"><div class="k">大盤指數</div><div class="v neu">TAIEX快取尚未接入</div></div></div>
+    </div>
+  </div>
+  <div class="market-text" style="margin-top:12px">台股加權指數收盤 **39,521 點**，維持多頭格局。外資 4/27 大買超前五名：南亞科(2408) +36,559張、旺宏(2337) +29,694張、鴻海(2317) +19,579張，資金持續流向記憶體與AI供應鏈。2026年高盛重申看好台積電、鴻海、緯創等25檔台廠，AI半導體、散熱、光收發模組、PCB族群仍是外資主要加碼方向。整體市場情緒偏多，惟指數高位需留意短線震盪。</div>
 </div>
   
 <div class="card">
@@ -218,7 +241,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="action-row">
   <div>
     <a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a>
-    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
   </div>
   <div><div class="label">收盤</div><div class="value">60.40</div></div>
   <div><div class="label">距買點</div><div class="value">+0.2%</div></div>
@@ -229,7 +252,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="action-row">
   <div>
     <a class="stock-link" href="stocks/5439.html">5439 高技</a>
-    <div class="note">盤整籃｜未進入過熱區 / 量縮價穩 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+    <div class="note">盤整籃｜未進入過熱區 / 量縮價穩 / 長多偏強 / 等 MABC/量價確認</div>
   </div>
   <div><div class="label">收盤</div><div class="value">382.50</div></div>
   <div><div class="label">距買點</div><div class="value">+0.3%</div></div>
@@ -251,7 +274,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="action-row">
   <div>
     <a class="stock-link" href="stocks/2402.html">2402 毅嘉</a>
-    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
   </div>
   <div><div class="label">收盤</div><div class="value">70.20</div></div>
   <div><div class="label">距買點</div><div class="value">-0.5%</div></div>
@@ -262,7 +285,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="action-row">
   <div>
     <a class="stock-link" href="stocks/3105.html">3105 穩懋</a>
-    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
   </div>
   <div><div class="label">收盤</div><div class="value">536.00</div></div>
   <div><div class="label">距買點</div><div class="value">+0.8%</div></div>
@@ -286,7 +309,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="action-row">
   <div>
     <a class="stock-link" href="stocks/2455.html">2455 全新</a>
-    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
+    <div class="note">盤整籃｜未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
   </div>
   <div><div class="label">收盤</div><div class="value">347.50</div></div>
   <div><div class="label">距買點</div><div class="value">+4.6%</div></div>
@@ -294,6 +317,48 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div><div class="label">初停</div><div class="value">321.00</div></div>
   <div><div class="label">R:R</div><div class="value rr-good">1:5.3</div></div>
 </div></div>
+</div>
+  
+<div class="card">
+  <div class="section-label">持倉 / 追蹤賣出警示</div>
+  <div class="strategy-note">目前網站還沒有券商持股清單，這區先用候選與訊號追蹤名單做賣出風險掃描；之後接入實際庫存後可改成只看持有中標的。</div>
+  
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/1785.html">1785 光洋科</a><div class="signal-dates">收盤 165.50</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+22.7%</div></div>
+  <div><div class="label">買點損益</div><div class="value">+10.6%</div></div>
+  <div><span class="alert-level exit">立即檢查</span><div class="signal-dates" style="margin-top:4px">量大長黑且外資連賣</div></div>
+</div>
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">收盤 60.40</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+2.4%</div></div>
+  <div><div class="label">買點損益</div><div class="value">+0.2%</div></div>
+  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +2.4%；外資連賣5日</div></div>
+</div>
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">收盤 180.00</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+2.5%</div></div>
+  <div><div class="label">買點損益</div><div class="value">+0.3%</div></div>
+  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +2.5%</div></div>
+</div>
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">收盤 195.00</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+4.6%</div></div>
+  <div><div class="label">買點損益</div><div class="value">-2.0%</div></div>
+  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +4.6%</div></div>
+</div>
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/2402.html">2402 毅嘉</a><div class="signal-dates">收盤 70.20</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+4.6%</div></div>
+  <div><div class="label">買點損益</div><div class="value">-0.5%</div></div>
+  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +4.6%</div></div>
+</div>
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">收盤 382.50</div></div>
+  <div><div class="label">MA20距離</div><div class="value">+4.8%</div></div>
+  <div><div class="label">買點損益</div><div class="value">+0.3%</div></div>
+  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +4.8%</div></div>
+</div>
 </div>
   
 <div class="card">
@@ -308,7 +373,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
 <div class="grid grid-3" style="margin-bottom:16px">
   <div class="metric"><div class="metric-num" style="color:#3fb950">13</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
-  <div class="metric"><div class="metric-num" style="color:#d2a520">7</div><div class="metric-label">盤整籃：MABC/CaryBot 觀察</div></div>
+  <div class="metric"><div class="metric-num" style="color:#58a6ff">7</div><div class="metric-label">盤整籃：MABC 觀察</div></div>
   <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高</div></div>
 </div>
   <div style="overflow-x:auto">

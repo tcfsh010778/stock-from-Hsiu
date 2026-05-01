@@ -333,6 +333,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
 .rr-good{color:#3fb950!important}
 .rr-mid{color:#d2a520!important}
 .rr-bad{color:#f85149!important}
@@ -344,6 +358,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
 .tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
 .tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
 .tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
 .strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
@@ -478,7 +493,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -750,7 +765,7 @@ def basket_reason(s: dict, tech: dict | None = None) -> str:
             checks.append(volume_price)
         if trend:
             checks.append(str(trend))
-        checks.append("等 MABC/CaryBot 確認")
+        checks.append("等 MABC/量價確認")
     else:
         if icon == "🔴" or "超買" in status:
             checks.append("原報告風險/超買")
@@ -919,8 +934,10 @@ def read_chip_summary(stock_id: str) -> dict:
     dates = sorted(by_date)
     latest = by_date[dates[-1]]
     last5 = dates[-5:]
+    last10 = dates[-10:]
     sum5 = {k: sum(by_date[d].get(k, 0.0) for d in last5) for k in ["foreign", "trust", "dealer", "total"]}
-    return {"date": dates[-1], "latest": latest, "sum5": sum5}
+    sum10 = {k: sum(by_date[d].get(k, 0.0) for d in last10) for k in ["foreign", "trust", "dealer", "total"]}
+    return {"date": dates[-1], "latest": latest, "sum5": sum5, "sum10": sum10}
 
 
 def read_chip_series(stock_id: str) -> list[dict]:
@@ -944,6 +961,45 @@ def read_chip_series(stock_id: str) -> list[dict]:
             d["dealer"] += net
         d["total"] += net
     return [by_date[d] for d in sorted(by_date)]
+
+
+def chip_trend_metrics(chip_series: list[dict], holding: dict) -> dict:
+    last10 = chip_series[-10:]
+    foreign_vals = [float(x.get("foreign") or 0) for x in last10]
+    total_vals = [float(x.get("total") or 0) for x in last10]
+
+    buy_streak = 0
+    for v in reversed(foreign_vals):
+        if v > 0:
+            buy_streak += 1
+        else:
+            break
+
+    sell_streak = 0
+    for v in reversed(foreign_vals):
+        if v < 0:
+            sell_streak += 1
+        else:
+            break
+
+    latest_h = holding.get("latest", {}) if holding else {}
+    prev_h = holding.get("prev", {}) if holding else {}
+    major_delta = None
+    retail_delta = None
+    if latest_h and prev_h:
+        if latest_h.get("major") is not None and prev_h.get("major") is not None:
+            major_delta = latest_h.get("major", 0) - prev_h.get("major", 0)
+        if latest_h.get("retail") is not None and prev_h.get("retail") is not None:
+            retail_delta = latest_h.get("retail", 0) - prev_h.get("retail", 0)
+
+    return {
+        "foreign_buy_streak": buy_streak,
+        "foreign_sell_streak": sell_streak,
+        "foreign_10d": sum(foreign_vals),
+        "total_10d": sum(total_vals),
+        "major_delta": major_delta,
+        "retail_delta": retail_delta,
+    }
 
 
 def chip_flow_payload(series: list[dict]) -> list[dict]:
@@ -1791,6 +1847,7 @@ def build_telegram_info_card(
     holding: dict,
     decision: dict,
     ledger_item: dict | None,
+    sell_signal: dict | None = None,
 ) -> str:
     """Build a compact card that mirrors the Telegram deep-analysis rhythm."""
     indicator = indicator_snapshot(aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily"))
@@ -1830,6 +1887,10 @@ def build_telegram_info_card(
         f"三大法人當日 {fmt_num(chip_latest.get('total'), 0)} 張；"
         f"大戶 {fmt_num(h_latest.get('major'))}% / 散戶 {fmt_num(h_latest.get('retail'))}%"
     )
+    chip_metrics_line = ""
+    if chip:
+        sum10 = chip.get("sum10", {})
+        chip_metrics_line = f"外資10日 {fmt_num(sum10.get('foreign'),0)} 張；主力10日 {fmt_num(sum10.get('total'),0)} 張"
 
     target = _value_or_dash(s.get("target"))
     stop = _value_or_dash(s.get("stop"))
@@ -1837,7 +1898,7 @@ def build_telegram_info_card(
     support = _value_or_dash(s.get("support") or fmt_num(tech.get("support")))
     operation_note = {
         "行進籃": "SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。",
-        "盤整籃": "MABC/CaryBot 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。",
+        "盤整籃": "MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。",
         "過熱/風險": "偏熱或風險區：不追高，等降溫、回測支撐不破，再重新評估。",
     }.get(basket, "先等資料補齊，再回到買點、失敗線與目標價判斷。")
 
@@ -1854,6 +1915,7 @@ def build_telegram_info_card(
         + _line_html("MACD", macd)
         + _line_html("Williams", wr)
         + _line_html("籌碼", force_line, _signed_class(foreign5))
+        + (_line_html("籌碼數字", chip_metrics_line) if chip_metrics_line else "")
     )
     phase3 = (
         _line_html("是否進場", decision["rating"])
@@ -1863,6 +1925,7 @@ def build_telegram_info_card(
         + _line_html("初始停損", f"{decision.get('initial_stop_text','─')}（{decision.get('initial_stop_label','─')}，{decision.get('stop_pct_text','─')}）")
         + _line_html("參考支撐", f"{decision.get('reference_support_text','─')}｜原報告 {stop}")
         + _line_html("R:R", decision.get("rr_text", "─"), decision.get("rr_class", ""))
+        + (_line_html("賣出警示", f"{sell_signal.get('level')}｜{sell_signal.get('reason')}", sell_signal.get("class", "")) if sell_signal else "")
         + _line_html("追蹤重點", operation_note)
     )
     return f"""
@@ -1896,7 +1959,7 @@ def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
     if basket == "行進籃":
         action = "偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。"
     elif basket == "盤整籃":
-        action = "偏向盤整觀察：重點看 MABC 是否維持 A/B，CaryBot 或量縮價穩轉強時才處理早買點。"
+        action = "偏向盤整觀察：重點看 MABC 是否維持 A/B，量縮價穩或站回均線轉強時才處理早買點。"
     else:
         action = "偏熱或風險區：不追高，等降溫、回測支撐不破，或重新整理後再評估。"
     return (
@@ -2117,6 +2180,70 @@ def build_trade_decision(tech: dict, s: dict) -> dict:
         "defense": defense,
         "reason": reason,
         **plan,
+    }
+
+
+def calc_sell_signal(daily: list[dict], weekly: list[dict], chip_series: list[dict], s: dict, decision: dict) -> dict:
+    if not daily:
+        return {"level": "資料不足", "class": "", "reason": "等待價格資料", "ma20_gap": None, "profit": None}
+
+    close = daily[-1].get("close")
+    entry = decision.get("entry")
+    ma20 = ma_values(daily, 20)[-1] if len(daily) >= 20 else None
+    ma20_gap = ((close / ma20 - 1) * 100) if close and ma20 else None
+    profit = ((close / entry - 1) * 100) if close and entry else None
+
+    last2_drop = False
+    if len(daily) >= 3:
+        p1, p2, p3 = daily[-3], daily[-2], daily[-1]
+        ret1 = (p2["close"] / p1["close"] - 1) if p1.get("close") and p2.get("close") else 0
+        ret2 = (p3["close"] / p2["close"] - 1) if p2.get("close") and p3.get("close") else 0
+        last2_drop = ret1 <= -0.03 and ret2 <= -0.03
+
+    long_black = False
+    if len(daily) >= 21:
+        latest = daily[-1]
+        avg_vol20 = sum(x.get("volume", 0) for x in daily[-21:-1]) / 20
+        prev_close = daily[-2].get("close")
+        day_ret = (latest["close"] / prev_close - 1) * 100 if latest.get("close") and prev_close else 0
+        long_black = latest.get("close") < latest.get("open") and day_ret <= -3 and latest.get("volume", 0) >= avg_vol20 * 1.5
+
+    weekly_turn = False
+    if len(weekly) >= 2:
+        weekly_turn = weekly[-1].get("close") < weekly[-2].get("low")
+
+    chip_metrics = chip_trend_metrics(chip_series, {})
+    foreign_sell_streak = chip_metrics.get("foreign_sell_streak", 0)
+
+    reasons = []
+    level, cls = "續抱觀察", ""
+    if long_black and foreign_sell_streak >= 2:
+        level, cls = "立即檢查", "exit"
+        reasons.append("量大長黑且外資連賣")
+    elif profit is not None and profit > 20 and weekly_turn and last2_drop:
+        level, cls = "波段轉弱", "exit"
+        reasons.append("漲幅>20%，週K轉折且日K連兩根跌逾3%")
+    elif profit is not None and profit <= 10 and ma20_gap is not None and ma20_gap < 0:
+        level, cls = "跌破MA20", "watch"
+        reasons.append("漲幅10%內跌破MA20")
+    elif ma20_gap is not None and ma20_gap < -2:
+        level, cls = "月線轉弱", "watch"
+        reasons.append("收盤低於MA20超過2%")
+    elif ma20_gap is not None:
+        reasons.append(f"距MA20 {ma20_gap:+.1f}%")
+    else:
+        reasons.append("MA20資料不足")
+
+    if foreign_sell_streak >= 2 and cls != "exit":
+        reasons.append(f"外資連賣{foreign_sell_streak}日")
+
+    return {
+        "level": level,
+        "class": cls,
+        "reason": "；".join(reasons),
+        "ma20_gap": ma20_gap,
+        "profit": profit,
+        "foreign_sell_streak": foreign_sell_streak,
     }
 
 
@@ -2483,6 +2610,16 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
         return '<div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>'
     chip_latest = chip.get("latest", {})
     chip_sum5 = chip.get("sum5", {})
+    chip_sum10 = chip.get("sum10", {})
+    h_latest = holding.get("latest", {}) if holding else {}
+    h_prev = holding.get("prev", {}) if holding else {}
+    major_delta = h_latest.get("major", 0) - h_prev.get("major", 0) if h_latest and h_prev else None
+    retail_delta = h_latest.get("retail", 0) - h_prev.get("retail", 0) if h_latest and h_prev else None
+    chip_note = (
+        f"外資10日 {fmt_num(chip_sum10.get('foreign'),0)} 張｜"
+        f"主力10日 {fmt_num(chip_sum10.get('total'),0)} 張｜"
+        f"大戶週變化 {fmt_num(major_delta)}%｜散戶週變化 {fmt_num(retail_delta)}%"
+    )
     return f"""<div class="info-grid">
   <div class="info-cell"><div class="k">法人日期</div><div class="v">{esc(chip.get('date','─'))}</div></div>
   <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
@@ -2492,7 +2629,12 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
   <div class="info-cell"><div class="k">外資5日</div><div class="v {('pos' if chip_sum5.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('foreign'),0)}張</div></div>
   <div class="info-cell"><div class="k">投信5日</div><div class="v {('pos' if chip_sum5.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('trust'),0)}張</div></div>
   <div class="info-cell"><div class="k">主力5日合計</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
-</div>"""
+  <div class="info-cell"><div class="k">大戶比例</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
+  <div class="info-cell"><div class="k">散戶比例</div><div class="v">{fmt_num(h_latest.get('retail'))}%</div></div>
+  <div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get('total_people'),0)}</div></div>
+  <div class="info-cell"><div class="k">股權日期</div><div class="v">{esc(holding.get('date','─') if holding else '─')}</div></div>
+</div>
+<div class="chip-line">{esc(chip_note)}</div>"""
 
 
 def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
@@ -2507,9 +2649,9 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
             ("MA20主線", "tag"),
         ]
     elif basket == "consolidation":
-        action = "MABC+CaryBot觀察"
+        action = "MABC量價觀察"
         tags = [
-            ("盤整籃", "tag-yellow"),
+            ("盤整籃", "tag-blue"),
             ("早買雷達", "tag"),
             ("等轉強", "tag"),
         ]
@@ -2605,17 +2747,102 @@ def build_today_action_card(stocks: list[dict]) -> str:
 </div>"""
 
 
+def build_market_light_card(latest: dict, stocks: list[dict]) -> str:
+    marching, consolidation, risk = split_baskets(stocks)
+    action_items = []
+    for s in stocks:
+        s = enrich_stock_fields(s)
+        _, tech, decision = stock_trade_context(s)
+        gap = tech.get("entry_gap") if tech else None
+        if gap is not None and -3 <= gap <= 3:
+            action_items.append((s, tech, decision))
+
+    checks = []
+    if len(risk) >= max(4, len(stocks) * 0.25):
+        checks.append(("候選風險", "偏熱", "neg"))
+    elif len(marching) >= len(consolidation):
+        checks.append(("候選結構", f"行進籃 {len(marching)} / 盤整籃 {len(consolidation)}", "pos"))
+    else:
+        checks.append(("候選結構", f"盤整籃較多，行進籃 {len(marching)}", "neu"))
+
+    checks.append(("可執行買點", f"{len(action_items)} 檔落在買點±3%", "pos" if action_items else "neu"))
+    checks.append(("大盤指數", "TAIEX快取尚未接入", "neu"))
+
+    score = sum(1 for _, _, cls in checks if cls == "pos") - sum(1 for _, _, cls in checks if cls == "neg")
+    if score >= 2:
+        light, cls, title = "多", "pos", "可做但控部位"
+    elif score <= -1:
+        light, cls, title = "空", "neg", "先保守"
+    else:
+        light, cls, title = "中立", "neu", "挑個股，不追高"
+
+    check_html = "".join(
+        f'<div class="check-item"><div class="k">{esc(k)}</div><div class="v {cls}">{esc(v)}</div></div>'
+        for k, v, cls in checks
+    )
+    overview = latest.get("market_overview", "").strip()
+    overview_html = f'<div class="market-text" style="margin-top:12px">{overview.replace(chr(10), "<br>")}</div>' if overview else ""
+    return f"""
+<div class="card">
+  <div class="section-label">大盤燈號</div>
+  <div class="market-light">
+    <div class="market-badge {cls}">{light}</div>
+    <div>
+      <div style="font-size:16px;font-weight:800;color:#e6edf3">{title}</div>
+      <div class="strategy-note" style="margin-top:4px">大盤指數資料尚未接入時，先用候選池結構與可執行買點做風控前提；缺資料會明確顯示。</div>
+      <div class="check-grid" style="margin-top:10px">{check_html}</div>
+    </div>
+  </div>
+  {overview_html}
+</div>"""
+
+
+def build_sell_alert_card(stocks: list[dict], limit: int = 6) -> str:
+    alerts = []
+    for s in stocks:
+        s = enrich_stock_fields(s)
+        rows = merge_report_close(read_price_history(s.get("id", "")), s)
+        daily = aggregate_ohlcv(rows, "daily")
+        weekly = aggregate_ohlcv(rows, "weekly")
+        tech = technical_snapshot(daily, s)
+        decision = build_trade_decision(tech, s)
+        chip_series = read_chip_series(s.get("id", ""))
+        signal = calc_sell_signal(daily, weekly, chip_series, s, decision)
+        severity = 2 if signal["class"] == "exit" else 1 if signal["class"] == "watch" else 0
+        alerts.append({
+            "id": s.get("id", ""),
+            "name": s.get("name", ""),
+            "close": tech.get("close") if tech else None,
+            "signal": signal,
+            "severity": severity,
+            "score": _to_float(s.get("score", "0")),
+        })
+    alerts.sort(key=lambda x: (-x["severity"], x["signal"].get("ma20_gap") if x["signal"].get("ma20_gap") is not None else 99, -x["score"]))
+    rows = ""
+    for x in alerts[:limit]:
+        sig = x["signal"]
+        ma20_gap = "─" if sig.get("ma20_gap") is None else f'{sig["ma20_gap"]:+.1f}%'
+        profit = "─" if sig.get("profit") is None else f'{sig["profit"]:+.1f}%'
+        cls = sig.get("class") or ""
+        rows += f"""
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">收盤 {fmt_num(x['close'])}</div></div>
+  <div><div class="label">MA20距離</div><div class="value">{ma20_gap}</div></div>
+  <div><div class="label">買點損益</div><div class="value">{profit}</div></div>
+  <div><span class="alert-level {cls}">{esc(sig['level'])}</span><div class="signal-dates" style="margin-top:4px">{esc(sig['reason'])}</div></div>
+</div>"""
+    return f"""
+<div class="card">
+  <div class="section-label">持倉 / 追蹤賣出警示</div>
+  <div class="strategy-note">目前網站還沒有券商持股清單，這區先用候選與訊號追蹤名單做賣出風險掃描；之後接入實際庫存後可改成只看持有中標的。</div>
+  {rows}
+</div>"""
+
+
 def build_index_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
     marching, consolidation, risk = split_baskets(latest.get("stocks", []))
-
-    # 市場概況 card
-    market_card = f"""
-<div class="card">
-  <div class="section-label">📰 大盤市況</div>
-  <div class="market-text">{latest.get('market_overview','').replace(chr(10), '<br>')}</div>
-</div>"""
 
     # 篩選摘要
     filter_card = f"""
@@ -2630,7 +2857,7 @@ def build_index_page(reports: list[dict]) -> str:
     basket_summary = f"""
 <div class="grid grid-3" style="margin-bottom:16px">
   <div class="metric"><div class="metric-num" style="color:#3fb950">{len(marching)}</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
-  <div class="metric"><div class="metric-num" style="color:#d2a520">{len(consolidation)}</div><div class="metric-label">盤整籃：MABC/CaryBot 觀察</div></div>
+  <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(consolidation)}</div><div class="metric-label">盤整籃：MABC 觀察</div></div>
   <div class="metric"><div class="metric-num" style="color:#f85149">{len(risk)}</div><div class="metric-label">過熱/風險：不追高</div></div>
 </div>"""
     table_card = f"""
@@ -2665,8 +2892,9 @@ def build_index_page(reports: list[dict]) -> str:
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">每個交易日自動更新 · 最新報告：{date_str}</div>
-  {market_card}
+  {build_market_light_card(latest, latest.get("stocks", []))}
   {build_today_action_card(latest.get("stocks", []))}
+  {build_sell_alert_card(latest.get("stocks", []))}
   {filter_card}
   {table_card}
   {history_card}
@@ -2797,7 +3025,7 @@ def build_baskets_page(reports):
   <div class="section-label">Daily Strategy Stream</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num" style="color:#3fb950">{len(marching)}</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
-    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(consolidation)}</div><div class="metric-label">盤整籃：M大 ABC 先觀察，CaryBot 找早買</div></div>
+    <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(consolidation)}</div><div class="metric-label">盤整籃：M大 ABC 先觀察，等量價轉強</div></div>
     <div class="metric"><div class="metric-num" style="color:#f85149">{len(risk)}</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
   </div>
 </div>"""
@@ -2811,8 +3039,8 @@ def build_baskets_page(reports):
       SFZ 入籃代表波段候選已成立；不等待 TA3-Soft 才買。原訊號可小試單，TA3-Strict 或箱型強突破可加碼。漲過 +10% 後用 MA20 + 短線轉弱共振，漲過 +20% 後以 MA20 主線續抱。
     </div>
     <div class="strategy-note">
-      <strong style="color:#d2a520">盤整籃</strong><br>
-      MABC 判斷是否值得等待，CaryBot / VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
+      <strong style="color:#58a6ff">盤整籃</strong><br>
+      MABC 判斷是否值得等待，VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
     </div>
   </div>
 </div>"""
@@ -2825,7 +3053,7 @@ def build_baskets_page(reports):
         + playbook
         + '<div class="grid grid-2">'
         + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching", ledger)
-        + build_basket_column("盤整籃｜MABC + CaryBot", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation", ledger)
+        + build_basket_column("盤整籃｜MABC 觀察", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation", ledger)
         + '</div>'
         + build_basket_column("過熱/風險觀察", "強勢但不適合追價；等回測、降溫或重新整理後再評估。", risk, "risk", ledger)
         + '</div>'
@@ -2929,6 +3157,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     weekly_chip_indicators = align_chip_to_price_dates(weekly, holding_series, chip_series)
     monthly_chip_indicators = align_chip_to_price_dates(monthly, holding_series, chip_series)
     decision = build_trade_decision(tech, s)
+    sell_signal = calc_sell_signal(daily, weekly, chip_series, s, decision)
     s_view = dict(s)
     if latest.get("close") is not None:
         s_view["price"] = f'{latest["close"]:.2f}'
@@ -3329,7 +3558,14 @@ function initMainForceHover_{stock_id}(){{
 initChipFlowHover_{stock_id}();
 initMainForceHover_{stock_id}();
 </script>"""
-    telegram_card = build_telegram_info_card(stock_id, s_view, tech, chip, holding, decision, item)
+    telegram_card = build_telegram_info_card(stock_id, s_view, tech, chip, holding, decision, item, sell_signal)
+    sell_alert_html = f"""
+<div class="alert-row" style="grid-template-columns:1fr;margin-top:12px">
+  <div>
+    <span class="alert-level {sell_signal.get('class','')}">{esc(sell_signal.get('level','─'))}</span>
+    <div class="signal-dates" style="margin-top:6px">MA20距離 {'─' if sell_signal.get('ma20_gap') is None else f"{sell_signal.get('ma20_gap'):+.1f}%"} ｜ 買點損益 {'─' if sell_signal.get('profit') is None else f"{sell_signal.get('profit'):+.1f}%"} ｜ {esc(sell_signal.get('reason',''))}</div>
+  </div>
+</div>"""
 
     body = f"""
 <div class="container">
@@ -3344,6 +3580,7 @@ initMainForceHover_{stock_id}();
     <div class="card">
       <div class="section-label">快速分析</div>
       <div class="mini-report">{esc(quick_analysis_text(s_view, item))}</div>
+      {sell_alert_html}
     </div>
   </div>
 
@@ -3351,7 +3588,7 @@ initMainForceHover_{stock_id}();
     <div class="section-label">v44 技術 / 買點雷達</div>
     {build_tech_panel(tech)}
     <div class="strategy-note" style="margin-top:12px">
-      行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、CaryBot 買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
+      行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、量價轉強買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
     </div>
   </div>
 
@@ -3452,7 +3689,7 @@ function filterStocks(){
     body = f"""
 <div class="container">
   <div class="page-title">個股總覽</div>
-  <div class="page-sub">FinMind 收盤價 · SFZ 買點 · MABC/CaryBot 分類 · 點股票進資訊卡</div>
+  <div class="page-sub">FinMind 收盤價 · SFZ 買點 · MABC 分類 · 點股票進資訊卡</div>
   <div class="card">
     <div class="section-label">Stock Browser</div>
     <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、行進籃、盤整籃..." oninput="filterStocks()">
@@ -3535,7 +3772,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
       <div class="metric"><div class="metric-num" style="color:#d2a520">{pullback}</div><div class="metric-label">稍高：等回測</div></div>
       <div class="metric"><div class="metric-num" style="color:#f85149">{extended}</div><div class="metric-label">過遠：不追高</div></div>
     </div>
-    <div class="strategy-note" style="margin-top:14px">這頁先用 SFZ 報告買點 + FinMind 收盤價建立網站版雷達。完整 v44 的 rule-first 雷達可再把 CaryBot PreBuy、MABC A/B/C、量價共振分數接進同一張表。</div>
+    <div class="strategy-note" style="margin-top:14px">這頁先用 SFZ 報告買點 + FinMind 收盤價建立網站版雷達。後續可再把 MABC A/B/C、量價共振分數接進同一張表。</div>
   </div>
   <div class="card">
     <div class="section-label">候選排序</div>
@@ -3555,6 +3792,10 @@ def build_stock_pages(reports: list[dict]) -> int:
     ledger = build_signal_ledger(reports)
     out_dir = OUTPUT_DIR / "stocks"
     out_dir.mkdir(parents=True, exist_ok=True)
+    valid_files = {f"{stock_id}.html" for stock_id in stock_map}
+    for old_file in out_dir.glob("*.html"):
+        if old_file.name not in valid_files:
+            old_file.unlink()
     count = 0
     for stock_id, s in sorted(stock_map.items()):
         (out_dir / f"{stock_id}.html").write_text(build_stock_detail_page(stock_id, s, ledger), encoding="utf-8")

@@ -36,6 +36,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
 .rr-good{color:#3fb950!important}
 .rr-mid{color:#d2a520!important}
 .rr-bad{color:#f85149!important}
@@ -47,6 +61,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
 .tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
 .tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
 .tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
 .strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
@@ -181,7 +196,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.volume-guide,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -205,7 +220,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="section-label">Daily Strategy Stream</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num" style="color:#3fb950">13</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
-    <div class="metric"><div class="metric-num" style="color:#d2a520">7</div><div class="metric-label">盤整籃：M大 ABC 先觀察，CaryBot 找早買</div></div>
+    <div class="metric"><div class="metric-num" style="color:#58a6ff">7</div><div class="metric-label">盤整籃：M大 ABC 先觀察，等量價轉強</div></div>
     <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
   </div>
 </div>
@@ -217,8 +232,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       SFZ 入籃代表波段候選已成立；不等待 TA3-Soft 才買。原訊號可小試單，TA3-Strict 或箱型強突破可加碼。漲過 +10% 後用 MA20 + 短線轉弱共振，漲過 +20% 後以 MA20 主線續抱。
     </div>
     <div class="strategy-note">
-      <strong style="color:#d2a520">盤整籃</strong><br>
-      MABC 判斷是否值得等待，CaryBot / VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
+      <strong style="color:#58a6ff">盤整籃</strong><br>
+      MABC 判斷是否值得等待，VPA / WR / MA5-MA10 站回負責提早找買點。未突破前只小部位；突破追不到不追，等回測 MA5/MA10/箱頂不破再處理。
     </div>
   </div>
 </div><div class="grid grid-2">
@@ -407,7 +422,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
 </div>
 <div class="card">
-  <div class="section-label">盤整籃｜MABC + CaryBot</div>
+  <div class="section-label">盤整籃｜MABC 觀察</div>
   <div class="strategy-note" style="margin-bottom:12px">尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。</div>
   
 <div class="basket-card">
@@ -416,11 +431,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3105 <span class="basket-name">穩懋</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 499.5 ｜ 近6週 <span class="pos">6.98%</span> ｜ 分數 160.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 531.70 ｜ 目標 649.74 ｜ 初始停損 491.82 ｜ <span class="price-rr rr-good">R:R 1:3.0</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 338.30 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 338.30 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-28 ｜ 最近 2026-04-29 ｜ 行進籃 / 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/3105.html">打開個股頁 →</a></div>
 </div>
@@ -431,11 +446,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3673 <span class="basket-name">TPK-KY</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 60.1 ｜ 近6週 <span class="pos">6.19%</span> ｜ 分數 150.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 60.28 ｜ 目標 76.70 ｜ 初始停損 56.66 ｜ <span class="price-rr rr-good">R:R 1:4.5</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 42.98 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 42.98 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 盤整籃 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/3673.html">打開個股頁 →</a></div>
 </div>
@@ -446,11 +461,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">2455 <span class="basket-name">全新</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 318.0 ｜ 近6週 <span class="pos">6.0%</span> ｜ 分數 140.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 332.14 ｜ 目標 391.68 ｜ 初始停損 321.00 ｜ <span class="price-rr rr-good">R:R 1:5.3</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 245.27 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 245.27 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/2455.html">打開個股頁 →</a></div>
 </div>
@@ -461,11 +476,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">2402 <span class="basket-name">毅嘉</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 69.5 ｜ 近6週 <span class="pos">5.95%</span> ｜ 分數 130.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 70.53 ｜ 目標 86.70 ｜ 初始停損 67.09 ｜ <span class="price-rr rr-good">R:R 1:4.7</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 48.61 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 48.61 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/2402.html">打開個股頁 →</a></div>
 </div>
@@ -476,11 +491,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">6257 <span class="basket-name">矽格</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 180.5 ｜ 近6週 <span class="pos">5.47%</span> ｜ 分數 120.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 179.47 ｜ 目標 197.88 ｜ 初始停損 167.00 ｜ <span class="price-rr rr-mid">R:R 1:1.5</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 136.81 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 136.81 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/6257.html">打開個股頁 →</a></div>
 </div>
@@ -491,11 +506,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">5439 <span class="basket-name">高技</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 401.0 ｜ 近6週 <span class="pos">5.34%</span> ｜ 分數 110.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 381.29 ｜ 目標 472.77 ｜ 初始停損 364.95 ｜ <span class="price-rr rr-good">R:R 1:5.6</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 266.66 ｜ 符合條件：未進入過熱區 / 量縮價穩 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 266.66 ｜ 符合條件：未進入過熱區 / 量縮價穩 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-04-24 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/5439.html">打開個股頁 →</a></div>
 </div>
@@ -506,11 +521,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="basket-code">3264 <span class="basket-name">欣銓</span></div>
       <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 198.5 ｜ 近6週 <span class="pos">5.14%</span> ｜ 分數 100.0</div>
     </div>
-    <div class="basket-action">MABC+CaryBot觀察</div>
+    <div class="basket-action">MABC量價觀察</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 198.97 ｜ 目標 225.93 ｜ 初始停損 186.38 ｜ <span class="price-rr rr-good">R:R 1:2.1</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 145.27 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/CaryBot 確認</div>
-  <div class="tag-row"><span class="tag tag-yellow">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 145.27 ｜ 符合條件：未進入過熱區 / 長多偏強 / 等 MABC/量價確認</div>
+  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-04-29 ｜ 最近 2026-04-29 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
   <div style="margin-top:10px"><a class="history-link" href="stocks/3264.html">打開個股頁 →</a></div>
 </div>
