@@ -531,11 +531,27 @@ def footer_html() -> str:
 
 def status_badge(icon: str, text: str) -> str:
     if icon == "🟢":
-        return f'<span class="badge badge-green">健康整理</span>'
+        return f'<span class="badge badge-green">原始綠燈</span>'
     elif icon == "🟡":
-        return f'<span class="badge badge-yellow">強勢追漲</span>'
+        return f'<span class="badge badge-yellow">原始黃燈</span>'
     else:
-        return f'<span class="badge badge-red">超買</span>'
+        return f'<span class="badge badge-red">風險</span>'
+
+
+def clean_stock_name(name: str) -> str:
+    text = str(name or "").strip()
+    text = re.sub(r"\s*｜\s*[🟢🟡🔴]\s*[^｜]+", "", text)
+    text = re.sub(r"\s*｜\s*綜合評分[:：]?\s*[\d.]+", "", text)
+    return text.strip()
+
+
+def basket_badge(s: dict) -> str:
+    basket = classify_basket(s)
+    if basket == "marching":
+        return '<span class="tag tag-green">行進籃</span>'
+    if basket == "consolidation":
+        return '<span class="tag tag-blue">盤整籃</span>'
+    return '<span class="tag tag-red">過熱/風險</span>'
 
 
 def gain_color(gain_str: str) -> str:
@@ -588,7 +604,7 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
         s = enrich_stock_fields(s)
         _, tech, decision = stock_trade_context(s)
         plan = decision
-        badge = status_badge(s["icon"], s["status"])
+        badge = basket_badge(s)
         gain_cls = gain_color(s["gain_6w"])
 
         if compact:
@@ -680,6 +696,10 @@ def build_notes(notes_text: str) -> str:
         text = text.strip().replace(chr(10), " ")
         if "MA5×0.985" in text or "MA5×98.5%" in text:
             return "等待明確回測或原始報告買點，不追高。"
+        text = text.replace("強勢追漲中（🟡）", "漲幅偏高")
+        text = text.replace("強勢追漲中", "漲幅偏高")
+        text = text.replace("健康整理（🟢）", "整理觀察")
+        text = text.replace("健康整理", "整理觀察")
         return text
 
     items = re.findall(r"\d+\.\s+\*\*(.+?)\*\*[：:]\s*(.*?)(?=\n\d+\.|\Z)", notes_text, re.DOTALL)
@@ -1857,7 +1877,6 @@ def build_telegram_info_card(
     close = _value_or_dash(s.get("price"))
     price_date = _value_or_dash(s.get("price_date"))
     score = _value_or_dash(s.get("score"))
-    status = _value_or_dash(s.get("status"))
     reason_line = basket_reason(s, tech)
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
     volume_price = _value_or_dash(tech.get("volume_price"))
@@ -1903,7 +1922,7 @@ def build_telegram_info_card(
     }.get(basket, "先等資料補齊，再回到買點、失敗線與目標價判斷。")
 
     phase1 = (
-        _line_html("篩選結論", f"{basket}｜{status}｜Score {score}")
+        _line_html("篩選結論", f"{basket}｜Score {score}")
         + _line_html("操作評價", f"{decision['rating']}｜{decision['reason']}", decision.get("rating_class", ""))
         + _line_html("分籃理由", reason_line)
         + _line_html("台帳", repeat_note)
@@ -2519,6 +2538,7 @@ def chip_indicator_panel(aligned_series: list[dict]) -> str:
 
 def enrich_stock_fields(s: dict) -> dict:
     out = dict(s)
+    out["name"] = clean_stock_name(out.get("name", ""))
     sid = out.get("id", "")
     daily = aggregate_ohlcv(read_price_history(sid), "daily")
     if daily:
@@ -2907,23 +2927,21 @@ def build_daily_page(report: dict) -> str:
     """生成單日完整報告頁"""
     date_str = report.get("date", "─")
     stocks = report.get("stocks", [])
-    green  = sum(1 for s in stocks if s["icon"] == "🟢")
-    yellow = sum(1 for s in stocks if s["icon"] == "🟡")
-    red    = sum(1 for s in stocks if s["icon"] == "🔴")
+    marching, consolidation, risk = split_baskets(stocks)
 
     stat_row = f"""
 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#3fb950">{green}</div>
-    <div style="font-size:11px;color:#6e7681">健康整理 🟢</div>
+    <div style="font-size:24px;font-weight:800;color:#3fb950">{len(marching)}</div>
+    <div style="font-size:11px;color:#6e7681">行進籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#d2a520">{yellow}</div>
-    <div style="font-size:11px;color:#6e7681">強勢追漲 🟡</div>
+    <div style="font-size:24px;font-weight:800;color:#58a6ff">{len(consolidation)}</div>
+    <div style="font-size:11px;color:#6e7681">盤整籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#f85149">{red}</div>
-    <div style="font-size:11px;color:#6e7681">短線超買 🔴</div>
+    <div style="font-size:24px;font-weight:800;color:#f85149">{len(risk)}</div>
+    <div style="font-size:11px;color:#6e7681">過熱/風險</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
     <div style="font-size:24px;font-weight:800;color:#58a6ff">{len(stocks)}</div>
@@ -2947,7 +2965,7 @@ def build_daily_page(report: dict) -> str:
         '<div class="card">'
         '<div class="section-label">Top 20</div>'
         '<div style="font-size:12px;color:#6e7681;margin-bottom:14px">'
-        '&#x1F7E2; Health | &#x1F7E1; Strong | &#x1F534; Overbought'
+        '綠色＝行進籃｜藍色＝盤整籃｜紅色＝過熱/風險'
         '</div>'
         + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks")
         + '</div>'
