@@ -3950,11 +3950,22 @@ def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict],
     margin_by_date = {x.get("date"): x for x in margin_series}
     out = []
     foreign_cum = 0.0
+    prev_close = None
     for p in price_rows:
         date = p.get("date", "")
         a = aligned_by_date.get(date, {})
         f = foreign_by_date.get(date, {})
         m = margin_by_date.get(date, {})
+        close = p.get("close")
+        change = None
+        change_pct = None
+        if close is not None and prev_close:
+            try:
+                change = float(close) - float(prev_close)
+                change_pct = (float(close) / float(prev_close) - 1) * 100
+            except Exception:
+                change = None
+                change_pct = None
         foreign = a.get("foreign")
         if foreign is not None:
             try:
@@ -3966,7 +3977,9 @@ def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict],
             "open": p.get("open"),
             "high": p.get("high"),
             "low": p.get("low"),
-            "close": p.get("close"),
+            "close": close,
+            "change": change,
+            "changePct": change_pct,
             "volume": (float(p.get("volume") or 0) / 1000),
             "foreign": foreign,
             "foreignCum": foreign_cum,
@@ -3979,6 +3992,8 @@ def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict],
             "totalPeople": a.get("total_people"),
             "holdingDate": a.get("holding_date", ""),
         })
+        if close is not None:
+            prev_close = close
     return out
 
 
@@ -4091,7 +4106,7 @@ const mdaData_{stock_id} = {data};
   const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
   const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   function html(kind, x){{
-    if(kind==='k') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>開</span><span>${{fmt(x.open)}}</span><span>高</span><span>${{fmt(x.high)}}</span><span>低</span><span>${{fmt(x.low)}}</span><span>收</span><span>${{fmt(x.close)}}</span></div>`;
+    if(kind==='k') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>開</span><span>${{fmt(x.open)}}</span><span>高</span><span>${{fmt(x.high)}}</span><span>低</span><span>${{fmt(x.low)}}</span><span>收</span><span>${{fmt(x.close)}}</span><span>漲跌</span><span>${{fmt(x.change)}} / ${{pct(x.changePct)}}</span></div>`;
     if(kind==='volume') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>成交量</span><span>${{fmtInt(x.volume)}} 張</span></div>`;
     if(kind==='foreignShares') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資持股張數</span><span>${{fmtInt(x.foreignShares)}} 張</span><span>外資持股比例</span><span>${{pct(x.foreignRatio)}}</span></div>`;
     if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
@@ -4230,7 +4245,7 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
   }}
   function makeTooltip(kind,x){{
     if(!x) return '';
-    if(kind==='k') return `<b>${{x.date}}</b><br>開 ${{fmt(x.open)}} 高 ${{fmt(x.high)}} 低 ${{fmt(x.low)}} 收 ${{fmt(x.close)}}`;
+    if(kind==='k') return `<b>${{x.date}}</b><br>開 ${{fmt(x.open)}} 高 ${{fmt(x.high)}} 低 ${{fmt(x.low)}} 收 ${{fmt(x.close)}}<br>漲跌 ${{fmt(x.change)}} / ${{pct(x.changePct)}}`;
     if(kind==='volume') return `<b>${{x.date}}</b><br>成交量 ${{fmtInt(x.volume)}} 張`;
     if(kind==='foreignShares') return `<b>${{x.date}}</b><br>外資持股 ${{fmtInt(x.foreignShares)}} 張<br>比例 ${{pct(x.foreignRatio)}}`;
     if(kind==='foreign') return `<b>${{x.date}}</b><br>外資買賣超 ${{fmtInt(x.foreign)}} 張<br>區間累積 ${{fmtInt(x.foreignCum)}} 張`;
