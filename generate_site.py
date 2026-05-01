@@ -355,6 +355,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
 .basket-name{font-size:12px;color:#8b949e;margin-top:2px}
 .basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
+.basket-change{font-size:13px;font-weight:800}
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
 .tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
@@ -757,7 +760,48 @@ def stock_trade_context(s: dict) -> tuple[list[dict], dict, dict]:
     return daily, tech, decision
 
 
-def basket_reason(s: dict, tech: dict | None = None) -> str:
+def daily_change_text(rows: list[dict]) -> tuple[str, str]:
+    if len(rows) < 2:
+        return "單日 ─", ""
+    close = rows[-1].get("close")
+    prev = rows[-2].get("close")
+    if not close or not prev:
+        return "單日 ─", ""
+    diff = close - prev
+    pct = (close / prev - 1) * 100
+    cls = "pos" if diff >= 0 else "neg"
+    return f"{diff:+.2f}（{pct:+.2f}%）", cls
+
+
+def b1_force_status(s: dict, chip_series: list[dict] | None = None, holding: dict | None = None) -> str:
+    sid = s.get("id", "")
+    chip_series = chip_series if chip_series is not None else read_chip_series(sid)
+    holding = holding if holding is not None else read_holding_summary(sid)
+    if not chip_series and not holding:
+        return "B1資料不足"
+    metrics = chip_trend_metrics(chip_series or [], holding or {})
+    total_10d = metrics.get("total_10d")
+    foreign_10d = metrics.get("foreign_10d")
+    major_delta = metrics.get("major_delta")
+    weak_votes = 0
+    strong_votes = 0
+    if total_10d is not None:
+        strong_votes += total_10d >= 0
+        weak_votes += total_10d < 0
+    if foreign_10d is not None:
+        strong_votes += foreign_10d >= 0
+        weak_votes += foreign_10d < 0
+    if major_delta is not None:
+        strong_votes += major_delta >= -0.05
+        weak_votes += major_delta < -0.05
+    if weak_votes >= 2:
+        return "B1主力已離開"
+    if strong_votes:
+        return "B1主力未離開"
+    return "B1資料不足"
+
+
+def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | None = None, holding: dict | None = None) -> str:
     basket = classify_basket(s)
     gain = _to_float(s.get("gain_6w", "0"))
     score = _to_float(s.get("score", "0"))
@@ -766,38 +810,39 @@ def basket_reason(s: dict, tech: dict | None = None) -> str:
     tech = tech or {}
     checks = []
     trend = tech.get("trend") or tech.get("trend_pattern")
-    volume_price = tech.get("volume_price")
+    volume_price = tech.get("volume_price") or "量價資料不足"
+    force_status = b1_force_status(s, chip_series, holding)
 
     if basket == "marching":
-        if icon == "🟡":
-            checks.append("原報告強勢追蹤")
+        checks.append("行進籃")
         if score >= 170:
             checks.append("評分>=170")
         if gain >= 18:
             checks.append("近6週漲幅>=18%")
         if trend and "多" in str(trend):
             checks.append(str(trend))
-        if volume_price in ["量縮價漲", "量增價漲", "均量上彎"]:
-            checks.append(volume_price)
+        checks.append(str(volume_price))
+        checks.append(force_status)
     elif basket == "consolidation":
         checks.append("未進入過熱區")
-        if volume_price in ["量縮價穩", "均量上彎"]:
-            checks.append(volume_price)
         if trend:
             checks.append(str(trend))
-        checks.append("等 MABC/量價確認")
+        checks.append(str(volume_price))
+        checks.append(force_status)
     else:
         if icon == "🔴" or "超買" in status:
             checks.append("原報告風險/超買")
         if gain >= 18:
             checks.append("漲幅偏大")
+        checks.append(str(volume_price))
+        checks.append(force_status)
         checks.append("不追高，等回測")
 
     seen = []
     for item in checks:
         if item and item not in seen:
             seen.append(item)
-    return " / ".join(seen[:4]) if seen else "等待更多技術與籌碼確認"
+    return " / ".join(seen) if seen else "等待更多技術與籌碼確認"
 
 
 def split_baskets(stocks: list[dict]) -> tuple[list[dict], list[dict], list[dict]]:
@@ -1877,7 +1922,7 @@ def build_telegram_info_card(
     close = _value_or_dash(s.get("price"))
     price_date = _value_or_dash(s.get("price_date"))
     score = _value_or_dash(s.get("score"))
-    reason_line = basket_reason(s, tech)
+    reason_line = basket_reason(s, tech, read_chip_series(stock_id), holding)
     trend = _value_or_dash(tech.get("trend_pattern") or tech.get("trend"))
     volume_price = _value_or_dash(tech.get("volume_price"))
     volume_reading = volume_price_reading(volume_price)
@@ -1951,7 +1996,7 @@ def build_telegram_info_card(
 <div class="telegram-report-card">
   <div class="telegram-head">
     <div>
-      <div class="telegram-title">{esc(stock_id)} {esc(s.get('name',''))} Telegram 版資訊卡</div>
+      <div class="telegram-title">{esc(stock_id)} {esc(s.get('name',''))} 個股資訊卡</div>
       <div class="telegram-meta">FinMind 收盤 {esc(price_date)}：{esc(close)}｜報告日期 {esc(s.get('report_date','─'))}</div>
     </div>
     <div class="telegram-rating {decision.get('rating_class','')}">{esc(decision['rating'])}</div>
@@ -1959,7 +2004,7 @@ def build_telegram_info_card(
   <div class="telegram-phase"><h3>① 量化篩選確認</h3>{phase1}</div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3>{phase2}</div>
   <div class="telegram-phase"><h3>③ 操作規劃</h3>{phase3}</div>
-  <div class="telegram-note">這張卡沿用 Telegram 報告的三段式節奏；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
+  <div class="telegram-note">這張卡整理量化篩選、技術籌碼與操作規劃；AI 完整文字與歷史紀錄仍保留在頁面下方。</div>
 </div>"""
 
 
@@ -2659,8 +2704,12 @@ def build_chip_panel(chip: dict, holding: dict) -> str:
 
 def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> str:
     gain_cls = gain_color(s.get("gain_6w", ""))
-    _, tech, plan = stock_trade_context(s)
-    reason = basket_reason(s, tech)
+    daily, tech, plan = stock_trade_context(s)
+    chip_series = read_chip_series(s.get("id", ""))
+    holding = read_holding_summary(s.get("id", ""))
+    reason = basket_reason(s, tech, chip_series, holding)
+    change_text, change_cls = daily_change_text(daily)
+    close_text = fmt_num(tech.get("close") if tech else _to_float(s.get("price", ""), None))
     if basket == "marching":
         action = "SFZ試單/續抱"
         tags = [
@@ -2688,9 +2737,16 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
   <div class="basket-head">
     <div>
       <div class="basket-code">{s.get('id','')} <span class="basket-name">{s.get('name','')}</span></div>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">收盤 {s.get('price','─')} ｜ 近6週 <span class="{gain_cls}">{s.get('gain_6w','─')}</span> ｜ 分數 {s.get('score','─')}</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="{gain_cls}">{s.get('gain_6w','─')}</span> ｜ 分數 {s.get('score','─')}</div>
     </div>
     <div class="basket-action">{action}</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">{close_text}</div>
+    </div>
+    <div class="basket-change {change_cls}">單日 {change_text}</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 {plan['entry_text']} ｜ 目標 {plan['target_text']} ｜ 初始停損 {plan['initial_stop_text']} ｜ <span class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</span></div>
   <div style="font-size:12px;color:#8b949e;margin-top:4px">參考支撐 {plan['reference_support_text']} ｜ 符合條件：{esc(reason)}</div>
@@ -3066,7 +3122,7 @@ def build_baskets_page(reports):
     body = (
         '<div class="container">'
         + '<div class="page-title">雙籃選股儀表板</div>'
-        + f'<div class="page-sub">資料日期：{date_str} · 網站負責完整巡檢，Telegram 只負責重要提醒</div>'
+        + f'<div class="page-sub">資料日期：{date_str} · 網站負責完整巡檢，重要提醒另由推播流程處理</div>'
         + hero
         + playbook
         + '<div class="grid grid-2">'
@@ -3141,7 +3197,7 @@ def build_signals_page(reports):
       <div class="metric"><div class="metric-num" style="font-size:16px">{push_note}</div><div class="metric-label">推播覆蓋率</div></div>
     </div>
     <div class="strategy-note" style="margin-top:14px">
-      這頁先用每日報告建立「入選台帳」。等 Telegram 發送程式把成功推播寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
+      這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
     </div>
   </div>
   <div class="card">

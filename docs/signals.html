@@ -58,6 +58,9 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .basket-code{font-size:17px;font-weight:800;color:#e6edf3}
 .basket-name{font-size:12px;color:#8b949e;margin-top:2px}
 .basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
+.basket-change{font-size:13px;font-weight:800}
 .tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
 .tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
@@ -227,7 +230,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="metric"><div class="metric-num" style="font-size:16px"><span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span></div><div class="metric-label">推播覆蓋率</div></div>
     </div>
     <div class="strategy-note" style="margin-top:14px">
-      這頁先用每日報告建立「入選台帳」。等 Telegram 發送程式把成功推播寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
+      這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
     </div>
   </div>
   <div class="card">
