@@ -638,15 +638,28 @@ def build_filter_steps(steps: list[dict]) -> str:
 def build_notes(notes_text: str) -> str:
     if not notes_text:
         return ""
+    def keep_note(text: str) -> bool:
+        return "停損紀律" not in text
+
+    def clean_note_detail(text: str) -> str:
+        text = text.strip().replace(chr(10), " ")
+        if "MA5×0.985" in text or "MA5×98.5%" in text:
+            return "等待明確回測或原始報告買點，不追高。"
+        return text
+
     items = re.findall(r"\d+\.\s+\*\*(.+?)\*\*[：:]\s*(.*?)(?=\n\d+\.|\Z)", notes_text, re.DOTALL)
     if not items:
         # fallback: split by numbered lines
         lines = [l.strip() for l in notes_text.split("\n") if l.strip() and re.match(r"\d+\.", l.strip())]
         def clean_line(l):
             return re.sub(r'^\d+\.\s*', '', l).replace('**', '')
-        items_html = "\n".join(f"<li>{clean_line(l)}</li>" for l in lines)
+        items_html = "\n".join(f"<li>{clean_note_detail(clean_line(l))}</li>" for l in lines if keep_note(clean_line(l)))
     else:
-        items_html = "\n".join(f"<li><strong>{t}：</strong>{d.strip().replace(chr(10), ' ')}</li>" for t, d in items)
+        items_html = "\n".join(
+            f"<li><strong>{t}：</strong>{clean_note_detail(d)}</li>"
+            for t, d in items
+            if keep_note(f"{t} {d}")
+        )
     return f'<ul class="notes-list">{items_html}</ul>'
 
 
@@ -2217,8 +2230,6 @@ def enrich_stock_fields(s: dict) -> dict:
             out["vol_5d"] = f"{vol5:,.0f}張"
 
         tech = technical_snapshot(daily, out)
-        if is_blank(out.get("entry")) and tech.get("ma5"):
-            out["entry"] = f"{tech['ma5'] * 0.985:.2f} (MA5×98.5%)"
         if is_blank(out.get("target")) and tech.get("resistance"):
             out["target"] = f"{tech['resistance'] * 1.02:.2f} (壓力×102%)"
         if is_blank(out.get("stop")) and tech.get("support"):
