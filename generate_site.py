@@ -632,8 +632,8 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("mda",     "mda.html",     "M大選股"),
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
-        ("stocks",  "stocks.html",  "個股總覽"),
         ("radar",   "radar.html",   "買點雷達"),
+        ("stocks",  "stocks.html",  "個股查詢"),
         ("backtest", "backtest.html", "歷史回測"),
         ("history", "history.html", "歷史報告"),
     ]
@@ -1110,6 +1110,53 @@ def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
                 item["report_date"] = report.get("date", "")
                 stocks[sid] = item
     return stocks
+
+
+def cached_stock_ids() -> set[str]:
+    ids: set[str] = set()
+    for folder in [
+        LOCAL_PRICE_DIR,
+        LOCAL_CHIP_DIR,
+        LOCAL_HOLDING_DIR,
+        LOCAL_FOREIGN_SHAREHOLDING_DIR,
+        LOCAL_MARGIN_DIR,
+        V44_PRICE_DIR,
+        V44_CHIP_DIR,
+        V44_HOLDING_DIR,
+        V44_FOREIGN_SHAREHOLDING_DIR,
+        V44_MARGIN_DIR,
+    ]:
+        if not folder.exists():
+            continue
+        for path in folder.glob("*.csv"):
+            sid = path.stem.strip()
+            if re.fullmatch(r"\d{4,6}", sid):
+                ids.add(sid)
+    return ids
+
+
+def build_stock_query_map(reports: list[dict]) -> dict[str, dict]:
+    stock_map = find_latest_stock_map(reports)
+    markets = load_stock_market_map()
+    for sid in sorted(cached_stock_ids()):
+        if sid in stock_map:
+            stock_map[sid]["query_only"] = False
+            continue
+        market = markets.get(sid, "")
+        item = {
+            "id": sid,
+            "name": "",
+            "market": market,
+            "icon": "",
+            "status": "個股查詢",
+            "score": "─",
+            "score_source": "快取個股",
+            "query_only": True,
+        }
+        stock_map[sid] = enrich_stock_fields(item)
+    for item in stock_map.values():
+        item.setdefault("query_only", False)
+    return stock_map
 
 
 def read_price_history(stock_id: str, limit: int = 760) -> list[dict]:
@@ -2536,9 +2583,10 @@ def build_operation_plan_card(s: dict, tech: dict, decision: dict, sell_signal: 
 
 
 def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
-    basket = basket_label(classify_basket(s))
+    query_only = bool(s.get("query_only"))
+    basket = "個股查詢" if query_only else basket_label(classify_basket(s))
     events = ledger_item.get("events", []) if ledger_item else []
-    repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}。" if events else "首次或尚未建立歷史台帳。"
+    repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}。" if events else "未在目前籃中，從已快取價格/籌碼資料建立查詢頁。"
     sid = s.get("id", "")
     daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily") if sid else []
     decision = build_trade_decision(technical_snapshot(daily, s), s) if daily else {
@@ -2547,7 +2595,9 @@ def quick_analysis_text(s: dict, ledger_item: dict | None) -> str:
         "defense": "資料不足",
         "reason": "等待價格快取更新",
     }
-    if basket == "行進籃":
+    if query_only:
+        action = "先當作獨立個股觀察：重點看價格是否不再破低，外資/融資賣壓是否收斂，以及少量買盤能否守住關鍵支撐。"
+    elif basket == "行進籃":
         action = "偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。"
     elif basket == "盤整籃":
         action = "偏向盤整觀察：重點看 MABC 是否維持 A/B，量縮價穩或站回均線轉強時才處理早買點。"
@@ -5489,11 +5539,11 @@ initMainForceHover_{stock_id}();
   </div>
 </div>
 {chart_script}"""
-    return html_page(f"{stock_id} {s.get('name','')}", "basket", body, nav_prefix="../")
+    return html_page(f"{stock_id} {s.get('name','')}", "stocks", body, nav_prefix="../")
 
 
 def build_stocks_index_page(reports: list[dict]) -> str:
-    stock_map = find_latest_stock_map(reports)
+    stock_map = build_stock_query_map(reports)
     ledger = build_signal_ledger(reports)
     items = []
     for sid, s in sorted(stock_map.items()):
@@ -5507,7 +5557,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
         item = {
             "id": sid,
             "name": s.get("name", ""),
-            "basket": basket_label(classify_basket(s)),
+            "basket": "未入籃" if s.get("query_only") else basket_label(classify_basket(s)),
             "price": fmt_num(price),
             "price_date": date,
             "entry": decision.get("entry_text", "─"),
@@ -5518,16 +5568,21 @@ def build_stocks_index_page(reports: list[dict]) -> str:
             "rr_class": decision.get("rr_class", ""),
             "score": s.get("score", "─"),
             "events": len(ledger.get(sid, {}).get("events", [])),
+            "query_only": bool(s.get("query_only")),
         }
         items.append(item)
+    basket_count = sum(1 for x in items if not x["query_only"])
+    query_count = sum(1 for x in items if x["query_only"])
 
     rows_html = ""
     for x in items:
-        search = f"{x['id']} {x['name']} {x['basket']}".lower()
+        search_extra = "個股查詢 未入籃" if x["query_only"] else "個股查詢"
+        search = f"{x['id']} {x['name']} {x['basket']} {search_extra}".lower()
+        tag_cls = "tag" if x["query_only"] else "tag-green"
         rows_html += f"""
 <tr data-search="{esc(search)}">
   <td><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">{esc(x['price_date'])}</div></td>
-  <td>{esc(x['basket'])}</td>
+  <td><span class="{tag_cls}">{esc(x['basket'])}</span></td>
   <td class="price-main">{esc(x['price'])}</td>
   <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">初停 {esc(x['stop'])}</div><div class="price-support">支撐 {esc(x['support'])}</div><div class="price-rr {x['rr_class']}">R:R {esc(x['rr'])}</div></td>
   <td>{esc(x['score'])}</td>
@@ -5545,11 +5600,16 @@ function filterStocks(){
 </script>"""
     body = f"""
 <div class="container">
-  <div class="page-title">個股總覽</div>
-  <div class="page-sub">FinMind 收盤價 · SFZ 買點 · MABC 分類 · 點股票進資訊卡</div>
+  <div class="page-title">個股查詢</div>
+  <div class="page-sub">收錄目前已快取的價格、外資、融資、股權資料；未入籃個股也可直接打開資訊卡觀察賣壓與支撐</div>
   <div class="card">
-    <div class="section-label">Stock Browser</div>
-    <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、行進籃、盤整籃..." oninput="filterStocks()">
+    <div class="section-label">Stock Query</div>
+    <div class="grid grid-3" style="margin-bottom:14px">
+      <div class="metric"><div class="metric-num">{len(items)}</div><div class="metric-label">可查詢個股</div></div>
+      <div class="metric"><div class="metric-num" style="color:#3fb950">{basket_count}</div><div class="metric-label">目前在籃中</div></div>
+      <div class="metric"><div class="metric-num" style="color:#d2a520">{query_count}</div><div class="metric-label">未入籃但有快取</div></div>
+    </div>
+    <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、未入籃、行進籃、盤整籃..." oninput="filterStocks()">
     <div style="overflow-x:auto">
       <table class="stock-table">
         <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/初停/R:R</th><th>分數</th><th>訊號</th></tr></thead>
@@ -5559,7 +5619,7 @@ function filterStocks(){
   </div>
 </div>
 {script}"""
-    return html_page("個股總覽", "stocks", body)
+    return html_page("個股查詢", "stocks", body)
 
 
 def radar_bucket(gap) -> tuple[str, str, str]:
@@ -6677,7 +6737,7 @@ def build_backtest_page(reports: list[dict]) -> str:
 
 
 def build_stock_pages(reports: list[dict]) -> int:
-    stock_map = find_latest_stock_map(reports)
+    stock_map = build_stock_query_map(reports)
     ledger = build_signal_ledger(reports)
     out_dir = OUTPUT_DIR / "stocks"
     out_dir.mkdir(parents=True, exist_ok=True)
