@@ -940,7 +940,7 @@ def b1_force_status(s: dict, chip_series: list[dict] | None = None, holding: dic
     flow_bad = (total_10d is not None and total_10d < 0) and (foreign_10d is not None and foreign_10d < 0)
 
     if structure_bad and (retail_bad or flow_bad):
-        return "B1主力已離開"
+        return "B1/B2籌碼偏弱"
     if structure_ok:
         return "B1主力未離開"
     if flow_bad:
@@ -958,7 +958,10 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
     checks = []
     trend = tech.get("trend") or tech.get("trend_pattern")
     volume_price = tech.get("volume_price") or "量價資料不足"
+    sid = s.get("id", "")
     force_status = b1_force_status(s, chip_series, holding)
+    daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily") if sid else []
+    pressure = pressure_absorption_analysis(sid, daily, chip_series or [], read_margin_series(sid), tech) if sid else {}
 
     if basket == "marching":
         checks.append("行進籃")
@@ -976,6 +979,8 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
             checks.append(str(trend))
         checks.append(str(volume_price))
         checks.append(force_status)
+        if pressure.get("level"):
+            checks.append(str(pressure.get("level")))
     else:
         if icon == "🔴" or "超買" in status:
             checks.append("原報告風險/超買")
@@ -1366,6 +1371,123 @@ def read_margin_series(stock_id: str) -> list[dict]:
         if date_str and (margin is not None or short is not None):
             out.append({"date": date_str, "margin_balance": margin, "short_balance": short})
     return sorted(out, key=lambda x: x.get("date", ""))
+
+
+def _last_delta(rows: list[dict], key: str, span: int = 10) -> float | None:
+    vals = [x.get(key) for x in rows if x.get(key) is not None]
+    if len(vals) < 2:
+        return None
+    prev_idx = max(0, len(vals) - 1 - span)
+    try:
+        return float(vals[-1]) - float(vals[prev_idx])
+    except Exception:
+        return None
+
+
+def _sum_recent(rows: list[dict], key: str, span: int = 10) -> float | None:
+    vals = [x.get(key) for x in rows[-span:] if x.get(key) is not None]
+    if not vals:
+        return None
+    try:
+        return sum(float(v) for v in vals)
+    except Exception:
+        return None
+
+
+def pressure_absorption_analysis(
+    stock_id: str,
+    daily: list[dict] | None = None,
+    chip_series: list[dict] | None = None,
+    margin_series: list[dict] | None = None,
+    tech: dict | None = None,
+) -> dict:
+    """Read B2 through price, volume, foreign flow and margin pressure.
+
+    M大祕密花園的重點不是單日訊號，而是賣方丟貨後價格還不破低，
+    並且買方用更少的量就能把價格維持住或推回同一區間。
+    """
+    daily = daily if daily is not None else aggregate_ohlcv(read_price_history(stock_id), "daily")
+    chip_series = chip_series if chip_series is not None else read_chip_series(stock_id)
+    margin_series = margin_series if margin_series is not None else read_margin_series(stock_id)
+    tech = tech or (technical_snapshot(daily, {}) if daily else {})
+
+    if len(daily) < 25:
+        return {
+            "level": "B2資料不足",
+            "class": "",
+            "summary": "B2資料不足：至少需要約25個交易日價量資料",
+            "line": "價量資料不足，暫時無法判讀賣壓是否消失。",
+            "items": [],
+            "score": 0,
+        }
+
+    recent = daily[-10:]
+    prev = daily[-25:-10]
+    recent_low = min(x.get("low") for x in recent if x.get("low") is not None)
+    prev_low = min(x.get("low") for x in prev if x.get("low") is not None)
+    close = daily[-1].get("close")
+    not_break = bool(recent_low is not None and prev_low is not None and recent_low >= prev_low * 0.98)
+
+    vol_recent = sum(float(x.get("volume") or 0) for x in recent[-5:]) / max(1, len(recent[-5:]))
+    vol_prev = sum(float(x.get("volume") or 0) for x in daily[-10:-5]) / max(1, len(daily[-10:-5]))
+    vol_delta_pct = ((vol_recent / vol_prev - 1) * 100) if vol_prev else None
+    lower_volume = bool(vol_delta_pct is not None and vol_delta_pct <= -8)
+    volume_price = tech.get("volume_price") if tech else volume_price_relation(daily, None)
+    small_volume_hold = bool(volume_price in {"量縮價穩", "量縮價漲"} or (not_break and lower_volume))
+
+    same_zone_push = False
+    if close and prev_low:
+        same_zone_push = bool(close >= prev_low * 1.02 and small_volume_hold)
+
+    foreign_10d = _sum_recent(chip_series, "foreign", 10)
+    foreign_5d = _sum_recent(chip_series, "foreign", 5)
+    foreign_stopping = bool(
+        foreign_10d is None
+        or foreign_10d >= 0
+        or (foreign_5d is not None and foreign_5d >= 0)
+        or (chip_series and float(chip_series[-1].get("foreign") or 0) >= 0)
+    )
+
+    margin_10d = _last_delta(margin_series, "margin_balance", 10)
+    margin_20d = _last_delta(margin_series, "margin_balance", 20)
+    margin_not_hot = bool(margin_10d is None or margin_10d <= 0 or (not_break and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35)))
+    margin_masked = bool(margin_10d is not None and margin_10d > 0 and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35) and not_break)
+
+    score = 0
+    if not_break:
+        score += 28
+    if small_volume_hold:
+        score += 26
+    if same_zone_push:
+        score += 16
+    if foreign_stopping:
+        score += 15
+    if margin_not_hot:
+        score += 15
+
+    if score >= 78:
+        level, cls = "B2賣壓疑似消失", "pos"
+    elif score >= 58:
+        level, cls = "B2賣壓收斂中", ""
+    else:
+        level, cls = "B2賣壓未確認", "neg"
+
+    margin_text = "融資資料不足"
+    if margin_10d is not None:
+        margin_text = f"融資10日 {margin_10d:+,.0f} 張"
+        if margin_masked:
+            margin_text += "（小增但價格不破，列為觀察）"
+
+    items = [
+        ("價不破低", not_break, f"近10日低點 {fmt_num(recent_low)} / 前段低點 {fmt_num(prev_low)}"),
+        ("量縮仍能撐住", small_volume_hold, f"{volume_price}；5日均量 {fmt_num(vol_delta_pct, 1)}%"),
+        ("同區間小量推升", same_zone_push, f"收盤 {fmt_num(close)} 仍在前低上方"),
+        ("外資賣壓停止", foreign_stopping, f"外資10日 {fmt_num(foreign_10d, 0)} 張 / 5日 {fmt_num(foreign_5d, 0)} 張"),
+        ("融資沒有失控", margin_not_hot, margin_text),
+    ]
+    summary = f"{level}｜價不破低={'是' if not_break else '否'}｜{volume_price}｜外資10日 {fmt_num(foreign_10d,0)}張｜{margin_text}"
+    line = "；".join(f"{name}{'✅' if ok else '❌'}（{note}）" for name, ok, note in items)
+    return {"level": level, "class": cls, "summary": summary, "line": line, "items": items, "score": score}
 
 
 def holding_payload(series: list[dict]) -> list[dict]:
@@ -3386,11 +3508,19 @@ def build_today_action_card(stocks: list[dict]) -> str:
         gap = tech.get("entry_gap") if tech else None
         if gap is None:
             continue
+        sid = s.get("id", "")
+        daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily") if sid else []
+        chip_series = read_chip_series(sid) if sid else []
+        pressure = pressure_absorption_analysis(sid, daily, chip_series, read_margin_series(sid), tech) if sid else {}
+        reason_text = basket_reason(s, tech, chip_series, read_holding_summary(sid))
+        pressure_level = pressure.get("level")
+        if pressure_level and pressure_level not in reason_text:
+            reason_text += f" / {pressure_level}"
         items.append({
-            "sid": s.get("id", ""),
+            "sid": sid,
             "name": s.get("name", ""),
             "basket": basket_label(classify_basket(s)),
-            "reason": basket_reason(s, tech),
+            "reason": reason_text,
             "gap": gap,
             "close": tech.get("close"),
             "score": _to_float(s.get("score", "0")),
@@ -3404,11 +3534,23 @@ def build_today_action_card(stocks: list[dict]) -> str:
     return f"""
 <div class="card">
   <div class="section-label">今日可執行清單</div>
-  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；距離較近但還沒到位的放在等待區。</div>
+  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；同時看 B2 賣壓吸收：價不再下探、量縮仍能撐住、外資賣壓縮小或轉買、融資沒有失控。</div>
   <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
   {build_action_rows(executable[:5], "今日沒有收盤落在買點 ±3% 內的標的。")}
   <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
   {build_action_rows(waiting[:5], "目前沒有接近但尚未到位的候選。")}
+</div>"""
+
+
+def build_b2_method_card() -> str:
+    return """
+<div class="card">
+  <div class="section-label">M大 B2 賣壓吸收主軸</div>
+  <div class="grid grid-3" style="margin-top:10px">
+    <div class="info-cell"><div class="k">價格</div><div class="v">不再下探</div><div class="chip-line">回檔不破前低或重要均線，同區間反覆測試仍守住。</div></div>
+    <div class="info-cell"><div class="k">量能</div><div class="v">少量能抵抗</div><div class="chip-line">同樣價格區間，用比前段更小的量就能撐住或推回。</div></div>
+    <div class="info-cell"><div class="k">籌碼</div><div class="v">外資/融資互證</div><div class="chip-line">外資賣壓縮小或轉買，融資不暴增；若融資小增但價不破，列入主力偽裝融資觀察。</div></div>
+  </div>
 </div>"""
 
 
@@ -3591,6 +3733,7 @@ def build_index_page(reports: list[dict]) -> str:
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">每個交易日自動更新 · 最新報告：{date_str}</div>
   {build_market_light_card(latest, latest.get("stocks", []))}
+  {build_b2_method_card()}
   {build_today_action_card(latest.get("stocks", []))}
   {build_sell_alert_card(latest.get("stocks", []))}
   {filter_card}
@@ -3773,15 +3916,17 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
     b1_score = 45 if b1_ok else 20 if latest_major is not None or chip_series else 0
 
     volume_price = tech.get("volume_price") if tech else "資料不足"
+    pressure = pressure_absorption_analysis(s.get("id", ""), rows, chip_series, read_margin_series(s.get("id", "")), tech)
     not_break = bool(close and ma20 and close >= ma20 * 0.97)
     retail_not_hot = retail_4w_delta is None or retail_4w_delta <= 1.0
-    b2_ok = volume_price in {"量縮價穩", "量縮價漲", "均量上彎"} and not_break and retail_not_hot
-    b2_score = 15 if b2_ok else 8 if volume_price in {"量價未表態", "量能資料不足"} and not_break else 0
+    b2_ok = pressure.get("score", 0) >= 78 and retail_not_hot
+    b2_watch = pressure.get("score", 0) >= 58 or (volume_price in {"量縮價穩", "量縮價漲", "均量上彎"} and not_break)
+    b2_score = 15 if b2_ok else 8 if b2_watch else 0
 
     items = [
         ("A：MA120/MA240上彎", "ok" if a_ok else "warn" if ma120_up or ma240_up or a_near else "bad"),
         ("B1籌碼未離開", "ok" if b1_ok else "warn" if b1_score else "bad"),
-        ("B2賣壓小", "ok" if b2_ok else "warn" if b2_score else "bad"),
+        ("B2賣壓吸收", "ok" if b2_ok else "warn" if b2_score else "bad"),
     ]
     score = a_score + b1_score + b2_score
     return {
@@ -3790,7 +3935,8 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
         "a_score": a_score,
         "b1_score": b1_score,
         "b2_score": b2_score,
-        "volume_line": f"{volume_price}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足",
+        "volume_line": pressure.get("summary") or (f"{volume_price}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足"),
+        "pressure": pressure,
         "chip_line": f"外資10日 {fmt_num(chip.get('foreign_10d'), 0)} 張｜主力10日 {fmt_num(chip.get('total_10d'), 0)} 張｜大戶4週 {fmt_num(major_4w_delta, 2)}%｜散戶4週 {fmt_num(retail_4w_delta, 2)}%",
     }
 
@@ -3833,7 +3979,7 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
         "reason": " ".join(checks),
         "risk_reason": " ".join(risk_checks),
         "chip_line": abc["chip_line"],
-        "volume_line": observation["line"],
+        "volume_line": abc.get("volume_line") or observation["line"],
         "sort": (0 if action == "重點觀察" else 1 if action == "觀察中" else 2 if action == "暫緩觀察" else 3, -score),
     }
 
@@ -3866,7 +4012,7 @@ def build_mda_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大選股</div>
-  <div class="page-sub">最新報告：{esc(date_str)} · 只做 A / B1 聰明錢觀察清單，不給買進訊號</div>
+  <div class="page-sub">最新報告：{esc(date_str)} · A 長多結構 / B1 聰明錢 / B2 價量籌碼互證；重點看賣壓是否真的消失</div>
   <div class="card" style="display:none">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
@@ -3884,6 +4030,7 @@ def build_mda_page(reports: list[dict]) -> str:
   </div>
   <div class="card">
     <div class="section-label">候選清單</div>
+    <div class="strategy-note" style="margin-bottom:12px">B2 不只看「量縮」兩個字，而是把過往股價、外資買賣超、融資餘額與成交量放在同一條時間軸：價不破低、少量能推回、外資賣壓縮小、融資不失控，才視為賣壓正在消失。</div>
     <div style="overflow-x:auto">
       <table class="stock-table">
         <thead><tr><th>個股</th><th>觀察等級</th><th>收盤</th><th>值得觀察的跡象</th><th>主要風險</th><th>ABC拆分</th></tr></thead>
@@ -4498,6 +4645,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     detrend_gap = ((close / detrend_120 - 1) * 100) if close and detrend_120 else None
     volume_price = tech.get("volume_price", "資料不足")
     volume_basis = tech.get("volume_price_basis", "資料不足")
+    pressure = abc.get("pressure") or pressure_absorption_analysis(stock_id, daily, chip_series, read_margin_series(stock_id), tech)
     synced_charts = mda_lightweight_chart_panel(stock_id, daily, holding_series, chip_series)
     ma120_slope = slopes.get("ma120")
     ma240_slope = slopes.get("ma240")
@@ -4541,7 +4689,8 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     b2_block = (
         _mda_line("量價", esc(volume_price))
         + _mda_line("判斷依據", esc(volume_basis))
-        + _mda_line("賣壓觀察", "量縮價穩或縮量不破線，代表賣壓有機會變小。" if abc.get("b2_score", 0) >= 8 else "量價尚未證明賣壓收斂，先只觀察。")
+        + _mda_line("價量籌碼關聯", esc(pressure.get("summary", "資料不足")), pressure.get("class", ""))
+        + _mda_line("賣壓觀察", esc(pressure.get("line", "量價尚未證明賣壓收斂，先只觀察。")))
     )
     chip_ok = (
         (money.get("major_4w") is not None and money.get("major_4w") > 0)
@@ -4586,6 +4735,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     next_watch = (
         _mda_line("籌碼答案", chip_answer, chip_answer_cls)
         + _mda_line("量價答案", price_answer, price_answer_cls)
+        + _mda_line("B2追蹤法", "接下來看同一價格區間是否仍能量縮不破低；外資賣超縮小或轉買、融資不暴增時，才把它視為賣壓真的消失。")
     )
 
     body = f"""
@@ -4601,7 +4751,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
   </div>
   <div class="card"><div class="section-label">⑤ 接下來觀察什麼</div><div class="telegram-phase">{next_watch}</div></div>
   <div class="card">
-    <div class="section-label">日K / 籌碼 / 股權結構連動圖</div>
+    <div class="section-label">日K / 外資 / 融資 / 股權結構連動圖</div>
     {synced_charts}
   </div>
 </div>"""
