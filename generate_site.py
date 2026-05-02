@@ -290,24 +290,25 @@ def _fetch_json(url: str):
         return json.loads(resp.read().decode("utf-8-sig"))
 
 
-def load_stock_market_map() -> dict[str, str]:
-    """Load listed/OTC market map from official daily quote APIs, with a local cache fallback."""
+def load_stock_reference_map() -> dict[str, dict]:
+    """Load listed/OTC market and name map from official daily quote APIs."""
     if MARKET_CACHE_PATH.exists():
         try:
             cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
             updated_at = datetime.fromisoformat(cache.get("updated_at", "1970-01-01T00:00:00"))
-            if datetime.now() - updated_at < timedelta(days=1):
-                return cache.get("markets", {})
+            stocks = cache.get("stocks")
+            if stocks and datetime.now() - updated_at < timedelta(days=1):
+                return stocks
         except Exception:
             pass
 
-    markets: dict[str, str] = {}
+    stocks: dict[str, dict] = {}
     errors: list[str] = []
     try:
         for row in _fetch_json(TWSE_STOCK_DAY_ALL_URL):
             code = str(row.get("Code", "")).strip()
             if re.fullmatch(r"\d{4}", code):
-                markets[code] = "上市"
+                stocks[code] = {"market": "上市", "name": clean_stock_name(row.get("Name", ""))}
     except Exception as exc:
         errors.append(f"TWSE {exc}")
 
@@ -315,26 +316,39 @@ def load_stock_market_map() -> dict[str, str]:
         for row in _fetch_json(TPEX_DAILY_CLOSE_URL):
             code = str(row.get("SecuritiesCompanyCode", "")).strip()
             if re.fullmatch(r"\d{4}", code):
-                markets[code] = "上櫃"
+                stocks[code] = {"market": "上櫃", "name": clean_stock_name(row.get("CompanyName", ""))}
     except Exception as exc:
         errors.append(f"TPEX {exc}")
 
-    if markets:
+    if stocks:
+        markets = {code: item.get("market", "") for code, item in stocks.items()}
         LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
         MARKET_CACHE_PATH.write_text(
-            json.dumps({"updated_at": datetime.now().isoformat(timespec="seconds"), "markets": markets}, ensure_ascii=False, indent=2),
+            json.dumps(
+                {"updated_at": datetime.now().isoformat(timespec="seconds"), "markets": markets, "stocks": stocks},
+                ensure_ascii=False,
+                indent=2,
+            ),
             encoding="utf-8",
         )
-        print(f"   [Market] loaded {len(markets)} listed/OTC codes", flush=True)
-        return markets
+        print(f"   [Market] loaded {len(stocks)} listed/OTC codes", flush=True)
+        return stocks
 
     if MARKET_CACHE_PATH.exists():
         cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
         print(f"   [Market] using cached market map after fetch failure: {'; '.join(errors)}", flush=True)
-        return cache.get("markets", {})
+        stocks = cache.get("stocks")
+        if stocks:
+            return stocks
+        return {code: {"market": market, "name": ""} for code, market in cache.get("markets", {}).items()}
 
     print(f"   [Market][WARN] market map unavailable, skip listed/OTC filter: {'; '.join(errors)}", flush=True)
     return {}
+
+
+def load_stock_market_map() -> dict[str, str]:
+    refs = load_stock_reference_map()
+    return {code: item.get("market", "") for code, item in refs.items()}
 
 
 def filter_listed_otc_reports(reports: list[dict]) -> list[dict]:
@@ -1137,16 +1151,20 @@ def cached_stock_ids() -> set[str]:
 
 def build_stock_query_map(reports: list[dict]) -> dict[str, dict]:
     stock_map = find_latest_stock_map(reports)
-    markets = load_stock_market_map()
+    refs = load_stock_reference_map()
     for sid in sorted(cached_stock_ids()):
         if sid in stock_map:
+            if not stock_map[sid].get("name") and refs.get(sid, {}).get("name"):
+                stock_map[sid]["name"] = refs[sid]["name"]
+            if not stock_map[sid].get("market") and refs.get(sid, {}).get("market"):
+                stock_map[sid]["market"] = refs[sid]["market"]
             stock_map[sid]["query_only"] = False
             continue
-        market = markets.get(sid, "")
+        ref = refs.get(sid, {})
         item = {
             "id": sid,
-            "name": "",
-            "market": market,
+            "name": ref.get("name", ""),
+            "market": ref.get("market", ""),
             "icon": "",
             "status": "個股查詢",
             "score": "─",
