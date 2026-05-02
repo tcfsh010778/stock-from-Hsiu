@@ -1448,10 +1448,10 @@ def pressure_absorption_analysis(
     margin_series: list[dict] | None = None,
     tech: dict | None = None,
 ) -> dict:
-    """Read B2 through price, volume, foreign flow and margin pressure.
+    """Read B2 through long trend, chip behavior, deduction context and rebound quality.
 
-    M大祕密花園的重點不是單日訊號，而是賣方丟貨後價格還不破低，
-    並且買方用更少的量就能把價格維持住或推回同一區間。
+    M大祕密花園的公開檢核重點不是單日訊號，而是先拉長時間尺度，
+    再看下跌/拉升過程籌碼、20日扣抵量/240扣抵價，以及止跌回均線的速度。
     """
     daily = daily if daily is not None else aggregate_ohlcv(read_price_history(stock_id), "daily")
     chip_series = chip_series if chip_series is not None else read_chip_series(stock_id)
@@ -1473,6 +1473,14 @@ def pressure_absorption_analysis(
     recent_low = min(x.get("low") for x in recent if x.get("low") is not None)
     prev_low = min(x.get("low") for x in prev if x.get("low") is not None)
     close = daily[-1].get("close")
+    ma20 = tech.get("ma20") if tech else None
+    ma60 = tech.get("ma60") if tech else None
+    ma120 = tech.get("ma120") if tech else None
+    ma240 = tech.get("ma240") if tech else None
+    slopes = tech.get("ma_slopes") or {}
+    ma120_up = slopes.get("ma120") is not None and slopes.get("ma120") > 0
+    ma240_up = slopes.get("ma240") is not None and slopes.get("ma240") > 0
+    long_trend_ok = bool(close and ((ma120 and ma240 and close > ma120 and close > ma240) or ma120_up or ma240_up))
     not_break = bool(recent_low is not None and prev_low is not None and recent_low >= prev_low * 0.98)
 
     vol_recent = sum(float(x.get("volume") or 0) for x in recent[-5:]) / max(1, len(recent[-5:]))
@@ -1486,31 +1494,105 @@ def pressure_absorption_analysis(
     if close and prev_low:
         same_zone_push = bool(close >= prev_low * 1.02 and small_volume_hold)
 
+    holding_series = read_holding_series(stock_id) if stock_id else []
+    major_4w_delta = retail_4w_delta = people_4w_delta = None
+    if len(holding_series) >= 5:
+        last_h, base_h = holding_series[-1], holding_series[-5]
+        if last_h.get("major") is not None and base_h.get("major") is not None:
+            major_4w_delta = last_h["major"] - base_h["major"]
+        if last_h.get("retail") is not None and base_h.get("retail") is not None:
+            retail_4w_delta = last_h["retail"] - base_h["retail"]
+        if last_h.get("total_people") is not None and base_h.get("total_people") is not None:
+            people_4w_delta = last_h["total_people"] - base_h["total_people"]
+    long_chip_ok = bool(
+        (major_4w_delta is not None and major_4w_delta > 0)
+        or (retail_4w_delta is not None and retail_4w_delta < 0)
+        or (people_4w_delta is not None and people_4w_delta < 0)
+    )
+
     foreign_10d = _sum_recent(chip_series, "foreign", 10)
     foreign_5d = _sum_recent(chip_series, "foreign", 5)
+    total_10d = _sum_recent(chip_series, "total", 10)
     foreign_stopping = bool(
         foreign_10d is None
         or foreign_10d >= 0
         or (foreign_5d is not None and foreign_5d >= 0)
         or (chip_series and float(chip_series[-1].get("foreign") or 0) >= 0)
     )
+    chip_by_date = {x.get("date"): x for x in chip_series if x.get("date")}
+    down_total = up_total = down_foreign = up_foreign = 0.0
+    for row in daily[-20:]:
+        open_price = row.get("open")
+        close_price = row.get("close")
+        chip = chip_by_date.get(row.get("date"), {})
+        total = float(chip.get("total") or 0)
+        foreign = float(chip.get("foreign") or 0)
+        if open_price is not None and close_price is not None and close_price < open_price:
+            down_total += total
+            down_foreign += foreign
+        elif open_price is not None and close_price is not None and close_price >= open_price:
+            up_total += total
+            up_foreign += foreign
+    short_chip_ok = bool((up_total >= 0 and down_total >= -abs(up_total) * 1.3) or (up_foreign >= 0 and down_foreign >= -abs(up_foreign) * 1.3))
 
     margin_10d = _last_delta(margin_series, "margin_balance", 10)
     margin_20d = _last_delta(margin_series, "margin_balance", 20)
     margin_not_hot = bool(margin_10d is None or margin_10d <= 0 or (not_break and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35)))
     margin_masked = bool(margin_10d is not None and margin_10d > 0 and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35) and not_break)
 
+    avg_vol20 = sum(float(x.get("volume") or 0) for x in daily[-20:]) / 20 if len(daily) >= 20 else None
+    deduct_vol20 = float(daily[-21].get("volume") or 0) if len(daily) > 20 else None
+    volume_deduction_ok = bool(
+        deduct_vol20 is not None
+        and avg_vol20
+        and (deduct_vol20 <= avg_vol20 * 1.15 or vol_recent >= deduct_vol20 * 0.75)
+    )
+    deduct_price240 = daily[-241].get("close") if len(daily) > 240 else None
+    price_deduction_ok = bool(close and deduct_price240 and close > deduct_price240)
+
+    red_k_count = sum(1 for x in recent if x.get("close") is not None and x.get("open") is not None and x["close"] >= x["open"])
+    lower_shadow_count = 0
+    for x in recent:
+        open_price = x.get("open")
+        close_price = x.get("close")
+        low_price = x.get("low")
+        high_price = x.get("high")
+        if None in (open_price, close_price, low_price, high_price):
+            continue
+        body = abs(close_price - open_price)
+        lower_shadow = min(open_price, close_price) - low_price
+        candle_range = high_price - low_price
+        if candle_range > 0 and lower_shadow >= max(body * 0.7, candle_range * 0.18):
+            lower_shadow_count += 1
+    stand_back_ma = bool(close and ((ma20 and close >= ma20) or (ma60 and close >= ma60)))
+    recent_high = max(x.get("high") for x in recent if x.get("high") is not None)
+    prev_high = max(x.get("high") for x in prev if x.get("high") is not None)
+    slow_break_high = bool(recent_high and prev_high and recent_high >= prev_high * 0.995)
+    rebound_quality = bool(stand_back_ma and (red_k_count >= 5 or lower_shadow_count >= 3 or slow_break_high))
+
     score = 0
+    if long_trend_ok:
+        score += 12
+    if long_chip_ok:
+        score += 12
     if not_break:
-        score += 28
+        score += 18
     if small_volume_hold:
-        score += 26
-    if same_zone_push:
         score += 16
+    if same_zone_push:
+        score += 10
+    if short_chip_ok:
+        score += 10
     if foreign_stopping:
-        score += 15
+        score += 8
     if margin_not_hot:
-        score += 15
+        score += 8
+    if volume_deduction_ok:
+        score += 8
+    if price_deduction_ok:
+        score += 8
+    if rebound_quality:
+        score += 12
 
     if score >= 78:
         level, cls = "B2賣壓疑似消失", "pos"
@@ -1526,13 +1608,19 @@ def pressure_absorption_analysis(
             margin_text += "（小增但價格不破，列為觀察）"
 
     items = [
+        ("長週期轉多/長多", long_trend_ok, f"MA120 {fmt_num(ma120)} / MA240 {fmt_num(ma240)}；斜率 {fmt_num(slopes.get('ma120'))}/{fmt_num(slopes.get('ma240'))}"),
+        ("主力長期動態", long_chip_ok, f"大戶4週 {fmt_num(major_4w_delta, 2)}% / 散戶4週 {fmt_num(retail_4w_delta, 2)}% / 股東 {fmt_num(people_4w_delta, 0)}人"),
         ("價不破低", not_break, f"近10日低點 {fmt_num(recent_low)} / 前段低點 {fmt_num(prev_low)}"),
         ("量縮仍能撐住", small_volume_hold, f"{volume_price}；5日均量 {fmt_num(vol_delta_pct, 1)}%"),
         ("同區間小量推升", same_zone_push, f"收盤 {fmt_num(close)} 仍在前低上方"),
-        ("外資賣壓停止", foreign_stopping, f"外資10日 {fmt_num(foreign_10d, 0)} 張 / 5日 {fmt_num(foreign_5d, 0)} 張"),
+        ("跌升過程籌碼", short_chip_ok, f"跌日主力 {fmt_num(down_total, 0)} 張 / 紅K主力 {fmt_num(up_total, 0)} 張"),
+        ("外資賣壓停止", foreign_stopping, f"外資10日 {fmt_num(foreign_10d, 0)} 張 / 5日 {fmt_num(foreign_5d, 0)} 張 / 主力10日 {fmt_num(total_10d, 0)} 張"),
         ("融資沒有失控", margin_not_hot, margin_text),
+        ("20日扣抵量有利", volume_deduction_ok, f"20日前量 {fmt_num((deduct_vol20 or 0)/1000, 0)} 張 / 近5日均量 {fmt_num(vol_recent/1000, 0)} 張"),
+        ("240扣抵價有利", price_deduction_ok, f"240日前收盤 {fmt_num(deduct_price240)} / 現價 {fmt_num(close)}"),
+        ("止跌回升品質", rebound_quality, f"紅K {red_k_count}/10；下影 {lower_shadow_count}/10；站回均線={'是' if stand_back_ma else '否'}；過前高={'是' if slow_break_high else '否'}"),
     ]
-    summary = f"{level}｜價不破低={'是' if not_break else '否'}｜{volume_price}｜外資10日 {fmt_num(foreign_10d,0)}張｜{margin_text}"
+    summary = f"{level}｜長週期={'是' if long_trend_ok else '否'}｜價不破低={'是' if not_break else '否'}｜{volume_price}｜外資10日 {fmt_num(foreign_10d,0)}張｜{margin_text}"
     line = "；".join(f"{name}{'✅' if ok else '❌'}（{note}）" for name, ok, note in items)
     return {"level": level, "class": cls, "summary": summary, "line": line, "items": items, "score": score}
 
@@ -3584,7 +3672,7 @@ def build_today_action_card(stocks: list[dict]) -> str:
     return f"""
 <div class="card">
   <div class="section-label">今日可執行清單</div>
-  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；同時看 B2 賣壓吸收：價不再下探、量縮仍能撐住、外資賣壓縮小或轉買、融資沒有失控。</div>
+  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；同時看 B2 賣壓吸收：長週期是否有利、下跌/拉升籌碼是否轉好、20日量與240價扣抵是否有利、止跌後能否快速站回均線。</div>
   <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
   {build_action_rows(executable[:5], "今日沒有收盤落在買點 ±3% 內的標的。")}
   <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
@@ -3596,10 +3684,11 @@ def build_b2_method_card() -> str:
     return """
 <div class="card">
   <div class="section-label">M大 B2 賣壓吸收主軸</div>
-  <div class="grid grid-3" style="margin-top:10px">
-    <div class="info-cell"><div class="k">價格</div><div class="v">不再下探</div><div class="chip-line">回檔不破前低或重要均線，同區間反覆測試仍守住。</div></div>
-    <div class="info-cell"><div class="k">量能</div><div class="v">少量能抵抗</div><div class="chip-line">同樣價格區間，用比前段更小的量就能撐住或推回。</div></div>
-    <div class="info-cell"><div class="k">籌碼</div><div class="v">外資/融資互證</div><div class="chip-line">外資賣壓縮小或轉買，融資不暴增；若融資小增但價不破，列入主力偽裝融資觀察。</div></div>
+  <div class="grid grid-2" style="margin-top:10px">
+    <div class="info-cell"><div class="k">1. 拉長尺度</div><div class="v">長多 / 轉長多</div><div class="chip-line">先看 MA120、MA240 與240扣抵價，再看大戶、散戶、股東人數的長期動態。</div></div>
+    <div class="info-cell"><div class="k">2. 跌升籌碼</div><div class="v">下跌賣壓 vs 拉升買盤</div><div class="chip-line">比較黑K/回檔段與紅K/拉升段的外資、主力、大戶短期動態。</div></div>
+    <div class="info-cell"><div class="k">3. 扣抵情境</div><div class="v">20日量 / 240價</div><div class="chip-line">20日前量能與近5日量能比較，240日前價格若低於現價，長均線較有機會轉有利。</div></div>
+    <div class="info-cell"><div class="k">4. 止跌品質</div><div class="v">快回均線，慢過前高</div><div class="chip-line">止跌後能否站回均線、紅K是否變多、下影線是否常出現、是否慢慢過前高。</div></div>
   </div>
 </div>"""
 
@@ -4785,7 +4874,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     next_watch = (
         _mda_line("籌碼答案", chip_answer, chip_answer_cls)
         + _mda_line("量價答案", price_answer, price_answer_cls)
-        + _mda_line("B2追蹤法", "接下來看同一價格區間是否仍能量縮不破低；外資賣超縮小或轉買、融資不暴增時，才把它視為賣壓真的消失。")
+        + _mda_line("B2追蹤法", "先拉長看是否長多或轉長多，再拆下跌/拉升段的主力與大戶動態；同時追 20日扣抵量、240扣抵價，以及止跌後是否快速站回均線、紅K與下影線是否變多、能否慢慢過前高。")
     )
 
     body = f"""
