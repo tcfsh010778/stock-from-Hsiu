@@ -1548,6 +1548,19 @@ def _last_delta(rows: list[dict], key: str, span: int = 10) -> float | None:
         return None
 
 
+def holding_delta(rows: list[dict], key: str, weeks: int) -> float | None:
+    if len(rows) < weeks + 1:
+        return None
+    latest = rows[-1].get(key)
+    base = rows[-(weeks + 1)].get(key)
+    if latest is None or base is None:
+        return None
+    try:
+        return float(latest) - float(base)
+    except Exception:
+        return None
+
+
 def _sum_recent(rows: list[dict], key: str, span: int = 10) -> float | None:
     vals = [x.get(key) for x in rows[-span:] if x.get(key) is not None]
     if not vals:
@@ -1630,19 +1643,26 @@ def pressure_absorption_analysis(
             same_zone_volume_note = f"同價位前段均量 {fmt_num(prior_zone_vol/1000, 0)} 張 / 後段 {fmt_num(recent_zone_vol/1000, 0)} 張"
 
     holding_series = read_holding_series(stock_id) if stock_id else []
-    major_4w_delta = retail_4w_delta = people_4w_delta = None
-    if len(holding_series) >= 5:
-        last_h, base_h = holding_series[-1], holding_series[-5]
-        if last_h.get("major") is not None and base_h.get("major") is not None:
-            major_4w_delta = last_h["major"] - base_h["major"]
-        if last_h.get("retail") is not None and base_h.get("retail") is not None:
-            retail_4w_delta = last_h["retail"] - base_h["retail"]
-        if last_h.get("total_people") is not None and base_h.get("total_people") is not None:
-            people_4w_delta = last_h["total_people"] - base_h["total_people"]
+    major_4w_delta = holding_delta(holding_series, "major", 4)
+    major_8w_delta = holding_delta(holding_series, "major", 8)
+    retail_4w_delta = holding_delta(holding_series, "retail", 4)
+    retail_8w_delta = holding_delta(holding_series, "retail", 8)
+    people_4w_delta = holding_delta(holding_series, "total_people", 4)
+    people_8w_delta = holding_delta(holding_series, "total_people", 8)
+    major_accumulating = bool(
+        (major_4w_delta is not None and major_4w_delta >= 0.5)
+        or (major_8w_delta is not None and major_8w_delta >= 1.0)
+    )
+    retail_support = bool(
+        (retail_4w_delta is not None and retail_4w_delta <= -0.3)
+        or (retail_8w_delta is not None and retail_8w_delta <= -0.8)
+    )
+    people_support = bool(
+        (people_4w_delta is not None and people_4w_delta < 0)
+        or (people_8w_delta is not None and people_8w_delta < 0)
+    )
     long_chip_ok = bool(
-        (major_4w_delta is not None and major_4w_delta > 0)
-        or (retail_4w_delta is not None and retail_4w_delta < 0)
-        or (people_4w_delta is not None and people_4w_delta < 0)
+        major_accumulating and (retail_support or people_support)
     )
 
     foreign_10d = _sum_recent(chip_series, "foreign", 10)
@@ -1754,7 +1774,7 @@ def pressure_absorption_analysis(
 
     items = [
         ("長週期轉多/長多", long_trend_ok, f"MA120 {fmt_num(ma120)} / MA240 {fmt_num(ma240)}；斜率 {fmt_num(slopes.get('ma120'))}/{fmt_num(slopes.get('ma240'))}"),
-        ("主力長期動態", long_chip_ok, f"大戶4週 {fmt_num(major_4w_delta, 2)}% / 散戶4週 {fmt_num(retail_4w_delta, 2)}% / 股東 {fmt_num(people_4w_delta, 0)}人"),
+        ("主力長期動態", long_chip_ok, f"大戶4週 {fmt_num(major_4w_delta, 2)}% / 8週 {fmt_num(major_8w_delta, 2)}%；散戶4週 {fmt_num(retail_4w_delta, 2)}% / 8週 {fmt_num(retail_8w_delta, 2)}%；股東4週 {fmt_num(people_4w_delta, 0)}人 / 8週 {fmt_num(people_8w_delta, 0)}人"),
         ("價不破低", not_break, f"近10日低點 {fmt_num(recent_low)} / 前段低點 {fmt_num(prev_low)}"),
         ("量縮仍能撐住", small_volume_hold, f"{volume_price}；5日均量 {fmt_num(vol_delta_pct, 1)}%"),
         ("同區間小量推升", same_zone_push, same_zone_volume_note),
@@ -4190,26 +4210,31 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
 
     chip = chip_trend_metrics(chip_series, holding)
     holding_series = read_holding_series(s.get("id", ""))
-    major_4w_delta = None
-    retail_4w_delta = None
+    major_4w_delta = holding_delta(holding_series, "major", 4)
+    major_8w_delta = holding_delta(holding_series, "major", 8)
+    retail_4w_delta = holding_delta(holding_series, "retail", 4)
+    retail_8w_delta = holding_delta(holding_series, "retail", 8)
+    people_4w_delta = holding_delta(holding_series, "total_people", 4)
+    people_8w_delta = holding_delta(holding_series, "total_people", 8)
     latest_major = None
-    if len(holding_series) >= 5:
+    if holding_series:
         latest_major = holding_series[-1].get("major")
-        latest_retail = holding_series[-1].get("retail")
-        base_major = holding_series[-5].get("major")
-        base_retail = holding_series[-5].get("retail")
-        if latest_major is not None and base_major is not None:
-            major_4w_delta = latest_major - base_major
-        if latest_retail is not None and base_retail is not None:
-            retail_4w_delta = latest_retail - base_retail
     elif holding:
         latest_major = (holding.get("latest") or {}).get("major")
-    b1_ok = (
-        (major_4w_delta is not None and major_4w_delta > 0)
-        or (latest_major is not None and latest_major >= 45)
-        or (chip.get("total_10d") is not None and chip.get("total_10d") > 0 and chip.get("foreign_10d", 0) > 0)
+    major_accumulating = (
+        (major_4w_delta is not None and major_4w_delta >= 0.5)
+        or (major_8w_delta is not None and major_8w_delta >= 1.0)
     )
-    b1_score = 45 if b1_ok else 20 if latest_major is not None or chip_series else 0
+    retail_support = (
+        (retail_4w_delta is not None and retail_4w_delta <= -0.3)
+        or (retail_8w_delta is not None and retail_8w_delta <= -0.8)
+    )
+    people_support = (
+        (people_4w_delta is not None and people_4w_delta < 0)
+        or (people_8w_delta is not None and people_8w_delta < 0)
+    )
+    b1_ok = bool(major_accumulating)
+    b1_score = 45 if b1_ok and (retail_support or people_support) else 38 if b1_ok else 20 if latest_major is not None else 0
 
     volume_price = tech.get("volume_price") if tech else "資料不足"
     pressure = pressure_absorption_analysis(s.get("id", ""), rows, chip_series, read_margin_series(s.get("id", "")), tech)
@@ -4234,7 +4259,7 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
         "a_phase": "已發動長多" if a_ok else "未發動空轉多觀察" if a_dormant else "轉強觀察" if a_near else "A未成立",
         "volume_line": pressure.get("summary") or (f"{volume_price}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足"),
         "pressure": pressure,
-        "chip_line": f"外資10日 {fmt_num(chip.get('foreign_10d'), 0)} 張｜主力10日 {fmt_num(chip.get('total_10d'), 0)} 張｜大戶4週 {fmt_num(major_4w_delta, 2)}%｜散戶4週 {fmt_num(retail_4w_delta, 2)}%｜60日區間 {fmt_num(range60, 1)}%",
+        "chip_line": f"大戶4週 {fmt_num(major_4w_delta, 2)}%｜8週 {fmt_num(major_8w_delta, 2)}%；散戶4週 {fmt_num(retail_4w_delta, 2)}%｜8週 {fmt_num(retail_8w_delta, 2)}%；股東4週 {fmt_num(people_4w_delta, 0)}人｜8週 {fmt_num(people_8w_delta, 0)}人；主力10日 {fmt_num(chip.get('total_10d'), 0)} 張",
     }
 
 
@@ -4401,7 +4426,7 @@ def build_mda_auto_diagnosis(
     prompt = "\n".join([
         f"請依 M大 ABC 架構複判 {stock_id} {stock_name}：",
         f"A：{a_phase}，A分 {fmt_num(abc.get('a_score'), 0)}。",
-        f"B1：{money.get('reading', '資料不足')}；外資10日 {fmt_num(money.get('foreign_10d'), 0)} 張，主力10日 {fmt_num(money.get('force_10d'), 0)} 張，大戶4週 {fmt_num(money.get('major_4w'), 2)}%，散戶4週 {fmt_num(money.get('retail_4w'), 2)}%。",
+        f"B1：{money.get('reading', '資料不足')}；主力10日 {fmt_num(money.get('force_10d'), 0)} 張，大戶4週 {fmt_num(money.get('major_4w'), 2)}%、8週 {fmt_num(money.get('major_8w'), 2)}%，散戶4週 {fmt_num(money.get('retail_4w'), 2)}%、8週 {fmt_num(money.get('retail_8w'), 2)}%。",
         f"B2：{pressure.get('summary', '資料不足')}。",
         f"程式初判：{verdict}；操作紀律：{action}",
         "請看下方日K、外資、融資、大戶/散戶/股東人數連動圖，判斷主力是否尚未離開、賣壓是否真的消失，以及目前應該買進、觀察或排除。",
@@ -4435,25 +4460,34 @@ def build_mda_auto_diagnosis(
 
 def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) -> dict:
     holding_series = read_holding_series(stock_id)
-    major_4w = retail_4w = people_4w = None
-    if len(holding_series) >= 5:
-        last, base = holding_series[-1], holding_series[-5]
-        if last.get("major") is not None and base.get("major") is not None:
-            major_4w = last["major"] - base["major"]
-        if last.get("retail") is not None and base.get("retail") is not None:
-            retail_4w = last["retail"] - base["retail"]
-        if last.get("total_people") is not None and base.get("total_people") is not None:
-            people_4w = last["total_people"] - base["total_people"]
+    major_4w = holding_delta(holding_series, "major", 4)
+    major_8w = holding_delta(holding_series, "major", 8)
+    retail_4w = holding_delta(holding_series, "retail", 4)
+    retail_8w = holding_delta(holding_series, "retail", 8)
+    people_4w = holding_delta(holding_series, "total_people", 4)
+    people_8w = holding_delta(holding_series, "total_people", 8)
     h_latest = (holding.get("latest") or {}) if holding else {}
     foreign_10d = sum(float(x.get("foreign") or 0) for x in chip_series[-10:])
     force_10d = sum(float(x.get("total") or 0) for x in chip_series[-10:])
+    major_accumulating = (
+        (major_4w is not None and major_4w >= 0.5)
+        or (major_8w is not None and major_8w >= 1.0)
+    )
+    retail_support = (
+        (retail_4w is not None and retail_4w <= -0.3)
+        or (retail_8w is not None and retail_8w <= -0.8)
+    )
+    people_support = (
+        (people_4w is not None and people_4w < 0)
+        or (people_8w is not None and people_8w < 0)
+    )
     good = (
-        (major_4w is not None and major_4w > 0)
-        and (retail_4w is None or retail_4w <= 0)
+        major_accumulating
+        and (retail_support or people_support)
     )
     bad = (
-        (major_4w is not None and major_4w < 0)
-        and (retail_4w is not None and retail_4w > 0)
+        (major_4w is not None and major_4w < -0.5)
+        and (retail_4w is not None and retail_4w > 0.5)
     )
     if good:
         reading = "大戶增加、散戶減少，較接近聰明錢結構"
@@ -4466,8 +4500,11 @@ def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) ->
         cls = ""
     return {
         "major_4w": major_4w,
+        "major_8w": major_8w,
         "retail_4w": retail_4w,
+        "retail_8w": retail_8w,
         "people_4w": people_4w,
+        "people_8w": people_8w,
         "latest_major": h_latest.get("major"),
         "latest_retail": h_latest.get("retail"),
         "foreign_10d": foreign_10d,
@@ -5070,7 +5107,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
         + _mda_line("A判讀", "長多已發動，等 B2 不追高。" if abc.get("a_phase") == "已發動長多" else "仍未發動，但 240 扣抵與區間不破低可列入空轉多觀察。" if abc.get("a_phase") == "未發動空轉多觀察" else "長均線尚未同時上彎，觀察順位降低。", "pos" if abc.get("a_phase") == "已發動長多" else "warn" if abc.get("a_score", 0) >= 18 else "neg")
     )
     b1_block = (
-        _mda_line("大戶/散戶", f'大戶4週 {fmt_num(money["major_4w"])}%｜散戶4週 {fmt_num(money["retail_4w"])}%｜股東4週 {fmt_num(money["people_4w"], 0)} 人')
+        _mda_line("大戶/散戶", f'大戶4週 {fmt_num(money["major_4w"])}%｜8週 {fmt_num(money["major_8w"])}%｜散戶4週 {fmt_num(money["retail_4w"])}%｜8週 {fmt_num(money["retail_8w"])}%｜股東4週 {fmt_num(money["people_4w"], 0)} 人｜8週 {fmt_num(money["people_8w"], 0)} 人')
         + _mda_line("法人籌碼", f'外資10日 {fmt_num(money["foreign_10d"], 0)} 張｜主力10日 {fmt_num(money["force_10d"], 0)} 張')
         + _mda_line("B1判讀", esc(money["reading"]), money["class"])
     )
@@ -5081,9 +5118,16 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
         + _mda_line("賣壓觀察", esc(pressure.get("line", "量價尚未證明賣壓收斂，先只觀察。")))
     )
     chip_ok = (
-        (money.get("major_4w") is not None and money.get("major_4w") > 0)
-        and (money.get("retail_4w") is None or money.get("retail_4w") <= 0)
-        and (money.get("people_4w") is None or money.get("people_4w") <= 0)
+        (
+            (money.get("major_4w") is not None and money.get("major_4w") >= 0.5)
+            or (money.get("major_8w") is not None and money.get("major_8w") >= 1.0)
+        )
+        and (
+            (money.get("retail_4w") is not None and money.get("retail_4w") <= -0.3)
+            or (money.get("retail_8w") is not None and money.get("retail_8w") <= -0.8)
+            or (money.get("people_4w") is not None and money.get("people_4w") < 0)
+            or (money.get("people_8w") is not None and money.get("people_8w") < 0)
+        )
     )
     chip_bad = (
         (money.get("major_4w") is not None and money.get("major_4w") < 0)
