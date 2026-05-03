@@ -658,12 +658,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",    "index.html",   "首頁"),
-        ("daily",   "daily.html",   "今日選股"),
-        ("mda",     "mda.html",     "M大選股"),
+        ("daily",   "daily.html",   "每日Top20"),
+        ("mda",     "mda.html",     "M大全市場"),
         ("mda_launched", "mda_launched.html", "M大已發動"),
         ("mda_consolidation", "mda_consolidation.html", "M大盤整"),
-        ("basket",  "baskets.html", "雙籃儀表板"),
-        ("signals", "signals.html", "訊號追蹤"),
+        ("basket",  "baskets.html", "SFZ雙籃"),
+        ("signals", "signals.html", "入選追蹤"),
         ("radar",   "radar.html",   "買點雷達"),
         ("stocks",  "stocks.html",  "個股查詢"),
         ("backtest", "backtest.html", "歷史回測"),
@@ -4015,7 +4015,7 @@ def build_index_page(reports: list[dict]) -> str:
     table_card = f"""
 <div class="card">
   <div class="section-label">🏆 今日精選 Top 20</div>
-  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：{date_str} · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看雙籃儀表板 →</a></p>
+  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：{date_str} · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看 SFZ 雙籃 →</a></p>
   {basket_summary}
   {build_stock_table(stocks, compact=True)}
 </div>"""
@@ -4043,7 +4043,7 @@ def build_index_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
-  <div class="page-sub">每個交易日自動更新 · 最新報告：{date_str}</div>
+  <div class="page-sub">今日工作台：把每日 Top20、可執行買點、賣出警示和 M大觀察重點放在同一頁。最新報告：{date_str}</div>
   {build_market_light_card(latest, latest.get("stocks", []))}
   {build_b2_method_card()}
   {build_today_action_card(latest.get("stocks", []))}
@@ -4475,8 +4475,8 @@ def build_mda_page(reports: list[dict]) -> str:
 
     body = f"""
 <div class="container">
-  <div class="page-title">M大選股</div>
-  <div class="page-sub">最新報告：{esc(date_str)} · A 長多結構 / B1 聰明錢 / B2 價量籌碼互證；重點看賣壓是否真的消失</div>
+  <div class="page-title">M大全市場</div>
+  <div class="page-sub">全市場用 M大 ABC 先粗篩，再拆成已發動與盤整觀察。重點不是追高，而是看主力還在不在、賣壓有沒有變小。</div>
   <div class="card" style="display:none">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
@@ -4504,7 +4504,7 @@ def build_mda_page(reports: list[dict]) -> str:
   </div>
   {universe_section}
 </div>"""
-    return html_page("M大選股", "mda", body)
+    return html_page("M大全市場", "mda", body)
 
 
 def build_mda_candidate_detail_page(row: dict) -> str:
@@ -4636,7 +4636,7 @@ def build_mda_launched_page() -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大已發動籃</div>
-  <div class="page-sub">已站上長均線或接近一年高點的股票，再拆成核心已發動與延伸強勢。核心名單偏向量縮、不破低、離 MA120 不過遠；延伸強勢多半適合等回測。目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
+  <div class="page-sub">這裡放已經轉強或正在發動的股票，適合看有沒有回測買點；目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(rows)}</div><div class="metric-label">已發動總數</div></div>
     <div class="metric"><div class="metric-num" style="color:#3fb950">{len(core)}</div><div class="metric-label">核心已發動</div></div>
@@ -4663,7 +4663,7 @@ def build_mda_consolidation_page() -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大盤整籃</div>
-  <div class="page-sub">把尚未完全發動的候選拆開看：空轉多觀察籃偏向股價已站回 MA120、扣抵轉有利；未發動觀察籃偏向主力先進場、價格還在整理。目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
+  <div class="page-sub">這裡放還沒完全發動、但籌碼或型態值得等的股票，適合觀察量縮價穩與賣壓消失；目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(turning) + len(dormant)}</div><div class="metric-label">盤整候選總數</div></div>
     <div class="metric"><div class="metric-num" style="color:#d2a520">{len(turning)}</div><div class="metric-label">空轉多觀察</div></div>
@@ -5597,7 +5597,7 @@ def build_daily_page(report: dict) -> str:
         '<div class="container">'
         '<div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div>'
         + f'<div class="page-title">{date_str}</div>'
-        + '<div class="page-sub">Quant Screener &middot; FinMind &middot; Foreign Capital Weighted Score</div>'
+        + '<div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。</div>'
         + stat_row + market_section + filter_section + table_section + notes_section
         + '</div>'
     )
@@ -5635,12 +5635,12 @@ def build_latest_daily_page(reports):
 
     body = (
         '<div class="container">'
-        '<div class="page-title">Daily Top 20</div>'
-        + f'<div class="page-sub">Date: {date_str} &middot; <a href="history.html">History &rarr;</a></div>'
+        '<div class="page-title">每日 Top20</div>'
+        + f'<div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。資料日期：{date_str} &middot; <a href="history.html">歷史報告 &rarr;</a></div>'
         + market_card + table_section + notes_section
         + '</div>'
     )
-    return html_page("Today", "daily", body)
+    return html_page("每日Top20", "daily", body)
 
 
 def build_baskets_page(reports):
@@ -5678,8 +5678,8 @@ def build_baskets_page(reports):
 
     body = (
         '<div class="container">'
-        + '<div class="page-title">雙籃選股儀表板</div>'
-        + f'<div class="page-sub">資料日期：{date_str} · 網站負責完整巡檢，重要提醒另由推播流程處理</div>'
+        + '<div class="page-title">SFZ 雙籃</div>'
+        + f'<div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：{date_str}</div>'
         + hero
         + playbook
         + '<div class="grid grid-2">'
@@ -5689,7 +5689,7 @@ def build_baskets_page(reports):
         + build_basket_column("過熱/風險觀察", "強勢但不適合追價，或已出現賣出警示；等回測、降溫或重新整理後再評估。", risk_watch, "risk", ledger)
         + '</div>'
     )
-    return html_page("雙籃儀表板", "basket", body)
+    return html_page("SFZ雙籃", "basket", body)
 
 
 def build_signals_page(reports):
@@ -5744,8 +5744,8 @@ def build_signals_page(reports):
 
     body = f"""
 <div class="container">
-  <div class="page-title">訊號追蹤</div>
-  <div class="page-sub">最新資料：{latest_date} · 目標是確認每個買點都有被記錄、追蹤、推播</div>
+  <div class="page-title">入選追蹤</div>
+  <div class="page-sub">這裡不是新選股，是台帳：記錄哪些股票曾經入選、出現幾次、現在還在不在榜上。最新資料：{latest_date}</div>
   <div class="card">
     <div class="section-label">Signal Ledger</div>
     <div class="grid grid-3">
@@ -5769,7 +5769,7 @@ def build_signals_page(reports):
     </div>
   </div>
 </div>"""
-    return html_page("訊號追蹤", "signals", body)
+    return html_page("入選追蹤", "signals", body)
 
 
 def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> str:
@@ -6392,7 +6392,7 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">買點雷達</div>
-  <div class="page-sub">用 FinMind 最新收盤比對 Williams -65~-85 買入區，優先找「能執行」而不是「已經追遠」的標的</div>
+  <div class="page-sub">買點雷達只看已經在名單裡的股票，幫你找現在離買入區近不近；重點是能不能掛單，不是重新選股。</div>
   <div class="card">
     <div class="section-label">Buy Radar</div>
     <div class="grid grid-3">
