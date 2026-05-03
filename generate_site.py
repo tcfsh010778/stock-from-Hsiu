@@ -44,6 +44,7 @@ V44_MARGIN_DIR = V44_ROOT / "回測" / "v6_outputs" / "margin"
 V44_BACKTEST_OUTPUT_DIR = V44_ROOT / "回測" / "v6_outputs"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
+_PRICE_HISTORY_CACHE: dict[str, list[dict]] = {}
 
 if os.environ.get("REPORTS_DIR"):
     REPORTS_DIR = Path(os.environ["REPORTS_DIR"])
@@ -1142,25 +1143,45 @@ def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
 
 def cached_stock_ids() -> set[str]:
     ids: set[str] = set()
-    for folder in [
-        LOCAL_PRICE_DIR,
-        LOCAL_CHIP_DIR,
-        LOCAL_HOLDING_DIR,
-        LOCAL_FOREIGN_SHAREHOLDING_DIR,
-        LOCAL_MARGIN_DIR,
-        V44_PRICE_DIR,
-        V44_CHIP_DIR,
-        V44_HOLDING_DIR,
-        V44_FOREIGN_SHAREHOLDING_DIR,
-        V44_MARGIN_DIR,
-    ]:
-        if not folder.exists():
-            continue
-        for path in folder.glob("*.csv"):
+    local_dirs = [LOCAL_PRICE_DIR, LOCAL_CHIP_DIR, LOCAL_HOLDING_DIR, LOCAL_FOREIGN_SHAREHOLDING_DIR, LOCAL_MARGIN_DIR]
+    for folder in local_dirs:
+        if folder.exists():
+            for path in folder.glob("*.csv"):
+                sid = path.stem.strip()
+                if re.fullmatch(r"\d{4,6}", sid):
+                    ids.add(sid)
+    if V44_PRICE_DIR.exists():
+        for path in V44_PRICE_DIR.glob("*.csv"):
             sid = path.stem.strip()
-            if re.fullmatch(r"\d{4,6}", sid):
+            if re.fullmatch(r"\d{4,6}", sid) and _price_cache_is_fresh(path):
                 ids.add(sid)
     return ids
+
+
+def _price_cache_last_date(path: Path) -> str:
+    try:
+        with path.open("r", encoding="utf-8-sig", newline="") as fh:
+            last = ""
+            for line in fh:
+                if line.strip():
+                    last = line.strip()
+        if not last or last.lower().startswith("date"):
+            return ""
+        return last.split(",", 1)[0]
+    except Exception:
+        return ""
+
+
+def _price_cache_is_fresh(path: Path) -> bool:
+    last_date = _price_cache_last_date(path)
+    if not last_date:
+        return False
+    stale_days = int(os.environ.get("SITE_PRICE_STALE_DAYS", "14"))
+    min_date = os.environ.get(
+        "SITE_PRICE_MIN_DATE",
+        (datetime.today() - timedelta(days=stale_days)).strftime("%Y-%m-%d"),
+    )
+    return last_date >= min_date
 
 
 def build_stock_query_map(reports: list[dict]) -> dict[str, dict]:
@@ -1192,6 +1213,9 @@ def build_stock_query_map(reports: list[dict]) -> dict[str, dict]:
 
 
 def read_price_history(stock_id: str, limit: int = 760) -> list[dict]:
+    stock_id = str(stock_id)
+    if stock_id in _PRICE_HISTORY_CACHE:
+        return _PRICE_HISTORY_CACHE[stock_id][-limit:]
     path = LOCAL_PRICE_DIR / f"{stock_id}.csv"
     if not path.exists():
         path = V44_PRICE_DIR / f"{stock_id}.csv"
@@ -1211,10 +1235,49 @@ def read_price_history(stock_id: str, limit: int = 760) -> list[dict]:
                     })
                 except Exception:
                     continue
-    if not rows:
+    if _price_rows_need_refresh(rows):
         months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
-        rows = fetch_v44_price_history(stock_id, months=months)
+        fresh_rows = fetch_v44_price_history(stock_id, months=months)
+        if fresh_rows and (not rows or fresh_rows[-1].get("date", "") > rows[-1].get("date", "")):
+            rows = fresh_rows
+            write_price_history(stock_id, rows)
+    _PRICE_HISTORY_CACHE[stock_id] = rows
     return rows[-limit:]
+
+
+def _price_rows_need_refresh(rows: list[dict]) -> bool:
+    if os.environ.get("SITE_REFRESH_STALE_PRICES", "0") == "0":
+        return not rows
+    if not rows:
+        return True
+    stale_days = int(os.environ.get("SITE_PRICE_STALE_DAYS", "14"))
+    min_date = os.environ.get(
+        "SITE_PRICE_MIN_DATE",
+        (datetime.today() - timedelta(days=stale_days)).strftime("%Y-%m-%d"),
+    )
+    return str(rows[-1].get("date", "")) < min_date
+
+
+def write_price_history(stock_id: str, rows: list[dict]) -> None:
+    if not rows:
+        return
+    try:
+        LOCAL_PRICE_DIR.mkdir(parents=True, exist_ok=True)
+        path = LOCAL_PRICE_DIR / f"{stock_id}.csv"
+        with path.open("w", encoding="utf-8-sig", newline="") as fh:
+            writer = csv.DictWriter(fh, fieldnames=["date", "open", "high", "low", "close", "volume"])
+            writer.writeheader()
+            for row in rows:
+                writer.writerow({
+                    "date": row.get("date", ""),
+                    "open": row.get("open", ""),
+                    "high": row.get("high", ""),
+                    "low": row.get("low", ""),
+                    "close": row.get("close", ""),
+                    "volume": row.get("volume", 0),
+                })
+    except Exception as e:
+        print(f"   [WARN] write price cache failed {stock_id}: {e}", flush=True)
 
 
 def read_csv_rows(primary: Path, fallback: Path | None = None) -> list[dict]:
@@ -1760,7 +1823,7 @@ def get_v44_fetcher():
     global _V44_FETCHER
     if _V44_FETCHER is not None:
         return _V44_FETCHER
-    if os.environ.get("V44_LIVE_FETCH", "0") == "0":
+    if os.environ.get("V44_LIVE_FETCH", "0") == "0" and os.environ.get("SITE_REFRESH_STALE_PRICES", "0") == "0":
         return None
     cell3 = V44_ROOT / "cell3_v44.py"
     cell4 = V44_ROOT / "cell4_v44.py"
@@ -5859,7 +5922,7 @@ function filterStocks(){
     body = f"""
 <div class="container">
   <div class="page-title">個股查詢</div>
-  <div class="page-sub">收錄目前已快取的價格、外資、融資、股權資料；未入籃個股也可直接打開資訊卡觀察賣壓與支撐</div>
+  <div class="page-sub">只收錄價格快取已更新到近期的個股；舊版 v44 停在 2025 的快取會先排除，避免 K 線誤判。</div>
   <div class="card">
     <div class="section-label">Stock Query</div>
     <div class="grid grid-3" style="margin-bottom:14px">
