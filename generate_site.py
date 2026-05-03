@@ -4316,6 +4316,18 @@ def load_mda_universe_scan_rows() -> list[dict]:
         return []
     if not isinstance(rows, list):
         return []
+    try:
+        market_cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        market_cache = {}
+    stock_info = market_cache.get("stocks") or {}
+    for r in rows:
+        sid = str(r.get("stock_id") or "")
+        info = stock_info.get(sid) or {}
+        if info.get("market"):
+            r["market"] = info.get("market")
+        if info.get("name") and not r.get("name"):
+            r["name"] = info.get("name")
     basket_order = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}
     rows = [r for r in rows if isinstance(r, dict)]
     rows.sort(key=lambda r: (
@@ -4350,16 +4362,27 @@ def build_mda_universe_section() -> str:
         trs = []
         for r in group_rows[:80]:
             sid = str(r.get("stock_id") or "")
-            stock_page = OUTPUT_DIR / "mda_stocks" / f"{sid}.html"
-            if stock_page.exists():
-                stock_html = f'<a class="stock-link" href="mda_stocks/{esc(sid)}.html">{esc(sid)} {esc(r.get("name", ""))}</a>'
+            market = r.get("market") or "─"
+            full_stock_page = OUTPUT_DIR / "stocks" / f"{sid}.html"
+            mda_stock_page = OUTPUT_DIR / "mda_stocks" / f"{sid}.html"
+            if full_stock_page.exists():
+                stock_link = f'<a class="tag tag-blue" href="stocks/{esc(sid)}.html">個股資訊</a>'
+            elif mda_stock_page.exists():
+                stock_link = f'<a class="tag tag-blue" href="mda_stocks/{esc(sid)}.html">M大解析</a>'
             else:
-                stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
+                stock_link = '<span class="tag">候選摘要</span>'
+            stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
+            info_html = (
+                f'<div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div>'
+                f'<div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div>'
+                f'<div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div>'
+                f'<div style="margin-top:6px">{stock_link}</div>'
+            )
             trs.append(f"""
 <tr>
-  <td>{stock_html}<div class="signal-dates">{esc(r.get("date", ""))}</div></td>
+  <td>{stock_html}<div class="signal-dates">{esc(market)}</div></td>
   <td><div class="m-score">{fmt_num(r.get("score"), 0)}</div></td>
-  <td><div class="price-main">{fmt_num(r.get("close"), 2)}</div><div class="signal-dates">距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div></td>
+  <td>{info_html}</td>
   <td><div class="m-checks">MA120 {fmt_num(r.get("ma120_slope_pct"), 2)}%｜MA240 {fmt_num(r.get("ma240_slope_pct"), 2)}%</div><div class="signal-dates">240扣抵 {fmt_num(r.get("deduct240_gap_pct"), 1)}%</div></td>
   <td><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
   <td><div class="signal-dates">{esc(r.get("reason", ""))}</div></td>
@@ -4372,7 +4395,7 @@ def build_mda_universe_section() -> str:
   <div class="section-label">{esc(group)}｜{len(group_rows)} 檔</div>
   <div style="overflow-x:auto">
     <table class="stock-table">
-      <thead><tr><th>股票</th><th>分數</th><th>位置</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
+      <thead><tr><th>股票</th><th>分數</th><th>個股資訊</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
       <tbody>{''.join(trs)}</tbody>
     </table>
   </div>
