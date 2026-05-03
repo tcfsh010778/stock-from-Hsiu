@@ -29,6 +29,7 @@ PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
 LOCAL_DATA_DIR = Path(__file__).parent / "data"
 CHART_LOOKBACK_BARS = 520
+MDA_MIN_CLOSE = 20.0
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
 LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
 LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
@@ -4331,7 +4332,10 @@ def load_mda_universe_scan_rows() -> list[dict]:
         if info.get("name") and not r.get("name"):
             r["name"] = info.get("name")
     basket_order = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}
-    rows = [r for r in rows if isinstance(r, dict)]
+    rows = [
+        r for r in rows
+        if isinstance(r, dict) and _to_float(r.get("close"), 0) >= MDA_MIN_CLOSE
+    ]
     rows.sort(key=lambda r: (
         basket_order.get(r.get("basket", ""), 9),
         -float(r.get("score") or 0),
@@ -4368,6 +4372,7 @@ def build_mda_universe_section() -> str:
       <div class="metric"><div class="metric-num" style="color:#d2a520">{counts["空轉多觀察籃"]}</div><div class="metric-label">空轉多觀察籃</div></div>
       <div class="metric"><div class="metric-num" style="color:#58a6ff">{counts["未發動觀察籃"]}</div><div class="metric-label">未發動觀察籃</div></div>
     </div>
+    <div class="strategy-note" style="margin-bottom:12px">本區已先排除收盤價低於 {fmt_num(MDA_MIN_CLOSE, 0)} 元的股票。</div>
     <div class="tag-row">
       <a class="tag tag-green" href="mda_launched.html">打開 M大已發動籃</a>
       <a class="tag tag-blue" href="mda_consolidation.html">打開 M大盤整籃</a>
@@ -4631,7 +4636,7 @@ def build_mda_launched_page() -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大已發動籃</div>
-  <div class="page-sub">已站上長均線或接近一年高點的股票，再拆成核心已發動與延伸強勢。核心名單偏向量縮、不破低、離 MA120 不過遠；延伸強勢多半適合等回測。</div>
+  <div class="page-sub">已站上長均線或接近一年高點的股票，再拆成核心已發動與延伸強勢。核心名單偏向量縮、不破低、離 MA120 不過遠；延伸強勢多半適合等回測。目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(rows)}</div><div class="metric-label">已發動總數</div></div>
     <div class="metric"><div class="metric-num" style="color:#3fb950">{len(core)}</div><div class="metric-label">核心已發動</div></div>
@@ -4658,7 +4663,7 @@ def build_mda_consolidation_page() -> str:
     body = f"""
 <div class="container">
   <div class="page-title">M大盤整籃</div>
-  <div class="page-sub">把尚未完全發動的候選拆開看：空轉多觀察籃偏向股價已站回 MA120、扣抵轉有利；未發動觀察籃偏向主力先進場、價格還在整理。</div>
+  <div class="page-sub">把尚未完全發動的候選拆開看：空轉多觀察籃偏向股價已站回 MA120、扣抵轉有利；未發動觀察籃偏向主力先進場、價格還在整理。目前先看收盤價 >= {fmt_num(MDA_MIN_CLOSE, 0)} 元。</div>
   <div class="grid grid-3">
     <div class="metric"><div class="metric-num">{len(turning) + len(dormant)}</div><div class="metric-label">盤整候選總數</div></div>
     <div class="metric"><div class="metric-num" style="color:#d2a520">{len(turning)}</div><div class="metric-label">空轉多觀察</div></div>

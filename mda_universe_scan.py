@@ -21,6 +21,7 @@ CSV_OUT = DATA_DIR / "mda_universe_scan.csv"
 JSON_OUT = DATA_DIR / "mda_universe_scan.json"
 HTML_OUT = DATA_DIR / "mda_universe_scan_preview.html"
 FULL_REFRESH_SUMMARY_PATH = DATA_DIR / "mda_full_market_refresh_summary.json"
+MIN_CLOSE = 20.0
 
 
 def to_float(value, default=None):
@@ -176,6 +177,9 @@ def scan_stock(stock_id: str, name: str) -> dict | None:
     ma240 = moving_average(closes, 240)
 
     close = closes[-1]
+    if close < MIN_CLOSE:
+        return None
+
     ma120_now = ma120[-1]
     ma120_prev20 = ma120[-21] if len(ma120) >= 21 else None
     ma240_now = ma240[-1] if ma240 else None
