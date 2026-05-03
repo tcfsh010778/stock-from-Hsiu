@@ -659,6 +659,8 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("home",    "index.html",   "首頁"),
         ("daily",   "daily.html",   "今日選股"),
         ("mda",     "mda.html",     "M大選股"),
+        ("mda_launched", "mda_launched.html", "M大已發動"),
+        ("mda_consolidation", "mda_consolidation.html", "M大盤整"),
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
         ("radar",   "radar.html",   "買點雷達"),
@@ -4354,6 +4356,23 @@ def build_mda_universe_section() -> str:
     candidate_count = summary.get("candidate_count")
     holding_dates = (summary.get("holding") or {}).get("query_dates")
     price_months = summary.get("price_months")
+    core_launched = sum(1 for r in rows if mda_is_core_launched(r))
+    return f"""
+  <div class="card">
+    <div class="section-label">全市場 M大主篩</div>
+    <div class="strategy-note" style="margin-bottom:12px">
+      全市場掃描結果已拆到獨立籃子頁：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。股權週次 {fmt_num(holding_dates, 0)}，日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
+    </div>
+    <div class="grid grid-3" style="margin-bottom:14px">
+      <div class="metric"><div class="metric-num" style="color:#3fb950">{counts["已發動籃"]}</div><div class="metric-label">已發動籃｜核心 {core_launched}</div></div>
+      <div class="metric"><div class="metric-num" style="color:#d2a520">{counts["空轉多觀察籃"]}</div><div class="metric-label">空轉多觀察籃</div></div>
+      <div class="metric"><div class="metric-num" style="color:#58a6ff">{counts["未發動觀察籃"]}</div><div class="metric-label">未發動觀察籃</div></div>
+    </div>
+    <div class="tag-row">
+      <a class="tag tag-green" href="mda_launched.html">打開 M大已發動籃</a>
+      <a class="tag tag-blue" href="mda_consolidation.html">打開 M大盤整籃</a>
+    </div>
+  </div>"""
     blocks = []
     for group in groups:
         group_rows = [r for r in rows if r.get("basket") == group]
@@ -4545,6 +4564,116 @@ def build_mda_candidate_pages() -> int:
         (out_dir / f"{sid}.html").write_text(build_mda_candidate_detail_page(row), encoding="utf-8")
         count += 1
     return count
+
+
+def mda_candidate_href(row: dict, prefix: str = "") -> str:
+    sid = str(row.get("stock_id") or "")
+    if not sid:
+        return "#"
+    if (OUTPUT_DIR / "stocks" / f"{sid}.html").exists():
+        return f"{prefix}stocks/{esc(sid)}.html"
+    if (OUTPUT_DIR / "mda_stocks" / f"{sid}.html").exists():
+        return f"{prefix}mda_stocks/{esc(sid)}.html"
+    return f"{prefix}mda_candidates/{esc(sid)}.html"
+
+
+def mda_is_core_launched(row: dict) -> bool:
+    close = _to_float(row.get("close"), None)
+    ma120 = _to_float(row.get("ma120"), None)
+    extension = close / ma120 if close and ma120 else None
+    return (
+        row.get("basket") == "已發動籃"
+        and _to_float(row.get("score"), 0) >= 90
+        and bool(row.get("retail_or_people_support"))
+        and bool(row.get("no_new_low"))
+        and _to_float(row.get("volume20_vs_120_pct"), 999) <= 0
+        and _to_float(row.get("one_year_high_gap_pct"), -999) >= -15
+        and _to_float(row.get("range60_pct"), 999) <= 90
+        and (extension is None or extension <= 1.55)
+    )
+
+
+def mda_candidate_table(rows: list[dict], limit: int | None = None, prefix: str = "") -> str:
+    shown = rows[:limit] if limit else rows
+    body = []
+    for r in shown:
+        sid = str(r.get("stock_id") or "")
+        href = mda_candidate_href(r, prefix)
+        market = r.get("market") or "─"
+        body.append(f"""
+<tr>
+  <td><a class="stock-link" href="{href}">{esc(sid)} {esc(r.get("name", ""))}</a><div class="signal-dates">{esc(market)}｜{esc(r.get("date", ""))}</div></td>
+  <td><div class="m-score">{fmt_num(r.get("score"), 0)}</div><span class="tag tag-blue"><a href="{href}">個股資訊</a></span></td>
+  <td><div class="price-main">{fmt_num(r.get("close"), 2)}</div><div class="signal-dates">距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%｜量 {fmt_num(r.get("volume20_vs_120_pct"), 1)}%</div></td>
+  <td><div class="m-checks">MA120 {fmt_num(r.get("ma120_slope_pct"), 2)}%｜MA240 {fmt_num(r.get("ma240_slope_pct"), 2)}%</div><div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div></td>
+  <td><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
+  <td><div class="signal-dates">{esc(r.get("reason", ""))}</div></td>
+</tr>""")
+    if not body:
+        body.append('<tr><td colspan="6" style="color:#8b949e">目前沒有符合條件的候選。</td></tr>')
+    extra = ""
+    if limit and len(rows) > limit:
+        extra = f'<div class="strategy-note" style="margin-top:8px">此區共 {len(rows)} 檔，先顯示前 {limit} 檔。</div>'
+    return f"""
+<div style="overflow-x:auto">
+  <table class="stock-table">
+    <thead><tr><th>股票</th><th>分數</th><th>位置/量能</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
+    <tbody>{''.join(body)}</tbody>
+  </table>
+</div>
+{extra}"""
+
+
+def build_mda_launched_page() -> str:
+    rows = [r for r in load_mda_universe_scan_rows() if r.get("basket") == "已發動籃"]
+    core = [r for r in rows if mda_is_core_launched(r)]
+    extended = [r for r in rows if r not in core]
+    body = f"""
+<div class="container">
+  <div class="page-title">M大已發動籃</div>
+  <div class="page-sub">已站上長均線或接近一年高點的股票，再拆成核心已發動與延伸強勢。核心名單偏向量縮、不破低、離 MA120 不過遠；延伸強勢多半適合等回測。</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{len(rows)}</div><div class="metric-label">已發動總數</div></div>
+    <div class="metric"><div class="metric-num" style="color:#3fb950">{len(core)}</div><div class="metric-label">核心已發動</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(extended)}</div><div class="metric-label">延伸強勢/等回測</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">核心已發動</div>
+    <div class="strategy-note" style="margin-bottom:12px">條件：分數 >= 90、散戶或股東數有支撐、近20日不破60日低位、20日量低於120日均量、距一年高點不超過 15%、60日區間不超過 90%、收盤不超過 MA120 的 1.55 倍。</div>
+    {mda_candidate_table(core)}
+  </div>
+  <div class="card">
+    <div class="section-label">延伸強勢 / 等回測</div>
+    <div class="strategy-note" style="margin-bottom:12px">這區不是不好，而是價格或波動已經比較延伸，先看主力是否未退、拉回是否量縮不破支撐。</div>
+    {mda_candidate_table(extended, limit=120)}
+  </div>
+</div>"""
+    return html_page("M大已發動籃", "mda_launched", body)
+
+
+def build_mda_consolidation_page() -> str:
+    rows = load_mda_universe_scan_rows()
+    turning = [r for r in rows if r.get("basket") == "空轉多觀察籃"]
+    dormant = [r for r in rows if r.get("basket") == "未發動觀察籃"]
+    body = f"""
+<div class="container">
+  <div class="page-title">M大盤整籃</div>
+  <div class="page-sub">把尚未完全發動的候選拆開看：空轉多觀察籃偏向股價已站回 MA120、扣抵轉有利；未發動觀察籃偏向主力先進場、價格還在整理。</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{len(turning) + len(dormant)}</div><div class="metric-label">盤整候選總數</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(turning)}</div><div class="metric-label">空轉多觀察</div></div>
+    <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(dormant)}</div><div class="metric-label">未發動觀察</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">空轉多觀察籃</div>
+    {mda_candidate_table(turning, limit=120)}
+  </div>
+  <div class="card">
+    <div class="section-label">未發動觀察籃</div>
+    {mda_candidate_table(dormant, limit=120)}
+  </div>
+</div>"""
+    return html_page("M大盤整籃", "mda_consolidation", body)
 
 
 def _mda_line(label: str, value: str, cls: str = "") -> str:
@@ -7379,6 +7508,10 @@ def main():
     print("   [OK] daily.html", flush=True)
     (OUTPUT_DIR / "mda.html").write_text(build_mda_page(reports), encoding="utf-8")
     print("   [OK] mda.html", flush=True)
+    (OUTPUT_DIR / "mda_launched.html").write_text(build_mda_launched_page(), encoding="utf-8")
+    print("   [OK] mda_launched.html", flush=True)
+    (OUTPUT_DIR / "mda_consolidation.html").write_text(build_mda_consolidation_page(), encoding="utf-8")
+    print("   [OK] mda_consolidation.html", flush=True)
     (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
     print("   [OK] baskets.html", flush=True)
     (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
