@@ -20,6 +20,7 @@ MARKETS_PATH = DATA_DIR / "stock_markets.json"
 CSV_OUT = DATA_DIR / "mda_universe_scan.csv"
 JSON_OUT = DATA_DIR / "mda_universe_scan.json"
 HTML_OUT = DOCS_DIR / "mda_universe_scan.html"
+FULL_REFRESH_SUMMARY_PATH = DATA_DIR / "mda_full_market_refresh_summary.json"
 
 
 def to_float(value, default=None):
@@ -294,9 +295,17 @@ def safe_print(text: str) -> None:
 
 
 def build_html(rows: list[dict]) -> str:
+    try:
+        refresh_summary = json.loads(FULL_REFRESH_SUMMARY_PATH.read_text(encoding="utf-8"))
+    except Exception:
+        refresh_summary = {}
     groups = ["已發動籃", "空轉多觀察籃", "未發動觀察籃", "未入籃"]
     counts = {g: sum(1 for r in rows if r["basket"] == g) for g in groups}
     latest_date = max((r["date"] for r in rows), default="-")
+    universe_count = refresh_summary.get("universe_count")
+    candidate_count = refresh_summary.get("candidate_count")
+    holding_dates = ((refresh_summary.get("holding") or {}).get("query_dates"))
+    price_months = refresh_summary.get("price_months")
     body = []
     for group in groups:
         group_rows = [r for r in rows if r["basket"] == group]
@@ -310,9 +319,11 @@ def build_html(rows: list[dict]) -> str:
         for r in group_rows:
             sid = html.escape(r["stock_id"])
             name = html.escape(r.get("name") or "")
-            link = f"stocks/{sid}.html"
+            stock_page = DOCS_DIR / "stocks" / f"{r['stock_id']}.html"
+            stock_text = f"{sid} {name}"
+            stock_cell = f"<a href=\"stocks/{sid}.html\">{stock_text}</a>" if stock_page.exists() else stock_text
             body.append("<tr>"
-                        f"<td><a href=\"{link}\">{sid} {name}</a></td>"
+                        f"<td>{stock_cell}</td>"
                         f"<td>{fmt(r['score'], 0)}</td>"
                         f"<td>{fmt(r['close'], 2)}</td>"
                         f"<td>{fmt(r['ma120_slope_pct'], 2, '%')}</td>"
@@ -375,12 +386,14 @@ def build_html(rows: list[dict]) -> str:
     <h1>M大主篩掃描報表</h1>
     <div class="meta">
       <span class="pill">掃描檔數：{len(rows)}</span>
+      <span class="pill">全市場普通股：{fmt(universe_count, 0) if universe_count is not None else '-'}</span>
+      <span class="pill">大戶累積候選：{fmt(candidate_count, 0) if candidate_count is not None else '-'}</span>
       <span class="pill">最新股價日：{html.escape(latest_date)}</span>
       <span class="pill">已發動：{counts['已發動籃']}</span>
       <span class="pill">空轉多：{counts['空轉多觀察籃']}</span>
       <span class="pill">未發動：{counts['未發動觀察籃']}</span>
     </div>
-    <div class="note">目前這頁先用網站快取內同時具備股價與股權分散資料的股票掃描。核心條件是 MA120 上彎、收盤站上 MA120、千張大戶 4 週增加 0.5pt 或 8 週增加 1.0pt；散戶下降與總股東人數下降作為支撐判讀，不再使用平均每人持股。</div>
+    <div class="note">這頁使用全市場上市櫃普通股清單，先以股權分散資料找出千張大戶 4 週增加 0.5pt 或 8 週增加 1.0pt 的候選，再補日線判讀 MA120、MA240、扣抵與量縮結構。股權週次：{fmt(holding_dates, 0) if holding_dates is not None else '-'}；日線月數：{fmt(price_months, 0) if price_months is not None else '-'}。散戶下降與總股東人數下降作為支撐判讀，不再使用平均每人持股。</div>
   </header>
   <main>
     {''.join(body)}
