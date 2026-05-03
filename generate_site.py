@@ -4373,6 +4373,9 @@ def build_mda_universe_section() -> str:
             elif mda_stock_page.exists():
                 info_href = f"mda_stocks/{esc(sid)}.html"
                 stock_link_label = "M大解析"
+            else:
+                info_href = f"mda_candidates/{esc(sid)}.html"
+                stock_link_label = "候選資訊"
             if info_href:
                 stock_link = f'<a class="tag tag-blue" href="{info_href}">{stock_link_label}</a>'
                 stock_html = f'<a class="stock-link" href="{info_href}">{esc(sid)} {esc(r.get("name", ""))}</a>'
@@ -4380,15 +4383,6 @@ def build_mda_universe_section() -> str:
                     f'<a class="stock-link" href="{info_href}"><div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div></a>'
                     f'<a href="{info_href}" style="text-decoration:none"><div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div></a>'
                     f'<a href="{info_href}" style="text-decoration:none"><div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div></a>'
-                    f'<div style="margin-top:6px">{stock_link}</div>'
-                )
-            else:
-                stock_link = '<span class="tag">候選摘要</span>'
-                stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
-                info_html = (
-                    f'<div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div>'
-                    f'<div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div>'
-                    f'<div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div>'
                     f'<div style="margin-top:6px">{stock_link}</div>'
                 )
             trs.append(f"""
@@ -4487,6 +4481,70 @@ def build_mda_page(reports: list[dict]) -> str:
   {universe_section}
 </div>"""
     return html_page("M大選股", "mda", body)
+
+
+def build_mda_candidate_detail_page(row: dict) -> str:
+    sid = str(row.get("stock_id") or "")
+    name = row.get("name") or ""
+    market = row.get("market") or "─"
+    basket = row.get("basket") or "候選"
+    reason_items = [x for x in str(row.get("reason") or "").split("、") if x]
+    reason_html = "".join(f"<li>{esc(x)}</li>" for x in reason_items) or "<li>候選摘要資料不足。</li>"
+    body = f"""
+<div class="container">
+  <div style="margin-bottom:8px"><a href="../mda.html" style="color:#6e7681;font-size:13px">&larr; 回 M大選股</a></div>
+  <div class="page-title">{esc(sid)} {esc(name)}｜M大候選資訊</div>
+  <div class="page-sub">{esc(market)}｜{esc(basket)}｜資料日期 {esc(row.get("date", "─"))}</div>
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{fmt_num(row.get("score"), 0)}</div><div class="metric-label">M大主篩分數</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(row.get("close"), 2)}</div><div class="metric-label">收盤價</div></div>
+    <div class="metric"><div class="metric-num">{fmt_num(row.get("one_year_high_gap_pct"), 1)}%</div><div class="metric-label">距一年高點</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">A 價格結構</div>
+    <div class="grid grid-3">
+      <div class="info-cell"><div class="k">MA120</div><div class="v">{fmt_num(row.get("ma120"), 2)}</div><div class="chip-line">20日斜率 {fmt_num(row.get("ma120_slope_pct"), 2)}%</div></div>
+      <div class="info-cell"><div class="k">MA240</div><div class="v">{fmt_num(row.get("ma240"), 2)}</div><div class="chip-line">20日斜率 {fmt_num(row.get("ma240_slope_pct"), 2)}%</div></div>
+      <div class="info-cell"><div class="k">240扣抵</div><div class="v">{fmt_num(row.get("deduct240_gap_pct"), 1)}%</div><div class="chip-line">60日區間 {fmt_num(row.get("range60_pct"), 1)}%</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">B1 股權結構</div>
+    <div class="grid grid-3">
+      <div class="info-cell"><div class="k">大戶4週 / 8週</div><div class="v">{fmt_num(row.get("major_4w_pctpt"), 2)}pt / {fmt_num(row.get("major_8w_pctpt"), 2)}pt</div></div>
+      <div class="info-cell"><div class="k">散戶4週 / 8週</div><div class="v">{fmt_num(row.get("retail_4w_pctpt"), 2)}pt / {fmt_num(row.get("retail_8w_pctpt"), 2)}pt</div></div>
+      <div class="info-cell"><div class="k">總股東4週 / 8週</div><div class="v">{fmt_num(row.get("people_4w"), 0)} / {fmt_num(row.get("people_8w"), 0)}</div></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">B2 賣壓與位置</div>
+    <div class="grid grid-3">
+      <div class="info-cell"><div class="k">近20日不破低</div><div class="v">{"是" if row.get("no_new_low") else "否"}</div></div>
+      <div class="info-cell"><div class="k">20日量 / 120日量</div><div class="v">{fmt_num(row.get("volume20_vs_120_pct"), 1)}%</div></div>
+      <div class="info-cell"><div class="k">主篩狀態</div><div class="v">{"成立" if row.get("base_mda_watch") else "未成立"}</div></div>
+    </div>
+    <ul class="strategy-note" style="margin-top:14px">{reason_html}</ul>
+  </div>
+</div>"""
+    return html_page(f"{sid} {name} M大候選資訊", "mda", body, nav_prefix="../")
+
+
+def build_mda_candidate_pages() -> int:
+    rows = load_mda_universe_scan_rows()
+    out_dir = OUTPUT_DIR / "mda_candidates"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    valid = {f"{r.get('stock_id')}.html" for r in rows if r.get("stock_id")}
+    for old_file in out_dir.glob("*.html"):
+        if old_file.name not in valid:
+            old_file.unlink()
+    count = 0
+    for row in rows:
+        sid = str(row.get("stock_id") or "")
+        if not sid:
+            continue
+        (out_dir / f"{sid}.html").write_text(build_mda_candidate_detail_page(row), encoding="utf-8")
+        count += 1
+    return count
 
 
 def _mda_line(label: str, value: str, cls: str = "") -> str:
@@ -7337,6 +7395,8 @@ def main():
     print(f"   [OK] stocks/*.html ({stock_page_count})", flush=True)
     mda_stock_page_count = build_mda_stock_pages(reports)
     print(f"   [OK] mda_stocks/*.html ({mda_stock_page_count})", flush=True)
+    mda_candidate_page_count = build_mda_candidate_pages()
+    print(f"   [OK] mda_candidates/*.html ({mda_candidate_page_count})", flush=True)
 
     for r in reports:
         html = build_daily_page(r)
@@ -7344,7 +7404,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+8+stock_page_count+mda_stock_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+8+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
