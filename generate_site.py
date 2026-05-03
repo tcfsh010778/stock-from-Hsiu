@@ -4047,7 +4047,14 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
     ma240_up = bool(ma240 and ma240_slope is not None and ma240_slope > 0)
     a_ok = ma120_up and ma240_up
     a_near = bool(close and ma20 and ma60 and close > ma20 > ma60)
-    a_score = 40 if a_ok else 28 if a_near else 12 if close and ma20 and close > ma20 else 0
+    recent60 = rows[-60:] if rows else []
+    low60 = min((r.get("low") for r in recent60 if r.get("low") is not None), default=None)
+    high60 = max((r.get("high") for r in recent60 if r.get("high") is not None), default=None)
+    recent20_low = min((r.get("low") for r in rows[-20:] if r.get("low") is not None), default=None) if rows else None
+    range60 = ((high60 / low60 - 1) * 100) if high60 and low60 else None
+    no_new_low = bool(recent20_low and low60 and recent20_low >= low60 * 0.98)
+    a_dormant = bool(not a_ok and detrend_240 and no_new_low and (range60 is None or range60 <= 38))
+    a_score = 40 if a_ok else 28 if a_near else 18 if a_dormant else 12 if close and ma20 and close > ma20 else 0
 
     chip = chip_trend_metrics(chip_series, holding)
     holding_series = read_holding_series(s.get("id", ""))
@@ -4081,7 +4088,7 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
     b2_score = 15 if b2_ok else 8 if b2_watch else 0
 
     items = [
-        ("A：MA120/MA240上彎", "ok" if a_ok else "warn" if ma120_up or ma240_up or a_near else "bad"),
+        ("A：長多/空轉多", "ok" if a_ok else "warn" if ma120_up or ma240_up or a_near or a_dormant else "bad"),
         ("B1籌碼未離開", "ok" if b1_ok else "warn" if b1_score else "bad"),
         ("B2賣壓吸收", "ok" if b2_ok else "warn" if b2_score else "bad"),
     ]
@@ -4092,9 +4099,10 @@ def mda_abc_checks(s: dict, rows: list[dict], tech: dict, chip_series: list[dict
         "a_score": a_score,
         "b1_score": b1_score,
         "b2_score": b2_score,
+        "a_phase": "已發動長多" if a_ok else "未發動空轉多觀察" if a_dormant else "轉強觀察" if a_near else "A未成立",
         "volume_line": pressure.get("summary") or (f"{volume_price}｜{tech.get('volume_price_basis', '')}" if tech else "量價資料不足"),
         "pressure": pressure,
-        "chip_line": f"外資10日 {fmt_num(chip.get('foreign_10d'), 0)} 張｜主力10日 {fmt_num(chip.get('total_10d'), 0)} 張｜大戶4週 {fmt_num(major_4w_delta, 2)}%｜散戶4週 {fmt_num(retail_4w_delta, 2)}%",
+        "chip_line": f"外資10日 {fmt_num(chip.get('foreign_10d'), 0)} 張｜主力10日 {fmt_num(chip.get('total_10d'), 0)} 張｜大戶4週 {fmt_num(major_4w_delta, 2)}%｜散戶4週 {fmt_num(retail_4w_delta, 2)}%｜60日區間 {fmt_num(range60, 1)}%",
     }
 
 
@@ -4176,7 +4184,7 @@ def build_mda_page(reports: list[dict]) -> str:
       <div class="market-badge {market['class']}">{esc(market['state'])}</div>
       <div>
         <div style="font-size:16px;font-weight:800;color:#e6edf3">{esc(market['note'])}</div>
-        <div class="strategy-note" style="margin-top:8px">觀察模式：第一層只看 A，MA120 與 MA240 同時上彎就納入觀察池；接著才看這些尚未發動的股票，股權結構與籌碼是否有聰明錢慢慢接手。輔助看 120 日線是否被反覆挑戰或有效站上、扣抵是否轉有利、量能是否代表資金開始集中。這頁不顯示買進、停損、停利。</div>
+        <div class="strategy-note" style="margin-top:8px">觀察模式：第一層先分已發動長多與未發動空轉多。已發動看 MA240 上彎與一年新高附近的 B2；未發動看 240 扣抵轉有利、低位區間不再破低、B1 是否有大錢慢慢接手。這頁不顯示買進、停損、停利。</div>
         <div class="grid grid-3" style="margin-top:12px">
           <div class="metric"><div class="metric-num" style="color:#3fb950">{len(primary)}</div><div class="metric-label">重點觀察</div></div>
           <div class="metric"><div class="metric-num" style="color:#d2a520">{len(wait)}</div><div class="metric-label">觀察中</div></div>
@@ -4187,7 +4195,7 @@ def build_mda_page(reports: list[dict]) -> str:
   </div>
   <div class="card">
     <div class="section-label">候選清單</div>
-    <div class="strategy-note" style="margin-bottom:12px">B2 不只看「量縮」兩個字，而是把過往股價、外資買賣超、融資餘額與成交量放在同一條時間軸：價不破低、少量能推回、外資賣壓縮小、融資不失控，才視為賣壓正在消失。</div>
+    <div class="strategy-note" style="margin-bottom:12px">A+B+C 總綱：A 找長線多頭或即將長多，B1 找長期吸籌，B2 只在賣壓很小或消失且 B1 沒離開時考慮；B3 是不追高，耐心等每一次 B2。</div>
     <div style="overflow-x:auto">
       <table class="stock-table">
         <thead><tr><th>個股</th><th>觀察等級</th><th>收盤</th><th>值得觀察的跡象</th><th>主要風險</th><th>ABC拆分</th></tr></thead>
@@ -4836,7 +4844,8 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
         _mda_line("MA120", f'{fmt_num(ma120)}｜斜率 {fmt_num(slopes.get("ma120"))}｜距離 {fmt_num(ma120_gap, 1)}%')
         + _mda_line("MA240", f'{fmt_num(ma240)}｜斜率 {fmt_num(slopes.get("ma240"))}｜距離 {fmt_num(ma240_gap, 1)}%')
         + _mda_line("120日扣抵", f'{fmt_num(detrend_120)}｜收盤距扣抵 {fmt_num(detrend_gap, 1)}%')
-        + _mda_line("A判讀", "MA120 與 MA240 同時上彎，先納入觀察池。" if abc.get("a_score", 0) >= 40 else "長均線尚未同時上彎，觀察順位降低。", "pos" if abc.get("a_score", 0) >= 40 else "neg")
+        + _mda_line("A階段", abc.get("a_phase", "A未成立"), "pos" if abc.get("a_phase") == "已發動長多" else "warn" if abc.get("a_score", 0) >= 18 else "neg")
+        + _mda_line("A判讀", "長多已發動，等 B2 不追高。" if abc.get("a_phase") == "已發動長多" else "仍未發動，但 240 扣抵與區間不破低可列入空轉多觀察。" if abc.get("a_phase") == "未發動空轉多觀察" else "長均線尚未同時上彎，觀察順位降低。", "pos" if abc.get("a_phase") == "已發動長多" else "warn" if abc.get("a_score", 0) >= 18 else "neg")
     )
     b1_block = (
         _mda_line("大戶/散戶", f'大戶4週 {fmt_num(money["major_4w"])}%｜散戶4週 {fmt_num(money["retail_4w"])}%｜股東4週 {fmt_num(money["people_4w"], 0)} 人')
