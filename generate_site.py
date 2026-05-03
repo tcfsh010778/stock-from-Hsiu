@@ -1396,18 +1396,40 @@ def chip_flow_payload(series: list[dict]) -> list[dict]:
 
 def main_force_payload(chip_series: list[dict], price_rows: list[dict]) -> list[dict]:
     close_by_date = {r.get("date"): r.get("close") for r in price_rows}
+    change_pct_by_date = price_change_pct_by_date(price_rows)
     rows = []
     last_close = None
     for item in chip_series[-30:]:
-        close = close_by_date.get(item.get("date"))
+        date = item.get("date", "")
+        close = close_by_date.get(date)
         if close is not None:
             last_close = close
         rows.append({
-            "date": item.get("date", ""),
+            "date": date,
             "total": item.get("total"),
             "close": last_close,
+            "changePct": change_pct_by_date.get(date),
         })
     return [r for r in rows if r.get("close") is not None]
+
+
+def price_change_pct_by_date(price_rows: list[dict]) -> dict[str, float | None]:
+    result: dict[str, float | None] = {}
+    prev_close = None
+    for row in price_rows:
+        date = row.get("date")
+        close = row.get("close")
+        try:
+            close_f = float(close)
+            prev_f = float(prev_close) if prev_close is not None else None
+        except Exception:
+            close_f = None
+            prev_f = None
+        if date:
+            result[date] = ((close_f / prev_f - 1) * 100) if close_f is not None and prev_f else None
+        if close_f is not None:
+            prev_close = close_f
+    return result
 
 
 def _holding_group(level: str) -> str:
@@ -2474,6 +2496,7 @@ def main_force_price_svg(chip_series: list[dict], price_rows: list[dict], title:
 
 def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_rows: list[dict]) -> str:
     close_by_date = {r.get("date"): r.get("close") for r in price_rows if r.get("date")}
+    change_pct_by_date = price_change_pct_by_date(price_rows)
     rows = []
     last_close = None
     for item in chip_series[-CHART_LOOKBACK_BARS:]:
@@ -2488,6 +2511,7 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
             "dealer": item.get("dealer"),
             "total": item.get("total"),
             "close": last_close,
+            "changePct": change_pct_by_date.get(date),
         })
     rows = [r for r in rows if r.get("date")]
     if len(rows) < 2:
@@ -2557,7 +2581,8 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
     return `<b>${{x.date}}</b><br>外資 ${{fmtInt(x.foreign)}} 張<br>投信 ${{fmtInt(x.trust)}} 張<br>自營商 ${{fmtInt(x.dealer)}} 張<br>合計 ${{fmtInt(x.total)}} 張`;
   }}
   function forceTip(x){{
-    return `<b>${{x.date}}</b><br>主力合計 ${{fmtInt(x.total)}} 張<br>收盤價 ${{fmt(x.close)}}`;
+    const pct=Number.isFinite(Number(x.changePct)) ? `${{Number(x.changePct).toFixed(2)}}%` : '-';
+    return `<b>${{x.date}}</b><br>主力合計 ${{fmtInt(x.total)}} 張<br>收盤價 ${{fmt(x.close)}}<br>漲幅 ${{pct}}`;
   }}
   function addTip(chart, wrapper, tipFn){{
     const tip=wrapper.querySelector('.tv-tooltip');
@@ -2616,7 +2641,7 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
   </div>
   <div class="tv-chart-panel">
     <div class="tv-chart-title">主力增減張數與收盤價關係</div>
-    <div class="chip-line">左軸為主力合計張數，右軸為收盤價；紅柱買超、綠柱賣超。</div>
+    <div class="chip-line">左軸為主力合計張數，右軸為收盤價；滑鼠移到圖上可看當日漲幅，觀察少量買賣是否就能推動價格。</div>
     <div id="{panel_id}-force" class="tv-chip-chart"></div>
     <div class="tv-tooltip"></div>
   </div>
@@ -5775,11 +5800,13 @@ function initMainForceHover_{stock_id}(){{
   const line=chart.querySelector('.chart-crosshair');
   if(!tip || !line) return;
   const fmt=(v,d=0)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {{maximumFractionDigits:d, minimumFractionDigits:d}}) : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${{Number(v).toFixed(2)}}%` : '-';
   const html=(x)=>`
     <div class="t-date">${{x.date || '-'}}</div>
     <div class="t-grid">
       <span>主力合計</span><span>${{fmt(x.total,0)}} 張</span>
       <span>收盤價</span><span>${{fmt(x.close,2)}}</span>
+      <span>漲幅</span><span>${{pct(x.changePct)}}</span>
     </div>`;
   chart.addEventListener('mousemove', ev=>{{
     const rect=chart.getBoundingClientRect();

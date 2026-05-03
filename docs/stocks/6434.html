@@ -1161,11 +1161,13 @@ function initMainForceHover_6434(){
   const line=chart.querySelector('.chart-crosshair');
   if(!tip || !line) return;
   const fmt=(v,d=0)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
   const html=(x)=>`
     <div class="t-date">${x.date || '-'}</div>
     <div class="t-grid">
       <span>主力合計</span><span>${fmt(x.total,0)} 張</span>
       <span>收盤價</span><span>${fmt(x.close,2)}</span>
+      <span>漲幅</span><span>${pct(x.changePct)}</span>
     </div>`;
   chart.addEventListener('mousemove', ev=>{
     const rect=chart.getBoundingClientRect();
