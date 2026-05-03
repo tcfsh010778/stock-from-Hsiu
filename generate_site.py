@@ -1509,8 +1509,26 @@ def pressure_absorption_analysis(
     small_volume_hold = bool(volume_price in {"量縮價穩", "量縮價漲"} or (not_break and lower_volume))
 
     same_zone_push = False
+    same_zone_volume_note = "同價位量能資料不足"
     if close and prev_low:
-        same_zone_push = bool(close >= prev_low * 1.02 and small_volume_hold)
+        recent_zone = [
+            x for x in daily[-10:]
+            if x.get("close") is not None and close * 0.92 <= x.get("close") <= close * 1.08
+        ]
+        prior_zone = [
+            x for x in daily[-80:-20]
+            if x.get("close") is not None and close * 0.92 <= x.get("close") <= close * 1.08
+        ]
+        recent_zone_vol = sum(float(x.get("volume") or 0) for x in recent_zone) / max(1, len(recent_zone))
+        prior_zone_vol = sum(float(x.get("volume") or 0) for x in prior_zone) / max(1, len(prior_zone))
+        same_zone_push = bool(
+            close >= prev_low * 1.02
+            and small_volume_hold
+            and prior_zone_vol
+            and recent_zone_vol <= prior_zone_vol * 0.78
+        )
+        if prior_zone_vol:
+            same_zone_volume_note = f"同價位前段均量 {fmt_num(prior_zone_vol/1000, 0)} 張 / 後段 {fmt_num(recent_zone_vol/1000, 0)} 張"
 
     holding_series = read_holding_series(stock_id) if stock_id else []
     major_4w_delta = retail_4w_delta = people_4w_delta = None
@@ -1552,11 +1570,13 @@ def pressure_absorption_analysis(
             up_total += total
             up_foreign += foreign
     short_chip_ok = bool((up_total >= 0 and down_total >= -abs(up_total) * 1.3) or (up_foreign >= 0 and down_foreign >= -abs(up_foreign) * 1.3))
+    foreign_repeat_buy = bool(up_foreign > 0 and down_foreign >= -abs(up_foreign) * 0.7)
 
     margin_10d = _last_delta(margin_series, "margin_balance", 10)
     margin_20d = _last_delta(margin_series, "margin_balance", 20)
     margin_not_hot = bool(margin_10d is None or margin_10d <= 0 or (not_break and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35)))
     margin_masked = bool(margin_10d is not None and margin_10d > 0 and margin_10d <= max(1000, abs(margin_20d or 0) * 0.35) and not_break)
+    margin_absorbed = bool(margin_10d is not None and margin_10d < 0 and not_break)
 
     avg_vol20 = sum(float(x.get("volume") or 0) for x in daily[-20:]) / 20 if len(daily) >= 20 else None
     deduct_vol20 = float(daily[-21].get("volume") or 0) if len(daily) > 20 else None
@@ -1601,10 +1621,14 @@ def pressure_absorption_analysis(
         score += 10
     if short_chip_ok:
         score += 10
+    if foreign_repeat_buy:
+        score += 8
     if foreign_stopping:
         score += 8
     if margin_not_hot:
         score += 8
+    if margin_absorbed:
+        score += 6
     if volume_deduction_ok:
         score += 8
     if price_deduction_ok:
@@ -1624,21 +1648,25 @@ def pressure_absorption_analysis(
         margin_text = f"融資10日 {margin_10d:+,.0f} 張"
         if margin_masked:
             margin_text += "（小增但價格不破，列為觀察）"
+        elif margin_absorbed:
+            margin_text += "（融資退場但價格不破，賣壓被吸收）"
 
     items = [
         ("長週期轉多/長多", long_trend_ok, f"MA120 {fmt_num(ma120)} / MA240 {fmt_num(ma240)}；斜率 {fmt_num(slopes.get('ma120'))}/{fmt_num(slopes.get('ma240'))}"),
         ("主力長期動態", long_chip_ok, f"大戶4週 {fmt_num(major_4w_delta, 2)}% / 散戶4週 {fmt_num(retail_4w_delta, 2)}% / 股東 {fmt_num(people_4w_delta, 0)}人"),
         ("價不破低", not_break, f"近10日低點 {fmt_num(recent_low)} / 前段低點 {fmt_num(prev_low)}"),
         ("量縮仍能撐住", small_volume_hold, f"{volume_price}；5日均量 {fmt_num(vol_delta_pct, 1)}%"),
-        ("同區間小量推升", same_zone_push, f"收盤 {fmt_num(close)} 仍在前低上方"),
+        ("同區間小量推升", same_zone_push, same_zone_volume_note),
         ("跌升過程籌碼", short_chip_ok, f"跌日主力 {fmt_num(down_total, 0)} 張 / 紅K主力 {fmt_num(up_total, 0)} 張"),
+        ("外資拉回不逃", foreign_repeat_buy, f"紅K外資 {fmt_num(up_foreign, 0)} 張 / 黑K或回檔外資 {fmt_num(down_foreign, 0)} 張"),
         ("外資賣壓停止", foreign_stopping, f"外資10日 {fmt_num(foreign_10d, 0)} 張 / 5日 {fmt_num(foreign_5d, 0)} 張 / 主力10日 {fmt_num(total_10d, 0)} 張"),
         ("融資沒有失控", margin_not_hot, margin_text),
+        ("融資賣壓被吸收", margin_absorbed, margin_text),
         ("20日扣抵量有利", volume_deduction_ok, f"20日前量 {fmt_num((deduct_vol20 or 0)/1000, 0)} 張 / 近5日均量 {fmt_num(vol_recent/1000, 0)} 張"),
         ("240扣抵價有利", price_deduction_ok, f"240日前收盤 {fmt_num(deduct_price240)} / 現價 {fmt_num(close)}"),
         ("止跌回升品質", rebound_quality, f"紅K {red_k_count}/10；下影 {lower_shadow_count}/10；站回均線={'是' if stand_back_ma else '否'}；過前高={'是' if slow_break_high else '否'}"),
     ]
-    summary = f"{level}｜長週期={'是' if long_trend_ok else '否'}｜價不破低={'是' if not_break else '否'}｜{volume_price}｜外資10日 {fmt_num(foreign_10d,0)}張｜{margin_text}"
+    summary = f"{level}｜長週期={'是' if long_trend_ok else '否'}｜價不破低={'是' if not_break else '否'}｜同區間小量={'是' if same_zone_push else '否'}｜外資拉回不逃={'是' if foreign_repeat_buy else '否'}｜{margin_text}"
     line = "；".join(f"{name}{'✅' if ok else '❌'}（{note}）" for name, ok, note in items)
     return {"level": level, "class": cls, "summary": summary, "line": line, "items": items, "score": score}
 
