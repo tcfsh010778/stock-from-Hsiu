@@ -1734,6 +1734,8 @@ def pressure_absorption_analysis(
         score += 8
     if rebound_quality:
         score += 12
+    if not_break and small_volume_hold and (same_zone_push or volume_deduction_ok or stand_back_ma):
+        score += 8
 
     if score >= 78:
         level, cls = "B2賣壓疑似消失", "pos"
@@ -5121,7 +5123,7 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
     next_watch = (
         _mda_line("籌碼答案", chip_answer, chip_answer_cls)
         + _mda_line("量價答案", price_answer, price_answer_cls)
-        + _mda_line("B2追蹤法", "先拉長看是否長多或轉長多，再拆下跌/拉升段的主力與大戶動態；同時追 20日扣抵量、240扣抵價，以及止跌後是否快速站回均線、紅K與下影線是否變多、能否慢慢過前高。")
+        + _mda_line("B2追蹤法", "先拉長看是否長多或轉長多，再拆下跌/拉升段的主力與大戶動態；同時追20日扣抵量、240扣抵價，以及止跌後是否快速站回均線、紅K與下影線是否變多、能否慢慢過前高。")
     )
     diagnosis_html = build_mda_auto_diagnosis(
         stock_id,
