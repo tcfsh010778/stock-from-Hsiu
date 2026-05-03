@@ -662,6 +662,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
         ("radar",   "radar.html",   "買點雷達"),
+        ("mda_scan", "mda_universe_scan.html", "M大掃描"),
         ("stocks",  "stocks.html",  "個股查詢"),
         ("backtest", "backtest.html", "歷史回測"),
         ("history", "history.html", "歷史報告"),
