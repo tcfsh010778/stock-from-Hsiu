@@ -19,7 +19,7 @@ MARKETS_PATH = DATA_DIR / "stock_markets.json"
 
 CSV_OUT = DATA_DIR / "mda_universe_scan.csv"
 JSON_OUT = DATA_DIR / "mda_universe_scan.json"
-HTML_OUT = DOCS_DIR / "mda_universe_scan.html"
+HTML_OUT = DATA_DIR / "mda_universe_scan_preview.html"
 FULL_REFRESH_SUMMARY_PATH = DATA_DIR / "mda_full_market_refresh_summary.json"
 
 

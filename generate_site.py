@@ -662,7 +662,6 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("basket",  "baskets.html", "雙籃儀表板"),
         ("signals", "signals.html", "訊號追蹤"),
         ("radar",   "radar.html",   "買點雷達"),
-        ("mda_scan", "mda_universe_scan.html", "M大掃描"),
         ("stocks",  "stocks.html",  "個股查詢"),
         ("backtest", "backtest.html", "歷史回測"),
         ("history", "history.html", "歷史報告"),
@@ -4307,6 +4306,93 @@ def mda_score_stock(s: dict, market_ok: bool) -> dict:
     }
 
 
+def load_mda_universe_scan_rows() -> list[dict]:
+    path = LOCAL_DATA_DIR / "mda_universe_scan.json"
+    if not path.exists():
+        return []
+    try:
+        rows = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if not isinstance(rows, list):
+        return []
+    basket_order = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}
+    rows = [r for r in rows if isinstance(r, dict)]
+    rows.sort(key=lambda r: (
+        basket_order.get(r.get("basket", ""), 9),
+        -float(r.get("score") or 0),
+        str(r.get("stock_id") or ""),
+    ))
+    return rows
+
+
+def build_mda_universe_section() -> str:
+    rows = load_mda_universe_scan_rows()
+    if not rows:
+        return ""
+    summary_path = LOCAL_DATA_DIR / "mda_full_market_refresh_summary.json"
+    try:
+        summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
+    except Exception:
+        summary = {}
+    groups = ["已發動籃", "空轉多觀察籃", "未發動觀察籃"]
+    counts = {g: sum(1 for r in rows if r.get("basket") == g) for g in groups}
+    latest_date = max((str(r.get("date") or "") for r in rows), default="─")
+    universe_count = summary.get("universe_count")
+    candidate_count = summary.get("candidate_count")
+    holding_dates = (summary.get("holding") or {}).get("query_dates")
+    price_months = summary.get("price_months")
+    blocks = []
+    for group in groups:
+        group_rows = [r for r in rows if r.get("basket") == group]
+        if not group_rows:
+            continue
+        trs = []
+        for r in group_rows[:80]:
+            sid = str(r.get("stock_id") or "")
+            stock_page = OUTPUT_DIR / "mda_stocks" / f"{sid}.html"
+            if stock_page.exists():
+                stock_html = f'<a class="stock-link" href="mda_stocks/{esc(sid)}.html">{esc(sid)} {esc(r.get("name", ""))}</a>'
+            else:
+                stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
+            trs.append(f"""
+<tr>
+  <td>{stock_html}<div class="signal-dates">{esc(r.get("date", ""))}</div></td>
+  <td><div class="m-score">{fmt_num(r.get("score"), 0)}</div></td>
+  <td><div class="price-main">{fmt_num(r.get("close"), 2)}</div><div class="signal-dates">距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div></td>
+  <td><div class="m-checks">MA120 {fmt_num(r.get("ma120_slope_pct"), 2)}%｜MA240 {fmt_num(r.get("ma240_slope_pct"), 2)}%</div><div class="signal-dates">240扣抵 {fmt_num(r.get("deduct240_gap_pct"), 1)}%</div></td>
+  <td><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
+  <td><div class="signal-dates">{esc(r.get("reason", ""))}</div></td>
+</tr>""")
+        extra = ""
+        if len(group_rows) > 80:
+            extra = f'<div class="strategy-note" style="margin-top:8px">此籃共 {len(group_rows)} 檔，頁面先顯示前 80 檔；完整名單在 data/mda_universe_scan.csv。</div>'
+        blocks.append(f"""
+<div style="margin-top:18px">
+  <div class="section-label">{esc(group)}｜{len(group_rows)} 檔</div>
+  <div style="overflow-x:auto">
+    <table class="stock-table">
+      <thead><tr><th>股票</th><th>分數</th><th>位置</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
+      <tbody>{''.join(trs)}</tbody>
+    </table>
+  </div>
+  {extra}
+</div>""")
+    return f"""
+  <div class="card">
+    <div class="section-label">全市場 M大主篩</div>
+    <div class="strategy-note" style="margin-bottom:12px">
+      這裡已合併全市場掃描結果：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。股權週次 {fmt_num(holding_dates, 0)}，日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
+    </div>
+    <div class="grid grid-3" style="margin-bottom:10px">
+      <div class="metric"><div class="metric-num" style="color:#3fb950">{counts["已發動籃"]}</div><div class="metric-label">已發動籃</div></div>
+      <div class="metric"><div class="metric-num" style="color:#d2a520">{counts["空轉多觀察籃"]}</div><div class="metric-label">空轉多觀察籃</div></div>
+      <div class="metric"><div class="metric-num" style="color:#58a6ff">{counts["未發動觀察籃"]}</div><div class="metric-label">未發動觀察籃</div></div>
+    </div>
+    {''.join(blocks)}
+  </div>"""
+
+
 def build_mda_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
@@ -4331,6 +4417,7 @@ def build_mda_page(reports: list[dict]) -> str:
 </tr>"""
     if not rows:
         rows = '<tr><td colspan="6" style="color:#8b949e">目前沒有上市櫃候選標的。</td></tr>'
+    universe_section = build_mda_universe_section()
 
     body = f"""
 <div class="container">
@@ -4361,6 +4448,7 @@ def build_mda_page(reports: list[dict]) -> str:
       </table>
     </div>
   </div>
+  {universe_section}
 </div>"""
     return html_page("M大選股", "mda", body)
 
