@@ -4365,19 +4365,32 @@ def build_mda_universe_section() -> str:
             market = r.get("market") or "─"
             full_stock_page = OUTPUT_DIR / "stocks" / f"{sid}.html"
             mda_stock_page = OUTPUT_DIR / "mda_stocks" / f"{sid}.html"
+            info_href = ""
+            stock_link_label = ""
             if full_stock_page.exists():
-                stock_link = f'<a class="tag tag-blue" href="stocks/{esc(sid)}.html">個股資訊</a>'
+                info_href = f"stocks/{esc(sid)}.html"
+                stock_link_label = "個股資訊"
             elif mda_stock_page.exists():
-                stock_link = f'<a class="tag tag-blue" href="mda_stocks/{esc(sid)}.html">M大解析</a>'
+                info_href = f"mda_stocks/{esc(sid)}.html"
+                stock_link_label = "M大解析"
+            if info_href:
+                stock_link = f'<a class="tag tag-blue" href="{info_href}">{stock_link_label}</a>'
+                stock_html = f'<a class="stock-link" href="{info_href}">{esc(sid)} {esc(r.get("name", ""))}</a>'
+                info_html = (
+                    f'<a class="stock-link" href="{info_href}"><div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div></a>'
+                    f'<a href="{info_href}" style="text-decoration:none"><div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div></a>'
+                    f'<a href="{info_href}" style="text-decoration:none"><div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div></a>'
+                    f'<div style="margin-top:6px">{stock_link}</div>'
+                )
             else:
                 stock_link = '<span class="tag">候選摘要</span>'
-            stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
-            info_html = (
-                f'<div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div>'
-                f'<div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div>'
-                f'<div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div>'
-                f'<div style="margin-top:6px">{stock_link}</div>'
-            )
+                stock_html = f'<span class="stock-link">{esc(sid)} {esc(r.get("name", ""))}</span>'
+                info_html = (
+                    f'<div class="m-checks">{esc(market)}｜{esc(r.get("date", ""))}</div>'
+                    f'<div class="signal-dates">收盤 {fmt_num(r.get("close"), 2)}｜距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%</div>'
+                    f'<div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div>'
+                    f'<div style="margin-top:6px">{stock_link}</div>'
+                )
             trs.append(f"""
 <tr>
   <td>{stock_html}<div class="signal-dates">{esc(market)}</div></td>
