@@ -103,6 +103,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -225,7 +239,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -251,6 +265,32 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div style="margin-bottom:8px"><a href="../mda.html" style="color:#6e7681;font-size:13px">&larr; 回 M大選股</a>　<a href="../stocks/5439.html" style="color:#6e7681;font-size:13px">一般個股頁 →</a></div>
   <div class="page-title">5439 高技｜M大觀察解析</div>
   <div class="page-sub">照 M大個股分析順序：A 長均線 → 120日扣抵 → B1 聰明錢 → B2 賣壓 → 後續追蹤</div>
+  
+<div class="card">
+  <div class="section-label">M大自動判讀摘要</div>
+  <div class="diagnosis-head">
+    <div class="diagnosis-verdict">
+      <div class="label">Program verdict</div>
+      <div class="main pos">重點觀察：A 已發動，B1 尚未明顯離開，B2 疑似出現</div>
+      <div class="sub">不追價；等回測不破、量縮整理後再轉強，或突破後回測大量區站穩。</div>
+    </div>
+    <div class="diagnosis-score">
+      <div class="box"><div class="num">40</div><div class="k">A 趨勢分</div></div>
+      <div class="box"><div class="num">45</div><div class="k">B1 籌碼分</div></div>
+      <div class="box"><div class="num">126</div><div class="k">B2 壓力分</div></div>
+    </div>
+  </div>
+  <div class="diagnosis-list">
+    <div class="panel"><h3>支持理由</h3><ul><li>A階段：已發動長多（A分 40）</li><li>B1：大戶增加、散戶減少，較接近聰明錢結構（B1分 45）</li><li>B2：B2賣壓疑似消失（B2壓力分 126）</li><li>偏保守：大戶沒有明顯續增，或散戶/股東人數同步增加，暫時不要把它當成籌碼集中。</li><li>偏正向：量縮時價格沒有破低，目前仍能靠近或挑戰關鍵均線。</li><li>長週期轉多/長多：MA120 317.70 / MA240 286.90；斜率 3.74/4.81</li><li>主力長期動態：大戶4週 1.45% / 散戶4週 -3.40% / 股東 2617人</li><li>價不破低：近10日低點 351.00 / 前段低點 268.00</li></ul></div>
+    <div class="panel"><h3>反證與待確認</h3><ul><li>同區間小量推升：同價位量能資料不足</li></ul></div>
+  </div>
+  <div class="diagnosis-prompt">請依 M大 ABC 架構複判 5439 高技：
+A：已發動長多，A分 40。
+B1：大戶增加、散戶減少，較接近聰明錢結構；外資10日 -3974 張，主力10日 -3269 張，大戶4週 1.45%，散戶4週 -3.40%。
+B2：B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -450 張（融資退場但價格不破，賣壓被吸收）。
+程式初判：重點觀察：A 已發動，B1 尚未明顯離開，B2 疑似出現；操作紀律：不追價；等回測不破、量縮整理後再轉強，或突破後回測大量區站穩。
+請看下方日K、外資、融資、大戶/散戶/股東人數連動圖，判斷主力是否尚未離開、賣壓是否真的消失，以及目前應該買進、觀察或排除。</div>
+</div>
   <div class="grid grid-2">
     <div class="card"><div class="section-label">① 為什麼值得觀察</div><div class="telegram-phase"><div class="telegram-line"><div class="k">觀察等級</div><div class="v "><span class="tag tag-green">重點觀察</span>　分數 93</div></div><div class="telegram-line"><div class="k">長均線狀態</div><div class="v pos">MA120、MA240 已開始向上彎，符合 M 大第一層觀察。</div></div><div class="telegram-line"><div class="k">120日扣抵</div><div class="v pos">120日扣抵值 307.50，收盤高於扣抵 24.4%，扣抵偏低有利均線後續彎上。</div></div></div></div>
     <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase"><div class="telegram-line"><div class="k">MA120</div><div class="v ">317.70｜斜率 3.74｜距離 20.4%</div></div><div class="telegram-line"><div class="k">MA240</div><div class="v ">286.90｜斜率 4.81｜距離 33.3%</div></div><div class="telegram-line"><div class="k">120日扣抵</div><div class="v ">307.50｜收盤距扣抵 24.4%</div></div><div class="telegram-line"><div class="k">A階段</div><div class="v pos">已發動長多</div></div><div class="telegram-line"><div class="k">A判讀</div><div class="v pos">長多已發動，等 B2 不追高。</div></div></div></div>

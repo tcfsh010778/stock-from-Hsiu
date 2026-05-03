@@ -511,6 +511,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -633,7 +647,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -4239,6 +4253,96 @@ def _mda_line(label: str, value: str, cls: str = "") -> str:
     return f'<div class="telegram-line"><div class="k">{esc(label)}</div><div class="v {cls}">{value}</div></div>'
 
 
+def build_mda_auto_diagnosis(
+    stock_id: str,
+    stock_name: str,
+    abc: dict,
+    money: dict,
+    pressure: dict,
+    chip_answer: str,
+    price_answer: str,
+) -> str:
+    a_phase = abc.get("a_phase", "A未成立")
+    b1_score = abc.get("b1_score", 0) or 0
+    b2_score = abc.get("b2_score", 0) or 0
+    pressure_score = pressure.get("score", 0) or 0
+    pressure_level = pressure.get("level", "B2資料不足")
+
+    if a_phase == "已發動長多" and b1_score >= 45 and pressure_score >= 78:
+        verdict = "重點觀察：A 已發動，B1 尚未明顯離開，B2 疑似出現"
+        action = "不追價；等回測不破、量縮整理後再轉強，或突破後回測大量區站穩。"
+        verdict_cls = "pos"
+    elif a_phase in {"未發動空轉多觀察", "轉強觀察"} and b1_score >= 45:
+        verdict = "觀察名單：A 還沒完整發動，但已有空轉多與 B1 線索"
+        action = "先放觀察池；等 240 扣抵更有利、價格不破低、再看到 B2 才提高順位。"
+        verdict_cls = "warn"
+    elif b1_score < 45:
+        verdict = "暫緩追蹤：B1 主力是否仍在還不夠明確"
+        action = "先看大戶是否回升、散戶/股東人數是否下降，外資是否停止反彈賣。"
+        verdict_cls = "neg"
+    elif pressure_score < 58:
+        verdict = "只觀察不動作：賣壓尚未證明變小"
+        action = "等待同區間量縮推升、融資賣壓被吸收、或回檔快速站回均線。"
+        verdict_cls = "neg"
+    else:
+        verdict = "觀察中：條件有雛形，但還缺一個清楚確認點"
+        action = "繼續比對外資/融資與股價互動，避免把短線反彈誤認成 B2。"
+        verdict_cls = ""
+
+    support = [
+        f"A階段：{a_phase}（A分 {fmt_num(abc.get('a_score'), 0)}）",
+        f"B1：{money.get('reading', '籌碼資料不足')}（B1分 {fmt_num(b1_score, 0)}）",
+        f"B2：{pressure_level}（B2壓力分 {fmt_num(pressure_score, 0)}）",
+        chip_answer,
+        price_answer,
+    ]
+    pressure_items = pressure.get("items") or []
+    for name, ok, note in pressure_items:
+        if ok and len(support) < 8:
+            support.append(f"{name}：{note}")
+
+    counter = []
+    for name, ok, note in pressure_items:
+        if not ok and len(counter) < 6:
+            counter.append(f"{name}：{note}")
+    if not counter:
+        counter.append("目前沒有明顯反證，但仍需用圖確認是否過熱或乖離過大。")
+
+    prompt = "\n".join([
+        f"請依 M大 ABC 架構複判 {stock_id} {stock_name}：",
+        f"A：{a_phase}，A分 {fmt_num(abc.get('a_score'), 0)}。",
+        f"B1：{money.get('reading', '資料不足')}；外資10日 {fmt_num(money.get('foreign_10d'), 0)} 張，主力10日 {fmt_num(money.get('force_10d'), 0)} 張，大戶4週 {fmt_num(money.get('major_4w'), 2)}%，散戶4週 {fmt_num(money.get('retail_4w'), 2)}%。",
+        f"B2：{pressure.get('summary', '資料不足')}。",
+        f"程式初判：{verdict}；操作紀律：{action}",
+        "請看下方日K、外資、融資、大戶/散戶/股東人數連動圖，判斷主力是否尚未離開、賣壓是否真的消失，以及目前應該買進、觀察或排除。",
+    ])
+
+    def li(items: list[str]) -> str:
+        return "".join(f"<li>{esc(x)}</li>" for x in items)
+
+    return f"""
+<div class="card">
+  <div class="section-label">M大自動判讀摘要</div>
+  <div class="diagnosis-head">
+    <div class="diagnosis-verdict">
+      <div class="label">Program verdict</div>
+      <div class="main {verdict_cls}">{esc(verdict)}</div>
+      <div class="sub">{esc(action)}</div>
+    </div>
+    <div class="diagnosis-score">
+      <div class="box"><div class="num">{fmt_num(abc.get('a_score'), 0)}</div><div class="k">A 趨勢分</div></div>
+      <div class="box"><div class="num">{fmt_num(b1_score, 0)}</div><div class="k">B1 籌碼分</div></div>
+      <div class="box"><div class="num">{fmt_num(pressure_score, 0)}</div><div class="k">B2 壓力分</div></div>
+    </div>
+  </div>
+  <div class="diagnosis-list">
+    <div class="panel"><h3>支持理由</h3><ul>{li(support)}</ul></div>
+    <div class="panel"><h3>反證與待確認</h3><ul>{li(counter)}</ul></div>
+  </div>
+  <div class="diagnosis-prompt">{esc(prompt)}</div>
+</div>"""
+
+
 def mda_chip_structure(stock_id: str, chip_series: list[dict], holding: dict) -> dict:
     holding_series = read_holding_series(stock_id)
     major_4w = retail_4w = people_4w = None
@@ -4931,12 +5035,22 @@ def build_mda_stock_detail_page(stock_id: str, s: dict) -> str:
         + _mda_line("量價答案", price_answer, price_answer_cls)
         + _mda_line("B2追蹤法", "先拉長看是否長多或轉長多，再拆下跌/拉升段的主力與大戶動態；同時追 20日扣抵量、240扣抵價，以及止跌後是否快速站回均線、紅K與下影線是否變多、能否慢慢過前高。")
     )
+    diagnosis_html = build_mda_auto_diagnosis(
+        stock_id,
+        s.get("name", ""),
+        abc,
+        money,
+        pressure,
+        chip_answer,
+        price_answer,
+    )
 
     body = f"""
 <div class="container">
   <div style="margin-bottom:8px"><a href="../mda.html" style="color:#6e7681;font-size:13px">&larr; 回 M大選股</a>　<a href="../stocks/{esc(stock_id)}.html" style="color:#6e7681;font-size:13px">一般個股頁 →</a></div>
   <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}｜M大觀察解析</div>
   <div class="page-sub">照 M大個股分析順序：A 長均線 → 120日扣抵 → B1 聰明錢 → B2 賣壓 → 後續追蹤</div>
+  {diagnosis_html}
   <div class="grid grid-2">
     <div class="card"><div class="section-label">① 為什麼值得觀察</div><div class="telegram-phase">{why}</div></div>
     <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase">{a_block}</div></div>

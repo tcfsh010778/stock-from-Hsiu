@@ -103,6 +103,20 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
 .telegram-price-line .change{font-size:13px;font-weight:800}
 .telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
 .chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
 .chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
 .chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
@@ -225,7 +239,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
