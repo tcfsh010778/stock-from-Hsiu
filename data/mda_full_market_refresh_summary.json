@@ -3,14 +3,13 @@
   "universe_count": 1959,
   "include_etf": false,
   "price_start": "2025-02-28",
-  "price_months": 24,
+  "price_months": 15,
   "holding_start": "2025-12-15",
   "price": {
-    "candidate_stocks": 37,
-    "written_files": 37,
-    "failed": 0,
-    "months": 24
+    "dataset_rows": 0,
+    "matched_stocks": 0,
+    "written_files": 0
   },
   "holding": null,
-  "candidate_count": 37
+  "candidate_count": null
 }
