@@ -31,6 +31,7 @@ jobs:
         run: |
           if [ -n "$FINMIND_TOKEN" ]; then
             python mda_full_market_refresh.py --price-months 24
+            python mda_full_market_refresh.py --skip-holding --one-day-price
             python mda_universe_scan.py
           else
             echo "::warning::FINMIND_TOKEN is not set; skip MDA full-market refresh."

@@ -4,18 +4,13 @@
   "include_etf": false,
   "price_start": "2025-02-28",
   "price_months": 24,
-  "holding_start": "2026-03-01",
+  "holding_start": "2025-12-15",
   "price": {
-    "candidate_stocks": 413,
-    "written_files": 413,
+    "candidate_stocks": 37,
+    "written_files": 37,
     "failed": 0,
     "months": 24
   },
-  "holding": {
-    "query_dates": 9,
-    "dataset_rows": 469659,
-    "matched_stocks": 1959,
-    "written_files": 1959
-  },
-  "candidate_count": 413
+  "holding": null,
+  "candidate_count": 37
 }

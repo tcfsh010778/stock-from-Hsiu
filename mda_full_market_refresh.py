@@ -62,6 +62,12 @@ def fetch_finmind_bulk(dataset: str, start_date: str) -> list[dict]:
     return payload.get("data") or []
 
 
+def _merge_key(row: dict, fields: list[str]) -> tuple[str, ...]:
+    if "HoldingSharesLevel" in fields:
+        return (str(row.get("date", "")), str(row.get("stock_id", "")), str(row.get("HoldingSharesLevel", "")))
+    return (str(row.get("date", "")),)
+
+
 def write_grouped_csv(rows_by_stock: dict[str, list[dict]], out_dir: Path, fields: list[str], merge_existing: bool = False) -> int:
     out_dir.mkdir(parents=True, exist_ok=True)
     written = 0
@@ -77,7 +83,7 @@ def write_grouped_csv(rows_by_stock: dict[str, list[dict]], out_dir: Path, field
                 existing = []
             by_key = {}
             for row in existing + rows:
-                key = tuple(str(row.get(field, "")) for field in fields[:3])
+                key = _merge_key(row, fields)
                 by_key[key] = {field: row.get(field, "") for field in fields}
             rows = sorted(by_key.values(), key=lambda x: (x.get("date", ""), x.get("HoldingSharesLevel", "")))
         with out.open("w", encoding="utf-8", newline="") as fh:
@@ -109,7 +115,7 @@ def refresh_one_day_prices(universe: dict[str, dict], start_date: str) -> dict:
             continue
     for sid in grouped:
         grouped[sid].sort(key=lambda x: x["date"])
-    written = write_grouped_csv(grouped, PRICE_DIR, ["date", "open", "high", "low", "close", "volume"])
+    written = write_grouped_csv(grouped, PRICE_DIR, ["date", "open", "high", "low", "close", "volume"], merge_existing=True)
     return {"dataset_rows": len(rows), "matched_stocks": len(grouped), "written_files": written}
 
 

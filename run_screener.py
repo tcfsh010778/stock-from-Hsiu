@@ -182,6 +182,9 @@ def select_top20(rows: list[dict]) -> list[dict]:
     basket_rank = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}
     enriched = [enrich(r) for r in rows]
     enriched = [r for r in enriched if r.get("close") and r.get("date")]
+    latest_date = max((r.get("date", "") for r in enriched), default="")
+    if latest_date:
+        enriched = [r for r in enriched if r.get("date") == latest_date]
     enriched.sort(key=lambda r: (
         basket_rank.get(r.get("basket", ""), 9),
         -to_float(r.get("score"), 0),
