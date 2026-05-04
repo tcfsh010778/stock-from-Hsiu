@@ -38,6 +38,7 @@ from generate_site import (  # noqa: E402
 
 
 def collect_stock_ids() -> list[str]:
+    scope = os.environ.get("V44_REFRESH_SCOPE", "latest").strip().lower()
     ids = set()
     md_files = find_all_reports()
     if md_files:
@@ -49,6 +50,9 @@ def collect_stock_ids() -> list[str]:
                 continue
     else:
         reports = load_reports()
+    reports = sorted(reports, key=lambda r: r.get("date", ""), reverse=True)
+    if scope not in {"all", "history"} and reports:
+        reports = reports[:1]
     for report in reports:
         for s in report.get("stocks", []):
             sid = str(s.get("id", "")).strip()
