@@ -78,7 +78,7 @@ def _parse_format_v1(text: str, result: dict) -> dict:
     | 收盤價 | **253.5 元** |
     """
     stock_pattern = re.compile(
-        r"### \d+\. ([🟢🟡🔴]) (\d{4}) (.+?) ｜(.+?)｜ Score: ([\d.]+)(.*?)(?=### \d+\.|---|\Z)",
+        r"### \d+\. ([🟢🟡🔴]) (\d{4}) (.+?) ｜(.+?)｜ Score: ([\d.]+)(.*?)(?=\n### \d+\.|\n---|\Z)",
         re.DOTALL
     )
     for m in stock_pattern.finditer(text):
@@ -120,6 +120,70 @@ def _parse_format_v1(text: str, result: dict) -> dict:
             "target":        ext("🎯 目標價"),
             "stop":          ext("🛑 停損價"),
             "score_source":   "原始報告 Score",
+        })
+    return result
+
+
+def _parse_format_v3(text: str, result: dict) -> dict:
+    """
+    Compact 2026 report format:
+    #### **#1 3026 禾伸堂** ｜ 收盤：212.5 元 ｜ 狀態：🟢 健康整理 ｜ 評分：13.09
+    """
+    stock_blocks = re.split(r"\n(?=#### \*\*#\d+ )", text)
+    for idx, sblk in enumerate(stock_blocks, 1):
+        m_head = re.match(
+            r"#### \*\*#(\d+) (\d{4}[\w-]*) (.+?)\*\*.*?收盤：\s*([\d.]+).*?狀態：\s*([🟢🟡🔴])\s*([^｜\n]+).*?評分：\s*([\d.]+)",
+            sblk,
+            re.DOTALL,
+        )
+        if not m_head:
+            continue
+        stock_no = int(m_head.group(1))
+        stock_id = m_head.group(2).strip()
+        stock_name = m_head.group(3).strip()
+        price = m_head.group(4).strip()
+        status_icon = m_head.group(5).strip()
+        status = m_head.group(6).strip()
+        score = float(m_head.group(7))
+
+        def ext(label, blk=sblk):
+            p = re.search(rf"\| {re.escape(label)} \| \*?\*?(.*?)\*?\*? \|", blk)
+            return _clean_cell(p.group(1)) if p else "─"
+
+        def ext_any(labels):
+            for label in labels:
+                value = ext(label)
+                if value != "─":
+                    return value
+            return "─"
+
+        trade = re.search(
+            r"進場參考\*\*：\s*([\d.]+).*?目標價\*\*：\s*([\d.]+).*?停損\*\*：\s*([\d.]+)",
+            sblk,
+            re.DOTALL,
+        )
+        entry, target, stop = trade.groups() if trade else ("─", "─", "─")
+
+        result["stocks"].append({
+            "icon": status_icon,
+            "id": stock_id,
+            "name": stock_name,
+            "status": status,
+            "score": score if score > 0 else round((21 - stock_no) * 10.0, 1),
+            "price": ext("收盤價") if ext("收盤價") != "─" else f"{price} 元",
+            "gain_6w": ext_any(["近6週均漲幅", "近6週漲幅"]),
+            "rsi": ext("RSI(14)"),
+            "bband_pct": ext_any(["布林%B", "布林 %B"]),
+            "vol_5d": ext("5日成交量"),
+            "foreign_month": ext_any(["外資月累淨買", "外資4月淨買", "外資累計"]),
+            "foreign_5d": ext_any(["外資近5日淨買", "外資近5日"]),
+            "foreign_streak": ext_any(["外資連買", "外資連買天數"]),
+            "resistance": ext_any(["壓力（21日高）", "近21日壓力", "壓力"]),
+            "support": ext_any(["支撐（21日低）", "近21日支撐", "支撐"]),
+            "entry": entry,
+            "target": target,
+            "stop": stop,
+            "score_source": "原始報告 Score",
         })
     return result
 
@@ -242,6 +306,8 @@ def parse_report(md_path: Path) -> dict:
     # 自動偵測格式
     if re.search(r"### \d+\. [🟢🟡🔴]", text):
         _parse_format_v1(text, result)
+    elif re.search(r"#### \*\*#\d+ \d{4}", text):
+        _parse_format_v3(text, result)
     else:
         _parse_format_v2(text, result)
 
@@ -395,6 +461,14 @@ def load_reports() -> list[dict]:
             except Exception as e:
                 print(f"   [WARN] {f.name}: {e}", flush=True)
         if reports:
+            if REPORTS_CACHE_PATH.exists():
+                try:
+                    cached = json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8"))
+                    seen = {r.get("date") for r in reports}
+                    reports.extend(r for r in cached if r.get("date") not in seen)
+                    reports.sort(key=lambda r: r.get("date", ""), reverse=True)
+                except Exception:
+                    pass
             LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
             REPORTS_CACHE_PATH.write_text(json.dumps(reports, ensure_ascii=False, indent=2), encoding="utf-8")
             return filter_listed_otc_reports(reports)
