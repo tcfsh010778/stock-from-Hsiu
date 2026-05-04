@@ -1,11 +1,9 @@
 name: Daily Stock Site Update
 
 on:
-  # 每天台股收盤後自動執行（UTC 09:30 = 台灣時間 17:30）
   schedule:
-    - cron: '30 9 * * 1-5'   # 週一到週五
-
-  # 手動觸發（測試用）
+    # Taiwan market after close: 17:30 Taipei / 09:30 UTC, Monday-Friday.
+    - cron: "30 9 * * 1-5"
   workflow_dispatch:
 
 permissions:
@@ -16,41 +14,40 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. 取得最新程式碼
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2. 安裝 Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
-      # 3. 安裝相依套件（目前只用標準庫）
       - name: Install dependencies
-        run: pip install --upgrade pip requests
+        run: python -m pip install --upgrade pip requests
 
-      # 4. 執行選股腳本（輸出 MD 報告）
-      #    如果你的選股腳本需要 FinMind token，在 repo Secrets 設定 FINMIND_TOKEN
-      # - name: Run screener
-      #   env:
-      #     FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-      #   run: python run_screener.py
-
-      # 5. 生成靜態網站
-      - name: Refresh FinMind prices
+      - name: Refresh tracked stock data
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-          V44_FETCH_MONTHS: "12"
+          V44_FETCH_MONTHS: "24"
         run: python refresh_prices.py
+
+      - name: Refresh MDA full-market scan
+        env:
+          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
+        run: |
+          if [ -n "$FINMIND_TOKEN" ]; then
+            python mda_full_market_refresh.py --price-months 24
+            python mda_universe_scan.py
+          else
+            echo "::warning::FINMIND_TOKEN is not set; skip MDA full-market refresh."
+          fi
 
       - name: Generate static site
         run: python generate_site.py
 
-      # 6. 把 docs/ 推回 repo，GitHub Pages 自動更新
-      - name: Commit & push docs
+      - name: Commit and push generated site
         run: |
-          git config user.name  "github-actions[bot]"
+          git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/ data/
           git diff --cached --quiet || git commit -m "Auto update: $(date '+%Y-%m-%d')"
