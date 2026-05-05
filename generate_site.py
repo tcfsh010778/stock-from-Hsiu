@@ -7092,7 +7092,7 @@ def historical_entry_signal(method: str, rows: list[dict], tech: dict, decision:
     return {"ok": False}
 
 
-def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01", method: str = "sfz_ta3") -> list[dict]:
+def _run_backtest_scan(reports: list[dict], start_date: str = "2024-01-01", method: str = "sfz_ta3", use_pit: bool = False) -> list[dict]:
     trades = []
     for item in historical_scan_universe(reports):
         sid = item["sid"]
@@ -7104,6 +7104,9 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
             row = rows[i]
             signal_date = row.get("date", "")
             if signal_date < start_date:
+                i += 1
+                continue
+            if use_pit and not is_in_universe(sid, signal_date):
                 i += 1
                 continue
             past_rows = rows[: i + 1]
@@ -7186,6 +7189,14 @@ def backtest_historical_scan(reports: list[dict], start_date: str = "2024-01-01"
     return trades
 
 
+def _run_backtest_legacy(reports: list[dict], start_date: str = "2024-01-01", method: str = "sfz_ta3") -> list[dict]:
+    return _run_backtest_scan(reports, start_date, method, use_pit=False)
+
+
+def _run_backtest_pit(reports: list[dict], start_date: str = "2024-01-01", method: str = "sfz_ta3") -> list[dict]:
+    return _run_backtest_scan(reports, start_date, method, use_pit=True)
+
+
 def summarize_trade_rows(rows: list[dict]) -> dict:
     filled = [x for x in rows if x.get("entry") is not None]
     closed = [x for x in filled if x.get("exit_reason") != "持有中"]
@@ -7257,8 +7268,7 @@ def historical_sell_exit(
     return None, None
 
 
-def build_historical_scan_block(reports: list[dict], method: str, title: str, note: str) -> str:
-    trades = backtest_historical_scan(reports, "2024-01-01", method)
+def build_historical_scan_block(trades: list[dict], title: str, note: str, variant_label: str = "") -> str:
     summary = summarize_trade_rows(trades)
     first_date = min((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
     last_date = max((x.get("signal_date") for x in trades if x.get("signal_date")), default="─")
@@ -7284,6 +7294,7 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
     return f"""
 <div class="card">
   <div class="section-label">{esc(title)}</div>
+  {f'<div class="strategy-note" style="font-weight:800">{variant_label}</div>' if variant_label else ''}
   <div class="strategy-note">資料範圍 {esc(first_date)} ~ {esc(last_date)}。前提是 SFZ 選股池，不是全市場掃描。{esc(note)} 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">{summary['filled']}</div><div class="metric-label">成交筆數</div></div>
@@ -7307,15 +7318,79 @@ def build_historical_scan_block(reports: list[dict], method: str, title: str, no
 </div>"""
 
 
+def _metric_change(new_value, old_value, pct: bool = False) -> str:
+    if new_value is None or old_value is None:
+        return "─"
+    diff = new_value - old_value
+    suffix = "%" if pct else ""
+    sign = "+" if diff > 0 else ""
+    return f"{sign}{fmt_num(diff, 1)}{suffix}"
+
+
+def _historical_scan_compare_table(title: str, legacy_summary: dict, pit_summary: dict) -> str:
+    metrics = [
+        ("成交筆數", "filled", False),
+        ("全體勝率", "win_rate", True),
+        ("全體平均報酬", "avg_ret", True),
+        ("+20%啟動率", "activation_rate", True),
+    ]
+    rows = ""
+    for label, key, is_pct in metrics:
+        legacy_value = legacy_summary.get(key)
+        pit_value = pit_summary.get(key)
+        rows += f"""
+<tr>
+  <td>{esc(label)}</td>
+  <td>{fmt_num(legacy_value, 1)}{'%' if is_pct else ''}</td>
+  <td>{fmt_num(pit_value, 1)}{'%' if is_pct else ''}</td>
+  <td>{esc(_metric_change(pit_value, legacy_value, is_pct))}</td>
+</tr>"""
+    return f"""
+<div class="card">
+  <div class="section-label">{esc(title)}｜Legacy vs PIT 對照</div>
+  <div style="overflow-x:auto;margin-top:10px">
+    <table class="stock-table">
+      <thead><tr><th>指標</th><th>Legacy（舊）</th><th>PIT（新）</th><th>變化</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table>
+  </div>
+</div>"""
+
+
+def _build_historical_scan_pair(reports: list[dict], method: str, title: str, note: str) -> str:
+    legacy_trades = _run_backtest_legacy(reports, "2024-01-01", method)
+    pit_trades = _run_backtest_pit(reports, "2024-01-01", method)
+    legacy_summary = summarize_trade_rows(legacy_trades)
+    pit_summary = summarize_trade_rows(pit_trades)
+    warning = '<span style="color:#f85149">⚠️ 已套用 point-in-time universe 過濾。預期勝率與平均報酬會低於 Legacy 版本，這是正確修正方向。</span>'
+    return (
+        _historical_scan_compare_table(title, legacy_summary, pit_summary)
+        + '<div class="grid grid-2">'
+        + build_historical_scan_block(
+            legacy_trades,
+            f"{title}｜Legacy（含倖存者偏差）",
+            note,
+            "Legacy（含倖存者偏差）：沿用今天回頭看的候選池。",
+        )
+        + build_historical_scan_block(
+            pit_trades,
+            f"{title}｜PIT（point-in-time universe）",
+            note,
+            warning,
+        )
+        + "</div>"
+    )
+
+
 def build_historical_scan_html(reports: list[dict]) -> str:
     return (
-        build_historical_scan_block(
+        _build_historical_scan_pair(
             reports,
             "sfz_ta3",
             "網站壓力測試｜逐日掃描版 SFZ_TA3",
             "這段不是原 168 筆回測；它是用目前網站候選池逐日掃描 2024 起所有符合點，條件較簡化，所以會重複觸發並放大啟動前停損風險。",
         )
-        + build_historical_scan_block(
+        + _build_historical_scan_pair(
             reports,
             "wr_after_attack",
             "網站壓力測試｜行進籃 Williams 回落",
@@ -7506,10 +7581,10 @@ def build_backtest_page(reports: list[dict]) -> str:
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
     <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：{len(closed)} 筆｜停利/獲利：{len(wins)} 筆｜停損/虧損：{len(losses)} 筆｜平均已實現：{fmt_num(avg_closed,1)}%｜最佳：{fmt_num(best,1)}%｜最差：{fmt_num(worst,1)}%</div>
   </div>
-  {build_original_sfz_backtest_reference_html()}
-  {build_ta3_box_split_reference_html()}
-  {build_historical_scan_html(reports)}
-  {build_entry_variant_comparison_html(reports)}
+{build_historical_scan_html(reports)}
+{build_original_sfz_backtest_reference_html()}
+{build_ta3_box_split_reference_html()}
+{build_entry_variant_comparison_html(reports)}
   <div class="card">
     <div class="section-label">逐筆追蹤</div>
     <div style="overflow-x:auto">
