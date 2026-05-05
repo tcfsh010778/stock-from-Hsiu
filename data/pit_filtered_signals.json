@@ -1,0 +1,900 @@
+{
+  "filtered_out": [
+    {
+      "stock_id": "2455",
+      "signal_date": "2024-07-15",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4958",
+      "signal_date": "2024-07-16",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6257",
+      "signal_date": "2024-07-16",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3162",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3714",
+      "signal_date": "2024-07-18",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "5439",
+      "signal_date": "2024-07-18",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6147",
+      "signal_date": "2024-07-18",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "8046",
+      "signal_date": "2024-07-18",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1301",
+      "signal_date": "2024-07-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1326",
+      "signal_date": "2024-07-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-07-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2024-07-26",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2402",
+      "signal_date": "2024-07-26",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2303",
+      "signal_date": "2024-08-07",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2049",
+      "signal_date": "2024-08-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2347",
+      "signal_date": "2024-08-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3264",
+      "signal_date": "2024-08-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6147",
+      "signal_date": "2024-08-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2024-08-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2024-08-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2484",
+      "signal_date": "2024-08-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6234",
+      "signal_date": "2024-08-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6531",
+      "signal_date": "2024-08-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2351",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3105",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6672",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "8358",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1560",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1595",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1785",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2316",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2476",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3167",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "5439",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6257",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6274",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "8027",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3714",
+      "signal_date": "2024-08-26",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2024-08-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3037",
+      "signal_date": "2024-08-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3443",
+      "signal_date": "2024-08-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2024-08-28",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4958",
+      "signal_date": "2024-08-28",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1773",
+      "signal_date": "2024-08-29",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1727",
+      "signal_date": "2024-09-02",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2455",
+      "signal_date": "2024-09-06",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3162",
+      "signal_date": "2024-09-06",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-09-09",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2236",
+      "signal_date": "2024-09-12",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3673",
+      "signal_date": "2024-09-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2024-09-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1301",
+      "signal_date": "2024-09-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2484",
+      "signal_date": "2024-09-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6672",
+      "signal_date": "2024-09-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1303",
+      "signal_date": "2024-09-24",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1326",
+      "signal_date": "2024-09-24",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2024-09-24",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2316",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6234",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6274",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6789",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "8358",
+      "signal_date": "2024-09-25",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1773",
+      "signal_date": "2024-09-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2340",
+      "signal_date": "2024-09-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3037",
+      "signal_date": "2024-09-27",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3105",
+      "signal_date": "2024-09-30",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6213",
+      "signal_date": "2024-09-30",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2049",
+      "signal_date": "2024-10-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2402",
+      "signal_date": "2024-10-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3714",
+      "signal_date": "2024-10-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6531",
+      "signal_date": "2024-10-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6127",
+      "signal_date": "2024-10-07",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "8046",
+      "signal_date": "2024-10-07",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1560",
+      "signal_date": "2024-10-14",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4958",
+      "signal_date": "2024-10-15",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3443",
+      "signal_date": "2024-10-16",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-10-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2455",
+      "signal_date": "2024-10-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2637",
+      "signal_date": "2024-10-21",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2024-12-03",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-12-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-12-30",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-01-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2402",
+      "signal_date": "2025-02-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3443",
+      "signal_date": "2025-02-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "5439",
+      "signal_date": "2025-02-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6531",
+      "signal_date": "2025-02-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1773",
+      "signal_date": "2025-02-05",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2476",
+      "signal_date": "2025-02-05",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2025-02-11",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-02-12",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2025-02-12",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2025-03-14",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-05-02",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2025-05-02",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2025-05-06",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2025-05-06",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6127",
+      "signal_date": "2025-05-06",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-05-09",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-05-14",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "6127",
+      "signal_date": "2025-06-16",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-06-24",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2025-07-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2025-07-03",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-07-28",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-07-30",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2025-08-07",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2025-08-11",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2025-08-14",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-09-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-10-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-10-20",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-10-22",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-12-01",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2025-12-03",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-12-16",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2026-01-02",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2026-01-19",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2026-02-04",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2026-02-09",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2236",
+      "signal_date": "2026-02-23",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "2316",
+      "signal_date": "2026-02-24",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2026-03-02",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2026-03-11",
+      "basket": "SFZ_TA3"
+    },
+    {
+      "stock_id": "1773",
+      "signal_date": "2024-07-17",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "8046",
+      "signal_date": "2024-07-17",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2049",
+      "signal_date": "2024-07-18",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2024-07-19",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1727",
+      "signal_date": "2024-07-22",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2402",
+      "signal_date": "2024-07-22",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3037",
+      "signal_date": "2024-07-22",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3167",
+      "signal_date": "2024-07-23",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "5439",
+      "signal_date": "2024-07-23",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2024-08-05",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2236",
+      "signal_date": "2024-08-06",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6213",
+      "signal_date": "2024-08-30",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2402",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3162",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6257",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6274",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "8027",
+      "signal_date": "2024-09-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3673",
+      "signal_date": "2024-09-05",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2455",
+      "signal_date": "2024-09-06",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "5439",
+      "signal_date": "2024-09-06",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6531",
+      "signal_date": "2024-09-06",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-09-23",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1595",
+      "signal_date": "2024-09-26",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3443",
+      "signal_date": "2024-10-01",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3105",
+      "signal_date": "2024-10-07",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6789",
+      "signal_date": "2024-10-07",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6127",
+      "signal_date": "2024-10-15",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3167",
+      "signal_date": "2024-10-18",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "6531",
+      "signal_date": "2024-10-21",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1560",
+      "signal_date": "2024-10-24",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "3443",
+      "signal_date": "2024-11-04",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2024-11-29",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "8046",
+      "signal_date": "2025-02-06",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-03-10",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2025-05-05",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-05-26",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-06-17",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-07-15",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-08-19",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-08-22",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2025-09-18",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-10-13",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2025-12-30",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2026-01-12",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2026-01-20",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2026-02-02",
+      "basket": "Williams"
+    },
+    {
+      "stock_id": "4960",
+      "signal_date": "2026-02-23",
+      "basket": "Williams"
+    }
+  ],
+  "total": 179
+}

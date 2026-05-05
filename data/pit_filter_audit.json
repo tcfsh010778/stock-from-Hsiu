@@ -1,0 +1,115 @@
+{
+  "generated_at": "2026-05-05T17:26:32",
+  "total_filtered_signals": 179,
+  "by_status": {
+    "in_report": {
+      "count": 0,
+      "percentage": 0.0
+    },
+    "not_in_report": {
+      "count": 0,
+      "percentage": 0.0
+    },
+    "no_report_for_date": {
+      "count": 179,
+      "percentage": 100.0
+    }
+  },
+  "by_basket": {
+    "SFZ_TA3": {
+      "total": 131,
+      "in_report": 0,
+      "not_in_report": 0,
+      "no_report_for_date": 131,
+      "legacy": 433,
+      "pit": 324,
+      "legacy_minus_pit_unique": 131
+    },
+    "Williams": {
+      "total": 48,
+      "in_report": 0,
+      "not_in_report": 0,
+      "no_report_for_date": 48,
+      "legacy": 178,
+      "pit": 136,
+      "legacy_minus_pit_unique": 48
+    }
+  },
+  "samples_in_report": [],
+  "samples_not_in_report": [],
+  "samples_no_report_for_date": [
+    {
+      "stock_id": "2455",
+      "signal_date": "2024-07-15",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "4958",
+      "signal_date": "2024-07-16",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "6257",
+      "signal_date": "2024-07-16",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "2337",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "3162",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "3221",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    },
+    {
+      "stock_id": "3714",
+      "signal_date": "2024-07-18",
+      "basket": "SFZ_TA3",
+      "status": "no_report_for_date"
+    }
+  ],
+  "report_sources_attempted": [
+    "data\\site_reports.json",
+    "data\\daily_reports",
+    "docs\\reports",
+    "git history:data/site_reports.json"
+  ],
+  "report_dates_available": [
+    "2026-04-24",
+    "2026-04-28",
+    "2026-04-29",
+    "2026-04-30",
+    "2026-05-04"
+  ]
+}
