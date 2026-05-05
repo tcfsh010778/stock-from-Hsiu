@@ -80,6 +80,68 @@ def _has_recent_holding(stock_id: str, as_of: date) -> bool:
     return dates[pos] >= as_of - timedelta(days=7)
 
 
+def _latest_holding_date(stock_id: str, as_of: date) -> date | None:
+    dates = _holding_index().get(stock_id)
+    if not dates:
+        return None
+    pos = bisect.bisect_right(dates, as_of) - 1
+    if pos < 0:
+        return None
+    return dates[pos]
+
+
+def diagnose_universe_eligibility(stock_id: str, as_of_date: str, min_close: float = 20.0) -> dict:
+    """
+    回傳該股票在 as_of_date 是否合格，以及每個條件的細節。
+
+    return: {
+        "eligible": bool,
+        "reasons_failed": ["close_below_min", "insufficient_history", ...],
+        "details": {
+            "close_on_date": float | None,
+            "trading_days_available": int,
+            "has_holding_data": bool,
+            "latest_holding_date": str | None,
+        }
+    }
+    """
+    stock_id = str(stock_id)
+    as_of = date.fromisoformat(as_of_date[:10])
+    reasons_failed: list[str] = []
+    effective_row = _effective_price_row(stock_id, as_of)
+    latest_holding = _latest_holding_date(stock_id, as_of)
+
+    price_pos = -1
+    effective_date = None
+    close = None
+    if effective_row is None:
+        reasons_failed.append("no_price_data_on_date")
+    else:
+        price_pos, effective_date, close = effective_row
+        if close < min_close:
+            reasons_failed.append(f"close_below_min_{min_close:g}")
+        if price_pos + 1 < 130:
+            reasons_failed.append("insufficient_history_lt_130_days")
+
+    has_recent_holding = bool(
+        effective_date is not None and latest_holding is not None and latest_holding >= effective_date - timedelta(days=7)
+    )
+    if not has_recent_holding:
+        reasons_failed.append("no_holding_data")
+
+    return {
+        "eligible": not reasons_failed,
+        "reasons_failed": reasons_failed,
+        "details": {
+            "close_on_date": close,
+            "effective_price_date": effective_date.isoformat() if effective_date else None,
+            "trading_days_available": price_pos + 1 if price_pos >= 0 else 0,
+            "has_holding_data": has_recent_holding,
+            "latest_holding_date": latest_holding.isoformat() if latest_holding else None,
+        },
+    }
+
+
 def is_in_universe(stock_id: str, as_of_date: str, min_close: float = 20.0) -> bool:
     """檢查單一股票在 as_of_date 是否合格。"""
     as_of = date.fromisoformat(as_of_date[:10])

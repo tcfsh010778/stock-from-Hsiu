@@ -1,0 +1,1313 @@
+{
+  "generated_at": "2026-05-05T17:38:30",
+  "samples": [
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-07-30",
+      "basket": "SFZ_TA3",
+      "filter_reason": "close_below_min_20",
+      "reasons_failed": [
+        "close_below_min_20"
+      ],
+      "actual_price_row": {
+        "date": "2025-07-30",
+        "open": 16.25,
+        "high": 16.7,
+        "low": 16.2,
+        "close": 16.65,
+        "volume": 1547912.0
+      },
+      "actual_close": 16.65,
+      "actual_volume": 1547912.0,
+      "trading_days_history": 313,
+      "latest_holding_date": "2025-07-25",
+      "latest_holding_rows": [
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "1-999",
+          "people": "38698",
+          "percent": "0.6",
+          "unit": "3317353"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "29835",
+          "percent": "11.64",
+          "unit": "63780003"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "5021",
+          "percent": "7.31",
+          "unit": "40052611"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "1480",
+          "percent": "3.47",
+          "unit": "19042970"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "992",
+          "percent": "3.37",
+          "unit": "18459277"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "809",
+          "percent": "3.79",
+          "unit": "20787873"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "384",
+          "percent": "2.52",
+          "unit": "13825091"
+        },
+        {
+          "date": "2025-07-25",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "240",
+          "percent": "2.02",
+          "unit": "11067516"
+        }
+      ],
+      "ma20_value": 16.0875,
+      "ma60_value": 16.618333333333332,
+      "ma120_value": 17.985833333333336,
+      "ma240_value": 20.561458333333334,
+      "ma120_above_close": true,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 16.65 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2026-03-11",
+      "basket": "SFZ_TA3",
+      "filter_reason": "close_below_min_20",
+      "reasons_failed": [
+        "close_below_min_20"
+      ],
+      "actual_price_row": {
+        "date": "2026-03-11",
+        "open": 13.6,
+        "high": 13.85,
+        "low": 13.15,
+        "close": 13.75,
+        "volume": 9416661.0
+      },
+      "actual_close": 13.75,
+      "actual_volume": 9416661.0,
+      "trading_days_history": 459,
+      "latest_holding_date": "2026-03-06",
+      "latest_holding_rows": [
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1-999",
+          "people": "44071",
+          "percent": "1.02",
+          "unit": "4077510"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "21078",
+          "percent": "11.58",
+          "unit": "46047373"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "4379",
+          "percent": "7.91",
+          "unit": "31478297"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "1850",
+          "percent": "5.58",
+          "unit": "22215018"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "792",
+          "percent": "3.55",
+          "unit": "14130495"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "809",
+          "percent": "4.98",
+          "unit": "19821315"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "329",
+          "percent": "2.89",
+          "unit": "11500080"
+        },
+        {
+          "date": "2026-03-06",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "216",
+          "percent": "2.49",
+          "unit": "9911659"
+        }
+      ],
+      "ma20_value": 12.684999999999999,
+      "ma60_value": 12.010833333333332,
+      "ma120_value": 11.499166666666667,
+      "ma240_value": 11.536041666666668,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 13.75 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "1711",
+      "signal_date": "2025-05-26",
+      "basket": "Williams",
+      "filter_reason": "close_below_min_20",
+      "reasons_failed": [
+        "close_below_min_20"
+      ],
+      "actual_price_row": {
+        "date": "2025-05-26",
+        "open": 16.85,
+        "high": 18.55,
+        "low": 16.8,
+        "close": 18.55,
+        "volume": 3931701.0
+      },
+      "actual_close": 18.55,
+      "actual_volume": 3931701.0,
+      "trading_days_history": 267,
+      "latest_holding_date": "2025-05-23",
+      "latest_holding_rows": [
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "1-999",
+          "people": "38789",
+          "percent": "0.6",
+          "unit": "3300569"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "29296",
+          "percent": "11.36",
+          "unit": "62237291"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "4774",
+          "percent": "6.91",
+          "unit": "37850211"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "1382",
+          "percent": "3.24",
+          "unit": "17747326"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "919",
+          "percent": "3.11",
+          "unit": "17087290"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "776",
+          "percent": "3.61",
+          "unit": "19777104"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "362",
+          "percent": "2.36",
+          "unit": "12969261"
+        },
+        {
+          "date": "2025-05-23",
+          "stock_id": "1711",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "220",
+          "percent": "1.85",
+          "unit": "10176066"
+        }
+      ],
+      "ma20_value": 17.05,
+      "ma60_value": 18.345833333333335,
+      "ma120_value": 19.970416666666665,
+      "ma240_value": 21.178958333333334,
+      "ma120_above_close": true,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 18.55 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2025-03-10",
+      "basket": "Williams",
+      "filter_reason": "close_below_min_20",
+      "reasons_failed": [
+        "close_below_min_20"
+      ],
+      "actual_price_row": {
+        "date": "2025-03-10",
+        "open": 14.15,
+        "high": 15.5,
+        "low": 14.1,
+        "close": 15.5,
+        "volume": 4417991.0
+      },
+      "actual_close": 15.5,
+      "actual_volume": 4417991.0,
+      "trading_days_history": 215,
+      "latest_holding_date": "2025-03-07",
+      "latest_holding_rows": [
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1-999",
+          "people": "40501",
+          "percent": "1.1",
+          "unit": "4396169"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "22505",
+          "percent": "12.24",
+          "unit": "48671972"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "4597",
+          "percent": "8.23",
+          "unit": "32748067"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "1983",
+          "percent": "5.97",
+          "unit": "23739639"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "797",
+          "percent": "3.55",
+          "unit": "14126516"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "826",
+          "percent": "5.01",
+          "unit": "19938852"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "327",
+          "percent": "2.87",
+          "unit": "11435203"
+        },
+        {
+          "date": "2025-03-07",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "206",
+          "percent": "2.33",
+          "unit": "9275017"
+        }
+      ],
+      "ma20_value": 14.092500000000001,
+      "ma60_value": 14.100833333333332,
+      "ma120_value": 16.145416666666666,
+      "ma240_value": null,
+      "ma120_above_close": true,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 15.50 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "2243",
+      "signal_date": "2025-10-13",
+      "basket": "Williams",
+      "filter_reason": "close_below_min_20",
+      "reasons_failed": [
+        "close_below_min_20"
+      ],
+      "actual_price_row": {
+        "date": "2025-10-13",
+        "open": 11.75,
+        "high": 12.95,
+        "low": 11.75,
+        "close": 12.95,
+        "volume": 1322650.0
+      },
+      "actual_close": 12.95,
+      "actual_volume": 1322650.0,
+      "trading_days_history": 361,
+      "latest_holding_date": "2025-10-09",
+      "latest_holding_rows": [
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "1-999",
+          "people": "607",
+          "percent": "0.14",
+          "unit": "102175"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "3886",
+          "percent": "11.92",
+          "unit": "8271018"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "630",
+          "percent": "7.28",
+          "unit": "5050398"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "194",
+          "percent": "3.6",
+          "unit": "2503924"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "136",
+          "percent": "3.6",
+          "unit": "2502232"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "114",
+          "percent": "4.18",
+          "unit": "2900423"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "48",
+          "percent": "2.48",
+          "unit": "1722541"
+        },
+        {
+          "date": "2025-10-09",
+          "stock_id": "2243",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "46",
+          "percent": "3.08",
+          "unit": "2138906"
+        }
+      ],
+      "ma20_value": 11.9075,
+      "ma60_value": 11.598333333333333,
+      "ma120_value": 11.8725,
+      "ma240_value": 14.570583333333333,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 12.95 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "2476",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3",
+      "filter_reason": "insufficient_history_lt_130_days",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-23",
+        "open": 105.0,
+        "high": 106.5,
+        "low": 104.0,
+        "close": 106.5,
+        "volume": 1888246.0
+      },
+      "actual_close": 106.5,
+      "actual_volume": 1888246.0,
+      "trading_days_history": 86,
+      "latest_holding_date": "2024-08-23",
+      "latest_holding_rows": [
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "1-999",
+          "people": "7189",
+          "percent": "0.63",
+          "unit": "1319469"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "10273",
+          "percent": "9.05",
+          "unit": "18926439"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "1291",
+          "percent": "4.59",
+          "unit": "9592356"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "449",
+          "percent": "2.67",
+          "unit": "5583944"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "225",
+          "percent": "1.91",
+          "unit": "4001566"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "247",
+          "percent": "2.91",
+          "unit": "6089090"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "105",
+          "percent": "1.75",
+          "unit": "3668075"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "79",
+          "percent": "1.72",
+          "unit": "3608109"
+        }
+      ],
+      "ma20_value": 100.02000000000001,
+      "ma60_value": 103.59666666666666,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 86 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "3037",
+      "signal_date": "2024-09-27",
+      "basket": "SFZ_TA3",
+      "filter_reason": "insufficient_history_lt_130_days",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days"
+      ],
+      "actual_price_row": {
+        "date": "2024-09-27",
+        "open": 148.5,
+        "high": 155.5,
+        "low": 148.5,
+        "close": 149.0,
+        "volume": 35877459.0
+      },
+      "actual_close": 149.0,
+      "actual_volume": 35877459.0,
+      "trading_days_history": 110,
+      "latest_holding_date": "2024-09-27",
+      "latest_holding_rows": [
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "1-999",
+          "people": "68034",
+          "percent": "0.6",
+          "unit": "9179399"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "89859",
+          "percent": "10.96",
+          "unit": "167302009"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "7985",
+          "percent": "4.02",
+          "unit": "61423544"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "2043",
+          "percent": "1.71",
+          "unit": "26090218"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "1153",
+          "percent": "1.39",
+          "unit": "21206752"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "984",
+          "percent": "1.65",
+          "unit": "25239142"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "414",
+          "percent": "0.96",
+          "unit": "14770353"
+        },
+        {
+          "date": "2024-09-27",
+          "stock_id": "3037",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "263",
+          "percent": "0.8",
+          "unit": "12262988"
+        }
+      ],
+      "ma20_value": 147.15,
+      "ma60_value": 163.825,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 110 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3",
+      "filter_reason": "insufficient_history_lt_130_days",
+      "reasons_failed": [
+        "close_below_min_20",
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-22",
+        "open": 19.0,
+        "high": 19.3,
+        "low": 19.0,
+        "close": 19.1,
+        "volume": 413964.0
+      },
+      "actual_close": 19.1,
+      "actual_volume": 413964.0,
+      "trading_days_history": 85,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 18.4875,
+      "ma60_value": 18.899166666666666,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 19.10 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "1785",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3",
+      "filter_reason": "insufficient_history_lt_130_days",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-23",
+        "open": 61.5,
+        "high": 63.3,
+        "low": 60.2,
+        "close": 63.3,
+        "volume": 15853047.0
+      },
+      "actual_close": 63.3,
+      "actual_volume": 15853047.0,
+      "trading_days_history": 86,
+      "latest_holding_date": "2024-08-23",
+      "latest_holding_rows": [
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "1-999",
+          "people": "39843",
+          "percent": "0.65",
+          "unit": "3905708"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "59363",
+          "percent": "19.2",
+          "unit": "114501000"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "6698",
+          "percent": "8.83",
+          "unit": "52655329"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "1964",
+          "percent": "4.2",
+          "unit": "25060012"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "1182",
+          "percent": "3.67",
+          "unit": "21909416"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "986",
+          "percent": "4.2",
+          "unit": "25067457"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "439",
+          "percent": "2.64",
+          "unit": "15776522"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "1785",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "253",
+          "percent": "1.96",
+          "unit": "11689660"
+        }
+      ],
+      "ma20_value": 61.135000000000005,
+      "ma60_value": 61.5575,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 86 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "3167",
+      "signal_date": "2024-08-23",
+      "basket": "SFZ_TA3",
+      "filter_reason": "insufficient_history_lt_130_days",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-23",
+        "open": 90.1,
+        "high": 95.9,
+        "low": 88.3,
+        "close": 93.8,
+        "volume": 10086090.0
+      },
+      "actual_close": 93.8,
+      "actual_volume": 10086090.0,
+      "trading_days_history": 86,
+      "latest_holding_date": "2024-08-23",
+      "latest_holding_rows": [
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "1-999",
+          "people": "2545",
+          "percent": "0.42",
+          "unit": "356877"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "5188",
+          "percent": "10.84",
+          "unit": "9097813"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "516",
+          "percent": "4.69",
+          "unit": "3941583"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "157",
+          "percent": "2.29",
+          "unit": "1929759"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "97",
+          "percent": "2.06",
+          "unit": "1736139"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "106",
+          "percent": "3.09",
+          "unit": "2596186"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "42",
+          "percent": "1.76",
+          "unit": "1482622"
+        },
+        {
+          "date": "2024-08-23",
+          "stock_id": "3167",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "42",
+          "percent": "2.28",
+          "unit": "1919680"
+        }
+      ],
+      "ma20_value": 78.385,
+      "ma60_value": 68.41666666666667,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 86 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-12-30",
+      "basket": "SFZ_TA3",
+      "filter_reason": "no_holding_data",
+      "reasons_failed": [
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-12-30",
+        "open": 22.5,
+        "high": 23.6,
+        "low": 22.4,
+        "close": 23.0,
+        "volume": 6487577.0
+      },
+      "actual_close": 23.0,
+      "actual_volume": 6487577.0,
+      "trading_days_history": 172,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 22.794999999999998,
+      "ma60_value": 23.005,
+      "ma120_value": 21.694166666666668,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "最近股權分散資料為 無，不符合最近一週條件；需確認 holding_shares 歷史覆蓋。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-09-04",
+      "basket": "Williams",
+      "filter_reason": "no_holding_data",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-09-04",
+        "open": 20.9,
+        "high": 21.65,
+        "low": 20.0,
+        "close": 20.8,
+        "volume": 4672923.0
+      },
+      "actual_close": 20.8,
+      "actual_volume": 4672923.0,
+      "trading_days_history": 94,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 19.732499999999998,
+      "ma60_value": 19.285,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 94 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3",
+      "filter_reason": "no_holding_data",
+      "reasons_failed": [
+        "close_below_min_20",
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-22",
+        "open": 19.0,
+        "high": 19.3,
+        "low": 19.0,
+        "close": 19.1,
+        "volume": 413964.0
+      },
+      "actual_close": 19.1,
+      "actual_volume": 413964.0,
+      "trading_days_history": 85,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 18.4875,
+      "ma60_value": 18.899166666666666,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 19.10 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "2476",
+      "signal_date": "2025-02-05",
+      "basket": "SFZ_TA3",
+      "filter_reason": "no_holding_data",
+      "reasons_failed": [
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2025-02-05",
+        "open": 83.7,
+        "high": 85.5,
+        "low": 83.0,
+        "close": 84.7,
+        "volume": 747570.0
+      },
+      "actual_close": 84.7,
+      "actual_volume": 747570.0,
+      "trading_days_history": 191,
+      "latest_holding_date": "2025-01-24",
+      "latest_holding_rows": [
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "1-999",
+          "people": "7242",
+          "percent": "0.65",
+          "unit": "1371728"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "12254",
+          "percent": "11.09",
+          "unit": "23314908"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "1550",
+          "percent": "5.55",
+          "unit": "11678653"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "553",
+          "percent": "3.29",
+          "unit": "6919842"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "290",
+          "percent": "2.46",
+          "unit": "5186766"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "256",
+          "percent": "3.05",
+          "unit": "6418675"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "142",
+          "percent": "2.38",
+          "unit": "5014561"
+        },
+        {
+          "date": "2025-01-24",
+          "stock_id": "2476",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "86",
+          "percent": "1.86",
+          "unit": "3925278"
+        }
+      ],
+      "ma20_value": 83.80499999999999,
+      "ma60_value": 86.20333333333333,
+      "ma120_value": 91.1275,
+      "ma240_value": null,
+      "ma120_above_close": true,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "最近股權分散資料為 2025-01-24，不符合最近一週條件；需確認 holding_shares 歷史覆蓋。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-07-22",
+      "basket": "SFZ_TA3",
+      "filter_reason": "no_holding_data",
+      "reasons_failed": [
+        "close_below_min_20",
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-07-22",
+        "open": 19.5,
+        "high": 19.65,
+        "low": 19.1,
+        "close": 19.55,
+        "volume": 1489234.0
+      },
+      "actual_close": 19.55,
+      "actual_volume": 1489234.0,
+      "trading_days_history": 64,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 19.445,
+      "ma60_value": 18.589166666666664,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 19.55 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-10-21",
+      "basket": "SFZ_TA3",
+      "filter_reason": "multiple_reasons",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-10-21",
+        "open": 24.9,
+        "high": 25.15,
+        "low": 24.55,
+        "close": 25.15,
+        "volume": 3554140.0
+      },
+      "actual_close": 25.15,
+      "actual_volume": 3554140.0,
+      "trading_days_history": 123,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 24.142500000000002,
+      "ma60_value": 21.359166666666667,
+      "ma120_value": 19.95583333333333,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 123 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-09-04",
+      "basket": "Williams",
+      "filter_reason": "multiple_reasons",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-09-04",
+        "open": 20.9,
+        "high": 21.65,
+        "low": 20.0,
+        "close": 20.8,
+        "volume": 4672923.0
+      },
+      "actual_close": 20.8,
+      "actual_volume": 4672923.0,
+      "trading_days_history": 94,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 19.732499999999998,
+      "ma60_value": 19.285,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 94 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "1309",
+      "signal_date": "2024-07-17",
+      "basket": "SFZ_TA3",
+      "filter_reason": "multiple_reasons",
+      "reasons_failed": [
+        "close_below_min_20",
+        "insufficient_history_lt_130_days"
+      ],
+      "actual_price_row": {
+        "date": "2024-07-17",
+        "open": 19.55,
+        "high": 20.2,
+        "low": 19.35,
+        "close": 19.7,
+        "volume": 4127393.0
+      },
+      "actual_close": 19.7,
+      "actual_volume": 4127393.0,
+      "trading_days_history": 63,
+      "latest_holding_date": "2024-07-12",
+      "latest_holding_rows": [
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1-999",
+          "people": "38052",
+          "percent": "1.12",
+          "unit": "4463081"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "1,000-5,000",
+          "people": "23587",
+          "percent": "12.8",
+          "unit": "50897971"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "5,001-10,000",
+          "people": "4782",
+          "percent": "8.51",
+          "unit": "33847694"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "10,001-15,000",
+          "people": "2079",
+          "percent": "6.23",
+          "unit": "24781431"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "15,001-20,000",
+          "people": "768",
+          "percent": "3.4",
+          "unit": "13542174"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "20,001-30,000",
+          "people": "842",
+          "percent": "5.1",
+          "unit": "20294139"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "30,001-40,000",
+          "people": "342",
+          "percent": "3.0",
+          "unit": "11939026"
+        },
+        {
+          "date": "2024-07-12",
+          "stock_id": "1309",
+          "HoldingSharesLevel": "40,001-50,000",
+          "people": "184",
+          "percent": "2.07",
+          "unit": "8230205"
+        }
+      ],
+      "ma20_value": 18.244999999999997,
+      "ma60_value": 16.405833333333334,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 19.70 < 20，低於策略最低股價門檻，過濾合理。"
+    },
+    {
+      "stock_id": "2464",
+      "signal_date": "2024-09-23",
+      "basket": "Williams",
+      "filter_reason": "multiple_reasons",
+      "reasons_failed": [
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-09-23",
+        "open": 88.7,
+        "high": 89.1,
+        "low": 83.2,
+        "close": 83.3,
+        "volume": 28411426.0
+      },
+      "actual_close": 83.3,
+      "actual_volume": 28411426.0,
+      "trading_days_history": 106,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 83.19,
+      "ma60_value": 81.905,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "need_human_review",
+      "human_judgment": "signal_date 前只有 106 筆價格資料，未達 MA120 所需 130 筆；可能是歷史資料起點不足。"
+    },
+    {
+      "stock_id": "2426",
+      "signal_date": "2024-08-22",
+      "basket": "SFZ_TA3",
+      "filter_reason": "multiple_reasons",
+      "reasons_failed": [
+        "close_below_min_20",
+        "insufficient_history_lt_130_days",
+        "no_holding_data"
+      ],
+      "actual_price_row": {
+        "date": "2024-08-22",
+        "open": 19.0,
+        "high": 19.3,
+        "low": 19.0,
+        "close": 19.1,
+        "volume": 413964.0
+      },
+      "actual_close": 19.1,
+      "actual_volume": 413964.0,
+      "trading_days_history": 85,
+      "latest_holding_date": null,
+      "latest_holding_rows": [],
+      "ma20_value": 18.4875,
+      "ma60_value": 18.899166666666666,
+      "ma120_value": null,
+      "ma240_value": null,
+      "ma120_above_close": false,
+      "human_judgment_status": "confirmed_correct_filter",
+      "human_judgment": "close 19.10 < 20，低於策略最低股價門檻，過濾合理。"
+    }
+  ]
+}
