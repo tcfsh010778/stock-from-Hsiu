@@ -19,6 +19,8 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from tools.pit_universe import get_eligible_universe, is_in_universe  # noqa: F401  # used in next step
+
 # ──────────────────────────────────────────────
 #  路徑設定（Windows / Linux 自動切換）
 # ──────────────────────────────────────────────
