@@ -211,23 +211,23 @@ def load_reports_for_backtest() -> list[dict[str, Any]]:
 
 def build_filtered_signals(reports: list[dict[str, Any]]) -> tuple[list[dict[str, str]], dict[str, dict[str, int]]]:
     import generate_site as gs
+    from tools.pit_universe import is_in_universe
 
     filtered: list[dict[str, str]] = []
     method_counts: dict[str, dict[str, int]] = {}
     for method, basket in METHODS:
         legacy = gs._run_backtest_legacy(reports, "2024-01-01", method)
         pit = gs._run_backtest_pit(reports, "2024-01-01", method)
-        legacy_keys = {
-            (str(row.get("sid", "")), str(row.get("signal_date", "")), basket)
-            for row in legacy
-            if row.get("sid") and row.get("signal_date")
-        }
-        pit_keys = {
-            (str(row.get("sid", "")), str(row.get("signal_date", "")), basket)
-            for row in pit
-            if row.get("sid") and row.get("signal_date")
-        }
-        missing = sorted(legacy_keys - pit_keys, key=lambda item: (item[1], item[0], item[2]))
+        missing = sorted(
+            {
+                (str(row.get("sid", "")), str(row.get("signal_date", "")), basket)
+                for row in legacy
+                if row.get("sid")
+                and row.get("signal_date")
+                and not is_in_universe(str(row.get("sid", "")), str(row.get("signal_date", "")))
+            },
+            key=lambda item: (item[1], item[0], item[2]),
+        )
         filtered.extend(
             {"stock_id": stock_id, "signal_date": signal_date, "basket": basket}
             for stock_id, signal_date, basket in missing
@@ -235,7 +235,7 @@ def build_filtered_signals(reports: list[dict[str, Any]]) -> tuple[list[dict[str
         method_counts[basket] = {
             "legacy": len(legacy),
             "pit": len(pit),
-            "legacy_minus_pit_unique": len(missing),
+            "direct_pit_rejections": len(missing),
         }
     return filtered, method_counts
 
@@ -299,7 +299,7 @@ def build_audit(filtered: list[dict[str, str]], method_counts: dict[str, dict[st
             "no_report_for_date": counts.get("no_report_for_date", 0),
             "legacy": method_counts.get(basket, {}).get("legacy", 0),
             "pit": method_counts.get(basket, {}).get("pit", 0),
-            "legacy_minus_pit_unique": method_counts.get(basket, {}).get("legacy_minus_pit_unique", 0),
+            "direct_pit_rejections": method_counts.get(basket, {}).get("direct_pit_rejections", 0),
         }
 
     return {

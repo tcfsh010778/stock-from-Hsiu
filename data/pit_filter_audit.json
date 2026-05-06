@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-05-05T17:26:32",
-  "total_filtered_signals": 179,
+  "generated_at": "2026-05-07T01:49:59",
+  "total_filtered_signals": 177,
   "by_status": {
     "in_report": {
       "count": 0,
@@ -11,28 +11,28 @@
       "percentage": 0.0
     },
     "no_report_for_date": {
-      "count": 179,
+      "count": 177,
       "percentage": 100.0
     }
   },
   "by_basket": {
     "SFZ_TA3": {
-      "total": 131,
+      "total": 130,
       "in_report": 0,
       "not_in_report": 0,
-      "no_report_for_date": 131,
+      "no_report_for_date": 130,
       "legacy": 433,
       "pit": 324,
-      "legacy_minus_pit_unique": 131
+      "direct_pit_rejections": 130
     },
     "Williams": {
-      "total": 48,
+      "total": 47,
       "in_report": 0,
       "not_in_report": 0,
-      "no_report_for_date": 48,
+      "no_report_for_date": 47,
       "legacy": 178,
       "pit": 136,
-      "legacy_minus_pit_unique": 48
+      "direct_pit_rejections": 47
     }
   },
   "samples_in_report": [],

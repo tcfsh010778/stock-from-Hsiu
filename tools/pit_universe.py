@@ -144,17 +144,7 @@ def diagnose_universe_eligibility(stock_id: str, as_of_date: str, min_close: flo
 
 def is_in_universe(stock_id: str, as_of_date: str, min_close: float = 20.0) -> bool:
     """檢查單一股票在 as_of_date 是否合格。"""
-    as_of = date.fromisoformat(as_of_date[:10])
-    effective_row = _effective_price_row(str(stock_id), as_of)
-    if effective_row is None:
-        return False
-
-    price_pos, effective_date, close = effective_row
-    if close < min_close:
-        return False
-    if not _has_recent_holding(str(stock_id), effective_date):
-        return False
-    return price_pos + 1 >= 130
+    return bool(diagnose_universe_eligibility(stock_id, as_of_date, min_close).get("eligible"))
 
 
 def get_eligible_universe(as_of_date: str, min_close: float = 20.0) -> set[str]:
