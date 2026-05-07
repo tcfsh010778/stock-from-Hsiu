@@ -1,9 +1,4 @@
 date,stock_id,buy,name,sell
-2024-04-22,1721,407000,Foreign_Investor,148000
-2024-04-22,1721,0,Foreign_Dealer_Self,0
-2024-04-22,1721,0,Investment_Trust,0
-2024-04-22,1721,0,Dealer_self,0
-2024-04-22,1721,0,Dealer_Hedging,0
 2024-04-23,1721,170000,Foreign_Investor,155450
 2024-04-23,1721,0,Foreign_Dealer_Self,0
 2024-04-23,1721,0,Investment_Trust,0
@@ -2469,3 +2464,8 @@ date,stock_id,buy,name,sell
 2026-05-06,1721,0,Investment_Trust,0
 2026-05-06,1721,81000,Dealer_self,2000
 2026-05-06,1721,0,Dealer_Hedging,0
+2026-05-07,1721,175000,Foreign_Investor,109000
+2026-05-07,1721,0,Foreign_Dealer_Self,0
+2026-05-07,1721,0,Investment_Trust,0
+2026-05-07,1721,54000,Dealer_self,81000
+2026-05-07,1721,0,Dealer_Hedging,0
