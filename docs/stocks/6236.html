@@ -275,7 +275,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="telegram-head">
     <div>
       <div class="telegram-title">6236 中湛 個股資訊卡</div>
-      <div class="telegram-meta">收盤日期 2025-03-03｜報告日期 ─</div>
+      <div class="telegram-meta">收盤日期 2025-03-04｜報告日期 ─</div>
     </div>
     <div class="telegram-rating ">觀望</div>
   </div>
@@ -375,7 +375,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <script>
 (function(){
   const root=document.getElementById('mda-tv-6236');
-  const rows=[{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "change": null, "changePct": null, "volume": 0.0, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}];
+  const rows=[{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "change": null, "changePct": null, "volume": 0.0, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-04", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "change": null, "changePct": null, "volume": 0.0, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}];
   if(!root || !rows.length) return;
   const L=window.LightweightCharts;
   if(!L){
@@ -648,7 +648,25 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
         <button type="button" data-btn="weekly" onclick="showChart_6236('weekly')">週K</button>
         <button type="button" data-btn="monthly" onclick="showChart_6236('monthly')">月K</button>
       </div>
-      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily"><div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">
+<svg viewBox="0 0 900 360" width="100%" role="img" aria-label="日K">
+  <rect x="0" y="0" width="900" height="360" fill="#0d1117"/>
+  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">1.0</text><line x1="50" y1="78.0" x2="882" y2="78.0" stroke="#21262d"/><text x="4" y="82.0" fill="#6e7681" font-size="11">0.5</text><line x1="50" y1="138.0" x2="882" y2="138.0" stroke="#21262d"/><text x="4" y="142.0" fill="#6e7681" font-size="11">0.0</text><line x1="50" y1="198.0" x2="882" y2="198.0" stroke="#21262d"/><text x="4" y="202.0" fill="#6e7681" font-size="11">-0.5</text><line x1="50" y1="258.0" x2="882" y2="258.0" stroke="#21262d"/><text x="4" y="262.0" fill="#6e7681" font-size="11">-1.0</text>
+  <line x1="50" y1="276.0" x2="882" y2="276.0" stroke="#30363d"/>
+  <text x="4" y="288.0" fill="#6e7681" font-size="11">量</text>
+  <text x="4" y="304.0" fill="#6e7681" font-size="11">0張</text>
+  
+  <line x1="50.0" y1="138.0" x2="50.0" y2="138.0" stroke="#f85149" stroke-width="1"/><rect x="46.0" y="138.0" width="8.0" height="1.4" fill="#f85149" opacity=".78"/><rect x="46.0" y="334.0" width="8.0" height="0.0" fill="#f85149" opacity=".35"/><line x1="882.0" y1="138.0" x2="882.0" y2="138.0" stroke="#f85149" stroke-width="1"/><rect x="878.0" y="138.0" width="8.0" height="1.4" fill="#f85149" opacity=".78"/><rect x="878.0" y="334.0" width="8.0" height="0.0" fill="#f85149" opacity=".35"/>
+  
+  <text x="50" y="352" fill="#6e7681" font-size="11">2025-03-03</text>
+  <text x="788" y="352" fill="#6e7681" font-size="11">2025-03-04</text>
+  <text x="50" y="14" fill="#e6edf3" font-size="12">日K ｜ 收 0.00</text>
+  <text x="585" y="14" fill="#58a6ff" font-size="11">MA5</text>
+  <text x="635" y="14" fill="#d2a520" font-size="11">MA10</text>
+  <text x="690" y="14" fill="#f0883e" font-size="11">MA20</text>
+  <text x="745" y="14" fill="#3fb950" font-size="11">MA60</text>
+  <text x="805" y="14" fill="#8b949e" font-size="11">BB</text>
+</svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
       <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly"><div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
       <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly"><div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
     </div>
@@ -687,10 +705,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
 
 <script>
-const chartData_6236 = {"daily": [{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "weekly": [{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "monthly": [{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}]};
+const chartData_6236 = {"daily": [{"date": "2025-03-03", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}, {"date": "2025-03-04", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "weekly": [{"date": "2025-03-04", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "monthly": [{"date": "2025-03-04", "open": 0.0, "high": 0.0, "low": 0.0, "close": 0.0, "volume": 0.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}]};
 const holdingData_6236 = [{"date": "2025-12-19", "major": 87.98, "large": 4.66, "retail": 1.68, "totalPeople": 915}, {"date": "2025-12-26", "major": 87.98, "large": 4.66, "retail": 1.68, "totalPeople": 915}, {"date": "2026-01-02", "major": 87.98, "large": 4.66, "retail": 1.7, "totalPeople": 914}, {"date": "2026-01-09", "major": 87.98, "large": 4.66, "retail": 1.7, "totalPeople": 914}, {"date": "2026-01-16", "major": 87.98, "large": 4.66, "retail": 1.69, "totalPeople": 913}, {"date": "2026-01-23", "major": 87.98, "large": 4.66, "retail": 1.69, "totalPeople": 912}, {"date": "2026-01-30", "major": 87.98, "large": 4.66, "retail": 1.69, "totalPeople": 912}, {"date": "2026-02-06", "major": 87.98, "large": 4.66, "retail": 1.69, "totalPeople": 912}, {"date": "2026-02-13", "major": 87.98, "large": 4.66, "retail": 1.68, "totalPeople": 908}, {"date": "2026-03-06", "major": 87.98, "large": 4.66, "retail": 1.68, "totalPeople": 908}, {"date": "2026-03-13", "major": 87.98, "large": 4.66, "retail": 1.68, "totalPeople": 908}, {"date": "2026-03-20", "major": 87.98, "large": 4.66, "retail": 1.67, "totalPeople": 913}, {"date": "2026-03-27", "major": 87.98, "large": 4.66, "retail": 1.67, "totalPeople": 913}, {"date": "2026-04-10", "major": 87.98, "large": 4.66, "retail": 1.67, "totalPeople": 914}, {"date": "2026-04-17", "major": 87.98, "large": 4.66, "retail": 1.66, "totalPeople": 914}, {"date": "2026-04-24", "major": 87.98, "large": 4.66, "retail": 1.66, "totalPeople": 913}];
 const chipFlowData_6236 = [];
-const alignedChipData_6236 = {"daily": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}]};
+const alignedChipData_6236 = {"daily": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}]};
 const mainForceData_6236 = [];
 function showChart_6236(mode){
   const root=document.getElementById('chart-6236');
