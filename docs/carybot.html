@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaryBot驗證 — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-title-link{display:inline-flex;align-items:baseline;gap:6px;color:#e6edf3;text-decoration:none;border-bottom:1px solid transparent}
+.basket-title-link:hover{color:#58a6ff;border-bottom-color:#58a6ff}
+.basket-title-link:hover .basket-name{color:#58a6ff}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
+.basket-change{font-size:13px;font-weight:800}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+.signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
+.signal-foot strong{color:#e6edf3}
+.signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
+.signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
+.push-ok{color:#3fb950;font-weight:700}
+.push-wait{color:#d2a520;font-weight:700}
+.push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-price-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.telegram-price-line .k{font-size:11px;color:#8b949e}
+.telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
+.telegram-price-line .change{font-size:13px;font-weight:800}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.hover-chart,.indicator-hover{position:relative}
+.chart-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(88,166,255,.85);display:none;pointer-events:none}
+.chart-tooltip{position:absolute;z-index:5;display:none;min-width:190px;max-width:240px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:9px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;box-shadow:0 10px 28px rgba(0,0,0,.35);pointer-events:none}
+.chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
+.chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
+.chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chart-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.tv-chart-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:10px;position:relative}
+.tv-chart-title{font-size:12px;font-weight:800;color:#e6edf3;margin:0 0 6px}
+.tv-chart{height:150px;min-height:150px;position:relative}
+.tv-chart.main{height:360px;min-height:360px}
+.tv-chart-note{font-size:11px;color:#6e7681;margin-top:8px;line-height:1.5}
+.tv-tooltip{position:absolute;z-index:8;display:none;top:34px;left:14px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;pointer-events:none;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+.tv-draw-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:-2px 0 8px}
+.tv-draw-btn{border:1px solid #30363d;background:#161b22;color:#8b949e;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.tv-draw-btn:hover,.tv-draw-btn.active{border-color:#58a6ff;color:#58a6ff;background:#0d2142}
+.tv-draw-layer{position:absolute;inset:0;z-index:7;pointer-events:none}
+.tv-draw-layer.active{pointer-events:auto;cursor:crosshair}
+.tv-draw-layer line{vector-effect:non-scaling-stroke}
+.tv-draw-layer .draft{stroke-dasharray:5 4;opacity:.9}
+.tv-chip-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chip-chart{height:280px;min-height:280px}
+.tv-chip-chart.compact{height:240px;min-height:240px}
+.holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
+.tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.chip-indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.indicator-box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:8px}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
+.ma-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:280px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between}
+.ma-name{font-size:12px;color:#8b949e}
+.ma-value{font-size:15px;font-weight:800;color:#e6edf3}
+.arrow-up{color:#f85149;font-weight:900}
+.arrow-down{color:#3fb950;font-weight:900}
+.arrow-flat{color:#8b949e;font-weight:900}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#f85149}
+.neg{color:#3fb950}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#f85149;font-size:12px}
+.price-stop{color:#3fb950;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
+.m-score{font-size:24px;font-weight:900;color:#e6edf3}
+.m-checks{display:flex;flex-wrap:wrap;gap:6px}
+.m-check{display:inline-flex;align-items:center;border:1px solid #30363d;border-radius:999px;padding:2px 8px;font-size:11px;color:#c9d1d9;background:#0d1117}
+.m-check.ok{border-color:rgba(63,185,80,.45);color:#3fb950}
+.m-check.warn{border-color:rgba(210,153,34,.45);color:#d2a520}
+.m-check.bad{border-color:rgba(248,81,73,.45);color:#f85149}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="daily.html" class="tab">每日Top20</a>
+<a href="mda.html" class="tab">M大全市場</a>
+<a href="mda_launched.html" class="tab">M大已發動</a>
+<a href="mda_consolidation.html" class="tab">M大盤整</a>
+<a href="baskets.html" class="tab">SFZ雙籃</a>
+<a href="signals.html" class="tab">入選追蹤</a>
+<a href="radar.html" class="tab">買點雷達</a>
+<a href="carybot.html" class="tab active">CaryBot驗證</a>
+<a href="stocks.html" class="tab">個股查詢</a>
+<a href="backtest.html" class="tab">歷史回測</a>
+<a href="history.html" class="tab">歷史報告</a>
+
+</nav>
+
+<div class="container">
+  <div class="page-title">CaryBot 驗證</div>
+  <div class="page-sub">這頁把 CaryBot 藍點當成買點輔助資料，不取代 SFZ 趨勢選股與 M大觀察池；重點是找出哪些藍點值得跟、哪些藍點容易失敗。</div>
+
+  <div class="card">
+    <div class="section-label">目前定位</div>
+    <div class="grid grid-3">
+      
+<div class="metric">
+  <div class="metric-num" style="color:#58a6ff">243</div>
+  <div class="metric-label">PreBuy 樣本</div>
+  <div class="chip-line">偏觀察 / 等確認</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#3fb950">12</div>
+  <div class="metric-label">AI_Buy 樣本</div>
+  <div class="chip-line">偏正式買點標記</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#d2a520">Timing</div>
+  <div class="metric-label">整合方式</div>
+  <div class="chip-line">只做買點驗證層</div>
+</div>
+    </div>
+    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 是否支持進場時機。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">使用方式</div>
+    <div class="grid grid-2" style="margin-top:10px">
+      <div class="info-cell"><div class="k">SFZ 行進籃</div><div class="v">等 timing</div><div class="chip-line">SFZ 已選出趨勢後，用 CaryBot 藍點與 ATRB/VAM 強勢確認，避免太早或太晚進。</div></div>
+      <div class="info-cell"><div class="k">M大觀察池</div><div class="v">等發動</div><div class="chip-line">M大抓未發動標的後，用 VPA 壓力消化、QTYR 放量、VAM20/VAM60 轉強判斷是否啟動。</div></div>
+    </div>
+  </div>
+
+  
+<div class="card">
+  <div class="section-label">PreBuy 指標中位數</div>
+  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">0.89</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">4.56</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">66.55</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">75.58</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">50.34</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">59.42</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">1.17</div></div></div>
+</div>
+  
+<div class="card">
+  <div class="section-label">AI_Buy 指標中位數</div>
+  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">0.63</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">3.56</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">23.32</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">60.14</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">36.55</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">33.33</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">0.99</div></div></div>
+</div>
+
+  <div class="card">
+    <div class="section-label">藍點樣本與指標</div>
+    <div class="strategy-note">資料來源：C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_buy_markers_v42_features.csv</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>VPA480</th></tr></thead>
+        <tbody>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">147.50</td>
+  <td>-2.63</td>
+  <td>2.17</td>
+  <td>15.78</td>
+  <td>66.17</td>
+  <td>43.98</td>
+  <td>1.38</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-10</div></td>
+  <td class="price-main">209.50</td>
+  <td>1.73</td>
+  <td>4.11</td>
+  <td>20.29</td>
+  <td>35.68</td>
+  <td>33.81</td>
+  <td>0.98</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-12</div></td>
+  <td class="price-main">214.50</td>
+  <td>-0.48</td>
+  <td>2.85</td>
+  <td>26.35</td>
+  <td>37.42</td>
+  <td>36.76</td>
+  <td>1.00</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">197.00</td>
+  <td>-2.06</td>
+  <td>3.00</td>
+  <td>0.00</td>
+  <td>31.31</td>
+  <td>23.96</td>
+  <td>0.92</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-07</div></td>
+  <td class="price-main">192.00</td>
+  <td>-1.44</td>
+  <td>2.43</td>
+  <td>0.00</td>
+  <td>29.56</td>
+  <td>16.67</td>
+  <td>0.89</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2412.html">2412</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-02</div></td>
+  <td class="price-main">138.00</td>
+  <td>10.46</td>
+  <td>11.35</td>
+  <td>77.74</td>
+  <td>44.81</td>
+  <td>72.25</td>
+  <td>1.10</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2454.html">2454</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2025-11-25</div></td>
+  <td class="price-main">1185.00</td>
+  <td>3.87</td>
+  <td>4.22</td>
+  <td>0.00</td>
+  <td>30.02</td>
+  <td>0.00</td>
+  <td>0.90</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2501.html">2501</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-23</div></td>
+  <td class="price-main">26.25</td>
+  <td>6.69</td>
+  <td>10.53</td>
+  <td>94.44</td>
+  <td>49.27</td>
+  <td>32.85</td>
+  <td>1.16</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/3665.html">3665</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-02-09</div></td>
+  <td class="price-main">1255.00</td>
+  <td>2.38</td>
+  <td>4.25</td>
+  <td>32.69</td>
+  <td>100.00</td>
+  <td>67.90</td>
+  <td>2.03</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/5243.html">5243</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-11</div></td>
+  <td class="price-main">74.20</td>
+  <td>-5.48</td>
+  <td>1.45</td>
+  <td>26.74</td>
+  <td>26.21</td>
+  <td>17.47</td>
+  <td>0.85</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6446.html">6446</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2025-11-21</div></td>
+  <td class="price-main">467.50</td>
+  <td>-0.50</td>
+  <td>2.31</td>
+  <td>7.39</td>
+  <td>33.02</td>
+  <td>0.00</td>
+  <td>0.94</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6669.html">6669</a></td>
+  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-01-16</div></td>
+  <td class="price-main">3825.00</td>
+  <td>1.91</td>
+  <td>4.42</td>
+  <td>45.08</td>
+  <td>79.69</td>
+  <td>70.49</td>
+  <td>1.56</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-23</div></td>
+  <td class="price-main">63.70</td>
+  <td>1.73</td>
+  <td>4.36</td>
+  <td>100.00</td>
+  <td>40.33</td>
+  <td>0.00</td>
+  <td>1.04</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-29</div></td>
+  <td class="price-main">73.75</td>
+  <td>-0.95</td>
+  <td>4.86</td>
+  <td>100.00</td>
+  <td>52.60</td>
+  <td>0.00</td>
+  <td>1.20</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-09</div></td>
+  <td class="price-main">73.95</td>
+  <td>-0.79</td>
+  <td>4.77</td>
+  <td>100.00</td>
+  <td>52.85</td>
+  <td>0.00</td>
+  <td>1.20</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-08</div></td>
+  <td class="price-main">79.20</td>
+  <td>2.88</td>
+  <td>6.73</td>
+  <td>93.20</td>
+  <td>59.26</td>
+  <td>0.00</td>
+  <td>1.29</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-27</div></td>
+  <td class="price-main">22.10</td>
+  <td>1.50</td>
+  <td>3.42</td>
+  <td>10.46</td>
+  <td>14.13</td>
+  <td>0.00</td>
+  <td>0.69</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-30</div></td>
+  <td class="price-main">23.60</td>
+  <td>-4.23</td>
+  <td>4.60</td>
+  <td>54.21</td>
+  <td>17.63</td>
+  <td>0.00</td>
+  <td>0.74</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-08</div></td>
+  <td class="price-main">23.45</td>
+  <td>1.78</td>
+  <td>3.85</td>
+  <td>51.67</td>
+  <td>38.54</td>
+  <td>0.00</td>
+  <td>1.01</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-24</div></td>
+  <td class="price-main">26.45</td>
+  <td>-2.15</td>
+  <td>3.53</td>
+  <td>95.22</td>
+  <td>48.26</td>
+  <td>0.00</td>
+  <td>1.14</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-07</div></td>
+  <td class="price-main">24.00</td>
+  <td>-0.02</td>
+  <td>4.13</td>
+  <td>47.15</td>
+  <td>40.94</td>
+  <td>0.00</td>
+  <td>1.05</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-18</div></td>
+  <td class="price-main">79.00</td>
+  <td>6.30</td>
+  <td>13.01</td>
+  <td>41.93</td>
+  <td>37.37</td>
+  <td>9.53</td>
+  <td>1.00</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-26</div></td>
+  <td class="price-main">80.50</td>
+  <td>13.76</td>
+  <td>8.05</td>
+  <td>49.74</td>
+  <td>38.79</td>
+  <td>17.49</td>
+  <td>1.02</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-23</div></td>
+  <td class="price-main">75.10</td>
+  <td>0.89</td>
+  <td>7.89</td>
+  <td>27.02</td>
+  <td>33.73</td>
+  <td>0.00</td>
+  <td>0.95</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-03</div></td>
+  <td class="price-main">73.90</td>
+  <td>4.79</td>
+  <td>3.72</td>
+  <td>19.24</td>
+  <td>32.59</td>
+  <td>0.00</td>
+  <td>0.93</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-22</div></td>
+  <td class="price-main">72.40</td>
+  <td>0.09</td>
+  <td>4.29</td>
+  <td>17.57</td>
+  <td>31.12</td>
+  <td>0.00</td>
+  <td>0.91</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-04</div></td>
+  <td class="price-main">28.45</td>
+  <td>1.00</td>
+  <td>4.16</td>
+  <td>85.72</td>
+  <td>20.29</td>
+  <td>80.74</td>
+  <td>0.77</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-12</div></td>
+  <td class="price-main">35.25</td>
+  <td>3.53</td>
+  <td>10.85</td>
+  <td>100.00</td>
+  <td>34.10</td>
+  <td>93.81</td>
+  <td>0.95</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-30</div></td>
+  <td class="price-main">35.05</td>
+  <td>-0.19</td>
+  <td>2.22</td>
+  <td>73.69</td>
+  <td>36.84</td>
+  <td>83.53</td>
+  <td>0.99</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-16</div></td>
+  <td class="price-main">41.80</td>
+  <td>0.28</td>
+  <td>7.70</td>
+  <td>100.00</td>
+  <td>51.16</td>
+  <td>100.00</td>
+  <td>1.18</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-08</div></td>
+  <td class="price-main">59.00</td>
+  <td>-1.70</td>
+  <td>3.17</td>
+  <td>78.98</td>
+  <td>82.52</td>
+  <td>77.59</td>
+  <td>1.60</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-20</div></td>
+  <td class="price-main">160.00</td>
+  <td>1.16</td>
+  <td>3.87</td>
+  <td>76.62</td>
+  <td>74.95</td>
+  <td>81.48</td>
+  <td>1.50</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-05</div></td>
+  <td class="price-main">160.00</td>
+  <td>-7.34</td>
+  <td>2.18</td>
+  <td>69.49</td>
+  <td>74.95</td>
+  <td>82.88</td>
+  <td>1.50</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-13</div></td>
+  <td class="price-main">163.50</td>
+  <td>-2.91</td>
+  <td>3.01</td>
+  <td>57.80</td>
+  <td>77.41</td>
+  <td>86.16</td>
+  <td>1.53</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-22</div></td>
+  <td class="price-main">177.00</td>
+  <td>-0.60</td>
+  <td>9.93</td>
+  <td>70.31</td>
+  <td>86.90</td>
+  <td>86.75</td>
+  <td>1.66</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-28</div></td>
+  <td class="price-main">172.50</td>
+  <td>4.40</td>
+  <td>4.34</td>
+  <td>59.21</td>
+  <td>83.74</td>
+  <td>74.49</td>
+  <td>1.62</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-03</div></td>
+  <td class="price-main">170.50</td>
+  <td>0.08</td>
+  <td>4.10</td>
+  <td>53.88</td>
+  <td>82.33</td>
+  <td>66.91</td>
+  <td>1.60</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-09</div></td>
+  <td class="price-main">173.50</td>
+  <td>0.78</td>
+  <td>4.53</td>
+  <td>54.81</td>
+  <td>84.44</td>
+  <td>64.85</td>
+  <td>1.63</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-17</div></td>
+  <td class="price-main">168.00</td>
+  <td>-1.16</td>
+  <td>3.10</td>
+  <td>42.01</td>
+  <td>80.58</td>
+  <td>57.19</td>
+  <td>1.57</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-10</div></td>
+  <td class="price-main">161.50</td>
+  <td>0.86</td>
+  <td>7.32</td>
+  <td>36.52</td>
+  <td>76.01</td>
+  <td>57.61</td>
+  <td>1.51</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-20</div></td>
+  <td class="price-main">165.00</td>
+  <td>1.74</td>
+  <td>5.56</td>
+  <td>41.91</td>
+  <td>78.47</td>
+  <td>63.53</td>
+  <td>1.55</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-02</div></td>
+  <td class="price-main">989.00</td>
+  <td>-1.41</td>
+  <td>5.81</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>2.46</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-26</div></td>
+  <td class="price-main">956.00</td>
+  <td>-7.36</td>
+  <td>1.25</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>2.38</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-30</div></td>
+  <td class="price-main">262.00</td>
+  <td>3.63</td>
+  <td>5.66</td>
+  <td>100.00</td>
+  <td>54.67</td>
+  <td>98.71</td>
+  <td>1.23</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-25</div></td>
+  <td class="price-main">219.00</td>
+  <td>2.59</td>
+  <td>3.81</td>
+  <td>66.31</td>
+  <td>39.38</td>
+  <td>67.06</td>
+  <td>1.03</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
+  <td class="price-main">235.00</td>
+  <td>-7.75</td>
+  <td>3.69</td>
+  <td>87.52</td>
+  <td>44.99</td>
+  <td>94.10</td>
+  <td>1.10</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-11</div></td>
+  <td class="price-main">226.00</td>
+  <td>-6.27</td>
+  <td>4.01</td>
+  <td>73.92</td>
+  <td>41.83</td>
+  <td>88.39</td>
+  <td>1.06</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-12</div></td>
+  <td class="price-main">228.50</td>
+  <td>-0.94</td>
+  <td>2.15</td>
+  <td>61.21</td>
+  <td>42.71</td>
+  <td>93.53</td>
+  <td>1.07</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-15</div></td>
+  <td class="price-main">233.50</td>
+  <td>-4.89</td>
+  <td>2.57</td>
+  <td>65.74</td>
+  <td>65.70</td>
+  <td>93.57</td>
+  <td>1.38</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-19</div></td>
+  <td class="price-main">229.50</td>
+  <td>-3.11</td>
+  <td>3.79</td>
+  <td>56.61</td>
+  <td>63.74</td>
+  <td>88.18</td>
+  <td>1.35</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-11</div></td>
+  <td class="price-main">227.00</td>
+  <td>-2.81</td>
+  <td>4.96</td>
+  <td>43.45</td>
+  <td>60.95</td>
+  <td>75.47</td>
+  <td>1.31</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-24</div></td>
+  <td class="price-main">232.00</td>
+  <td>-0.51</td>
+  <td>4.66</td>
+  <td>52.07</td>
+  <td>63.12</td>
+  <td>83.38</td>
+  <td>1.34</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-26</div></td>
+  <td class="price-main">243.00</td>
+  <td>5.66</td>
+  <td>7.14</td>
+  <td>65.78</td>
+  <td>47.79</td>
+  <td>83.98</td>
+  <td>1.14</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-14</div></td>
+  <td class="price-main">207.50</td>
+  <td>-0.48</td>
+  <td>3.94</td>
+  <td>12.32</td>
+  <td>34.98</td>
+  <td>35.97</td>
+  <td>0.97</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-16</div></td>
+  <td class="price-main">207.00</td>
+  <td>-0.11</td>
+  <td>3.04</td>
+  <td>11.29</td>
+  <td>34.80</td>
+  <td>35.33</td>
+  <td>0.96</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-07</div></td>
+  <td class="price-main">1460.00</td>
+  <td>1.12</td>
+  <td>2.65</td>
+  <td>100.00</td>
+  <td>75.04</td>
+  <td>100.00</td>
+  <td>1.50</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-28</div></td>
+  <td class="price-main">1440.00</td>
+  <td>1.14</td>
+  <td>2.84</td>
+  <td>95.49</td>
+  <td>73.49</td>
+  <td>100.00</td>
+  <td>1.48</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-23</div></td>
+  <td class="price-main">1490.00</td>
+  <td>-0.95</td>
+  <td>2.81</td>
+  <td>100.00</td>
+  <td>80.99</td>
+  <td>100.00</td>
+  <td>1.58</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-08</div></td>
+  <td class="price-main">1685.00</td>
+  <td>6.79</td>
+  <td>3.39</td>
+  <td>100.00</td>
+  <td>91.97</td>
+  <td>100.00</td>
+  <td>1.73</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-02</div></td>
+  <td class="price-main">1765.00</td>
+  <td>0.80</td>
+  <td>3.74</td>
+  <td>100.00</td>
+  <td>86.45</td>
+  <td>100.00</td>
+  <td>1.65</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-11</div></td>
+  <td class="price-main">1915.00</td>
+  <td>2.31</td>
+  <td>4.89</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>1.96</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-13</div></td>
+  <td class="price-main">1865.00</td>
+  <td>4.24</td>
+  <td>3.28</td>
+  <td>89.12</td>
+  <td>93.23</td>
+  <td>100.00</td>
+  <td>1.74</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-20</div></td>
+  <td class="price-main">1840.00</td>
+  <td>-0.35</td>
+  <td>5.27</td>
+  <td>83.43</td>
+  <td>91.47</td>
+  <td>100.00</td>
+  <td>1.72</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-27</div></td>
+  <td class="price-main">1820.00</td>
+  <td>-0.43</td>
+  <td>3.42</td>
+  <td>82.02</td>
+  <td>90.07</td>
+  <td>100.00</td>
+  <td>1.70</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-31</div></td>
+  <td class="price-main">1760.00</td>
+  <td>2.29</td>
+  <td>7.11</td>
+  <td>74.06</td>
+  <td>85.87</td>
+  <td>100.00</td>
+  <td>1.64</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-07</div></td>
+  <td class="price-main">1860.00</td>
+  <td>1.09</td>
+  <td>1.92</td>
+  <td>88.61</td>
+  <td>92.88</td>
+  <td>100.00</td>
+  <td>1.74</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-14</div></td>
+  <td class="price-main">2055.00</td>
+  <td>1.45</td>
+  <td>4.58</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>1.92</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
+  <td class="price-main">38.75</td>
+  <td>3.29</td>
+  <td>10.15</td>
+  <td>99.29</td>
+  <td>70.72</td>
+  <td>65.87</td>
+  <td>1.44</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-15</div></td>
+  <td class="price-main">37.95</td>
+  <td>3.93</td>
+  <td>3.02</td>
+  <td>95.29</td>
+  <td>68.49</td>
+  <td>64.48</td>
+  <td>1.41</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-11</div></td>
+  <td class="price-main">99.70</td>
+  <td>-1.51</td>
+  <td>3.08</td>
+  <td>90.42</td>
+  <td>100.00</td>
+  <td>71.71</td>
+  <td>2.58</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">127.00</td>
+  <td>-9.43</td>
+  <td>0.89</td>
+  <td>88.98</td>
+  <td>100.00</td>
+  <td>73.08</td>
+  <td>3.36</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-24</div></td>
+  <td class="price-main">132.00</td>
+  <td>2.20</td>
+  <td>4.05</td>
+  <td>82.34</td>
+  <td>100.00</td>
+  <td>74.17</td>
+  <td>3.50</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-31</div></td>
+  <td class="price-main">465.50</td>
+  <td>-2.58</td>
+  <td>10.09</td>
+  <td>92.21</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>2.14</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-21</div></td>
+  <td class="price-main">596.00</td>
+  <td>1.10</td>
+  <td>5.45</td>
+  <td>66.16</td>
+  <td>100.00</td>
+  <td>90.85</td>
+  <td>2.59</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-29</div></td>
+  <td class="price-main">1250.00</td>
+  <td>-1.06</td>
+  <td>4.73</td>
+  <td>81.42</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>2.95</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-25</div></td>
+  <td class="price-main">1450.00</td>
+  <td>1.68</td>
+  <td>4.57</td>
+  <td>77.23</td>
+  <td>100.00</td>
+  <td>92.49</td>
+  <td>3.35</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-19</div></td>
+  <td class="price-main">1580.00</td>
+  <td>0.17</td>
+  <td>4.04</td>
+  <td>68.77</td>
+  <td>100.00</td>
+  <td>97.23</td>
+  <td>3.67</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-23</div></td>
+  <td class="price-main">1800.00</td>
+  <td>0.65</td>
+  <td>6.16</td>
+  <td>89.50</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>4.18</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
+  <td class="price-main">162.00</td>
+  <td>-0.78</td>
+  <td>0.79</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>92.86</td>
+  <td>3.84</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-16</div></td>
+  <td class="price-main">261.50</td>
+  <td>1.32</td>
+  <td>3.80</td>
+  <td>79.15</td>
+  <td>100.00</td>
+  <td>83.03</td>
+  <td>6.23</td>
+</tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">下一步：加入勝敗標籤</div>
+    <div class="strategy-note">`XXXX-1` 訊號卡有目前損益與近 5 筆歷史訊號，下一版應把賺錢 / 賠錢案例接進這頁，將藍點拆成好藍點與壞藍點，而不是把所有藍點都視為買進。</div>
+  </div>
+</div>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>

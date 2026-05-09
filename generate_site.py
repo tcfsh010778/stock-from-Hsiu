@@ -739,6 +739,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("basket",  "baskets.html", "SFZ雙籃"),
         ("signals", "signals.html", "入選追蹤"),
         ("radar",   "radar.html",   "買點雷達"),
+        ("carybot", "carybot.html", "CaryBot驗證"),
         ("stocks",  "stocks.html",  "個股查詢"),
         ("backtest", "backtest.html", "歷史回測"),
         ("history", "history.html", "歷史報告"),
@@ -6489,6 +6490,143 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     return html_page("買點雷達", "radar", body)
 
 
+def read_carybot_marker_features() -> list[dict]:
+    path = V44_BACKTEST_OUTPUT_DIR / "carybot_buy_markers_v42_features.csv"
+    if not path.exists():
+        return []
+    rows = []
+    try:
+        with path.open("r", encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                rows.append(row)
+    except Exception:
+        return []
+    return rows
+
+
+def _median(values: list[float]) -> float | None:
+    vals = sorted(v for v in values if v is not None and not math.isnan(v))
+    if not vals:
+        return None
+    mid = len(vals) // 2
+    if len(vals) % 2:
+        return vals[mid]
+    return (vals[mid - 1] + vals[mid]) / 2
+
+
+def build_carybot_validation_page(reports: list[dict]) -> str:
+    rows = read_carybot_marker_features()
+    stock_map = find_latest_stock_map(reports)
+    prebuy = [r for r in rows if r.get("marker_type") == "PreBuy"]
+    ai_buy = [r for r in rows if r.get("marker_type") == "AI_Buy"]
+
+    def metric_card(label: str, value: str, note: str, color: str) -> str:
+        return f"""
+<div class="metric">
+  <div class="metric-num" style="color:{color}">{esc(value)}</div>
+  <div class="metric-label">{esc(label)}</div>
+  <div class="chip-line">{esc(note)}</div>
+</div>"""
+
+    def summary_for(marker_type: str, data: list[dict]) -> str:
+        cols = ["QZ", "QTYR", "VAM", "VAM5", "VAM20", "VAM60", "VPA480"]
+        cells = ""
+        for col in cols:
+            med = _median([_to_float(r.get(col), math.nan) for r in data])
+            val = "─" if med is None else f"{med:.2f}"
+            cells += f'<div class="info-cell"><div class="k">{esc(col)}</div><div class="v">{val}</div></div>'
+        return f"""
+<div class="card">
+  <div class="section-label">{esc(marker_type)} 指標中位數</div>
+  <div class="grid grid-3" style="margin-top:10px">{cells}</div>
+</div>"""
+
+    sample_rows = []
+    for r in rows:
+        stock_id = str(r.get("stock", "")).strip()
+        s = stock_map.get(stock_id, {})
+        sample_rows.append({
+            "stock": stock_id,
+            "name": s.get("name", ""),
+            "marker_type": r.get("marker_type", ""),
+            "marker_date": r.get("marker_date", ""),
+            "close": _to_float(r.get("Close"), None),
+            "qz": _to_float(r.get("QZ"), None),
+            "qtyr": _to_float(r.get("QTYR"), None),
+            "vam": _to_float(r.get("VAM"), None),
+            "vam20": _to_float(r.get("VAM20"), None),
+            "vam60": _to_float(r.get("VAM60"), None),
+            "vpa480": _to_float(r.get("VPA480"), None),
+        })
+    sample_rows.sort(key=lambda x: (0 if x["marker_type"] == "AI_Buy" else 1, x["stock"], x["marker_date"]))
+
+    table = ""
+    for x in sample_rows[:80]:
+        tag_cls = "pos" if x["marker_type"] == "AI_Buy" else "tag"
+        stock_label = f'{x["stock"]} {x["name"]}'.strip()
+        stock_html = f'<a class="stock-link" href="stocks/{x["stock"]}.html">{esc(stock_label)}</a>' if x["stock"] else "─"
+        table += f"""
+<tr>
+  <td>{stock_html}</td>
+  <td><span class="tag {tag_cls}">{esc(x["marker_type"])}</span><div class="signal-dates">{esc(x["marker_date"])}</div></td>
+  <td class="price-main">{fmt_num(x["close"])}</td>
+  <td>{fmt_num(x["qz"])}</td>
+  <td>{fmt_num(x["qtyr"])}</td>
+  <td>{fmt_num(x["vam"])}</td>
+  <td>{fmt_num(x["vam20"])}</td>
+  <td>{fmt_num(x["vam60"])}</td>
+  <td>{fmt_num(x["vpa480"])}</td>
+</tr>"""
+
+    if not table:
+        table = '<tr><td colspan="9">尚未找到 CaryBot v42 藍點資料；請先在 v44 工作區產出 carybot_buy_markers_v42_features.csv。</td></tr>'
+
+    data_note = f"資料來源：{V44_BACKTEST_OUTPUT_DIR / 'carybot_buy_markers_v42_features.csv'}"
+    body = f"""
+<div class="container">
+  <div class="page-title">CaryBot 驗證</div>
+  <div class="page-sub">這頁把 CaryBot 藍點當成買點輔助資料，不取代 SFZ 趨勢選股與 M大觀察池；重點是找出哪些藍點值得跟、哪些藍點容易失敗。</div>
+
+  <div class="card">
+    <div class="section-label">目前定位</div>
+    <div class="grid grid-3">
+      {metric_card("PreBuy 樣本", str(len(prebuy)), "偏觀察 / 等確認", "#58a6ff")}
+      {metric_card("AI_Buy 樣本", str(len(ai_buy)), "偏正式買點標記", "#3fb950")}
+      {metric_card("整合方式", "Timing", "只做買點驗證層", "#d2a520")}
+    </div>
+    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 是否支持進場時機。</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">使用方式</div>
+    <div class="grid grid-2" style="margin-top:10px">
+      <div class="info-cell"><div class="k">SFZ 行進籃</div><div class="v">等 timing</div><div class="chip-line">SFZ 已選出趨勢後，用 CaryBot 藍點與 ATRB/VAM 強勢確認，避免太早或太晚進。</div></div>
+      <div class="info-cell"><div class="k">M大觀察池</div><div class="v">等發動</div><div class="chip-line">M大抓未發動標的後，用 VPA 壓力消化、QTYR 放量、VAM20/VAM60 轉強判斷是否啟動。</div></div>
+    </div>
+  </div>
+
+  {summary_for("PreBuy", prebuy)}
+  {summary_for("AI_Buy", ai_buy)}
+
+  <div class="card">
+    <div class="section-label">藍點樣本與指標</div>
+    <div class="strategy-note">{esc(data_note)}</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>VPA480</th></tr></thead>
+        <tbody>{table}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">下一步：加入勝敗標籤</div>
+    <div class="strategy-note">`XXXX-1` 訊號卡有目前損益與近 5 筆歷史訊號，下一版應把賺錢 / 賠錢案例接進這頁，將藍點拆成好藍點與壞藍點，而不是把所有藍點都視為買進。</div>
+  </div>
+</div>"""
+    return html_page("CaryBot驗證", "carybot", body)
+
+
 def parse_range_values(text: str) -> tuple[float | None, float | None]:
     nums = [_to_float(x, None) for x in re.findall(r"\d+(?:\.\d+)?", str(text or ""))]
     vals = [x for x in nums if x is not None]
@@ -7599,6 +7737,8 @@ def main():
     print("   [OK] stocks.html", flush=True)
     (OUTPUT_DIR / "radar.html").write_text(build_buy_radar_page(reports), encoding="utf-8")
     print("   [OK] radar.html", flush=True)
+    (OUTPUT_DIR / "carybot.html").write_text(build_carybot_validation_page(reports), encoding="utf-8")
+    print("   [OK] carybot.html", flush=True)
     (OUTPUT_DIR / "backtest.html").write_text(build_backtest_page(reports), encoding="utf-8")
     print("   [OK] backtest.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
@@ -7616,7 +7756,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    print(f"\n[Done] {len(reports)+8+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+9+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 
