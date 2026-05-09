@@ -711,6 +711,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -724,6 +728,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -3886,7 +3892,66 @@ def build_action_rows(items: list[dict], empty_text: str) -> str:
     return f'<div class="action-list">{html_rows}</div>'
 
 
-def build_today_action_card(stocks: list[dict]) -> str:
+def next_business_day_text(date_str: str) -> str:
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d")
+    except Exception:
+        return "─"
+    d = d + timedelta(days=1)
+    while d.weekday() >= 5:
+        d = d + timedelta(days=1)
+    return d.strftime("%Y-%m-%d")
+
+
+def report_date_badge(date_str: str, include_next: bool = False) -> str:
+    text = f"資料日期：{esc(date_str)}"
+    if include_next:
+        text += f"｜下次交易日：{esc(next_business_day_text(date_str))}"
+    return f'<span class="section-date">{text}</span>'
+
+
+def build_sell_alert_rows(stocks: list[dict], limit: int = 5, only_actionable: bool = True) -> str:
+    alerts = []
+    for s in stocks:
+        s = enrich_stock_fields(s)
+        rows = merge_report_close(read_price_history(s.get("id", "")), s)
+        daily = aggregate_ohlcv(rows, "daily")
+        weekly = aggregate_ohlcv(rows, "weekly")
+        tech = technical_snapshot(daily, s)
+        decision = build_trade_decision(tech, s)
+        chip_series = read_chip_series(s.get("id", ""))
+        signal = calc_sell_signal(daily, weekly, chip_series, s, decision)
+        severity = 2 if signal["class"] == "exit" else 1 if signal["class"] == "watch" else 0
+        if only_actionable and severity == 0:
+            continue
+        alerts.append({
+            "id": s.get("id", ""),
+            "name": s.get("name", ""),
+            "close": tech.get("close") if tech else None,
+            "signal": signal,
+            "severity": severity,
+            "score": _to_float(s.get("score", "0")),
+        })
+    alerts.sort(key=lambda x: (-x["severity"], x["signal"].get("ma20_gap") if x["signal"].get("ma20_gap") is not None else 99, -x["score"]))
+    rows = ""
+    for x in alerts[:limit]:
+        sig = x["signal"]
+        ma20_gap = "─" if sig.get("ma20_gap") is None else f'{sig["ma20_gap"]:+.1f}%'
+        profit = "─" if sig.get("profit") is None else f'{sig["profit"]:+.1f}%'
+        cls = sig.get("class") or ""
+        rows += f"""
+<div class="alert-row">
+  <div><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">收盤 {fmt_num(x['close'])}</div></div>
+  <div><div class="label">MA20距離</div><div class="value">{ma20_gap}</div></div>
+  <div><div class="label">買點損益</div><div class="value">{profit}</div></div>
+  <div><span class="alert-level {cls}">{esc(sig['level'])}</span><div class="signal-dates" style="margin-top:4px">{esc(sig['reason'])}</div></div>
+</div>"""
+    if not rows:
+        return '<div class="strategy-note" style="margin-top:10px">目前沒有需要立刻處理的賣出警示。</div>'
+    return rows
+
+
+def build_today_action_card(stocks: list[dict], date_str: str) -> str:
     items = []
     for s in stocks:
         s = enrich_stock_fields(s)
@@ -3913,18 +3978,19 @@ def build_today_action_card(stocks: list[dict]) -> str:
             "plan": decision,
         })
     executable = [x for x in items if -3 <= x["gap"] <= 3]
-    waiting = [x for x in items if 3 < x["gap"] <= 8 or -8 <= x["gap"] < -3]
     executable.sort(key=lambda x: (0 if (x["plan"].get("rr") or 0) >= 1.5 else 1, abs(x["gap"]), -x["score"]))
-    waiting.sort(key=lambda x: (abs(x["gap"]), -x["score"]))
 
     return f"""
 <div class="card">
-  <div class="section-label">今日可執行清單</div>
-  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；同時看 B2 賣壓吸收：長週期是否有利、下跌/拉升籌碼是否轉好、20日量與240價扣抵是否有利、止跌後能否快速站回均線。</div>
-  <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
+  <div class="section-head">
+    <div class="section-label">今日可執行清單</div>
+    {report_date_badge(date_str, include_next=True)}
+  </div>
+  <div class="strategy-note">首頁只列今天需要處理的動作：買入建議看收盤是否落在買點 ±3% 內；賣出建議看持倉或追蹤名單是否出現 MA20、損益或型態警示。</div>
+  <h3 class="subsection-title">買入建議</h3>
   {build_action_rows(executable[:5], "今日沒有收盤落在買點 ±3% 內的標的。")}
-  <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
-  {build_action_rows(waiting[:5], "目前沒有接近但尚未到位的候選。")}
+  <h3 class="subsection-title">賣出建議</h3>
+  {build_sell_alert_rows(stocks, limit=5, only_actionable=True)}
 </div>"""
 
 
@@ -3941,7 +4007,7 @@ def build_b2_method_card() -> str:
 </div>"""
 
 
-def build_market_light_card(latest: dict, stocks: list[dict]) -> str:
+def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> str:
     marching, consolidation, risk = split_baskets(stocks)
     action_items = []
     for s in stocks:
@@ -3978,7 +4044,10 @@ def build_market_light_card(latest: dict, stocks: list[dict]) -> str:
     overview_html = f'<div class="market-text" style="margin-top:12px">{overview.replace(chr(10), "<br>")}</div>' if overview else ""
     return f"""
 <div class="card">
-  <div class="section-label">大盤燈號</div>
+  <div class="section-head">
+    <div class="section-label">大盤燈號</div>
+    {report_date_badge(date_str)}
+  </div>
   <div class="market-light">
     <div class="market-badge {cls}">{light}</div>
     <div>
@@ -3991,45 +4060,17 @@ def build_market_light_card(latest: dict, stocks: list[dict]) -> str:
 </div>"""
 
 
-def build_sell_alert_card(stocks: list[dict], limit: int = 6) -> str:
-    alerts = []
-    for s in stocks:
-        s = enrich_stock_fields(s)
-        rows = merge_report_close(read_price_history(s.get("id", "")), s)
-        daily = aggregate_ohlcv(rows, "daily")
-        weekly = aggregate_ohlcv(rows, "weekly")
-        tech = technical_snapshot(daily, s)
-        decision = build_trade_decision(tech, s)
-        chip_series = read_chip_series(s.get("id", ""))
-        signal = calc_sell_signal(daily, weekly, chip_series, s, decision)
-        severity = 2 if signal["class"] == "exit" else 1 if signal["class"] == "watch" else 0
-        alerts.append({
-            "id": s.get("id", ""),
-            "name": s.get("name", ""),
-            "close": tech.get("close") if tech else None,
-            "signal": signal,
-            "severity": severity,
-            "score": _to_float(s.get("score", "0")),
-        })
-    alerts.sort(key=lambda x: (-x["severity"], x["signal"].get("ma20_gap") if x["signal"].get("ma20_gap") is not None else 99, -x["score"]))
-    rows = ""
-    for x in alerts[:limit]:
-        sig = x["signal"]
-        ma20_gap = "─" if sig.get("ma20_gap") is None else f'{sig["ma20_gap"]:+.1f}%'
-        profit = "─" if sig.get("profit") is None else f'{sig["profit"]:+.1f}%'
-        cls = sig.get("class") or ""
-        rows += f"""
-<div class="alert-row">
-  <div><a class="stock-link" href="stocks/{x['id']}.html">{x['id']} {esc(x['name'])}</a><div class="signal-dates">收盤 {fmt_num(x['close'])}</div></div>
-  <div><div class="label">MA20距離</div><div class="value">{ma20_gap}</div></div>
-  <div><div class="label">買點損益</div><div class="value">{profit}</div></div>
-  <div><span class="alert-level {cls}">{esc(sig['level'])}</span><div class="signal-dates" style="margin-top:4px">{esc(sig['reason'])}</div></div>
-</div>"""
+def build_holding_status_card(date_str: str) -> str:
     return f"""
 <div class="card">
-  <div class="section-label">持倉 / 追蹤賣出警示</div>
-  <div class="strategy-note">目前網站還沒有券商持股清單，這區先用候選與訊號追蹤名單做賣出風險掃描；之後接入實際庫存後可改成只看持有中標的。</div>
-  {rows}
+  <div class="section-head">
+    <div class="section-label">持倉狀態</div>
+    {report_date_badge(date_str)}
+  </div>
+  <div class="pending-box">
+    <div style="font-size:16px;font-weight:900;color:#e6edf3">永豐庫存尚未接入</div>
+    <div class="strategy-note" style="margin-top:6px">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>
+  </div>
 </div>"""
 
 
@@ -4069,63 +4110,14 @@ def build_risk_watchlist(stocks: list[dict], limit: int = 6) -> list[dict]:
 def build_index_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
-    marching, consolidation, risk = split_baskets(latest.get("stocks", []))
-
-    # 篩選摘要
-    filter_card = f"""
-<div class="card">
-  <div class="section-label">🔍 篩選漏斗</div>
-  {build_filter_steps(latest.get('filter_summary', []))}
-  <div style="margin-top:12px;font-size:12px;color:#6e7681">從全市場 2,000+ 檔，六大技術條件篩選至最終 <strong style="color:#58a6ff">20 檔</strong></div>
-</div>"""
-
-    # Top 20 精選（簡潔版）
-    stocks = latest.get("stocks", [])[:20]
-    basket_summary = f"""
-<div class="grid grid-3" style="margin-bottom:16px">
-  <div class="metric"><div class="metric-num" style="color:#3fb950">{len(marching)}</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
-  <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(consolidation)}</div><div class="metric-label">盤整籃：MABC 觀察</div></div>
-  <div class="metric"><div class="metric-num" style="color:#f85149">{len(risk)}</div><div class="metric-label">過熱/風險：不追高</div></div>
-</div>"""
-    table_card = f"""
-<div class="card">
-  <div class="section-label">🏆 今日精選 Top 20</div>
-  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：{date_str} · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看 SFZ 雙籃 →</a></p>
-  {basket_summary}
-  {build_stock_table(stocks, compact=True)}
-</div>"""
-
-    # 最近報告卡片
-    recent_items = ""
-    for r in reports[:5]:
-        cnt = len(r.get("stocks", []))
-        recent_items += f"""
-<div class="history-item">
-  <div>
-    <div class="history-date">{r['date']}</div>
-    <div class="history-meta">精選 {cnt} 檔</div>
-  </div>
-  <a href="daily/{r['date']}.html" class="history-link">查看報告 →</a>
-</div>"""
-
-    history_card = f"""
-<div class="card">
-  <div class="section-label">🗂 最近報告</div>
-  {recent_items}
-  <div style="margin-top:12px"><a href="history.html" style="font-size:13px;font-weight:600">查看所有報告 →</a></div>
-</div>"""
 
     body = f"""
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
-  <div class="page-sub">今日工作台：把每日 Top20、可執行買點、賣出警示和 M大觀察重點放在同一頁。最新報告：{date_str}</div>
-  {build_market_light_card(latest, latest.get("stocks", []))}
-  {build_b2_method_card()}
-  {build_today_action_card(latest.get("stocks", []))}
-  {build_sell_alert_card(latest.get("stocks", []))}
-  {filter_card}
-  {table_card}
-  {history_card}
+  <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
+  {build_market_light_card(latest, latest.get("stocks", []), date_str)}
+  {build_today_action_card(latest.get("stocks", []), date_str)}
+  {build_holding_status_card(date_str)}
 </div>"""
 
     return html_page("首頁", "home", body)

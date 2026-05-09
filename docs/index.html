@@ -227,6 +227,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -240,6 +244,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -266,10 +272,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
-  <div class="page-sub">今日工作台：把每日 Top20、可執行買點、賣出警示和 M大觀察重點放在同一頁。最新報告：2026-05-08</div>
+  <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：2026-05-08</div>
   
 <div class="card">
-  <div class="section-label">大盤燈號</div>
+  <div class="section-head">
+    <div class="section-label">大盤燈號</div>
+    <span class="section-date">資料日期：2026-05-08</span>
+  </div>
   <div class="market-light">
     <div class="market-badge pos">多</div>
     <div>
@@ -282,19 +291,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
   
 <div class="card">
-  <div class="section-label">M大 B2 賣壓吸收主軸</div>
-  <div class="grid grid-2" style="margin-top:10px">
-    <div class="info-cell"><div class="k">1. 拉長尺度</div><div class="v">長多 / 轉長多</div><div class="chip-line">先看 MA120、MA240 與240扣抵價，再看大戶、散戶、股東人數的長期動態。</div></div>
-    <div class="info-cell"><div class="k">2. 跌升籌碼</div><div class="v">下跌賣壓 vs 拉升買盤</div><div class="chip-line">比較黑K/回檔段與紅K/拉升段的外資、主力、大戶短期動態。</div></div>
-    <div class="info-cell"><div class="k">3. 扣抵情境</div><div class="v">20日量 / 240價</div><div class="chip-line">20日前量能與近5日量能比較，240日前價格若低於現價，長均線較有機會轉有利。</div></div>
-    <div class="info-cell"><div class="k">4. 止跌品質</div><div class="v">快回均線，慢過前高</div><div class="chip-line">止跌後能否站回均線、紅K是否變多、下影線是否常出現、是否慢慢過前高。</div></div>
+  <div class="section-head">
+    <div class="section-label">今日可執行清單</div>
+    <span class="section-date">資料日期：2026-05-08｜下次交易日：2026-05-11</span>
   </div>
-</div>
-  
-<div class="card">
-  <div class="section-label">今日可執行清單</div>
-  <div class="strategy-note">收盤落在買點 ±3% 內列為「明天開盤可掛單」；同時看 B2 賣壓吸收：長週期是否有利、下跌/拉升籌碼是否轉好、20日量與240價扣抵是否有利、止跌後能否快速站回均線。</div>
-  <h3 style="font-size:15px;margin:14px 0 0;color:#e6edf3">明天開盤可掛單</h3>
+  <div class="strategy-note">首頁只列今天需要處理的動作：買入建議看收盤是否落在買點 ±3% 內；賣出建議看持倉或追蹤名單是否出現 MA20、損益或型態警示。</div>
+  <h3 class="subsection-title">買入建議</h3>
   <div class="action-list">
 <div class="action-row">
   <div>
@@ -351,68 +353,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div><div class="label">初停</div><div class="value">61.57</div></div>
   <div><div class="label">R:R</div><div class="value rr-good">1:3.3</div></div>
 </div></div>
-  <h3 style="font-size:15px;margin:16px 0 0;color:#e6edf3">繼續等待</h3>
-  <div class="action-list">
-<div class="action-row">
-  <div>
-    <a class="stock-link" href="stocks/1773.html">1773 勝一</a>
-    <div class="note">行進籃｜行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開 / B2賣壓疑似消失</div>
-  </div>
-  <div><div class="label">收盤</div><div class="value">172.50</div></div>
-  <div><div class="label">距買點</div><div class="value">+3.5%</div></div>
-  <div><div class="label">買點</div><div class="value">164.38</div></div>
-  <div><div class="label">初停</div><div class="value">147.26</div></div>
-  <div><div class="label">R:R</div><div class="value rr-bad">1:1.2</div></div>
-</div>
-<div class="action-row">
-  <div>
-    <a class="stock-link" href="stocks/2236.html">2236 百達-KY</a>
-    <div class="note">行進籃｜行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價穩 / B1主力未離開 / B2賣壓疑似消失</div>
-  </div>
-  <div><div class="label">收盤</div><div class="value">135.00</div></div>
-  <div><div class="label">距買點</div><div class="value">+3.9%</div></div>
-  <div><div class="label">買點</div><div class="value">128.38</div></div>
-  <div><div class="label">初停</div><div class="value">120.00</div></div>
-  <div><div class="label">R:R</div><div class="value rr-mid">1:1.7</div></div>
-</div>
-<div class="action-row">
-  <div>
-    <a class="stock-link" href="stocks/2606.html">2606 裕民</a>
-    <div class="note">行進籃｜行進籃 / 長多偏強 / 均量上彎 / B1主力未離開 / B2賣壓疑似消失</div>
-  </div>
-  <div><div class="label">收盤</div><div class="value">65.00</div></div>
-  <div><div class="label">距買點</div><div class="value">+4.5%</div></div>
-  <div><div class="label">買點</div><div class="value">61.55</div></div>
-  <div><div class="label">初停</div><div class="value">59.50</div></div>
-  <div><div class="label">R:R</div><div class="value rr-good">1:3.1</div></div>
-</div>
-<div class="action-row">
-  <div>
-    <a class="stock-link" href="stocks/1560.html">1560 中砂</a>
-    <div class="note">行進籃｜行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 均量上彎 / B1主力未離開 / B2賣壓疑似消失</div>
-  </div>
-  <div><div class="label">收盤</div><div class="value">572.00</div></div>
-  <div><div class="label">距買點</div><div class="value">+5.0%</div></div>
-  <div><div class="label">買點</div><div class="value">533.75</div></div>
-  <div><div class="label">初停</div><div class="value">498.50</div></div>
-  <div><div class="label">R:R</div><div class="value rr-good">1:2.7</div></div>
-</div>
-<div class="action-row">
-  <div>
-    <a class="stock-link" href="stocks/2049.html">2049 上銀</a>
-    <div class="note">行進籃｜行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1主力未離開 / B2賣壓疑似消失</div>
-  </div>
-  <div><div class="label">收盤</div><div class="value">319.50</div></div>
-  <div><div class="label">距買點</div><div class="value">+5.1%</div></div>
-  <div><div class="label">買點</div><div class="value">299.38</div></div>
-  <div><div class="label">初停</div><div class="value">275.50</div></div>
-  <div><div class="label">R:R</div><div class="value rr-mid">1:1.8</div></div>
-</div></div>
-</div>
-  
-<div class="card">
-  <div class="section-label">持倉 / 追蹤賣出警示</div>
-  <div class="strategy-note">目前網站還沒有券商持股清單，這區先用候選與訊號追蹤名單做賣出風險掃描；之後接入實際庫存後可改成只看持有中標的。</div>
+  <h3 class="subsection-title">賣出建議</h3>
   
 <div class="alert-row">
   <div><a class="stock-link" href="stocks/1785.html">1785 光洋科</a><div class="signal-dates">收盤 167.00</div></div>
@@ -444,398 +385,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div><div class="label">買點損益</div><div class="value">+1.9%</div></div>
   <div><span class="alert-level watch">跌破MA20</span><div class="signal-dates" style="margin-top:4px">漲幅10%內跌破MA20；外資連賣2日</div></div>
 </div>
-<div class="alert-row">
-  <div><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">收盤 68.90</div></div>
-  <div><div class="label">MA20距離</div><div class="value">+0.8%</div></div>
-  <div><div class="label">買點損益</div><div class="value">+5.2%</div></div>
-  <div><span class="alert-level ">續抱觀察</span><div class="signal-dates" style="margin-top:4px">距MA20 +0.8%</div></div>
-</div>
 </div>
   
 <div class="card">
-  <div class="section-label">🔍 篩選漏斗</div>
-  
-  <div style="margin-top:12px;font-size:12px;color:#6e7681">從全市場 2,000+ 檔，六大技術條件篩選至最終 <strong style="color:#58a6ff">20 檔</strong></div>
-</div>
-  
-<div class="card">
-  <div class="section-label">🏆 今日精選 Top 20</div>
-  <p style="font-size:12px;color:#6e7681;margin-bottom:14px">資料日期：2026-05-08 · 評分公式：週排名 × 外資籌碼 · <a href="baskets.html">查看 SFZ 雙籃 →</a></p>
-  
-<div class="grid grid-3" style="margin-bottom:16px">
-  <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">行進籃：SFZ 波段候選</div></div>
-  <div class="metric"><div class="metric-num" style="color:#58a6ff">0</div><div class="metric-label">盤整籃：MABC 觀察</div></div>
-  <div class="metric"><div class="metric-num" style="color:#f85149">0</div><div class="metric-label">過熱/風險：不追高</div></div>
-</div>
-  <div style="overflow-x:auto">
-<table class="stock-table">
-<thead><tr>
-  <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/初停/R:R</th>
-</tr></thead>
-<tbody>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#1</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2347.html">2347 聯強</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">82.2</td>
-  <td class="pos">3.92%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 80.70</div>
-    <div class="price-target">目 87.21</div>
-    <div class="price-stop">初停 78.10</div>
-    <div class="price-rr rr-good">R:R 1:2.5</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#2</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2606.html">2606 裕民</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">65</td>
-  <td class="pos">9.8%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 61.55</div>
-    <div class="price-target">目 67.83</div>
-    <div class="price-stop">初停 59.50</div>
-    <div class="price-rr rr-good">R:R 1:3.1</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#3</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">74.6</td>
-  <td class="pos">7.65%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 72.12</div>
-    <div class="price-target">目 79.15</div>
-    <div class="price-stop">初停 67.96</div>
-    <div class="price-rr rr-mid">R:R 1:1.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#4</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/3443.html">3443 創意</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">5210</td>
-  <td class="pos">107.98%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 3976.25</div>
-    <div class="price-target">目 5666.10</div>
-    <div class="price-stop">初停 3737.67</div>
-    <div class="price-rr rr-good">R:R 1:7.1</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">2750</td>
-  <td class="pos">58.96%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 2516.25</div>
-    <div class="price-target">目 3029.40</div>
-    <div class="price-stop">初停 2365.28</div>
-    <div class="price-rr rr-good">R:R 1:3.4</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/6274.html">6274 台燿</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">1370</td>
-  <td class="pos">153.23%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 1028.75</div>
-    <div class="price-target">目 1504.50</div>
-    <div class="price-stop">初停 967.02</div>
-    <div class="price-rr rr-good">R:R 1:7.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8047.html">8047 星雲</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">54</td>
-  <td class="pos">4.85%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 52.90</div>
-    <div class="price-target">目 60.18</div>
-    <div class="price-stop">初停 51.04</div>
-    <div class="price-rr rr-good">R:R 1:3.9</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8112.html">8112 至上</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">89.3</td>
-  <td class="pos">12.61%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 83.45</div>
-    <div class="price-target">目 92.31</div>
-    <div class="price-stop">初停 80.20</div>
-    <div class="price-rr rr-good">R:R 1:2.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">260.5</td>
-  <td class="pos">69.71%</td>
-  <td><span style="color:#58a6ff;font-weight:700">100.0</span></td>
-  <td>
-    <div class="price-entry">進 209.50</div>
-    <div class="price-target">目 265.71</div>
-    <div class="price-stop">初停 196.93</div>
-    <div class="price-rr rr-good">R:R 1:4.5</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1560.html">1560 中砂</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">572</td>
-  <td class="pos">28.25%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 533.75</div>
-    <div class="price-target">目 629.34</div>
-    <div class="price-stop">初停 498.50</div>
-    <div class="price-rr rr-good">R:R 1:2.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1595.html">1595 川寶</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">98.2</td>
-  <td class="pos">133.81%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 62.75</div>
-    <div class="price-target">目 103.02</div>
-    <div class="price-stop">初停 58.98</div>
-    <div class="price-rr rr-good">R:R 1:10.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1721.html">1721 三晃</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">28.5</td>
-  <td class="pos">57.46%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 23.66</div>
-    <div class="price-target">目 30.60</div>
-    <div class="price-stop">初停 22.24</div>
-    <div class="price-rr rr-good">R:R 1:4.9</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1773.html">1773 勝一</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">172.5</td>
-  <td class="pos">21.05%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 164.38</div>
-    <div class="price-target">目 185.64</div>
-    <div class="price-stop">初停 147.26</div>
-    <div class="price-rr rr-bad">R:R 1:1.2</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1785.html">1785 光洋科</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">167</td>
-  <td class="pos">86.59%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 144.88</div>
-    <div class="price-target">目 188.70</div>
-    <div class="price-stop">初停 136.18</div>
-    <div class="price-rr rr-good">R:R 1:5.0</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/1802.html">1802 台玻</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">68.9</td>
-  <td class="pos">32.76%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 65.50</div>
-    <div class="price-target">目 78.44</div>
-    <div class="price-stop">初停 61.57</div>
-    <div class="price-rr rr-good">R:R 1:3.3</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#16</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2049.html">2049 上銀</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">319.5</td>
-  <td class="pos">41.69%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 299.38</div>
-    <div class="price-target">目 341.70</div>
-    <div class="price-stop">初停 275.50</div>
-    <div class="price-rr rr-mid">R:R 1:1.8</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#17</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2059.html">2059 川湖</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">5320</td>
-  <td class="pos">51.14%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 3951.25</div>
-    <div class="price-target">目 5426.40</div>
-    <div class="price-stop">初停 3745.00</div>
-    <div class="price-rr rr-good">R:R 1:7.2</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#18</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2236.html">2236 百達-KY</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">135</td>
-  <td class="pos">27.96%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 128.38</div>
-    <div class="price-target">目 142.80</div>
-    <div class="price-stop">初停 120.00</div>
-    <div class="price-rr rr-mid">R:R 1:1.7</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#19</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2303.html">2303 聯電</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">91.3</td>
-  <td class="pos">61.59%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 77.72</div>
-    <div class="price-target">目 100.78</div>
-    <div class="price-stop">初停 74.00</div>
-    <div class="price-rr rr-good">R:R 1:6.2</div>
-  </td>
-</tr>
-<tr>
-  <td><span style="color:#6e7681;font-size:11px">#20</span></td>
-  <td>
-    <div><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a></div>
-    <div style="margin-top:3px"><span class="tag tag-green">行進籃</span></div>
-  </td>
-  <td class="price-main">112.5</td>
-  <td class="pos">12.5%</td>
-  <td><span style="color:#58a6ff;font-weight:700">90.0</span></td>
-  <td>
-    <div class="price-entry">進 113.12</div>
-    <div class="price-target">目 128.01</div>
-    <div class="price-stop">初停 106.34</div>
-    <div class="price-rr rr-good">R:R 1:2.2</div>
-  </td>
-</tr></tbody>
-</table>
-</div>
-</div>
-  
-<div class="card">
-  <div class="section-label">🗂 最近報告</div>
-  
-<div class="history-item">
-  <div>
-    <div class="history-date">2026-05-08</div>
-    <div class="history-meta">精選 20 檔</div>
+  <div class="section-head">
+    <div class="section-label">持倉狀態</div>
+    <span class="section-date">資料日期：2026-05-08</span>
   </div>
-  <a href="daily/2026-05-08.html" class="history-link">查看報告 →</a>
-</div>
-<div class="history-item">
-  <div>
-    <div class="history-date">2026-05-07</div>
-    <div class="history-meta">精選 20 檔</div>
+  <div class="pending-box">
+    <div style="font-size:16px;font-weight:900;color:#e6edf3">永豐庫存尚未接入</div>
+    <div class="strategy-note" style="margin-top:6px">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>
   </div>
-  <a href="daily/2026-05-07.html" class="history-link">查看報告 →</a>
-</div>
-<div class="history-item">
-  <div>
-    <div class="history-date">2026-05-06</div>
-    <div class="history-meta">精選 20 檔</div>
-  </div>
-  <a href="daily/2026-05-06.html" class="history-link">查看報告 →</a>
-</div>
-<div class="history-item">
-  <div>
-    <div class="history-date">2026-05-04</div>
-    <div class="history-meta">精選 20 檔</div>
-  </div>
-  <a href="daily/2026-05-04.html" class="history-link">查看報告 →</a>
-</div>
-<div class="history-item">
-  <div>
-    <div class="history-date">2026-04-30</div>
-    <div class="history-meta">精選 20 檔</div>
-  </div>
-  <a href="daily/2026-04-30.html" class="history-link">查看報告 →</a>
-</div>
-  <div style="margin-top:12px"><a href="history.html" style="font-size:13px;font-weight:600">查看所有報告 →</a></div>
 </div>
 </div>
 
