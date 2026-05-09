@@ -28,6 +28,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .grid{display:grid;gap:16px}
 .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
@@ -179,6 +180,21 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
 .stock-table tr:hover td{background:#1c2128}
 .stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -227,6 +243,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -235,11 +255,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
-  .grid-2,.grid-3{grid-template-columns:1fr}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -266,946 +291,2514 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
 <div class="container">
   <div class="page-title">CaryBot 驗證</div>
-  <div class="page-sub">這頁把 CaryBot 藍點當成買點輔助資料，不取代 SFZ 趨勢選股與 M大觀察池；重點是找出哪些藍點值得跟、哪些藍點容易失敗。</div>
+  <div class="page-sub">這頁把 CaryBot 標點當成 timing / confirmation layer，不取代 SFZ 趨勢選股與 M大觀察池；重點是分辨健康買點、過熱追價與賣點風險警示。</div>
 
   <div class="card">
     <div class="section-label">目前定位</div>
-    <div class="grid grid-3">
+    <div class="grid grid-4">
       
 <div class="metric">
-  <div class="metric-num" style="color:#58a6ff">243</div>
+  <div class="metric-num" style="color:#58a6ff">336</div>
   <div class="metric-label">PreBuy 樣本</div>
   <div class="chip-line">偏觀察 / 等確認</div>
 </div>
       
 <div class="metric">
-  <div class="metric-num" style="color:#3fb950">12</div>
+  <div class="metric-num" style="color:#3fb950">186</div>
   <div class="metric-label">AI_Buy 樣本</div>
   <div class="chip-line">偏正式買點標記</div>
 </div>
       
 <div class="metric">
-  <div class="metric-num" style="color:#d2a520">Timing</div>
-  <div class="metric-label">整合方式</div>
-  <div class="chip-line">只做買點驗證層</div>
+  <div class="metric-num" style="color:#d2a520">180</div>
+  <div class="metric-label">PreSell 樣本</div>
+  <div class="chip-line">偏提前風險提醒</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#f85149">156</div>
+  <div class="metric-label">AI_Sell 樣本</div>
+  <div class="chip-line">偏正式賣點警示</div>
 </div>
     </div>
-    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 是否支持進場時機。</div>
+    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 與顏色狀態是否支持進場或降風險。</div>
+    
+  </div>
+
+  <div class="card">
+    <div class="section-label">v50 買賣點勝敗速覽</div>
+    
+<div class="grid grid-4">
+  
+<div class="metric">
+  <div class="metric-num" style="color:#3fb950">66.9%</div>
+  <div class="metric-label">AI_Buy 20日勝率</div>
+  <div class="chip-line">105 / 157</div>
+</div>
+  
+<div class="metric">
+  <div class="metric-num" style="color:#58a6ff">63.6%</div>
+  <div class="metric-label">PreBuy 20日勝率</div>
+  <div class="chip-line">180 / 283</div>
+</div>
+  
+<div class="metric">
+  <div class="metric-num" style="color:#f85149">53.8%</div>
+  <div class="metric-label">AI_Sell 60日風險</div>
+  <div class="chip-line">84 / 156</div>
+</div>
+  
+<div class="metric">
+  <div class="metric-num" style="color:#d2a520">32.8%</div>
+  <div class="metric-label">PreSell 60日風險</div>
+  <div class="chip-line">59 / 180</div>
+</div>
+</div>
   </div>
 
   <div class="card">
     <div class="section-label">使用方式</div>
     <div class="grid grid-2" style="margin-top:10px">
       <div class="info-cell"><div class="k">SFZ 行進籃</div><div class="v">等 timing</div><div class="chip-line">SFZ 已選出趨勢後，用 CaryBot 藍點與 ATRB/VAM 強勢確認，避免太早或太晚進。</div></div>
-      <div class="info-cell"><div class="k">M大觀察池</div><div class="v">等發動</div><div class="chip-line">M大抓未發動標的後，用 VPA 壓力消化、QTYR 放量、VAM20/VAM60 轉強判斷是否啟動。</div></div>
+      <div class="info-cell"><div class="k">風險警示</div><div class="v">看賣點</div><div class="chip-line">PreSell / AI_Sell 不直接等於做空，先視為過熱後的減碼、停利或重新檢查持股訊號。</div></div>
     </div>
   </div>
 
   
 <div class="card">
-  <div class="section-label">PreBuy 指標中位數</div>
-  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">0.89</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">4.56</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">66.55</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">75.58</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">50.34</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">59.42</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">1.17</div></div></div>
+  <div class="section-label">買點指標中位數</div>
+  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">0.38</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">4.01</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">66.58</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">75.04</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">57.04</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">65.00</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">1.26</div></div></div>
 </div>
   
 <div class="card">
-  <div class="section-label">AI_Buy 指標中位數</div>
-  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">0.63</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">3.56</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">23.32</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">60.14</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">36.55</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">33.33</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">0.99</div></div></div>
+  <div class="section-label">賣點指標中位數</div>
+  <div class="grid grid-3" style="margin-top:10px"><div class="info-cell"><div class="k">QZ</div><div class="v">1.17</div></div><div class="info-cell"><div class="k">QTYR</div><div class="v">3.75</div></div><div class="info-cell"><div class="k">VAM</div><div class="v">81.63</div></div><div class="info-cell"><div class="k">VAM5</div><div class="v">87.77</div></div><div class="info-cell"><div class="k">VAM20</div><div class="v">96.41</div></div><div class="info-cell"><div class="k">VAM60</div><div class="v">77.30</div></div><div class="info-cell"><div class="k">VPA480</div><div class="v">1.79</div></div></div>
 </div>
 
   <div class="card">
-    <div class="section-label">藍點樣本與指標</div>
-    <div class="strategy-note">資料來源：C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_buy_markers_v42_features.csv</div>
+    <div class="section-label">買點參考與賣點風險統計</div>
     <div style="overflow-x:auto;margin-top:10px">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>VPA480</th></tr></thead>
+        <thead><tr><th>方向</th><th>訊號</th><th>樣本</th><th>可評估</th><th>成功</th><th>20日成功率</th><th>60日風險釋放</th><th>8%回撤率</th><th>20日中位</th><th>MFE60中位</th><th>MAE60中位</th></tr></thead>
         <tbody>
 <tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
-  <td class="price-main">147.50</td>
-  <td>-2.63</td>
-  <td>2.17</td>
-  <td>15.78</td>
-  <td>66.17</td>
-  <td>43.98</td>
-  <td>1.38</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-10</div></td>
-  <td class="price-main">209.50</td>
-  <td>1.73</td>
-  <td>4.11</td>
-  <td>20.29</td>
-  <td>35.68</td>
-  <td>33.81</td>
-  <td>0.98</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-12</div></td>
-  <td class="price-main">214.50</td>
-  <td>-0.48</td>
-  <td>2.85</td>
-  <td>26.35</td>
-  <td>37.42</td>
-  <td>36.76</td>
-  <td>1.00</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
-  <td class="price-main">197.00</td>
-  <td>-2.06</td>
-  <td>3.00</td>
-  <td>0.00</td>
-  <td>31.31</td>
-  <td>23.96</td>
-  <td>0.92</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-07</div></td>
-  <td class="price-main">192.00</td>
-  <td>-1.44</td>
-  <td>2.43</td>
-  <td>0.00</td>
-  <td>29.56</td>
-  <td>16.67</td>
-  <td>0.89</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2412.html">2412</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-02</div></td>
-  <td class="price-main">138.00</td>
-  <td>10.46</td>
-  <td>11.35</td>
-  <td>77.74</td>
-  <td>44.81</td>
-  <td>72.25</td>
-  <td>1.10</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2454.html">2454</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2025-11-25</div></td>
-  <td class="price-main">1185.00</td>
-  <td>3.87</td>
-  <td>4.22</td>
-  <td>0.00</td>
-  <td>30.02</td>
-  <td>0.00</td>
-  <td>0.90</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2501.html">2501</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-04-23</div></td>
-  <td class="price-main">26.25</td>
-  <td>6.69</td>
-  <td>10.53</td>
-  <td>94.44</td>
-  <td>49.27</td>
-  <td>32.85</td>
-  <td>1.16</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3665.html">3665</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-02-09</div></td>
-  <td class="price-main">1255.00</td>
-  <td>2.38</td>
-  <td>4.25</td>
-  <td>32.69</td>
-  <td>100.00</td>
-  <td>67.90</td>
-  <td>2.03</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/5243.html">5243</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-03-11</div></td>
-  <td class="price-main">74.20</td>
-  <td>-5.48</td>
-  <td>1.45</td>
-  <td>26.74</td>
-  <td>26.21</td>
-  <td>17.47</td>
-  <td>0.85</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6446.html">6446</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2025-11-21</div></td>
-  <td class="price-main">467.50</td>
-  <td>-0.50</td>
-  <td>2.31</td>
-  <td>7.39</td>
-  <td>33.02</td>
-  <td>0.00</td>
-  <td>0.94</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/6669.html">6669</a></td>
-  <td><span class="tag pos">AI_Buy</span><div class="signal-dates">2026-01-16</div></td>
-  <td class="price-main">3825.00</td>
-  <td>1.91</td>
-  <td>4.42</td>
-  <td>45.08</td>
-  <td>79.69</td>
-  <td>70.49</td>
-  <td>1.56</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-23</div></td>
-  <td class="price-main">63.70</td>
-  <td>1.73</td>
-  <td>4.36</td>
-  <td>100.00</td>
-  <td>40.33</td>
-  <td>0.00</td>
-  <td>1.04</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-29</div></td>
-  <td class="price-main">73.75</td>
-  <td>-0.95</td>
-  <td>4.86</td>
-  <td>100.00</td>
-  <td>52.60</td>
-  <td>0.00</td>
-  <td>1.20</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-09</div></td>
-  <td class="price-main">73.95</td>
-  <td>-0.79</td>
-  <td>4.77</td>
-  <td>100.00</td>
-  <td>52.85</td>
-  <td>0.00</td>
-  <td>1.20</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/0050.html">0050</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-08</div></td>
-  <td class="price-main">79.20</td>
-  <td>2.88</td>
-  <td>6.73</td>
-  <td>93.20</td>
-  <td>59.26</td>
-  <td>0.00</td>
-  <td>1.29</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-27</div></td>
-  <td class="price-main">22.10</td>
-  <td>1.50</td>
-  <td>3.42</td>
-  <td>10.46</td>
-  <td>14.13</td>
-  <td>0.00</td>
-  <td>0.69</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-30</div></td>
-  <td class="price-main">23.60</td>
-  <td>-4.23</td>
-  <td>4.60</td>
-  <td>54.21</td>
-  <td>17.63</td>
-  <td>0.00</td>
-  <td>0.74</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-08</div></td>
-  <td class="price-main">23.45</td>
-  <td>1.78</td>
-  <td>3.85</td>
-  <td>51.67</td>
-  <td>38.54</td>
-  <td>0.00</td>
-  <td>1.01</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-24</div></td>
-  <td class="price-main">26.45</td>
-  <td>-2.15</td>
-  <td>3.53</td>
-  <td>95.22</td>
-  <td>48.26</td>
-  <td>0.00</td>
-  <td>1.14</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-07</div></td>
-  <td class="price-main">24.00</td>
-  <td>-0.02</td>
-  <td>4.13</td>
-  <td>47.15</td>
-  <td>40.94</td>
-  <td>0.00</td>
-  <td>1.05</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-18</div></td>
-  <td class="price-main">79.00</td>
-  <td>6.30</td>
-  <td>13.01</td>
-  <td>41.93</td>
-  <td>37.37</td>
-  <td>9.53</td>
-  <td>1.00</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-26</div></td>
-  <td class="price-main">80.50</td>
-  <td>13.76</td>
-  <td>8.05</td>
-  <td>49.74</td>
-  <td>38.79</td>
-  <td>17.49</td>
-  <td>1.02</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-23</div></td>
-  <td class="price-main">75.10</td>
-  <td>0.89</td>
-  <td>7.89</td>
-  <td>27.02</td>
-  <td>33.73</td>
-  <td>0.00</td>
-  <td>0.95</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-03</div></td>
-  <td class="price-main">73.90</td>
-  <td>4.79</td>
-  <td>3.72</td>
-  <td>19.24</td>
-  <td>32.59</td>
-  <td>0.00</td>
-  <td>0.93</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-22</div></td>
-  <td class="price-main">72.40</td>
-  <td>0.09</td>
-  <td>4.29</td>
-  <td>17.57</td>
-  <td>31.12</td>
-  <td>0.00</td>
-  <td>0.91</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-04</div></td>
-  <td class="price-main">28.45</td>
-  <td>1.00</td>
-  <td>4.16</td>
-  <td>85.72</td>
-  <td>20.29</td>
-  <td>80.74</td>
-  <td>0.77</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-12</div></td>
-  <td class="price-main">35.25</td>
-  <td>3.53</td>
-  <td>10.85</td>
-  <td>100.00</td>
-  <td>34.10</td>
-  <td>93.81</td>
-  <td>0.95</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-30</div></td>
-  <td class="price-main">35.05</td>
-  <td>-0.19</td>
-  <td>2.22</td>
-  <td>73.69</td>
-  <td>36.84</td>
-  <td>83.53</td>
-  <td>0.99</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-16</div></td>
-  <td class="price-main">41.80</td>
-  <td>0.28</td>
-  <td>7.70</td>
-  <td>100.00</td>
-  <td>51.16</td>
-  <td>100.00</td>
-  <td>1.18</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-08</div></td>
-  <td class="price-main">59.00</td>
-  <td>-1.70</td>
-  <td>3.17</td>
-  <td>78.98</td>
-  <td>82.52</td>
-  <td>77.59</td>
-  <td>1.60</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-20</div></td>
-  <td class="price-main">160.00</td>
-  <td>1.16</td>
-  <td>3.87</td>
-  <td>76.62</td>
-  <td>74.95</td>
-  <td>81.48</td>
-  <td>1.50</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-05</div></td>
-  <td class="price-main">160.00</td>
-  <td>-7.34</td>
-  <td>2.18</td>
-  <td>69.49</td>
-  <td>74.95</td>
-  <td>82.88</td>
-  <td>1.50</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-13</div></td>
-  <td class="price-main">163.50</td>
-  <td>-2.91</td>
-  <td>3.01</td>
-  <td>57.80</td>
-  <td>77.41</td>
-  <td>86.16</td>
-  <td>1.53</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-22</div></td>
-  <td class="price-main">177.00</td>
-  <td>-0.60</td>
-  <td>9.93</td>
-  <td>70.31</td>
-  <td>86.90</td>
-  <td>86.75</td>
-  <td>1.66</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-28</div></td>
-  <td class="price-main">172.50</td>
-  <td>4.40</td>
-  <td>4.34</td>
-  <td>59.21</td>
-  <td>83.74</td>
-  <td>74.49</td>
-  <td>1.62</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-03</div></td>
-  <td class="price-main">170.50</td>
-  <td>0.08</td>
-  <td>4.10</td>
-  <td>53.88</td>
-  <td>82.33</td>
-  <td>66.91</td>
-  <td>1.60</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-09</div></td>
-  <td class="price-main">173.50</td>
-  <td>0.78</td>
-  <td>4.53</td>
-  <td>54.81</td>
-  <td>84.44</td>
-  <td>64.85</td>
-  <td>1.63</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-17</div></td>
-  <td class="price-main">168.00</td>
-  <td>-1.16</td>
-  <td>3.10</td>
-  <td>42.01</td>
-  <td>80.58</td>
-  <td>57.19</td>
-  <td>1.57</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-10</div></td>
-  <td class="price-main">161.50</td>
-  <td>0.86</td>
-  <td>7.32</td>
-  <td>36.52</td>
-  <td>76.01</td>
-  <td>57.61</td>
-  <td>1.51</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-20</div></td>
-  <td class="price-main">165.00</td>
-  <td>1.74</td>
-  <td>5.56</td>
-  <td>41.91</td>
-  <td>78.47</td>
-  <td>63.53</td>
-  <td>1.55</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-02</div></td>
-  <td class="price-main">989.00</td>
-  <td>-1.41</td>
-  <td>5.81</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>2.46</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-26</div></td>
-  <td class="price-main">956.00</td>
-  <td>-7.36</td>
-  <td>1.25</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>2.38</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-30</div></td>
-  <td class="price-main">262.00</td>
-  <td>3.63</td>
-  <td>5.66</td>
-  <td>100.00</td>
-  <td>54.67</td>
-  <td>98.71</td>
-  <td>1.23</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-25</div></td>
-  <td class="price-main">219.00</td>
-  <td>2.59</td>
-  <td>3.81</td>
-  <td>66.31</td>
-  <td>39.38</td>
-  <td>67.06</td>
-  <td>1.03</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
-  <td class="price-main">235.00</td>
-  <td>-7.75</td>
-  <td>3.69</td>
-  <td>87.52</td>
-  <td>44.99</td>
-  <td>94.10</td>
-  <td>1.10</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-11</div></td>
-  <td class="price-main">226.00</td>
-  <td>-6.27</td>
-  <td>4.01</td>
-  <td>73.92</td>
-  <td>41.83</td>
-  <td>88.39</td>
-  <td>1.06</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-12</div></td>
-  <td class="price-main">228.50</td>
-  <td>-0.94</td>
-  <td>2.15</td>
-  <td>61.21</td>
-  <td>42.71</td>
-  <td>93.53</td>
-  <td>1.07</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-15</div></td>
-  <td class="price-main">233.50</td>
-  <td>-4.89</td>
-  <td>2.57</td>
-  <td>65.74</td>
-  <td>65.70</td>
-  <td>93.57</td>
-  <td>1.38</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-19</div></td>
-  <td class="price-main">229.50</td>
-  <td>-3.11</td>
-  <td>3.79</td>
-  <td>56.61</td>
-  <td>63.74</td>
-  <td>88.18</td>
-  <td>1.35</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-11</div></td>
-  <td class="price-main">227.00</td>
-  <td>-2.81</td>
-  <td>4.96</td>
-  <td>43.45</td>
-  <td>60.95</td>
-  <td>75.47</td>
-  <td>1.31</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-24</div></td>
-  <td class="price-main">232.00</td>
-  <td>-0.51</td>
-  <td>4.66</td>
-  <td>52.07</td>
-  <td>63.12</td>
-  <td>83.38</td>
-  <td>1.34</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-26</div></td>
-  <td class="price-main">243.00</td>
-  <td>5.66</td>
-  <td>7.14</td>
-  <td>65.78</td>
-  <td>47.79</td>
-  <td>83.98</td>
-  <td>1.14</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-14</div></td>
-  <td class="price-main">207.50</td>
-  <td>-0.48</td>
-  <td>3.94</td>
-  <td>12.32</td>
-  <td>34.98</td>
-  <td>35.97</td>
-  <td>0.97</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-16</div></td>
-  <td class="price-main">207.00</td>
-  <td>-0.11</td>
-  <td>3.04</td>
-  <td>11.29</td>
-  <td>34.80</td>
-  <td>35.33</td>
-  <td>0.96</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-07</div></td>
-  <td class="price-main">1460.00</td>
-  <td>1.12</td>
-  <td>2.65</td>
-  <td>100.00</td>
-  <td>75.04</td>
-  <td>100.00</td>
-  <td>1.50</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-28</div></td>
-  <td class="price-main">1440.00</td>
-  <td>1.14</td>
-  <td>2.84</td>
-  <td>95.49</td>
-  <td>73.49</td>
-  <td>100.00</td>
-  <td>1.48</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-23</div></td>
-  <td class="price-main">1490.00</td>
-  <td>-0.95</td>
-  <td>2.81</td>
-  <td>100.00</td>
-  <td>80.99</td>
-  <td>100.00</td>
-  <td>1.58</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-08</div></td>
-  <td class="price-main">1685.00</td>
-  <td>6.79</td>
-  <td>3.39</td>
-  <td>100.00</td>
-  <td>91.97</td>
-  <td>100.00</td>
-  <td>1.73</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-02</div></td>
-  <td class="price-main">1765.00</td>
-  <td>0.80</td>
-  <td>3.74</td>
-  <td>100.00</td>
-  <td>86.45</td>
-  <td>100.00</td>
-  <td>1.65</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-02-11</div></td>
-  <td class="price-main">1915.00</td>
-  <td>2.31</td>
-  <td>4.89</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>1.96</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-13</div></td>
-  <td class="price-main">1865.00</td>
-  <td>4.24</td>
-  <td>3.28</td>
-  <td>89.12</td>
-  <td>93.23</td>
-  <td>100.00</td>
-  <td>1.74</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-20</div></td>
-  <td class="price-main">1840.00</td>
-  <td>-0.35</td>
-  <td>5.27</td>
-  <td>83.43</td>
-  <td>91.47</td>
-  <td>100.00</td>
-  <td>1.72</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-27</div></td>
-  <td class="price-main">1820.00</td>
-  <td>-0.43</td>
-  <td>3.42</td>
-  <td>82.02</td>
-  <td>90.07</td>
-  <td>100.00</td>
-  <td>1.70</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-31</div></td>
-  <td class="price-main">1760.00</td>
-  <td>2.29</td>
-  <td>7.11</td>
-  <td>74.06</td>
-  <td>85.87</td>
-  <td>100.00</td>
-  <td>1.64</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-07</div></td>
-  <td class="price-main">1860.00</td>
-  <td>1.09</td>
-  <td>1.92</td>
-  <td>88.61</td>
-  <td>92.88</td>
-  <td>100.00</td>
-  <td>1.74</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-14</div></td>
-  <td class="price-main">2055.00</td>
-  <td>1.45</td>
-  <td>4.58</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>1.92</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
-  <td class="price-main">38.75</td>
-  <td>3.29</td>
-  <td>10.15</td>
-  <td>99.29</td>
-  <td>70.72</td>
-  <td>65.87</td>
-  <td>1.44</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-15</div></td>
-  <td class="price-main">37.95</td>
-  <td>3.93</td>
-  <td>3.02</td>
-  <td>95.29</td>
-  <td>68.49</td>
-  <td>64.48</td>
-  <td>1.41</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-11</div></td>
-  <td class="price-main">99.70</td>
-  <td>-1.51</td>
-  <td>3.08</td>
-  <td>90.42</td>
-  <td>100.00</td>
-  <td>71.71</td>
-  <td>2.58</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-01</div></td>
-  <td class="price-main">127.00</td>
-  <td>-9.43</td>
-  <td>0.89</td>
-  <td>88.98</td>
-  <td>100.00</td>
-  <td>73.08</td>
-  <td>3.36</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-04-24</div></td>
-  <td class="price-main">132.00</td>
-  <td>2.20</td>
-  <td>4.05</td>
-  <td>82.34</td>
-  <td>100.00</td>
-  <td>74.17</td>
-  <td>3.50</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-31</div></td>
-  <td class="price-main">465.50</td>
-  <td>-2.58</td>
-  <td>10.09</td>
-  <td>92.21</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>2.14</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-21</div></td>
-  <td class="price-main">596.00</td>
-  <td>1.10</td>
-  <td>5.45</td>
-  <td>66.16</td>
-  <td>100.00</td>
-  <td>90.85</td>
-  <td>2.59</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-10-29</div></td>
-  <td class="price-main">1250.00</td>
-  <td>-1.06</td>
-  <td>4.73</td>
-  <td>81.42</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>2.95</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-11-25</div></td>
-  <td class="price-main">1450.00</td>
-  <td>1.68</td>
-  <td>4.57</td>
-  <td>77.23</td>
-  <td>100.00</td>
-  <td>92.49</td>
-  <td>3.35</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-19</div></td>
-  <td class="price-main">1580.00</td>
-  <td>0.17</td>
-  <td>4.04</td>
-  <td>68.77</td>
-  <td>100.00</td>
-  <td>97.23</td>
-  <td>3.67</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-01-23</div></td>
-  <td class="price-main">1800.00</td>
-  <td>0.65</td>
-  <td>6.16</td>
-  <td>89.50</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>4.18</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2025-12-09</div></td>
-  <td class="price-main">162.00</td>
-  <td>-0.78</td>
-  <td>0.79</td>
-  <td>100.00</td>
-  <td>100.00</td>
-  <td>92.86</td>
-  <td>3.84</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
-  <td><span class="tag tag">PreBuy</span><div class="signal-dates">2026-03-16</div></td>
-  <td class="price-main">261.50</td>
-  <td>1.32</td>
-  <td>3.80</td>
-  <td>79.15</td>
-  <td>100.00</td>
-  <td>83.03</td>
-  <td>6.23</td>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>186</td>
+  <td>157</td>
+  <td>105</td>
+  <td>66.9%</td>
+  <td>─</td>
+  <td>─</td>
+  <td>4.9%</td>
+  <td>21.8%</td>
+  <td>-5.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>336</td>
+  <td>283</td>
+  <td>180</td>
+  <td>63.6%</td>
+  <td>─</td>
+  <td>─</td>
+  <td>4.7%</td>
+  <td>21.3%</td>
+  <td>-3.9%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>156</td>
+  <td>140</td>
+  <td>55</td>
+  <td>39.3%</td>
+  <td>53.8%</td>
+  <td>47.4%</td>
+  <td>2.1%</td>
+  <td>27.4%</td>
+  <td>-7.3%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>180</td>
+  <td>152</td>
+  <td>31</td>
+  <td>20.4%</td>
+  <td>32.8%</td>
+  <td>32.2%</td>
+  <td>12.3%</td>
+  <td>52.8%</td>
+  <td>-3.9%</td>
 </tr></tbody>
       </table>
     </div>
   </div>
 
   <div class="card">
-    <div class="section-label">下一步：加入勝敗標籤</div>
-    <div class="strategy-note">`XXXX-1` 訊號卡有目前損益與近 5 筆歷史訊號，下一版應把賺錢 / 賠錢案例接進這頁，將藍點拆成好藍點與壞藍點，而不是把所有藍點都視為買進。</div>
+    <div class="section-label">顏色狀態勝敗</div>
+    <div class="strategy-note">健康回拉與觀察轉強通常比過熱追價更適合當買點參考；賣點則看是否真的引出後續風險釋放。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>方向</th><th>訊號</th><th>顏色狀態</th><th>樣本</th><th>可評估</th><th>20日成功率</th><th>60日風險釋放</th><th>20日中位</th><th>MAE60中位</th></tr></thead>
+        <tbody>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch</td>
+  <td>63</td>
+  <td>50</td>
+  <td>70.0%</td>
+  <td>─</td>
+  <td>4.7%</td>
+  <td>-4.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback</td>
+  <td>58</td>
+  <td>52</td>
+  <td>71.2%</td>
+  <td>─</td>
+  <td>8.1%</td>
+  <td>-7.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>mixed_transition</td>
+  <td>26</td>
+  <td>21</td>
+  <td>71.4%</td>
+  <td>─</td>
+  <td>7.1%</td>
+  <td>-5.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support</td>
+  <td>25</td>
+  <td>23</td>
+  <td>60.9%</td>
+  <td>─</td>
+  <td>6.1%</td>
+  <td>-4.7%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed</td>
+  <td>9</td>
+  <td>8</td>
+  <td>37.5%</td>
+  <td>─</td>
+  <td>-3.8%</td>
+  <td>-10.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>red_overheat_chase</td>
+  <td>5</td>
+  <td>3</td>
+  <td>33.3%</td>
+  <td>─</td>
+  <td>-6.8%</td>
+  <td>-9.0%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_healthy_pullback</td>
+  <td>87</td>
+  <td>75</td>
+  <td>69.3%</td>
+  <td>─</td>
+  <td>7.5%</td>
+  <td>-4.0%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_base_or_support</td>
+  <td>85</td>
+  <td>68</td>
+  <td>58.8%</td>
+  <td>─</td>
+  <td>3.0%</td>
+  <td>-4.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>mixed_transition</td>
+  <td>58</td>
+  <td>48</td>
+  <td>68.8%</td>
+  <td>─</td>
+  <td>8.0%</td>
+  <td>-2.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>green_watch</td>
+  <td>52</td>
+  <td>45</td>
+  <td>68.9%</td>
+  <td>─</td>
+  <td>3.1%</td>
+  <td>-2.8%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>orange_ignition_confirmed</td>
+  <td>43</td>
+  <td>36</td>
+  <td>47.2%</td>
+  <td>─</td>
+  <td>-1.4%</td>
+  <td>-4.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>red_overheat_chase</td>
+  <td>11</td>
+  <td>11</td>
+  <td>63.6%</td>
+  <td>─</td>
+  <td>5.5%</td>
+  <td>-8.4%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>brown_healthy_pullback</td>
+  <td>51</td>
+  <td>45</td>
+  <td>37.8%</td>
+  <td>51.0%</td>
+  <td>2.1%</td>
+  <td>-7.6%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>green_watch</td>
+  <td>51</td>
+  <td>46</td>
+  <td>34.8%</td>
+  <td>49.0%</td>
+  <td>2.6%</td>
+  <td>-6.2%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>brown_base_or_support</td>
+  <td>31</td>
+  <td>27</td>
+  <td>40.7%</td>
+  <td>58.1%</td>
+  <td>1.5%</td>
+  <td>-7.2%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>mixed_transition</td>
+  <td>16</td>
+  <td>15</td>
+  <td>33.3%</td>
+  <td>56.2%</td>
+  <td>3.2%</td>
+  <td>-7.1%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>AI_Sell</td>
+  <td>orange_ignition_confirmed</td>
+  <td>7</td>
+  <td>7</td>
+  <td>85.7%</td>
+  <td>85.7%</td>
+  <td>-15.6%</td>
+  <td>-21.3%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>brown_healthy_pullback</td>
+  <td>66</td>
+  <td>55</td>
+  <td>12.7%</td>
+  <td>31.8%</td>
+  <td>13.4%</td>
+  <td>-3.8%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>mixed_transition</td>
+  <td>51</td>
+  <td>47</td>
+  <td>21.3%</td>
+  <td>29.4%</td>
+  <td>14.7%</td>
+  <td>-1.7%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>orange_ignition_confirmed</td>
+  <td>32</td>
+  <td>25</td>
+  <td>20.0%</td>
+  <td>28.1%</td>
+  <td>8.2%</td>
+  <td>-3.9%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>brown_base_or_support</td>
+  <td>16</td>
+  <td>11</td>
+  <td>36.4%</td>
+  <td>43.8%</td>
+  <td>12.2%</td>
+  <td>-3.6%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>red_overheat_chase</td>
+  <td>10</td>
+  <td>9</td>
+  <td>44.4%</td>
+  <td>60.0%</td>
+  <td>9.7%</td>
+  <td>-10.5%</td>
+</tr>
+<tr>
+  <td>sell</td>
+  <td>PreSell</td>
+  <td>green_watch</td>
+  <td>5</td>
+  <td>5</td>
+  <td>20.0%</td>
+  <td>20.0%</td>
+  <td>8.1%</td>
+  <td>-3.3%</td>
+</tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">5D 顏色反轉追蹤</div>
+    <div class="strategy-note">這裡看的是 5 個交易日前狀態到標點當日狀態的變化，用來分辨回拉轉穩、過熱追價、以及賣點是否從強勢/過熱後釋放。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>方向</th><th>訊號</th><th>5D transition</th><th>樣本</th><th>可評估</th><th>20日成功率</th><th>60日風險釋放</th><th>20日中位</th><th>MAE60中位</th></tr></thead>
+        <tbody>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>44</td>
+  <td>33</td>
+  <td>78.8%</td>
+  <td>─</td>
+  <td>5.8%</td>
+  <td>-3.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>32</td>
+  <td>31</td>
+  <td>74.2%</td>
+  <td>─</td>
+  <td>9.8%</td>
+  <td>-6.4%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>14</td>
+  <td>11</td>
+  <td>63.6%</td>
+  <td>─</td>
+  <td>1.6%</td>
+  <td>-4.4%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>13</td>
+  <td>10</td>
+  <td>60.0%</td>
+  <td>─</td>
+  <td>2.7%</td>
+  <td>-8.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>10</td>
+  <td>9</td>
+  <td>55.6%</td>
+  <td>─</td>
+  <td>3.9%</td>
+  <td>-7.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>10</td>
+  <td>8</td>
+  <td>75.0%</td>
+  <td>─</td>
+  <td>7.4%</td>
+  <td>-2.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support -&gt; brown_base_or_support</td>
+  <td>8</td>
+  <td>7</td>
+  <td>71.4%</td>
+  <td>─</td>
+  <td>2.4%</td>
+  <td>-5.8%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>7</td>
+  <td>6</td>
+  <td>83.3%</td>
+  <td>─</td>
+  <td>9.7%</td>
+  <td>-6.7%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; brown_base_or_support</td>
+  <td>6</td>
+  <td>6</td>
+  <td>66.7%</td>
+  <td>─</td>
+  <td>15.8%</td>
+  <td>-4.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; green_watch</td>
+  <td>6</td>
+  <td>5</td>
+  <td>40.0%</td>
+  <td>─</td>
+  <td>-1.6%</td>
+  <td>-7.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>6</td>
+  <td>6</td>
+  <td>66.7%</td>
+  <td>─</td>
+  <td>10.4%</td>
+  <td>-3.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch -&gt; brown_healthy_pullback</td>
+  <td>3</td>
+  <td>2</td>
+  <td>50.0%</td>
+  <td>─</td>
+  <td>-3.9%</td>
+  <td>-12.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; brown_base_or_support</td>
+  <td>3</td>
+  <td>2</td>
+  <td>0.0%</td>
+  <td>─</td>
+  <td>-7.4%</td>
+  <td>-12.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; green_watch</td>
+  <td>3</td>
+  <td>3</td>
+  <td>66.7%</td>
+  <td>─</td>
+  <td>5.5%</td>
+  <td>-13.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support -&gt; orange_ignition_confirmed</td>
+  <td>2</td>
+  <td>1</td>
+  <td>0.0%</td>
+  <td>─</td>
+  <td>-2.9%</td>
+  <td>-5.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_base_or_support -&gt; red_overheat_chase</td>
+  <td>2</td>
+  <td>1</td>
+  <td>100.0%</td>
+  <td>─</td>
+  <td>3.6%</td>
+  <td>-5.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch -&gt; orange_ignition_confirmed</td>
+  <td>2</td>
+  <td>2</td>
+  <td>50.0%</td>
+  <td>─</td>
+  <td>3.6%</td>
+  <td>-7.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>mixed_transition -&gt; brown_base_or_support</td>
+  <td>2</td>
+  <td>2</td>
+  <td>50.0%</td>
+  <td>─</td>
+  <td>3.4%</td>
+  <td>-2.5%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>mixed_transition -&gt; orange_ignition_confirmed</td>
+  <td>2</td>
+  <td>2</td>
+  <td>50.0%</td>
+  <td>─</td>
+  <td>-2.5%</td>
+  <td>-15.0%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; mixed_transition</td>
+  <td>2</td>
+  <td>2</td>
+  <td>100.0%</td>
+  <td>─</td>
+  <td>6.6%</td>
+  <td>-15.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; orange_ignition_confirmed</td>
+  <td>2</td>
+  <td>2</td>
+  <td>50.0%</td>
+  <td>─</td>
+  <td>-6.4%</td>
+  <td>-15.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; red_overheat_chase</td>
+  <td>2</td>
+  <td>2</td>
+  <td>0.0%</td>
+  <td>─</td>
+  <td>-8.6%</td>
+  <td>-10.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; orange_ignition_confirmed</td>
+  <td>1</td>
+  <td>1</td>
+  <td>0.0%</td>
+  <td>─</td>
+  <td>-8.4%</td>
+  <td>-18.8%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>brown_healthy_pullback -&gt; red_overheat_chase</td>
+  <td>1</td>
+  <td>0</td>
+  <td>─</td>
+  <td>─</td>
+  <td>─</td>
+  <td>-6.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>green_watch -&gt; mixed_transition</td>
+  <td>1</td>
+  <td>1</td>
+  <td>100.0%</td>
+  <td>─</td>
+  <td>90.6%</td>
+  <td>-0.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>orange_ignition_confirmed -&gt; brown_healthy_pullback</td>
+  <td>1</td>
+  <td>1</td>
+  <td>100.0%</td>
+  <td>─</td>
+  <td>54.7%</td>
+  <td>-6.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>AI_Buy</td>
+  <td>red_overheat_chase -&gt; brown_healthy_pullback</td>
+  <td>1</td>
+  <td>1</td>
+  <td>0.0%</td>
+  <td>─</td>
+  <td>-7.9%</td>
+  <td>-8.8%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>45</td>
+  <td>38</td>
+  <td>71.1%</td>
+  <td>─</td>
+  <td>7.5%</td>
+  <td>-3.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>42</td>
+  <td>35</td>
+  <td>62.9%</td>
+  <td>─</td>
+  <td>3.0%</td>
+  <td>-3.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_base_or_support -&gt; brown_base_or_support</td>
+  <td>39</td>
+  <td>31</td>
+  <td>58.1%</td>
+  <td>─</td>
+  <td>2.4%</td>
+  <td>-3.8%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>38</td>
+  <td>31</td>
+  <td>64.5%</td>
+  <td>─</td>
+  <td>5.3%</td>
+  <td>-2.9%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>21</td>
+  <td>17</td>
+  <td>47.1%</td>
+  <td>─</td>
+  <td>-1.8%</td>
+  <td>-6.6%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_healthy_pullback -&gt; brown_base_or_support</td>
+  <td>18</td>
+  <td>13</td>
+  <td>76.9%</td>
+  <td>─</td>
+  <td>10.6%</td>
+  <td>-5.5%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>18</td>
+  <td>15</td>
+  <td>80.0%</td>
+  <td>─</td>
+  <td>19.0%</td>
+  <td>-2.5%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>16</td>
+  <td>15</td>
+  <td>60.0%</td>
+  <td>─</td>
+  <td>2.8%</td>
+  <td>-4.0%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>14</td>
+  <td>11</td>
+  <td>63.6%</td>
+  <td>─</td>
+  <td>4.7%</td>
+  <td>-2.7%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>green_watch -&gt; orange_ignition_confirmed</td>
+  <td>14</td>
+  <td>10</td>
+  <td>40.0%</td>
+  <td>─</td>
+  <td>-1.5%</td>
+  <td>-3.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_healthy_pullback -&gt; orange_ignition_confirmed</td>
+  <td>13</td>
+  <td>12</td>
+  <td>66.7%</td>
+  <td>─</td>
+  <td>5.9%</td>
+  <td>-4.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>orange_ignition_confirmed -&gt; orange_ignition_confirmed</td>
+  <td>8</td>
+  <td>7</td>
+  <td>28.6%</td>
+  <td>─</td>
+  <td>-7.1%</td>
+  <td>-7.3%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>orange_ignition_confirmed -&gt; brown_healthy_pullback</td>
+  <td>7</td>
+  <td>7</td>
+  <td>85.7%</td>
+  <td>─</td>
+  <td>14.8%</td>
+  <td>-11.2%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>brown_base_or_support -&gt; orange_ignition_confirmed</td>
+  <td>5</td>
+  <td>4</td>
+  <td>25.0%</td>
+  <td>─</td>
+  <td>-2.2%</td>
+  <td>-6.1%</td>
+</tr>
+<tr>
+  <td>buy</td>
+  <td>PreBuy</td>
+  <td>green_watch -&gt; brown_healthy_pullback</td>
+  <td>5</td>
+  <td>4</td>
+  <td>75.0%</td>
+  <td>─</td>
+  <td>9.9%</td>
+  <td>-3.4%</td>
+</tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">指標可信度</div>
+    <div class="strategy-note">ATRB / QTYR / VPA 是目前較穩定的核心；VAM5 / VAM20 / VAM60 仍以 proxy/research 標示，不宣稱完全破解。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>指標</th><th>狀態</th></tr></thead>
+        <tbody><tr><td>Price</td><td>verified</td></tr><tr><td>PWave</td><td>verified</td></tr><tr><td>QZ</td><td>research_raw_display_scaled</td></tr><tr><td>QZ_raw</td><td>research_raw_display_scaled</td></tr><tr><td>QTYR</td><td>implementation_ready</td></tr><tr><td>ATRB20</td><td>implementation_ready_atr14</td></tr><tr><td>ATRB60</td><td>implementation_ready_atr14</td></tr><tr><td>ATRB120</td><td>implementation_ready_atr14</td></tr><tr><td>ATRB240</td><td>implementation_ready_atr14</td></tr><tr><td>ATRB480</td><td>implementation_ready_history_gap_some_rows</td></tr><tr><td>VPA120</td><td>poc_ready_color_threshold_unresolved</td></tr><tr><td>VPA240</td><td>poc_ready_color_threshold_unresolved</td></tr><tr><td>VPA480</td><td>poc_ready_color_threshold_unresolved</td></tr><tr><td>VAM</td><td>proxy_ready_v40_candidate_rejected_for_now</td></tr><tr><td>VAM5</td><td>proxy_ready_v40_candidate_rejected_for_now</td></tr><tr><td>VAM20</td><td>proxy_research_compression_unresolved</td></tr><tr><td>VAM60</td><td>proxy_research_compression_unresolved</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">買賣點樣本與指標</div>
+    <div class="strategy-note">資料來源：C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_signal_master_v50.csv</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>顏色狀態</th><th>5D變化</th><th>20日</th><th>MFE60</th><th>MAE60</th><th>標籤</th></tr></thead>
+        <tbody>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-17</div></td>
+  <td class="price-main">21.50</td>
+  <td>0.03</td>
+  <td>2.71</td>
+  <td>0.00</td>
+  <td>32.35</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>6.3%</td>
+  <td>23.3%</td>
+  <td>-5.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-16</div></td>
+  <td class="price-main">22.30</td>
+  <td>-0.55</td>
+  <td>4.57</td>
+  <td>23.71</td>
+  <td>14.60</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>12.1%</td>
+  <td>19.1%</td>
+  <td>-0.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-02</div></td>
+  <td class="price-main">25.90</td>
+  <td>3.28</td>
+  <td>5.03</td>
+  <td>73.51</td>
+  <td>46.48</td>
+  <td>0.00</td>
+  <td>brown_base_or_support</td>
+  <td>orange_ignition_confirmed -&gt; brown_base_or_support</td>
+  <td>-3.1%</td>
+  <td>2.5%</td>
+  <td>-12.9%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-11</div></td>
+  <td class="price-main">25.00</td>
+  <td>0.42</td>
+  <td>2.71</td>
+  <td>61.49</td>
+  <td>34.96</td>
+  <td>0.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>1.6%</td>
+  <td>1.6%</td>
+  <td>-9.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1101.html">1101</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-23</div></td>
+  <td class="price-main">22.80</td>
+  <td>1.16</td>
+  <td>4.22</td>
+  <td>29.11</td>
+  <td>28.58</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>brown_healthy_pullback -&gt; green_watch</td>
+  <td>7.5%</td>
+  <td>11.4%</td>
+  <td>-1.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-05</div></td>
+  <td class="price-main">76.40</td>
+  <td>-3.56</td>
+  <td>2.87</td>
+  <td>13.66</td>
+  <td>34.90</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>-0.3%</td>
+  <td>5.4%</td>
+  <td>-8.4%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-15</div></td>
+  <td class="price-main">75.10</td>
+  <td>-4.28</td>
+  <td>3.55</td>
+  <td>4.36</td>
+  <td>33.67</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>0.5%</td>
+  <td>7.2%</td>
+  <td>-7.5%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-30</div></td>
+  <td class="price-main">71.70</td>
+  <td>1.71</td>
+  <td>4.55</td>
+  <td>0.00</td>
+  <td>30.22</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>-2.1%</td>
+  <td>4.7%</td>
+  <td>-3.1%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-16</div></td>
+  <td class="price-main">70.50</td>
+  <td>0.11</td>
+  <td>3.55</td>
+  <td>0.00</td>
+  <td>28.91</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>3.0%</td>
+  <td>4.3%</td>
+  <td>-1.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1216.html">1216</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-23</div></td>
+  <td class="price-main">71.90</td>
+  <td>1.11</td>
+  <td>5.17</td>
+  <td>12.66</td>
+  <td>30.65</td>
+  <td>0.00</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>-0.6%</td>
+  <td>-0.6%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-08-14</div></td>
+  <td class="price-main">626.00</td>
+  <td>-0.29</td>
+  <td>4.89</td>
+  <td>83.78</td>
+  <td>100.00</td>
+  <td>44.15</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>-3.4%</td>
+  <td>25.6%</td>
+  <td>-12.0%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-09-12</div></td>
+  <td class="price-main">608.00</td>
+  <td>-6.73</td>
+  <td>1.69</td>
+  <td>71.70</td>
+  <td>98.61</td>
+  <td>31.55</td>
+  <td>green_watch</td>
+  <td>brown_healthy_pullback -&gt; green_watch</td>
+  <td>-6.1%</td>
+  <td>29.3%</td>
+  <td>-9.4%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-09-17</div></td>
+  <td class="price-main">582.00</td>
+  <td>-6.91</td>
+  <td>1.99</td>
+  <td>59.50</td>
+  <td>92.79</td>
+  <td>21.66</td>
+  <td>green_watch</td>
+  <td>brown_healthy_pullback -&gt; green_watch</td>
+  <td>1.2%</td>
+  <td>38.7%</td>
+  <td>-5.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-10-22</div></td>
+  <td class="price-main">600.00</td>
+  <td>-1.68</td>
+  <td>2.10</td>
+  <td>56.26</td>
+  <td>96.82</td>
+  <td>24.74</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>23.2%</td>
+  <td>34.5%</td>
+  <td>-2.7%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-10-23</div></td>
+  <td class="price-main">584.00</td>
+  <td>-3.14</td>
+  <td>2.43</td>
+  <td>46.80</td>
+  <td>93.24</td>
+  <td>17.36</td>
+  <td>brown_base_or_support</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>17.8%</td>
+  <td>38.2%</td>
+  <td>1.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-04</div></td>
+  <td class="price-main">772.00</td>
+  <td>9.27</td>
+  <td>14.36</td>
+  <td>99.47</td>
+  <td>100.00</td>
+  <td>62.70</td>
+  <td>red_overheat_chase</td>
+  <td>orange_ignition_confirmed -&gt; red_overheat_chase</td>
+  <td>-10.5%</td>
+  <td>4.5%</td>
+  <td>-11.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-18</div></td>
+  <td class="price-main">707.00</td>
+  <td>-8.39</td>
+  <td>1.54</td>
+  <td>67.97</td>
+  <td>48.73</td>
+  <td>40.35</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>12.9%</td>
+  <td>14.1%</td>
+  <td>-3.7%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-26</div></td>
+  <td class="price-main">695.00</td>
+  <td>4.39</td>
+  <td>2.62</td>
+  <td>60.72</td>
+  <td>100.00</td>
+  <td>36.10</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>12.7%</td>
+  <td>16.1%</td>
+  <td>-0.6%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-08</div></td>
+  <td class="price-main">715.00</td>
+  <td>-0.71</td>
+  <td>3.91</td>
+  <td>61.48</td>
+  <td>49.72</td>
+  <td>38.25</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>─</td>
+  <td>12.9%</td>
+  <td>2.1%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-12</div></td>
+  <td class="price-main">807.00</td>
+  <td>5.51</td>
+  <td>10.29</td>
+  <td>93.73</td>
+  <td>60.94</td>
+  <td>65.90</td>
+  <td>red_overheat_chase</td>
+  <td>brown_healthy_pullback -&gt; red_overheat_chase</td>
+  <td>─</td>
+  <td>-0.6%</td>
+  <td>-6.2%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-23</div></td>
+  <td class="price-main">789.00</td>
+  <td>2.99</td>
+  <td>3.84</td>
+  <td>82.04</td>
+  <td>59.42</td>
+  <td>57.59</td>
+  <td>brown_base_or_support</td>
+  <td>orange_ignition_confirmed -&gt; brown_base_or_support</td>
+  <td>─</td>
+  <td>-0.5%</td>
+  <td>-3.0%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1519.html">1519</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-30</div></td>
+  <td class="price-main">773.00</td>
+  <td>-1.36</td>
+  <td>1.72</td>
+  <td>75.68</td>
+  <td>57.46</td>
+  <td>53.59</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>─</td>
+  <td>-1.0%</td>
+  <td>-1.0%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-10-31</div></td>
+  <td class="price-main">28.00</td>
+  <td>0.13</td>
+  <td>5.60</td>
+  <td>78.03</td>
+  <td>19.38</td>
+  <td>69.70</td>
+  <td>brown_base_or_support</td>
+  <td>brown_healthy_pullback -&gt; brown_base_or_support</td>
+  <td>27.7%</td>
+  <td>92.9%</td>
+  <td>1.6%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-12</div></td>
+  <td class="price-main">37.30</td>
+  <td>4.37</td>
+  <td>1.90</td>
+  <td>80.26</td>
+  <td>38.74</td>
+  <td>72.93</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>-8.7%</td>
+  <td>80.2%</td>
+  <td>-11.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-03</div></td>
+  <td class="price-main">49.40</td>
+  <td>-7.35</td>
+  <td>2.06</td>
+  <td>82.31</td>
+  <td>64.21</td>
+  <td>76.06</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>16.8%</td>
+  <td>50.2%</td>
+  <td>-13.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-26</div></td>
+  <td class="price-main">53.30</td>
+  <td>0.77</td>
+  <td>3.64</td>
+  <td>67.94</td>
+  <td>70.93</td>
+  <td>65.04</td>
+  <td>brown_base_or_support</td>
+  <td>brown_healthy_pullback -&gt; brown_base_or_support</td>
+  <td>20.5%</td>
+  <td>39.2%</td>
+  <td>-2.6%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-18</div></td>
+  <td class="price-main">154.50</td>
+  <td>-0.87</td>
+  <td>6.96</td>
+  <td>64.26</td>
+  <td>71.09</td>
+  <td>65.33</td>
+  <td>green_watch</td>
+  <td>brown_healthy_pullback -&gt; green_watch</td>
+  <td>-1.9%</td>
+  <td>19.4%</td>
+  <td>-1.9%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-26</div></td>
+  <td class="price-main">158.50</td>
+  <td>0.21</td>
+  <td>2.76</td>
+  <td>70.96</td>
+  <td>73.90</td>
+  <td>78.82</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>4.4%</td>
+  <td>22.1%</td>
+  <td>-4.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-12</div></td>
+  <td class="price-main">153.50</td>
+  <td>-7.39</td>
+  <td>2.16</td>
+  <td>58.24</td>
+  <td>70.39</td>
+  <td>91.50</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>6.5%</td>
+  <td>26.1%</td>
+  <td>-2.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-22</div></td>
+  <td class="price-main">169.00</td>
+  <td>-3.32</td>
+  <td>7.90</td>
+  <td>85.80</td>
+  <td>81.28</td>
+  <td>100.00</td>
+  <td>orange_ignition_confirmed</td>
+  <td>green_watch -&gt; orange_ignition_confirmed</td>
+  <td>-4.7%</td>
+  <td>14.5%</td>
+  <td>-11.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-24</div></td>
+  <td class="price-main">165.50</td>
+  <td>-2.93</td>
+  <td>1.91</td>
+  <td>74.76</td>
+  <td>78.82</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>green_watch -&gt; brown_healthy_pullback</td>
+  <td>3.9%</td>
+  <td>16.9%</td>
+  <td>-15.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-30</div></td>
+  <td class="price-main">162.00</td>
+  <td>-3.61</td>
+  <td>3.39</td>
+  <td>63.75</td>
+  <td>76.36</td>
+  <td>91.61</td>
+  <td>green_watch</td>
+  <td>orange_ignition_confirmed -&gt; green_watch</td>
+  <td>6.5%</td>
+  <td>19.4%</td>
+  <td>-13.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-12</div></td>
+  <td class="price-main">164.50</td>
+  <td>-2.50</td>
+  <td>2.27</td>
+  <td>58.91</td>
+  <td>78.12</td>
+  <td>82.47</td>
+  <td>green_watch</td>
+  <td>orange_ignition_confirmed -&gt; green_watch</td>
+  <td>5.5%</td>
+  <td>17.6%</td>
+  <td>-14.6%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-19</div></td>
+  <td class="price-main">163.00</td>
+  <td>-3.07</td>
+  <td>2.84</td>
+  <td>52.51</td>
+  <td>77.06</td>
+  <td>78.41</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>17.8%</td>
+  <td>18.7%</td>
+  <td>-13.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-23</div></td>
+  <td class="price-main">172.00</td>
+  <td>1.42</td>
+  <td>12.97</td>
+  <td>60.52</td>
+  <td>83.39</td>
+  <td>75.80</td>
+  <td>brown_base_or_support</td>
+  <td>brown_healthy_pullback -&gt; brown_base_or_support</td>
+  <td>-9.6%</td>
+  <td>12.5%</td>
+  <td>-18.3%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-04</div></td>
+  <td class="price-main">155.50</td>
+  <td>5.62</td>
+  <td>5.21</td>
+  <td>31.06</td>
+  <td>71.79</td>
+  <td>45.03</td>
+  <td>green_watch</td>
+  <td>orange_ignition_confirmed -&gt; green_watch</td>
+  <td>-5.1%</td>
+  <td>13.2%</td>
+  <td>-9.6%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-09</div></td>
+  <td class="price-main">149.00</td>
+  <td>1.57</td>
+  <td>3.28</td>
+  <td>22.76</td>
+  <td>67.22</td>
+  <td>40.49</td>
+  <td>green_watch</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>5.0%</td>
+  <td>18.1%</td>
+  <td>-5.7%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-23</div></td>
+  <td class="price-main">154.00</td>
+  <td>-1.16</td>
+  <td>1.81</td>
+  <td>24.33</td>
+  <td>70.74</td>
+  <td>49.36</td>
+  <td>green_watch</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>14.3%</td>
+  <td>14.3%</td>
+  <td>-8.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">147.50</td>
+  <td>-2.63</td>
+  <td>2.17</td>
+  <td>15.78</td>
+  <td>66.17</td>
+  <td>43.98</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>19.3%</td>
+  <td>-3.4%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2301.html">2301</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-09</div></td>
+  <td class="price-main">155.00</td>
+  <td>-1.64</td>
+  <td>5.34</td>
+  <td>27.61</td>
+  <td>71.44</td>
+  <td>50.73</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>13.5%</td>
+  <td>-1.0%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-14</div></td>
+  <td class="price-main">922.00</td>
+  <td>-0.38</td>
+  <td>5.66</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>1.7%</td>
+  <td>38.8%</td>
+  <td>-3.5%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-04</div></td>
+  <td class="price-main">999.00</td>
+  <td>-1.77</td>
+  <td>2.02</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>1.1%</td>
+  <td>43.6%</td>
+  <td>-10.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-12</div></td>
+  <td class="price-main">938.00</td>
+  <td>-6.94</td>
+  <td>3.42</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>9.8%</td>
+  <td>57.2%</td>
+  <td>-5.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-19</div></td>
+  <td class="price-main">911.00</td>
+  <td>-3.67</td>
+  <td>4.55</td>
+  <td>95.45</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>24.0%</td>
+  <td>70.1%</td>
+  <td>3.5%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-29</div></td>
+  <td class="price-main">1255.00</td>
+  <td>0.47</td>
+  <td>4.12</td>
+  <td>98.78</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>mixed_transition</td>
+  <td>orange_ignition_confirmed -&gt; mixed_transition</td>
+  <td>2.8%</td>
+  <td>69.3%</td>
+  <td>-8.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2308.html">2308</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-23</div></td>
+  <td class="price-main">1410.00</td>
+  <td>0.61</td>
+  <td>4.24</td>
+  <td>81.51</td>
+  <td>100.00</td>
+  <td>97.03</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>42.9%</td>
+  <td>50.7%</td>
+  <td>-2.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-21</div></td>
+  <td class="price-main">225.00</td>
+  <td>2.54</td>
+  <td>5.13</td>
+  <td>73.35</td>
+  <td>41.48</td>
+  <td>69.72</td>
+  <td>brown_base_or_support</td>
+  <td>mixed_transition -&gt; brown_base_or_support</td>
+  <td>-1.6%</td>
+  <td>9.6%</td>
+  <td>-4.7%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-28</div></td>
+  <td class="price-main">225.50</td>
+  <td>0.40</td>
+  <td>3.09</td>
+  <td>71.52</td>
+  <td>41.66</td>
+  <td>71.18</td>
+  <td>brown_base_or_support</td>
+  <td>brown_base_or_support -&gt; brown_base_or_support</td>
+  <td>2.4%</td>
+  <td>9.3%</td>
+  <td>-4.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-04</div></td>
+  <td class="price-main">228.50</td>
+  <td>-5.54</td>
+  <td>1.62</td>
+  <td>77.01</td>
+  <td>42.71</td>
+  <td>81.32</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>2.6%</td>
+  <td>7.9%</td>
+  <td>-8.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-17</div></td>
+  <td class="price-main">216.50</td>
+  <td>-4.10</td>
+  <td>3.38</td>
+  <td>54.72</td>
+  <td>38.50</td>
+  <td>80.77</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>8.3%</td>
+  <td>13.9%</td>
+  <td>-9.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-24</div></td>
+  <td class="price-main">224.00</td>
+  <td>-6.33</td>
+  <td>2.79</td>
+  <td>67.68</td>
+  <td>41.13</td>
+  <td>98.89</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>-1.1%</td>
+  <td>10.0%</td>
+  <td>-16.3%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-02</div></td>
+  <td class="price-main">232.00</td>
+  <td>-4.57</td>
+  <td>4.44</td>
+  <td>79.97</td>
+  <td>43.94</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>-5.0%</td>
+  <td>6.2%</td>
+  <td>-19.2%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-19</div></td>
+  <td class="price-main">229.50</td>
+  <td>-3.11</td>
+  <td>3.79</td>
+  <td>56.61</td>
+  <td>63.74</td>
+  <td>88.18</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>7.4%</td>
+  <td>7.4%</td>
+  <td>-18.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-30</div></td>
+  <td class="price-main">220.50</td>
+  <td>-1.56</td>
+  <td>4.87</td>
+  <td>33.54</td>
+  <td>60.76</td>
+  <td>68.73</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>-0.7%</td>
+  <td>11.8%</td>
+  <td>-15.0%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-03</div></td>
+  <td class="price-main">216.50</td>
+  <td>-0.03</td>
+  <td>2.83</td>
+  <td>25.58</td>
+  <td>58.98</td>
+  <td>62.13</td>
+  <td>green_watch</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>-0.9%</td>
+  <td>13.9%</td>
+  <td>-13.4%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-06</div></td>
+  <td class="price-main">215.00</td>
+  <td>-3.67</td>
+  <td>4.14</td>
+  <td>22.66</td>
+  <td>55.75</td>
+  <td>57.25</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>-2.3%</td>
+  <td>14.7%</td>
+  <td>-12.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-23</div></td>
+  <td class="price-main">228.50</td>
+  <td>-1.00</td>
+  <td>6.19</td>
+  <td>45.86</td>
+  <td>61.60</td>
+  <td>78.11</td>
+  <td>brown_base_or_support</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>-14.7%</td>
+  <td>7.9%</td>
+  <td>-17.9%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-10</div></td>
+  <td class="price-main">209.50</td>
+  <td>1.73</td>
+  <td>4.11</td>
+  <td>20.29</td>
+  <td>35.68</td>
+  <td>33.81</td>
+  <td>green_watch</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>-4.5%</td>
+  <td>8.8%</td>
+  <td>-10.5%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-12</div></td>
+  <td class="price-main">214.50</td>
+  <td>-0.48</td>
+  <td>2.85</td>
+  <td>26.35</td>
+  <td>37.42</td>
+  <td>36.76</td>
+  <td>green_watch</td>
+  <td>brown_base_or_support -&gt; green_watch</td>
+  <td>-6.8%</td>
+  <td>6.3%</td>
+  <td>-12.6%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">197.00</td>
+  <td>-2.06</td>
+  <td>3.00</td>
+  <td>0.00</td>
+  <td>31.31</td>
+  <td>23.96</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>15.7%</td>
+  <td>-2.5%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-01</div></td>
+  <td class="price-main">197.00</td>
+  <td>-2.06</td>
+  <td>3.00</td>
+  <td>0.00</td>
+  <td>31.31</td>
+  <td>23.96</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>15.7%</td>
+  <td>-2.5%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-07</div></td>
+  <td class="price-main">192.00</td>
+  <td>-1.44</td>
+  <td>2.43</td>
+  <td>0.00</td>
+  <td>29.56</td>
+  <td>16.67</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>18.8%</td>
+  <td>4.2%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2317.html">2317</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-10</div></td>
+  <td class="price-main">200.50</td>
+  <td>-1.52</td>
+  <td>4.12</td>
+  <td>0.60</td>
+  <td>32.53</td>
+  <td>27.17</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>─</td>
+  <td>13.7%</td>
+  <td>-0.2%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-10-28</div></td>
+  <td class="price-main">1475.00</td>
+  <td>0.09</td>
+  <td>4.07</td>
+  <td>100.00</td>
+  <td>75.90</td>
+  <td>100.00</td>
+  <td>mixed_transition</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>-4.1%</td>
+  <td>20.3%</td>
+  <td>-6.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-01</div></td>
+  <td class="price-main">1410.00</td>
+  <td>-1.76</td>
+  <td>3.97</td>
+  <td>85.38</td>
+  <td>71.18</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>7.8%</td>
+  <td>42.9%</td>
+  <td>1.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-10</div></td>
+  <td class="price-main">1505.00</td>
+  <td>-4.03</td>
+  <td>3.33</td>
+  <td>100.00</td>
+  <td>82.19</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>11.6%</td>
+  <td>33.9%</td>
+  <td>-5.0%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-29</div></td>
+  <td class="price-main">1805.00</td>
+  <td>-1.45</td>
+  <td>4.15</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>2.5%</td>
+  <td>25.5%</td>
+  <td>-2.5%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-02</div></td>
+  <td class="price-main">1975.00</td>
+  <td>8.41</td>
+  <td>5.53</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>orange_ignition_confirmed</td>
+  <td>mixed_transition -&gt; orange_ignition_confirmed</td>
+  <td>-9.9%</td>
+  <td>14.7%</td>
+  <td>-10.9%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2330.html">2330</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-20</div></td>
+  <td class="price-main">1840.00</td>
+  <td>-0.35</td>
+  <td>5.27</td>
+  <td>83.43</td>
+  <td>91.47</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>11.4%</td>
+  <td>23.1%</td>
+  <td>-4.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-01</div></td>
+  <td class="price-main">33.85</td>
+  <td>2.61</td>
+  <td>2.02</td>
+  <td>75.50</td>
+  <td>57.04</td>
+  <td>44.76</td>
+  <td>green_watch</td>
+  <td>green_watch -&gt; green_watch</td>
+  <td>14.5%</td>
+  <td>242.7%</td>
+  <td>-3.1%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-23</div></td>
+  <td class="price-main">38.50</td>
+  <td>2.89</td>
+  <td>3.06</td>
+  <td>93.14</td>
+  <td>70.02</td>
+  <td>65.40</td>
+  <td>mixed_transition</td>
+  <td>green_watch -&gt; mixed_transition</td>
+  <td>90.6%</td>
+  <td>315.6%</td>
+  <td>-0.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-02</div></td>
+  <td class="price-main">116.00</td>
+  <td>1.60</td>
+  <td>4.02</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>92.90</td>
+  <td>mixed_transition</td>
+  <td>orange_ignition_confirmed -&gt; mixed_transition</td>
+  <td>10.3%</td>
+  <td>37.9%</td>
+  <td>-21.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-16</div></td>
+  <td class="price-main">139.00</td>
+  <td>2.99</td>
+  <td>4.12</td>
+  <td>93.30</td>
+  <td>100.00</td>
+  <td>81.34</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>─</td>
+  <td>14.7%</td>
+  <td>-13.3%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-08-01</div></td>
+  <td class="price-main">44.25</td>
+  <td>-0.22</td>
+  <td>3.06</td>
+  <td>48.85</td>
+  <td>20.76</td>
+  <td>0.00</td>
+  <td>brown_base_or_support</td>
+  <td>brown_base_or_support -&gt; brown_base_or_support</td>
+  <td>-7.0%</td>
+  <td>7.5%</td>
+  <td>-8.4%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-08-07</div></td>
+  <td class="price-main">44.20</td>
+  <td>-1.37</td>
+  <td>5.03</td>
+  <td>51.41</td>
+  <td>20.70</td>
+  <td>0.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>-6.6%</td>
+  <td>7.6%</td>
+  <td>-8.3%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-09-05</div></td>
+  <td class="price-main">41.70</td>
+  <td>-4.93</td>
+  <td>2.77</td>
+  <td>34.06</td>
+  <td>17.41</td>
+  <td>0.00</td>
+  <td>brown_base_or_support</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>11.5%</td>
+  <td>14.0%</td>
+  <td>-2.5%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-09-19</div></td>
+  <td class="price-main">44.55</td>
+  <td>0.34</td>
+  <td>10.01</td>
+  <td>68.39</td>
+  <td>21.16</td>
+  <td>0.00</td>
+  <td>orange_ignition_confirmed</td>
+  <td>orange_ignition_confirmed -&gt; orange_ignition_confirmed</td>
+  <td>3.3%</td>
+  <td>6.7%</td>
+  <td>-8.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-10-22</div></td>
+  <td class="price-main">46.00</td>
+  <td>-1.85</td>
+  <td>4.75</td>
+  <td>63.41</td>
+  <td>23.07</td>
+  <td>6.10</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_base_or_support -&gt; brown_healthy_pullback</td>
+  <td>-9.3%</td>
+  <td>3.4%</td>
+  <td>-11.6%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-01</div></td>
+  <td class="price-main">44.05</td>
+  <td>4.13</td>
+  <td>5.16</td>
+  <td>47.03</td>
+  <td>20.50</td>
+  <td>0.00</td>
+  <td>brown_base_or_support</td>
+  <td>green_watch -&gt; brown_base_or_support</td>
+  <td>-4.0%</td>
+  <td>7.4%</td>
+  <td>-4.2%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2356.html">2356</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-09</div></td>
+  <td class="price-main">45.40</td>
+  <td>5.32</td>
+  <td>5.15</td>
+  <td>55.50</td>
+  <td>22.28</td>
+  <td>1.75</td>
+  <td>orange_ignition_confirmed</td>
+  <td>brown_base_or_support -&gt; orange_ignition_confirmed</td>
+  <td>─</td>
+  <td>-2.0%</td>
+  <td>-7.0%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-11</div></td>
+  <td class="price-main">603.00</td>
+  <td>-0.48</td>
+  <td>3.35</td>
+  <td>96.77</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>10.4%</td>
+  <td>66.7%</td>
+  <td>-2.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-13</div></td>
+  <td class="price-main">655.00</td>
+  <td>-1.33</td>
+  <td>2.99</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>29.2%</td>
+  <td>87.0%</td>
+  <td>-9.0%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-16</div></td>
+  <td class="price-main">677.00</td>
+  <td>-1.11</td>
+  <td>2.87</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>23.0%</td>
+  <td>105.3%</td>
+  <td>-12.0%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-02-24</div></td>
+  <td class="price-main">833.00</td>
+  <td>-0.96</td>
+  <td>2.45</td>
+  <td>99.49</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>10.7%</td>
+  <td>70.5%</td>
+  <td>-14.9%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-26</div></td>
+  <td class="price-main">918.00</td>
+  <td>1.23</td>
+  <td>2.61</td>
+  <td>84.68</td>
+  <td>100.00</td>
+  <td>87.47</td>
+  <td>brown_healthy_pullback</td>
+  <td>orange_ignition_confirmed -&gt; brown_healthy_pullback</td>
+  <td>54.7%</td>
+  <td>54.7%</td>
+  <td>-6.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-18</div></td>
+  <td class="price-main">1350.00</td>
+  <td>2.06</td>
+  <td>3.83</td>
+  <td>68.79</td>
+  <td>100.00</td>
+  <td>85.08</td>
+  <td>mixed_transition</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>10.7%</td>
+  <td>62.6%</td>
+  <td>-3.0%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-20</div></td>
+  <td class="price-main">1430.00</td>
+  <td>1.85</td>
+  <td>4.30</td>
+  <td>77.72</td>
+  <td>100.00</td>
+  <td>93.48</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>4.9%</td>
+  <td>69.2%</td>
+  <td>-8.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-02</div></td>
+  <td class="price-main">1590.00</td>
+  <td>-6.67</td>
+  <td>4.59</td>
+  <td>87.42</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>9.7%</td>
+  <td>115.1%</td>
+  <td>-2.8%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2383.html">2383</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-15</div></td>
+  <td class="price-main">1570.00</td>
+  <td>-0.88</td>
+  <td>6.14</td>
+  <td>70.23</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>38.5%</td>
+  <td>161.1%</td>
+  <td>-0.6%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-28</div></td>
+  <td class="price-main">146.00</td>
+  <td>3.00</td>
+  <td>2.73</td>
+  <td>93.82</td>
+  <td>100.00</td>
+  <td>70.77</td>
+  <td>brown_healthy_pullback</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>29.1%</td>
+  <td>123.6%</td>
+  <td>2.4%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-29</div></td>
+  <td class="price-main">297.00</td>
+  <td>1.44</td>
+  <td>4.99</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>-22.2%</td>
+  <td>9.9%</td>
+  <td>-33.2%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-10</div></td>
+  <td class="price-main">215.00</td>
+  <td>1.13</td>
+  <td>3.57</td>
+  <td>49.00</td>
+  <td>100.00</td>
+  <td>72.24</td>
+  <td>mixed_transition</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>─</td>
+  <td>10.5%</td>
+  <td>-4.2%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2408.html">2408</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-04-17</div></td>
+  <td class="price-main">210.00</td>
+  <td>1.22</td>
+  <td>2.63</td>
+  <td>44.06</td>
+  <td>100.00</td>
+  <td>78.04</td>
+  <td>mixed_transition</td>
+  <td>mixed_transition -&gt; mixed_transition</td>
+  <td>─</td>
+  <td>13.1%</td>
+  <td>-1.9%</td>
+  <td>pending</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2412.html">2412</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-02</div></td>
+  <td class="price-main">138.00</td>
+  <td>10.46</td>
+  <td>11.35</td>
+  <td>77.74</td>
+  <td>44.81</td>
+  <td>72.25</td>
+  <td>orange_ignition_confirmed</td>
+  <td>brown_base_or_support -&gt; orange_ignition_confirmed</td>
+  <td>-2.9%</td>
+  <td>0.0%</td>
+  <td>-3.6%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-12</div></td>
+  <td class="price-main">210.50</td>
+  <td>-2.42</td>
+  <td>2.07</td>
+  <td>99.82</td>
+  <td>100.00</td>
+  <td>82.14</td>
+  <td>brown_healthy_pullback</td>
+  <td>mixed_transition -&gt; brown_healthy_pullback</td>
+  <td>8.8%</td>
+  <td>47.7%</td>
+  <td>-6.7%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-11-20</div></td>
+  <td class="price-main">211.50</td>
+  <td>1.21</td>
+  <td>5.29</td>
+  <td>98.26</td>
+  <td>100.00</td>
+  <td>84.45</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>-1.4%</td>
+  <td>54.1%</td>
+  <td>-3.8%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2025-12-12</div></td>
+  <td class="price-main">230.00</td>
+  <td>-4.42</td>
+  <td>2.74</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>17.6%</td>
+  <td>42.2%</td>
+  <td>-9.3%</td>
+  <td>win</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-01-29</div></td>
+  <td class="price-main">305.00</td>
+  <td>0.53</td>
+  <td>3.84</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>100.00</td>
+  <td>mixed_transition</td>
+  <td>brown_healthy_pullback -&gt; mixed_transition</td>
+  <td>-3.9%</td>
+  <td>7.2%</td>
+  <td>-15.1%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-11</div></td>
+  <td class="price-main">306.00</td>
+  <td>-1.67</td>
+  <td>4.13</td>
+  <td>80.83</td>
+  <td>100.00</td>
+  <td>86.30</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>-9.3%</td>
+  <td>5.6%</td>
+  <td>-15.4%</td>
+  <td>loss</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2449.html">2449</a></td>
+  <td><span class="tag tag-green">AI_Buy</span><div class="signal-dates">2026-03-16</div></td>
+  <td class="price-main">288.00</td>
+  <td>-3.06</td>
+  <td>2.76</td>
+  <td>71.56</td>
+  <td>100.00</td>
+  <td>82.21</td>
+  <td>brown_healthy_pullback</td>
+  <td>brown_healthy_pullback -&gt; brown_healthy_pullback</td>
+  <td>1.0%</td>
+  <td>12.2%</td>
+  <td>-10.1%</td>
+  <td>win</td>
+</tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">下一步：紅色 CaryBot 箭頭</div>
+    <div class="strategy-note">紅色 CaryBot 箭頭這版仍未納入，因為它與紅 K 棒太像，需要獨立形狀分類器；目前 v50 先以 PreBuy / AI_Buy / PreSell / AI_Sell 建立乾淨母表。</div>
   </div>
 </div>
 

@@ -512,6 +512,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .grid{display:grid;gap:16px}
 .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
@@ -743,7 +744,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
-  .grid-2,.grid-3{grid-template-columns:1fr}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .section-head{display:grid}
@@ -854,32 +855,42 @@ def _fmt_short(value, digits: int = 2) -> str:
 
 
 def latest_carybot_markers_by_stock() -> dict[str, dict]:
-    """Temporary CaryBot bridge: prefer latest AI_Buy, fallback to latest PreBuy."""
+    """Prefer latest v50 AI_Buy/PreBuy marker, fallback to older v42 buy markers."""
     global _CARYBOT_MARKER_CACHE
     if _CARYBOT_MARKER_CACHE is not None:
         return _CARYBOT_MARKER_CACHE
 
-    path = V44_BACKTEST_OUTPUT_DIR / "carybot_buy_markers_v42_features.csv"
+    paths = [
+        V44_BACKTEST_OUTPUT_DIR / "carybot_signal_master_v50.csv",
+        V44_BACKTEST_OUTPUT_DIR / "carybot_buy_markers_v42_features.csv",
+    ]
     latest: dict[str, dict] = {}
-    if path.exists():
+    for path in paths:
+        if not path.exists():
+            continue
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as f:
                 for row in csv.DictReader(f):
                     sid = str(row.get("stock") or "").strip()
-                    marker_type = str(row.get("marker_type") or "").strip()
-                    marker_date = str(row.get("marker_date") or row.get("Date") or "").strip()
+                    marker_type = str(row.get("signal_type") or row.get("marker_type") or "").strip()
+                    marker_side = str(row.get("marker_side") or ("buy" if marker_type in {"AI_Buy", "PreBuy"} else "")).strip()
+                    marker_date = str(row.get("date") or row.get("marker_date") or row.get("Date") or "").strip()
                     if not sid or marker_type not in {"AI_Buy", "PreBuy"}:
+                        continue
+                    if marker_side and marker_side != "buy":
                         continue
                     old = latest.get(sid)
                     rank = (1 if marker_type == "AI_Buy" else 0, marker_date)
                     old_rank = (
-                        1 if (old or {}).get("marker_type") == "AI_Buy" else 0,
-                        str((old or {}).get("marker_date") or ""),
+                        1 if ((old or {}).get("signal_type") or (old or {}).get("marker_type")) == "AI_Buy" else 0,
+                        str((old or {}).get("date") or (old or {}).get("marker_date") or ""),
                     )
                     if old is None or rank >= old_rank:
                         latest[sid] = row
         except Exception:
-            latest = {}
+            latest = latest or {}
+        if latest:
+            break
     _CARYBOT_MARKER_CACHE = latest
     return latest
 
@@ -889,17 +900,18 @@ def carybot_marker_cell(stock_id: str) -> str:
     if not marker:
         return '<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>'
 
-    marker_type = marker.get("marker_type", "")
+    marker_type = marker.get("signal_type") or marker.get("marker_type", "")
     tag_cls = "tag-green" if marker_type == "AI_Buy" else "tag-blue"
-    date_text = marker.get("marker_date") or marker.get("Date") or "-"
+    date_text = marker.get("date") or marker.get("marker_date") or marker.get("Date") or "-"
     qz = _num_or_none(marker.get("QZ"))
     qz_cls = "pos" if qz is not None and qz > 0 else "neg" if qz is not None and qz < 0 else ""
+    phase = marker.get("carybot_phase") or "-"
     return f"""<td class="hide-mobile carybot-cell">
   <span class="tag {tag_cls}">{esc(marker_type)}</span>
   <div class="signal-dates">{esc(date_text)}</div>
   <div class="carybot-line">QZ <strong class="{qz_cls}">{_fmt_short(qz)}</strong>｜QTYR <strong>{_fmt_short(marker.get("QTYR"))}</strong></div>
   <div class="carybot-line">VAM20 {_fmt_short(marker.get("VAM20"))}｜VAM60 {_fmt_short(marker.get("VAM60"))}</div>
-  <div class="carybot-line">ATRB120 {_fmt_short(marker.get("ATRB120"))}｜ATRB480 {_fmt_short(marker.get("ATRB480"))}</div>
+  <div class="carybot-line">{esc(phase)}</div>
 </td>"""
 
 
@@ -6645,6 +6657,62 @@ def read_carybot_marker_features() -> list[dict]:
     return rows
 
 
+def _first_existing_carybot_path(names: list[str]) -> Path | None:
+    for name in names:
+        path = V44_BACKTEST_OUTPUT_DIR / name
+        if path.exists():
+            return path
+    return None
+
+
+def _read_csv_rows(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    try:
+        with path.open("r", encoding="utf-8-sig", newline="") as f:
+            return list(csv.DictReader(f))
+    except Exception:
+        return []
+
+
+def read_carybot_signal_master() -> list[dict]:
+    path = _first_existing_carybot_path([
+        "carybot_signal_master_v50.csv",
+        "carybot_signal_master_v44.csv",
+    ])
+    if path:
+        return _read_csv_rows(path)
+    return read_carybot_marker_features()
+
+
+def read_carybot_signal_summary() -> list[dict]:
+    path = _first_existing_carybot_path([
+        "carybot_signal_master_v50_summary.csv",
+        "carybot_signal_master_v44_summary.csv",
+    ])
+    return _read_csv_rows(path) if path else []
+
+
+def read_carybot_phase_summary() -> list[dict]:
+    return _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_signal_master_v50_phase_summary.csv")
+
+
+def read_carybot_transition_summary() -> list[dict]:
+    return _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_signal_master_v50_transition_summary.csv")
+
+
+def carybot_master_source_path() -> Path | None:
+    return _first_existing_carybot_path([
+        "carybot_signal_master_v50.csv",
+        "carybot_signal_master_v44.csv",
+        "carybot_buy_markers_v42_features.csv",
+    ])
+
+
+def read_carybot_indicator_confidence() -> list[dict]:
+    return _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_indicator_confidence_v44.csv")
+
+
 def _median(values: list[float]) -> float | None:
     vals = sorted(v for v in values if v is not None and not math.isnan(v))
     if not vals:
@@ -6656,10 +6724,32 @@ def _median(values: list[float]) -> float | None:
 
 
 def build_carybot_validation_page(reports: list[dict]) -> str:
-    rows = read_carybot_marker_features()
+    master_rows = read_carybot_signal_master()
+    rows = master_rows or read_carybot_marker_features()
+    summary_rows = read_carybot_signal_summary()
+    phase_rows = read_carybot_phase_summary()
+    transition_rows = read_carybot_transition_summary()
+    confidence_rows = read_carybot_indicator_confidence()
     stock_map = find_latest_stock_map(reports)
-    prebuy = [r for r in rows if r.get("marker_type") == "PreBuy"]
-    ai_buy = [r for r in rows if r.get("marker_type") == "AI_Buy"]
+    source_path = carybot_master_source_path()
+    source_name = source_path.name if source_path else "尚未找到 CaryBot 輸出"
+    using_v50 = bool(source_path and source_path.name == "carybot_signal_master_v50.csv")
+
+    def signal_type(row: dict) -> str:
+        return str(row.get("signal_type") or row.get("marker_type") or "").strip()
+
+    def marker_side(row: dict) -> str:
+        side = str(row.get("marker_side") or "").strip()
+        if side:
+            return side
+        return "buy" if signal_type(row) in {"PreBuy", "AI_Buy"} else "sell" if signal_type(row) in {"PreSell", "AI_Sell"} else ""
+
+    prebuy = [r for r in rows if signal_type(r) == "PreBuy"]
+    ai_buy = [r for r in rows if signal_type(r) == "AI_Buy"]
+    presell = [r for r in rows if signal_type(r) == "PreSell"]
+    ai_sell = [r for r in rows if signal_type(r) == "AI_Sell"]
+    buy_rows = [r for r in rows if marker_side(r) == "buy"]
+    sell_rows = [r for r in rows if marker_side(r) == "sell"]
 
     def metric_card(label: str, value: str, note: str, color: str) -> str:
         return f"""
@@ -6669,7 +6759,65 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
   <div class="chip-line">{esc(note)}</div>
 </div>"""
 
-    def summary_for(marker_type: str, data: list[dict]) -> str:
+    def pct_text(value) -> str:
+        v = _to_float(value, None)
+        if v is None or math.isnan(v):
+            return "─"
+        return f"{v * 100:.1f}%"
+
+    def plain_num(value, digits: int = 2) -> str:
+        v = _to_float(value, None)
+        if v is None or math.isnan(v):
+            return "─"
+        return f"{v:.{digits}f}"
+
+    def summary_for_type(kind: str) -> dict:
+        for r in summary_rows:
+            if str(r.get("signal_type") or r.get("marker_type") or "").strip() == kind:
+                return r
+        return {}
+
+    def summary_metric(kind: str, key: str, fallback: str = "─") -> str:
+        r = summary_for_type(kind)
+        value = r.get(key)
+        if value in (None, ""):
+            return fallback
+        return str(value)
+
+    def summary_table() -> str:
+        if not summary_rows:
+            return '<tr><td colspan="11">尚未找到 CaryBot 勝敗統計；請先產出 carybot_signal_master_v50_summary.csv。</td></tr>'
+        html = ""
+        for r in summary_rows:
+            kind = r.get("signal_type") or r.get("marker_type", "")
+            side = r.get("marker_side") or ("buy" if kind in {"PreBuy", "AI_Buy"} else "sell" if kind in {"PreSell", "AI_Sell"} else "")
+            valid = r.get("valid_n") or r.get("labeled_n") or ""
+            success_rate = r.get("success_rate_20d") if r.get("success_rate_20d") not in (None, "") else r.get("win_rate")
+            html += f"""
+<tr>
+  <td>{esc(side)}</td>
+  <td>{esc(kind)}</td>
+  <td>{esc(r.get("n", ""))}</td>
+  <td>{esc(valid)}</td>
+  <td>{esc(r.get("success_n", ""))}</td>
+  <td>{pct_text(success_rate)}</td>
+  <td>{pct_text(r.get("sell_risk_success_60d"))}</td>
+  <td>{pct_text(r.get("sell_drawdown_ge8_60d_rate"))}</td>
+  <td>{pct_text(r.get("future_return_20d_median") or r.get("future_return_20d_avg"))}</td>
+  <td>{pct_text(r.get("max_gain_60d_median") or r.get("max_gain_60d_avg"))}</td>
+  <td>{pct_text(r.get("max_drawdown_60d_median") or r.get("max_drawdown_60d_avg"))}</td>
+</tr>"""
+        return html
+
+    def confidence_table() -> str:
+        if not confidence_rows:
+            return '<tr><td colspan="2">尚未找到指標可信度表。</td></tr>'
+        html = ""
+        for r in confidence_rows:
+            html += f'<tr><td>{esc(r.get("indicator", ""))}</td><td>{esc(r.get("status", ""))}</td></tr>'
+        return html
+
+    def indicator_median_card(title: str, data: list[dict]) -> str:
         cols = ["QZ", "QTYR", "VAM", "VAM5", "VAM20", "VAM60", "VPA480"]
         cells = ""
         for col in cols:
@@ -6678,9 +6826,62 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
             cells += f'<div class="info-cell"><div class="k">{esc(col)}</div><div class="v">{val}</div></div>'
         return f"""
 <div class="card">
-  <div class="section-label">{esc(marker_type)} 指標中位數</div>
+  <div class="section-label">{esc(title)}</div>
   <div class="grid grid-3" style="margin-top:10px">{cells}</div>
 </div>"""
+
+    def compact_summary_cards() -> str:
+        ai_buy_row = summary_for_type("AI_Buy")
+        pre_buy_row = summary_for_type("PreBuy")
+        ai_sell_row = summary_for_type("AI_Sell")
+        pre_sell_row = summary_for_type("PreSell")
+        return f"""
+<div class="grid grid-4">
+  {metric_card("AI_Buy 20日勝率", pct_text(ai_buy_row.get("success_rate_20d")), f"{summary_metric('AI_Buy', 'success_n')} / {summary_metric('AI_Buy', 'valid_n')}", "#3fb950")}
+  {metric_card("PreBuy 20日勝率", pct_text(pre_buy_row.get("success_rate_20d")), f"{summary_metric('PreBuy', 'success_n')} / {summary_metric('PreBuy', 'valid_n')}", "#58a6ff")}
+  {metric_card("AI_Sell 60日風險", pct_text(ai_sell_row.get("sell_risk_success_60d")), f"{summary_metric('AI_Sell', 'sell_risk_success_n')} / {summary_metric('AI_Sell', 'sell_risk_valid_n')}", "#f85149")}
+  {metric_card("PreSell 60日風險", pct_text(pre_sell_row.get("sell_risk_success_60d")), f"{summary_metric('PreSell', 'sell_risk_success_n')} / {summary_metric('PreSell', 'sell_risk_valid_n')}", "#d2a520")}
+</div>"""
+
+    def phase_table() -> str:
+        if not phase_rows:
+            return '<tr><td colspan="9">尚未找到 v50 顏色狀態統計。</td></tr>'
+        ordered = sorted(phase_rows, key=lambda r: (r.get("marker_side", ""), r.get("signal_type", ""), -int(_to_float(r.get("n"), 0))))
+        html = ""
+        for r in ordered[:36]:
+            html += f"""
+<tr>
+  <td>{esc(r.get("marker_side", ""))}</td>
+  <td>{esc(r.get("signal_type", ""))}</td>
+  <td>{esc(r.get("carybot_phase", ""))}</td>
+  <td>{esc(r.get("n", ""))}</td>
+  <td>{esc(r.get("valid_n", ""))}</td>
+  <td>{pct_text(r.get("success_rate_20d"))}</td>
+  <td>{pct_text(r.get("sell_risk_success_60d"))}</td>
+  <td>{pct_text(r.get("future_return_20d_median"))}</td>
+  <td>{pct_text(r.get("max_drawdown_60d_median"))}</td>
+</tr>"""
+        return html
+
+    def transition_table() -> str:
+        if not transition_rows:
+            return '<tr><td colspan="9">尚未找到 v50 五日顏色反轉統計。</td></tr>'
+        ordered = sorted(transition_rows, key=lambda r: (r.get("marker_side", ""), r.get("signal_type", ""), -int(_to_float(r.get("n"), 0))))
+        html = ""
+        for r in ordered[:42]:
+            html += f"""
+<tr>
+  <td>{esc(r.get("marker_side", ""))}</td>
+  <td>{esc(r.get("signal_type", ""))}</td>
+  <td>{esc(r.get("transition_5d", ""))}</td>
+  <td>{esc(r.get("n", ""))}</td>
+  <td>{esc(r.get("valid_n", ""))}</td>
+  <td>{pct_text(r.get("success_rate_20d"))}</td>
+  <td>{pct_text(r.get("sell_risk_success_60d"))}</td>
+  <td>{pct_text(r.get("future_return_20d_median"))}</td>
+  <td>{pct_text(r.get("max_drawdown_60d_median"))}</td>
+</tr>"""
+        return html
 
     sample_rows = []
     for r in rows:
@@ -6689,21 +6890,28 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
         sample_rows.append({
             "stock": stock_id,
             "name": s.get("name", ""),
-            "marker_type": r.get("marker_type", ""),
-            "marker_date": r.get("marker_date", ""),
-            "close": _to_float(r.get("Close"), None),
+            "marker_side": marker_side(r),
+            "marker_type": signal_type(r),
+            "marker_date": r.get("date") or r.get("marker_date", ""),
+            "close": _to_float(r.get("Price") or r.get("Close"), None),
             "qz": _to_float(r.get("QZ"), None),
             "qtyr": _to_float(r.get("QTYR"), None),
             "vam": _to_float(r.get("VAM"), None),
             "vam20": _to_float(r.get("VAM20"), None),
             "vam60": _to_float(r.get("VAM60"), None),
             "vpa480": _to_float(r.get("VPA480"), None),
+            "phase": r.get("carybot_phase", ""),
+            "transition": r.get("transition_5d", ""),
+            "future20": _to_float(r.get("future_return_20d"), None),
+            "mfe60": _to_float(r.get("max_gain_60d"), None),
+            "mae60": _to_float(r.get("max_drawdown_60d"), None),
+            "label": r.get("win_loss_label", ""),
         })
-    sample_rows.sort(key=lambda x: (0 if x["marker_type"] == "AI_Buy" else 1, x["stock"], x["marker_date"]))
+    sample_rows.sort(key=lambda x: (0 if x["marker_side"] == "buy" else 1, 0 if x["marker_type"] in {"AI_Buy", "AI_Sell"} else 1, x["stock"], x["marker_date"]))
 
     table = ""
-    for x in sample_rows[:80]:
-        tag_cls = "pos" if x["marker_type"] == "AI_Buy" else "tag"
+    for x in sample_rows[:100]:
+        tag_cls = "tag-green" if x["marker_type"] == "AI_Buy" else "tag-blue" if x["marker_type"] == "PreBuy" else "tag-red" if x["marker_type"] == "AI_Sell" else "tag-yellow"
         stock_label = f'{x["stock"]} {x["name"]}'.strip()
         stock_html = f'<a class="stock-link" href="stocks/{x["stock"]}.html">{esc(stock_label)}</a>' if x["stock"] else "─"
         table += f"""
@@ -6716,53 +6924,109 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
   <td>{fmt_num(x["vam"])}</td>
   <td>{fmt_num(x["vam20"])}</td>
   <td>{fmt_num(x["vam60"])}</td>
-  <td>{fmt_num(x["vpa480"])}</td>
+  <td>{esc(x["phase"])}</td>
+  <td>{esc(x["transition"])}</td>
+  <td>{pct_text(x["future20"])}</td>
+  <td>{pct_text(x["mfe60"])}</td>
+  <td>{pct_text(x["mae60"])}</td>
+  <td>{esc(x["label"])}</td>
 </tr>"""
 
     if not table:
-        table = '<tr><td colspan="9">尚未找到 CaryBot v42 藍點資料；請先在 v44 工作區產出 carybot_buy_markers_v42_features.csv。</td></tr>'
+        table = '<tr><td colspan="14">尚未找到 CaryBot v50 買賣點資料；請先產出 carybot_signal_master_v50.csv。</td></tr>'
 
-    data_note = f"資料來源：{V44_BACKTEST_OUTPUT_DIR / 'carybot_buy_markers_v42_features.csv'}"
+    data_note = f"資料來源：{source_path}" if source_path else "資料來源：尚未找到 CaryBot 輸出"
+    stale_note = "" if using_v50 else '<div class="strategy-note" style="margin-top:10px;color:#d2a520">目前使用舊版 CaryBot 資料 fallback；產出 v50 後會顯示買賣點、顏色狀態與 5D transition。</div>'
     body = f"""
 <div class="container">
   <div class="page-title">CaryBot 驗證</div>
-  <div class="page-sub">這頁把 CaryBot 藍點當成買點輔助資料，不取代 SFZ 趨勢選股與 M大觀察池；重點是找出哪些藍點值得跟、哪些藍點容易失敗。</div>
+  <div class="page-sub">這頁把 CaryBot 標點當成 timing / confirmation layer，不取代 SFZ 趨勢選股與 M大觀察池；重點是分辨健康買點、過熱追價與賣點風險警示。</div>
 
   <div class="card">
     <div class="section-label">目前定位</div>
-    <div class="grid grid-3">
+    <div class="grid grid-4">
       {metric_card("PreBuy 樣本", str(len(prebuy)), "偏觀察 / 等確認", "#58a6ff")}
       {metric_card("AI_Buy 樣本", str(len(ai_buy)), "偏正式買點標記", "#3fb950")}
-      {metric_card("整合方式", "Timing", "只做買點驗證層", "#d2a520")}
+      {metric_card("PreSell 樣本", str(len(presell)), "偏提前風險提醒", "#d2a520")}
+      {metric_card("AI_Sell 樣本", str(len(ai_sell)), "偏正式賣點警示", "#f85149")}
     </div>
-    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 是否支持進場時機。</div>
+    <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 與顏色狀態是否支持進場或降風險。</div>
+    {stale_note}
+  </div>
+
+  <div class="card">
+    <div class="section-label">v50 買賣點勝敗速覽</div>
+    {compact_summary_cards()}
   </div>
 
   <div class="card">
     <div class="section-label">使用方式</div>
     <div class="grid grid-2" style="margin-top:10px">
       <div class="info-cell"><div class="k">SFZ 行進籃</div><div class="v">等 timing</div><div class="chip-line">SFZ 已選出趨勢後，用 CaryBot 藍點與 ATRB/VAM 強勢確認，避免太早或太晚進。</div></div>
-      <div class="info-cell"><div class="k">M大觀察池</div><div class="v">等發動</div><div class="chip-line">M大抓未發動標的後，用 VPA 壓力消化、QTYR 放量、VAM20/VAM60 轉強判斷是否啟動。</div></div>
+      <div class="info-cell"><div class="k">風險警示</div><div class="v">看賣點</div><div class="chip-line">PreSell / AI_Sell 不直接等於做空，先視為過熱後的減碼、停利或重新檢查持股訊號。</div></div>
     </div>
   </div>
 
-  {summary_for("PreBuy", prebuy)}
-  {summary_for("AI_Buy", ai_buy)}
+  {indicator_median_card("買點指標中位數", buy_rows)}
+  {indicator_median_card("賣點指標中位數", sell_rows)}
 
   <div class="card">
-    <div class="section-label">藍點樣本與指標</div>
+    <div class="section-label">買點參考與賣點風險統計</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>方向</th><th>訊號</th><th>樣本</th><th>可評估</th><th>成功</th><th>20日成功率</th><th>60日風險釋放</th><th>8%回撤率</th><th>20日中位</th><th>MFE60中位</th><th>MAE60中位</th></tr></thead>
+        <tbody>{summary_table()}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">顏色狀態勝敗</div>
+    <div class="strategy-note">健康回拉與觀察轉強通常比過熱追價更適合當買點參考；賣點則看是否真的引出後續風險釋放。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>方向</th><th>訊號</th><th>顏色狀態</th><th>樣本</th><th>可評估</th><th>20日成功率</th><th>60日風險釋放</th><th>20日中位</th><th>MAE60中位</th></tr></thead>
+        <tbody>{phase_table()}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">5D 顏色反轉追蹤</div>
+    <div class="strategy-note">這裡看的是 5 個交易日前狀態到標點當日狀態的變化，用來分辨回拉轉穩、過熱追價、以及賣點是否從強勢/過熱後釋放。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>方向</th><th>訊號</th><th>5D transition</th><th>樣本</th><th>可評估</th><th>20日成功率</th><th>60日風險釋放</th><th>20日中位</th><th>MAE60中位</th></tr></thead>
+        <tbody>{transition_table()}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">指標可信度</div>
+    <div class="strategy-note">ATRB / QTYR / VPA 是目前較穩定的核心；VAM5 / VAM20 / VAM60 仍以 proxy/research 標示，不宣稱完全破解。</div>
+    <div style="overflow-x:auto;margin-top:10px">
+      <table class="stock-table">
+        <thead><tr><th>指標</th><th>狀態</th></tr></thead>
+        <tbody>{confidence_table()}</tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">買賣點樣本與指標</div>
     <div class="strategy-note">{esc(data_note)}</div>
     <div style="overflow-x:auto;margin-top:10px">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>VPA480</th></tr></thead>
+        <thead><tr><th>個股</th><th>標記</th><th>收盤</th><th>QZ</th><th>QTYR</th><th>VAM</th><th>VAM20</th><th>VAM60</th><th>顏色狀態</th><th>5D變化</th><th>20日</th><th>MFE60</th><th>MAE60</th><th>標籤</th></tr></thead>
         <tbody>{table}</tbody>
       </table>
     </div>
   </div>
 
   <div class="card">
-    <div class="section-label">下一步：加入勝敗標籤</div>
-    <div class="strategy-note">`XXXX-1` 訊號卡有目前損益與近 5 筆歷史訊號，下一版應把賺錢 / 賠錢案例接進這頁，將藍點拆成好藍點與壞藍點，而不是把所有藍點都視為買進。</div>
+    <div class="section-label">下一步：紅色 CaryBot 箭頭</div>
+    <div class="strategy-note">紅色 CaryBot 箭頭這版仍未納入，因為它與紅 K 棒太像，需要獨立形狀分類器；目前 v50 先以 PreBuy / AI_Buy / PreSell / AI_Sell 建立乾淨母表。</div>
   </div>
 </div>"""
     return html_page("CaryBot驗證", "carybot", body)

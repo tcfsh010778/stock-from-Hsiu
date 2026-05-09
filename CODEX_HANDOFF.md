@@ -1,6 +1,6 @@
 # Codex Handoff
 
-Last updated: 2026-05-09
+Last updated: 2026-05-10
 
 ## Startup Reminder
 
@@ -19,6 +19,70 @@ This project is the static stock-selection website:
 - Visible output: `docs/*.html`
 
 ## 2026-05-09 Website IA / Page Compression Planning
+
+## 2026-05-10 CaryBot v50 Website Integration
+
+### Goal
+
+Switch the website CaryBot validation page from the old v42/v44 buy-marker bridge to the new v50 buy/sell signal master.
+
+### Completed
+
+- Updated `generate_site.py` so CaryBot reads v50 first and falls back to old v44/v42 only when v50 is missing.
+- Updated the buy radar CaryBot temporary column to use latest v50 buy markers only:
+  - include `AI_Buy / PreBuy`
+  - exclude `PreSell / AI_Sell`
+- Rebuilt `docs/carybot.html` with four v50 sections:
+  - buy-point statistics
+  - sell-risk statistics
+  - color phase summary
+  - 5D color transition summary
+- Kept indicator confidence wording conservative:
+  - `ATRB / QTYR / VPA` are more stable
+  - `VAM5 / VAM20 / VAM60` remain proxy/research
+- Added `.grid-4` CSS support for the new four-card metric layout.
+
+### Changed Files
+
+- `generate_site.py`
+- regenerated `docs/carybot.html`
+- regenerated `docs/radar.html`
+- regenerated site outputs under `docs/`
+- cache files updated by the normal generator: `data/site_reports.json`, `data/stock_markets.json`
+
+### Source Of Truth
+
+- Website generator: `generate_site.py`
+- Visible output: `docs/carybot.html`
+- CaryBot v50 source data:
+  `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_signal_master_v50.csv`
+
+### Rebuild / Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `python generate_site.py`.
+- Verified `docs/carybot.html` contains:
+  - `v50 買賣點勝敗速覽`
+  - `買點參考與賣點風險統計`
+  - `顏色狀態勝敗`
+  - `5D 顏色反轉追蹤`
+  - `AI_Sell / PreSell`
+- Opened local preview at `http://127.0.0.1:8765/carybot.html` in the in-app browser.
+- Browser verification confirmed the page title, v50 sections, and no console errors.
+- Stopped the temporary local preview server after verification.
+
+### Current v50 Baseline Shown On Site
+
+- `AI_Buy` 20D win rate: `66.9%` (`105/157`)
+- `PreBuy` 20D win rate: `63.6%` (`180/283`)
+- `AI_Sell` 60D risk release: `53.8%` (`84/156`)
+- `PreSell` 60D risk release: `32.8%` (`59/180`)
+
+### Next Notes
+
+- Red `CaryBot` arrows are still intentionally excluded because they need a separate shape classifier.
+- v50 is a research/output integration layer, not proof that CaryBot formulas are fully cracked.
+- If publishing, use a scoped commit because `python generate_site.py` regenerates many `docs/*.html` files.
 
 ### Goal
 
