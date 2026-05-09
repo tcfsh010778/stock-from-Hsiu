@@ -923,6 +923,7 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title} — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
 <style>{CSS}</style>
 </head>
 <body>
@@ -6701,6 +6702,15 @@ def read_carybot_transition_summary() -> list[dict]:
     return _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_signal_master_v50_transition_summary.csv")
 
 
+def read_carybot_daily_ai_buy_v51() -> list[dict]:
+    return _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_daily_ai_buy_v51.csv")
+
+
+def read_carybot_daily_ai_buy_v51_summary() -> dict:
+    rows = _read_csv_rows(V44_BACKTEST_OUTPUT_DIR / "carybot_daily_ai_buy_v51_summary.csv")
+    return rows[0] if rows else {}
+
+
 def carybot_master_source_path() -> Path | None:
     return _first_existing_carybot_path([
         "carybot_signal_master_v50.csv",
@@ -6730,6 +6740,8 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
     phase_rows = read_carybot_phase_summary()
     transition_rows = read_carybot_transition_summary()
     confidence_rows = read_carybot_indicator_confidence()
+    daily_ai_buy_rows = read_carybot_daily_ai_buy_v51()
+    daily_ai_buy_summary = read_carybot_daily_ai_buy_v51_summary()
     stock_map = find_latest_stock_map(reports)
     source_path = carybot_master_source_path()
     source_name = source_path.name if source_path else "尚未找到 CaryBot 輸出"
@@ -6770,6 +6782,69 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
         if v is None or math.isnan(v):
             return "─"
         return f"{v:.{digits}f}"
+
+    def daily_ai_buy_v51_section() -> str:
+        if not daily_ai_buy_rows:
+            return """
+  <div class="card">
+    <div class="section-label">v51 全市場收盤後 AI_Buy 雷達</div>
+    <div class="strategy-note">尚未找到 <code>carybot_daily_ai_buy_v51.csv</code>；請先執行 v51 收盤後掃描腳本。</div>
+  </div>"""
+
+        def truthy(value) -> bool:
+            return str(value).strip().lower() in {"1", "true", "yes", "y"}
+
+        def stock_link(row: dict) -> str:
+            sid = str(row.get("stock", "")).strip()
+            name = str(row.get("stock_name", "")).strip()
+            if not name and sid in stock_map:
+                name = stock_map.get(sid, {}).get("name", "")
+            label = f"{sid} {name}".strip()
+            return f'<a class="stock-link" href="stocks/{esc(sid)}.html">{esc(label)}</a>' if sid else "?"
+
+        rows_html = ""
+        for r in daily_ai_buy_rows[:20]:
+            score = _to_float(r.get("quality_score"), None)
+            tag_cls = "tag-green" if truthy(r.get("candidate_pass")) else "tag-blue"
+            outside = "清單外" if truthy(r.get("outside_latest_site_report")) else "站內清單"
+            rows_html += f"""
+<tr>
+  <td>{esc(r.get("recommendation_rank", ""))}</td>
+  <td>{stock_link(r)}</td>
+  <td><span class="tag {tag_cls}">{esc(r.get("quality_grade", ""))}</span><div class="signal-dates">{fmt_num(score, 1)}</div></td>
+  <td>{esc(r.get("carybot_phase", ""))}<div class="signal-dates">{esc(r.get("transition_5d", ""))}</div></td>
+  <td class="price-main">{fmt_num(_to_float(r.get("Close"), None))}</td>
+  <td>{fmt_num(_to_float(r.get("entry_watch_price"), None))}</td>
+  <td>{fmt_num(_to_float(r.get("stop_price"), None))}</td>
+  <td>{fmt_num(_to_float(r.get("target_price"), None))}</td>
+  <td>{pct_text(r.get("risk_pct"))}</td>
+  <td>{esc(outside)}</td>
+  <td>{esc(r.get("reason", ""))}</td>
+</tr>"""
+
+        top = daily_ai_buy_rows[0]
+        top_label = f"{top.get('stock', '')} {top.get('stock_name', '')}".strip()
+        source_note = (
+            "這是 AI_Buy-like 收盤後雷達：用 v50 已驗證的顏色狀態與 5D 轉折做每日排序，"
+            "不是宣稱 CaryBot 原始 AI_Buy 公式已完全破解。"
+        )
+        return f"""
+  <div class="card">
+    <div class="section-label">v51 全市場收盤後 AI_Buy 雷達</div>
+    <div class="strategy-note">{esc(source_note)}</div>
+    <div class="grid grid-4" style="margin-top:12px">
+      {metric_card("今日主推", top_label, f"分數 {fmt_num(_to_float(top.get('quality_score'), None), 1)} / {esc(top.get('carybot_phase', ''))}", "#3fb950")}
+      {metric_card("資料日", str(daily_ai_buy_summary.get("global_data_date", "")), f"掃描 {daily_ai_buy_summary.get('price_cache_stock_n', '')} 檔快取", "#58a6ff")}
+      {metric_card("通過候選", str(daily_ai_buy_summary.get("candidate_pass_n", "")), f"可評分 {daily_ai_buy_summary.get('scored_stock_n', '')} 檔", "#d2a520")}
+      {metric_card("清單外命中", str(daily_ai_buy_summary.get("outside_latest_site_report_n", "")), f"發布 {daily_ai_buy_summary.get('published_stock_n', '')} 檔", "#a371f7")}
+    </div>
+    <div style="overflow-x:auto;margin-top:12px">
+      <table class="stock-table">
+        <thead><tr><th>Rank</th><th>股票</th><th>等級</th><th>狀態 / 5D</th><th>收盤</th><th>觀察價</th><th>停損</th><th>目標</th><th>風險</th><th>來源</th><th>理由</th></tr></thead>
+        <tbody>{rows_html}</tbody>
+      </table>
+    </div>
+  </div>"""
 
     def summary_for_type(kind: str) -> dict:
         for r in summary_rows:
@@ -6953,6 +7028,8 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
     <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 與顏色狀態是否支持進場或降風險。</div>
     {stale_note}
   </div>
+
+  {daily_ai_buy_v51_section()}
 
   <div class="card">
     <div class="section-label">v50 買賣點勝敗速覽</div>

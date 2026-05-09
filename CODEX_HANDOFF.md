@@ -84,6 +84,43 @@ Switch the website CaryBot validation page from the old v42/v44 buy-marker bridg
 - v50 is a research/output integration layer, not proof that CaryBot formulas are fully cracked.
 - If publishing, use a scoped commit because `python generate_site.py` regenerates many `docs/*.html` files.
 
+### 2026-05-10 Independent Codex Check
+
+- Rechecked v50 outputs from `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs`.
+- Confirmed row alignment:
+  - `carybot_all_markers_v49.csv`: `872`
+  - `carybot_all_marker_color_transitions_v49.csv`: `858`
+  - `carybot_signal_master_v50.csv`: `858`
+- Confirmed stock-code correction still holds: `6488` has `30` v50 rows; `6448` has `0`.
+- Recomputed main v50 metrics from the master CSV:
+  - `AI_Buy`: `105/157`, `66.9%`
+  - `PreBuy`: `180/283`, `63.6%`
+  - `AI_Sell` 60D risk release: `84/156`, `53.8%`
+  - `PreSell` 60D risk release: `59/180`, `32.8%`
+  - `AI_Buy` healthy pullback: `37/52`, `71.2%`
+  - `AI_Buy` red overheat chase: `1/3`, `33.3%`
+- Opened local preview at `http://127.0.0.1:8765/carybot.html`; verified the v50 sections and no console errors, then stopped the preview server.
+- Git status note: `a35c9ae` (`Integrate CaryBot v50 validation`) is currently both local `HEAD` and remote `origin/main`; separate generated docs remain modified in the worktree after the normal generator.
+
+### 2026-05-10 CaryBot v51 Daily Radar Website Publish
+
+- Added `generate_site.py` support for `carybot_daily_ai_buy_v51.csv` and `carybot_daily_ai_buy_v51_summary.csv`.
+- Rebuilt `docs/carybot.html` with a new `v51 全市場收盤後 AI_Buy 雷達` section above the v50 validation blocks.
+- The section shows:
+  - today's top AI_Buy-like pick
+  - full-cache scan date and scan count
+  - passed-candidate count
+  - how many published names are outside the latest site report
+  - top 20 ranked candidates with price, entry watch, stop, target, risk, phase, and 5D transition
+- Current v51 snapshot shown on the site:
+  - top pick: `2105 正新`
+  - data date: `2026-05-08`
+  - scanned cache: `1955`
+  - scored stocks: `648`
+  - passed candidates: `64`
+  - outside latest report among published names: `17/20`
+- This is intentionally labeled `AI_Buy-like`; it is a daily radar derived from v50 color/transition evidence, not proof of the original CaryBot formula.
+
 ### Goal
 
 Record the current conversation before old chats are deleted, then use this handoff as the starting point for detailed page-by-page website optimization.

@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>CaryBot驗證 — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
@@ -323,6 +324,304 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
     <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 與顏色狀態是否支持進場或降風險。</div>
     
+  </div>
+
+  
+  <div class="card">
+    <div class="section-label">v51 全市場收盤後 AI_Buy 雷達</div>
+    <div class="strategy-note">這是 AI_Buy-like 收盤後雷達：用 v50 已驗證的顏色狀態與 5D 轉折做每日排序，不是宣稱 CaryBot 原始 AI_Buy 公式已完全破解。</div>
+    <div class="grid grid-4" style="margin-top:12px">
+      
+<div class="metric">
+  <div class="metric-num" style="color:#3fb950">2105 正新</div>
+  <div class="metric-label">今日主推</div>
+  <div class="chip-line">分數 95.0 / brown_healthy_pullback</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#58a6ff">2026-05-08</div>
+  <div class="metric-label">資料日</div>
+  <div class="chip-line">掃描 1955 檔快取</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#d2a520">64</div>
+  <div class="metric-label">通過候選</div>
+  <div class="chip-line">可評分 648 檔</div>
+</div>
+      
+<div class="metric">
+  <div class="metric-num" style="color:#a371f7">17</div>
+  <div class="metric-label">清單外命中</div>
+  <div class="chip-line">發布 20 檔</div>
+</div>
+    </div>
+    <div style="overflow-x:auto;margin-top:12px">
+      <table class="stock-table">
+        <thead><tr><th>Rank</th><th>股票</th><th>等級</th><th>狀態 / 5D</th><th>收盤</th><th>觀察價</th><th>停損</th><th>目標</th><th>風險</th><th>來源</th><th>理由</th></tr></thead>
+        <tbody>
+<tr>
+  <td>1</td>
+  <td><a class="stock-link" href="stocks/2105.html">2105 正新</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">95.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">32.10</td>
+  <td>32.10</td>
+  <td>29.63</td>
+  <td>37.03</td>
+  <td>7.7%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><a class="stock-link" href="stocks/2912.html">2912 統一超</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">95.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">232.00</td>
+  <td>232.00</td>
+  <td>215.92</td>
+  <td>264.16</td>
+  <td>6.9%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><a class="stock-link" href="stocks/6958.html">6958 日盛台駿</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">95.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">19.05</td>
+  <td>19.05</td>
+  <td>17.56</td>
+  <td>22.04</td>
+  <td>7.8%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA240 support; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><a class="stock-link" href="stocks/6222.html">6222 立軒</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">91.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">22.35</td>
+  <td>22.05</td>
+  <td>19.40</td>
+  <td>28.25</td>
+  <td>13.2%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA240 support; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><a class="stock-link" href="stocks/6534.html">6534 正瀚-創</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">91.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">95.80</td>
+  <td>95.80</td>
+  <td>87.69</td>
+  <td>112.02</td>
+  <td>8.5%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><a class="stock-link" href="stocks/8088.html">8088 品安</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">91.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">54.00</td>
+  <td>54.00</td>
+  <td>48.02</td>
+  <td>65.97</td>
+  <td>11.1%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><a class="stock-link" href="stocks/2488.html">2488 漢平</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">90.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">51.90</td>
+  <td>51.90</td>
+  <td>47.63</td>
+  <td>60.45</td>
+  <td>8.2%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; close above MA60</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><a class="stock-link" href="stocks/8240.html">8240 華宏</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">90.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">67.50</td>
+  <td>67.50</td>
+  <td>58.20</td>
+  <td>86.10</td>
+  <td>13.8%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; close above MA60</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">90.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">172.50</td>
+  <td>172.50</td>
+  <td>146.47</td>
+  <td>224.56</td>
+  <td>15.1%</td>
+  <td>站內清單</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; close above MA60</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><a class="stock-link" href="stocks/2030.html">2030 彰源</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">89.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">green_watch-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">16.40</td>
+  <td>16.40</td>
+  <td>14.79</td>
+  <td>19.61</td>
+  <td>9.8%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=green_watch-&gt;brown_healthy_pullback; above VPA240 support; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><a class="stock-link" href="stocks/2034.html">2034 允強</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">88.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">21.20</td>
+  <td>21.20</td>
+  <td>19.21</td>
+  <td>25.19</td>
+  <td>9.4%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA240 support; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><a class="stock-link" href="stocks/2645.html">2645 長榮航太</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">88.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">164.00</td>
+  <td>164.00</td>
+  <td>144.04</td>
+  <td>203.91</td>
+  <td>12.2%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">88.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">82.20</td>
+  <td>82.20</td>
+  <td>76.73</td>
+  <td>93.15</td>
+  <td>6.7%</td>
+  <td>站內清單</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">88.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">54.00</td>
+  <td>54.00</td>
+  <td>49.76</td>
+  <td>62.48</td>
+  <td>7.9%</td>
+  <td>站內清單</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><a class="stock-link" href="stocks/1409.html">1409 新纖</a></td>
+  <td><span class="tag tag-green">A</span><div class="signal-dates">86.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_base_or_support-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">16.80</td>
+  <td>16.80</td>
+  <td>15.62</td>
+  <td>19.17</td>
+  <td>7.0%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_base_or_support-&gt;brown_healthy_pullback; space not extended; close above MA60; tight risk</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><a class="stock-link" href="stocks/2897.html">2897 王道銀行</a></td>
+  <td><span class="tag tag-green">B</span><div class="signal-dates">85.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">10.15</td>
+  <td>10.15</td>
+  <td>9.57</td>
+  <td>11.32</td>
+  <td>5.7%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><a class="stock-link" href="stocks/3010.html">3010 華立</a></td>
+  <td><span class="tag tag-green">B</span><div class="signal-dates">85.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">133.50</td>
+  <td>133.50</td>
+  <td>124.16</td>
+  <td>152.18</td>
+  <td>7.0%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a></td>
+  <td><span class="tag tag-green">B</span><div class="signal-dates">84.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">88.60</td>
+  <td>88.60</td>
+  <td>77.99</td>
+  <td>109.82</td>
+  <td>12.0%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; volume cooled; close above MA60</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><a class="stock-link" href="stocks/1815.html">1815 富喬</a></td>
+  <td><span class="tag tag-green">B</span><div class="signal-dates">84.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">brown_healthy_pullback-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">107.00</td>
+  <td>107.00</td>
+  <td>99.90</td>
+  <td>129.50</td>
+  <td>6.6%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=brown_healthy_pullback-&gt;brown_healthy_pullback; above VPA480 cost; space not extended; close above MA60; tight risk</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><a class="stock-link" href="stocks/3171.html">3171 炎洲流通</a></td>
+  <td><span class="tag tag-green">B</span><div class="signal-dates">84.0</div></td>
+  <td>brown_healthy_pullback<div class="signal-dates">mixed_transition-&gt;brown_healthy_pullback</div></td>
+  <td class="price-main">64.00</td>
+  <td>61.98</td>
+  <td>56.57</td>
+  <td>78.87</td>
+  <td>11.6%</td>
+  <td>清單外</td>
+  <td>phase=brown_healthy_pullback; 5D=mixed_transition-&gt;brown_healthy_pullback; above VPA480 cost; volume cooled; close above MA60</td>
+</tr></tbody>
+      </table>
+    </div>
   </div>
 
   <div class="card">
