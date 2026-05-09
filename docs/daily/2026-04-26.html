@@ -179,6 +179,17 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
 .stock-table tr:hover td{background:#1c2128}
 .stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -227,6 +238,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -235,11 +250,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
 }
@@ -289,10 +309,37 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="card">
   <div class="section-label">🔍 篩選流程</div>
   
-</div><div class="card"><div class="section-label">Top 20</div><div style="font-size:12px;color:#6e7681;margin-bottom:14px">綠色＝行進籃｜藍色＝盤整籃｜紅色＝過熱/風險</div><div style="overflow-x:auto">
+</div>
+<div class="card score-note-card">
+  <div class="section-head">
+    <div>
+      <div class="section-label">評分機制</div>
+      <div class="metric-title">Top20 怎麼排出來</div>
+    </div>
+    <div class="section-date">資料日 2026-04-26</div>
+  </div>
+  <div class="score-note-grid">
+    <div class="score-note">
+      <div class="k">1. 先看籃位</div>
+      <div class="v">行進籃優先</div>
+      <div class="desc">每日 Top20 本身就是行進籃候選清單，所以表格不再重複放「行進籃」欄位。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">2. 再看 Score</div>
+      <div class="v">分數越高排序越前</div>
+      <div class="desc">Score 來自每日原始報告；若舊報告沒有分數，才用排名換算補齊，讓歷史頁仍可比較。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">3. 最後看可執行性</div>
+      <div class="v">價格、量能、外資、R:R 一起看</div>
+      <div class="desc">進場價、目標、初停與 R:R 是閱讀重點；外資買超用紅色、賣超用綠色。</div>
+    </div>
+  </div>
+  <div class="score-rule">排序邏輯：籃位優先 -> Score 由高到低 -> 股票代號。這頁不代表立刻買進，仍要搭配大盤燈號、買點距離與持倉風險。</div>
+</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
-  <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
+  <th>#</th><th>代號/名稱</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
   <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>

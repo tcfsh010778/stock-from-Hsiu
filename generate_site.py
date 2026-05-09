@@ -663,6 +663,17 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
 .stock-table tr:hover td{background:#1c2128}
 .stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -723,6 +734,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3{grid-template-columns:1fr}
@@ -838,7 +852,14 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 #  各頁面生成
 # ──────────────────────────────────────────────
 
-def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_prefix: str = "stocks") -> str:
+def build_stock_table(
+    stocks: list[dict],
+    compact: bool = False,
+    stock_link_prefix: str = "stocks",
+    show_basket: bool = True,
+    show_status: bool = True,
+    table_class: str = "stock-table",
+) -> str:
     """生成股票表格 HTML"""
     rows = ""
     for i, s in enumerate(stocks, 1):
@@ -847,6 +868,9 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
         plan = decision
         badge = basket_badge(s)
         gain_cls = gain_color(s["gain_6w"])
+        badge_line = f'<div style="margin-top:3px">{badge}</div>' if show_basket else ""
+        basket_cell = f"<td>{badge}</td>" if show_status else ""
+        foreign_color = "#f85149" if s["foreign_5d"].startswith("+") else "#3fb950" if s["foreign_5d"].startswith("-") else "#8b949e"
 
         if compact:
             rows += f"""
@@ -854,7 +878,7 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
   <td><span style="color:#6e7681;font-size:11px">#{i}</span></td>
   <td>
     <div><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']} {s['name']}</a></div>
-    <div style="margin-top:3px">{badge}</div>
+{badge_line}
   </td>
   <td class="price-main">{s['price']}</td>
   <td class="{gain_cls}">{s['gain_6w']}</td>
@@ -874,13 +898,13 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
     <div style="font-size:14px"><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']}</a></div>
     <div style="color:#8b949e;font-size:12px">{s['name']}</div>
   </td>
-  <td>{badge}</td>
+{basket_cell}
   <td class="price-main">{s['price']}</td>
   <td class="{gain_cls}" style="font-weight:600">{s['gain_6w']}</td>
   <td style="color:#8b949e">{s['rsi']}</td>
   <td style="color:#8b949e">{s['bband_pct']}</td>
   <td class="hide-mobile" style="color:#8b949e">{s['vol_5d']}</td>
-  <td class="hide-mobile" style="color:{'#3fb950' if s['foreign_5d'].startswith('+') else '#f85149' if s['foreign_5d'].startswith('-') else '#8b949e'}">{s['foreign_5d']}</td>
+  <td class="hide-mobile" style="color:{foreign_color}">{s['foreign_5d']}</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">{s['score']}</span></td>
   <td>
     <div class="price-entry">進 {plan['entry_text']}</div>
@@ -896,15 +920,16 @@ def build_stock_table(stocks: list[dict], compact: bool = False, stock_link_pref
   <th>#</th><th>個股</th><th>收盤</th><th>近6週漲幅</th><th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
     else:
-        header = """<tr>
-  <th>#</th><th>代號/名稱</th><th>狀態</th><th>收盤</th>
+        status_header = "<th>狀態</th>" if show_status else ""
+        header = f"""<tr>
+  <th>#</th><th>代號/名稱</th>{status_header}<th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
   <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
 
     return f"""<div style="overflow-x:auto">
-<table class="stock-table">
+<table class="{table_class}">
 <thead>{header}</thead>
 <tbody>{rows}</tbody>
 </table>
@@ -5602,6 +5627,38 @@ def build_mda_stock_pages(reports: list[dict]) -> int:
     return count
 
 
+def build_top20_score_explainer(date_str: str) -> str:
+    """Explain the Daily Top20 score without changing the screening logic."""
+    return f"""
+<div class="card score-note-card">
+  <div class="section-head">
+    <div>
+      <div class="section-label">評分機制</div>
+      <div class="metric-title">Top20 怎麼排出來</div>
+    </div>
+    <div class="section-date">資料日 {date_str}</div>
+  </div>
+  <div class="score-note-grid">
+    <div class="score-note">
+      <div class="k">1. 先看籃位</div>
+      <div class="v">行進籃優先</div>
+      <div class="desc">每日 Top20 本身就是行進籃候選清單，所以表格不再重複放「行進籃」欄位。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">2. 再看 Score</div>
+      <div class="v">分數越高排序越前</div>
+      <div class="desc">Score 來自每日原始報告；若舊報告沒有分數，才用排名換算補齊，讓歷史頁仍可比較。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">3. 最後看可執行性</div>
+      <div class="v">價格、量能、外資、R:R 一起看</div>
+      <div class="desc">進場價、目標、初停與 R:R 是閱讀重點；外資買超用紅色、賣超用綠色。</div>
+    </div>
+  </div>
+  <div class="score-rule">排序邏輯：籃位優先 -> Score 由高到低 -> 股票代號。這頁不代表立刻買進，仍要搭配大盤燈號、買點距離與持倉風險。</div>
+</div>"""
+
+
 def build_daily_page(report: dict) -> str:
     """生成單日完整報告頁"""
     date_str = report.get("date", "─")
@@ -5641,12 +5698,12 @@ def build_daily_page(report: dict) -> str:
 </div>"""
 
     table_section = (
-        '<div class="card">'
+        '<div class="card daily-top20-card">'
         '<div class="section-label">Top 20</div>'
-        '<div style="font-size:12px;color:#6e7681;margin-bottom:14px">'
-        '綠色＝行進籃｜藍色＝盤整籃｜紅色＝過熱/風險'
+        '<div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">'
+        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。'
         '</div>'
-        + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks")
+        + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks", show_basket=False, show_status=False)
         + '</div>'
     )
 
@@ -5665,7 +5722,7 @@ def build_daily_page(report: dict) -> str:
         '<div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div>'
         + f'<div class="page-title">{date_str}</div>'
         + '<div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。</div>'
-        + stat_row + market_section + filter_section + table_section + notes_section
+        + stat_row + market_section + filter_section + build_top20_score_explainer(date_str) + table_section + notes_section
         + '</div>'
     )
     return html_page(f"{date_str}", "daily", body, nav_prefix="../")
@@ -5683,12 +5740,12 @@ def build_latest_daily_page(reports):
         + '</div>'
     )
     table_section = (
-        '<div class="card">'
+        '<div class="card daily-top20-card">'
         + f'<div class="section-label">Top 20 &mdash; {date_str}</div>'
-        + '<div style="font-size:12px;color:#6e7681;margin-bottom:14px">'
-        '&#x1F7E2; Healthy | &#x1F7E1; Strong | &#x1F534; Overbought'
+        + '<div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">'
+        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。'
         '</div>'
-        + build_stock_table(stocks, compact=False)
+        + build_stock_table(stocks, compact=False, show_basket=False, show_status=False)
         + '</div>'
     )
     notes_text = latest.get("notes", "")
@@ -5704,7 +5761,7 @@ def build_latest_daily_page(reports):
         '<div class="container">'
         '<div class="page-title">每日 Top20</div>'
         + f'<div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。資料日期：{date_str} &middot; <a href="history.html">歷史報告 &rarr;</a></div>'
-        + market_card + table_section + notes_section
+        + market_card + build_top20_score_explainer(date_str) + table_section + notes_section
         + '</div>'
     )
     return html_page("每日Top20", "daily", body)

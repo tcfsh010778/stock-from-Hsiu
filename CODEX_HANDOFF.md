@@ -133,6 +133,54 @@ Simplify the home page into a true daily workspace.
 - Next page to discuss is likely `docs/daily.html` / 每日 Top20.
 - Current preference: keep the home page as an action dashboard, and move research / waiting / full Top20 details to other pages.
 
+## 2026-05-09 Daily Top20 Readability
+
+### Goal
+
+Make the second page / `docs/daily.html` easier to read and explain how the Top20 score should be interpreted.
+
+### Completed
+
+- Added a visible "評分機制" block above the Top20 table:
+  - basket priority first
+  - then Score high to low
+  - then stock code tie-break
+  - note that Score comes from the original daily report, with rank-derived fallback only for old reports without scores
+- Enlarged the Daily Top20 table typography and spacing.
+- Removed the repeated basket/status column from Daily Top20, because this page is treated as the daily marching-basket candidate list.
+- Changed foreign-flow colors in stock tables to Taiwan convention:
+  - foreign buy / positive = red
+  - foreign sell / negative = green
+
+### Changed Files
+
+- `generate_site.py`
+- regenerated `docs/daily.html`
+- historical `docs/daily/*.html` are generated with the same Daily Top20 explanation path when rebuilt
+
+### Source Of Truth
+
+- `generate_site.py`
+- visible output: `docs/daily.html`
+
+### Rebuild / Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `python generate_site.py`.
+- Verified `docs/daily.html` contains the score explanation and no Daily Top20 status header.
+- Verified generated foreign-flow cells use red for positive values and green for negative values.
+- Opened local `docs/daily.html` in Chrome DevTools:
+  - page title loaded correctly
+  - score explanation was visible
+  - no Daily Top20 status header was present
+  - console had no warning or error messages
+  - screenshot saved outside the repo at `C:\Users\USER\AppData\Local\Temp\daily_top20_local_2026-05-09.png`
+
+### Next Notes
+
+- The Top20 page now reads as a ranking / candidate review page.
+- Next page discussion can move to M大全市場, M大已發動, or M大盤整 depending on which decision step should be clarified first.
+
 ## End-Of-Task Rule
 
 At the end of every website-related task:
