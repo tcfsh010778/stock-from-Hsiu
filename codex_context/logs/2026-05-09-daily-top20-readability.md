@@ -55,3 +55,21 @@ Actual formula source is `mda_universe_scan.py`:
 - 10 points: 20-day average volume is at least 20% lower than 120-day average volume.
 
 Daily Top20 page explanation was replaced with these real components and a note that foreign buy/sell flow is not part of the current Score.
+
+## CaryBot Temporary Bridge
+
+The user wants to use CaryBot AI BUY plus thermometer data to infer practical buy rules later.
+
+Temporary bridge added:
+
+- Reads `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_buy_markers_v42_features.csv`.
+- Builds a latest marker map by stock.
+- Prefers latest `AI_Buy`; falls back to latest `PreBuy`.
+- Adds `CaryBot暫接` to Daily Top20 tables.
+- Displays marker date, QZ, QTYR, VAM20, VAM60, ATRB120, ATRB480.
+- Does not change ranking or MDA score yet.
+
+Known limitation:
+
+- Current CSV has `ATRB120` and `ATRB480`, but not `ATRB20`.
+- Current CSV is marker-based, not a continuous daily feature table for every Top20 stock.

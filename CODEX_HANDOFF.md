@@ -194,6 +194,18 @@ Make the second page / `docs/daily.html` easier to read and explain how the Top2
   - 10: 20-day volume at least 20% below 120-day volume
 - Added a note that current M大 score does not include foreign buy/sell flow; foreign flow remains a separate reading aid.
 
+### CaryBot Temporary Bridge
+
+- Added a temporary CaryBot marker bridge to `generate_site.py`.
+- Source file: `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_buy_markers_v42_features.csv`.
+- Daily Top20 now has a `CaryBot暫接` column:
+  - prefer latest `AI_Buy` marker for each stock
+  - fallback to latest `PreBuy`
+  - show marker date, QZ, QTYR, VAM20, VAM60, ATRB120, ATRB480
+  - show `尚無藍點資料` when the current Top20 stock has no marker in the current CSV
+- This is a display/data bridge only; it does not yet change M大 score or Top20 ranking.
+- Current source CSV does not expose `ATRB20`; future daily AI BUY / thermometer data can be merged into this bridge.
+
 ## End-Of-Task Rule
 
 At the end of every website-related task:

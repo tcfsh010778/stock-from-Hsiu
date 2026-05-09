@@ -674,6 +674,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
 .score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
 .score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -830,6 +834,75 @@ def stock_href(stock_id: str, prefix: str = "stocks") -> str:
     return f"{prefix}/{esc(stock_id)}.html"
 
 
+_CARYBOT_MARKER_CACHE: dict[str, dict] | None = None
+
+
+def _num_or_none(value):
+    try:
+        if value in (None, ""):
+            return None
+        return float(str(value).replace(",", "").replace("%", "").strip())
+    except Exception:
+        return None
+
+
+def _fmt_short(value, digits: int = 2) -> str:
+    v = _num_or_none(value)
+    if v is None or not math.isfinite(v):
+        return "-"
+    return f"{v:.{digits}f}".rstrip("0").rstrip(".")
+
+
+def latest_carybot_markers_by_stock() -> dict[str, dict]:
+    """Temporary CaryBot bridge: prefer latest AI_Buy, fallback to latest PreBuy."""
+    global _CARYBOT_MARKER_CACHE
+    if _CARYBOT_MARKER_CACHE is not None:
+        return _CARYBOT_MARKER_CACHE
+
+    path = V44_BACKTEST_OUTPUT_DIR / "carybot_buy_markers_v42_features.csv"
+    latest: dict[str, dict] = {}
+    if path.exists():
+        try:
+            with path.open("r", encoding="utf-8-sig", newline="") as f:
+                for row in csv.DictReader(f):
+                    sid = str(row.get("stock") or "").strip()
+                    marker_type = str(row.get("marker_type") or "").strip()
+                    marker_date = str(row.get("marker_date") or row.get("Date") or "").strip()
+                    if not sid or marker_type not in {"AI_Buy", "PreBuy"}:
+                        continue
+                    old = latest.get(sid)
+                    rank = (1 if marker_type == "AI_Buy" else 0, marker_date)
+                    old_rank = (
+                        1 if (old or {}).get("marker_type") == "AI_Buy" else 0,
+                        str((old or {}).get("marker_date") or ""),
+                    )
+                    if old is None or rank >= old_rank:
+                        latest[sid] = row
+        except Exception:
+            latest = {}
+    _CARYBOT_MARKER_CACHE = latest
+    return latest
+
+
+def carybot_marker_cell(stock_id: str) -> str:
+    marker = latest_carybot_markers_by_stock().get(str(stock_id))
+    if not marker:
+        return '<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>'
+
+    marker_type = marker.get("marker_type", "")
+    tag_cls = "tag-green" if marker_type == "AI_Buy" else "tag-blue"
+    date_text = marker.get("marker_date") or marker.get("Date") or "-"
+    qz = _num_or_none(marker.get("QZ"))
+    qz_cls = "pos" if qz is not None and qz > 0 else "neg" if qz is not None and qz < 0 else ""
+    return f"""<td class="hide-mobile carybot-cell">
+  <span class="tag {tag_cls}">{esc(marker_type)}</span>
+  <div class="signal-dates">{esc(date_text)}</div>
+  <div class="carybot-line">QZ <strong class="{qz_cls}">{_fmt_short(qz)}</strong>｜QTYR <strong>{_fmt_short(marker.get("QTYR"))}</strong></div>
+  <div class="carybot-line">VAM20 {_fmt_short(marker.get("VAM20"))}｜VAM60 {_fmt_short(marker.get("VAM60"))}</div>
+  <div class="carybot-line">ATRB120 {_fmt_short(marker.get("ATRB120"))}｜ATRB480 {_fmt_short(marker.get("ATRB480"))}</div>
+</td>"""
+
+
 def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
@@ -858,6 +931,7 @@ def build_stock_table(
     stock_link_prefix: str = "stocks",
     show_basket: bool = True,
     show_status: bool = True,
+    show_carybot: bool = False,
     table_class: str = "stock-table",
 ) -> str:
     """生成股票表格 HTML"""
@@ -871,6 +945,7 @@ def build_stock_table(
         badge_line = f'<div style="margin-top:3px">{badge}</div>' if show_basket else ""
         basket_cell = f"<td>{badge}</td>" if show_status else ""
         foreign_color = "#f85149" if s["foreign_5d"].startswith("+") else "#3fb950" if s["foreign_5d"].startswith("-") else "#8b949e"
+        carybot_cell = carybot_marker_cell(s["id"]) if show_carybot else ""
 
         if compact:
             rows += f"""
@@ -905,6 +980,7 @@ def build_stock_table(
   <td style="color:#8b949e">{s['bband_pct']}</td>
   <td class="hide-mobile" style="color:#8b949e">{s['vol_5d']}</td>
   <td class="hide-mobile" style="color:{foreign_color}">{s['foreign_5d']}</td>
+{carybot_cell}
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">{s['score']}</span></td>
   <td>
     <div class="price-entry">進 {plan['entry_text']}</div>
@@ -921,10 +997,11 @@ def build_stock_table(
 </tr>"""
     else:
         status_header = "<th>狀態</th>" if show_status else ""
+        carybot_header = '<th class="hide-mobile">CaryBot暫接</th>' if show_carybot else ""
         header = f"""<tr>
   <th>#</th><th>代號/名稱</th>{status_header}<th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
-  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>{carybot_header}
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
 
@@ -5716,9 +5793,9 @@ def build_daily_page(report: dict) -> str:
         '<div class="card daily-top20-card">'
         '<div class="section-label">Top 20</div>'
         '<div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">'
-        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。'
+        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。'
         '</div>'
-        + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks", show_basket=False, show_status=False)
+        + build_stock_table(stocks, compact=False, stock_link_prefix="../stocks", show_basket=False, show_status=False, show_carybot=True)
         + '</div>'
     )
 
@@ -5758,9 +5835,9 @@ def build_latest_daily_page(reports):
         '<div class="card daily-top20-card">'
         + f'<div class="section-label">Top 20 &mdash; {date_str}</div>'
         + '<div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">'
-        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。'
+        '每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。'
         '</div>'
-        + build_stock_table(stocks, compact=False, show_basket=False, show_status=False)
+        + build_stock_table(stocks, compact=False, show_basket=False, show_status=False, show_carybot=True)
         + '</div>'
     )
     notes_text = latest.get("notes", "")

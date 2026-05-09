@@ -190,6 +190,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
 .score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
 .score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -351,12 +355,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
   </div>
   <div class="score-rule">目前公式來源：`mda_universe_scan.py`。滿分 100 分，不含外資買賣超；外資欄位是另外給你判讀短線籌碼，不是這個 Score 的加分項。</div>
-</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。</div><div style="overflow-x:auto">
+</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
   <th>#</th><th>代號/名稱</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
-  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile">CaryBot暫接</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
@@ -373,6 +377,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">58.2%</td>
   <td class="hide-mobile" style="color:#8b949e">75076 張</td>
   <td class="hide-mobile" style="color:#f85149">+42張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">190.0</span></td>
   <td>
     <div class="price-entry">進 67.70</div>
@@ -395,6 +400,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">56.6%</td>
   <td class="hide-mobile" style="color:#8b949e">214951 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,160張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">180.0</span></td>
   <td>
     <div class="price-entry">進 487.00</div>
@@ -417,6 +423,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">56.5%</td>
   <td class="hide-mobile" style="color:#8b949e">83663 張</td>
   <td class="hide-mobile" style="color:#3fb950">-7,035張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">170.0</span></td>
   <td>
     <div class="price-entry">進 61.03</div>
@@ -439,6 +446,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">53.8%</td>
   <td class="hide-mobile" style="color:#8b949e">67672 張</td>
   <td class="hide-mobile" style="color:#f85149">+353張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">150.0</span></td>
   <td>
     <div class="price-entry">進 39.95</div>
@@ -461,6 +469,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">74.8%</td>
   <td class="hide-mobile" style="color:#8b949e">87922 張</td>
   <td class="hide-mobile" style="color:#3fb950">-14,927張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">120.0</span></td>
   <td>
     <div class="price-entry">進 139.50</div>
@@ -483,6 +492,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">70.9%</td>
   <td class="hide-mobile" style="color:#8b949e">129772 張</td>
   <td class="hide-mobile" style="color:#f85149">+5,198張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">110.0</span></td>
   <td>
     <div class="price-entry">進 230.62</div>
@@ -505,6 +515,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">99.4%</td>
   <td class="hide-mobile" style="color:#8b949e">431742 張</td>
   <td class="hide-mobile" style="color:#3fb950">-13,313張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 290.50</div>
@@ -527,6 +538,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">90.7%</td>
   <td class="hide-mobile" style="color:#8b949e">67488 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,375張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 167.75</div>
@@ -549,6 +561,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.5%</td>
   <td class="hide-mobile" style="color:#8b949e">85799 張</td>
   <td class="hide-mobile" style="color:#3fb950">-3,120張</td>
+<td class="hide-mobile carybot-cell">
+  <span class="tag tag-blue">PreBuy</span>
+  <div class="signal-dates">2026-04-07</div>
+  <div class="carybot-line">QZ <strong class="pos">2.53</strong>｜QTYR <strong>4.82</strong></div>
+  <div class="carybot-line">VAM20 43.56｜VAM60 39.87</div>
+  <div class="carybot-line">ATRB120 2.66｜ATRB480 2.98</div>
+</td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">80.0</span></td>
   <td>
     <div class="price-entry">進 403.25</div>
@@ -571,6 +590,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">73.4%</td>
   <td class="hide-mobile" style="color:#8b949e">50618 張</td>
   <td class="hide-mobile" style="color:#3fb950">-31,746張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
   <td>
     <div class="price-entry">進 144.88</div>
@@ -593,6 +613,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">74.7%</td>
   <td class="hide-mobile" style="color:#8b949e">59607 張</td>
   <td class="hide-mobile" style="color:#f85149">+251張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">60.0</span></td>
   <td>
     <div class="price-entry">進 39.34</div>
@@ -615,6 +636,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">76.6%</td>
   <td class="hide-mobile" style="color:#8b949e">90152 張</td>
   <td class="hide-mobile" style="color:#3fb950">-257張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">50.0</span></td>
   <td>
     <div class="price-entry">進 148.12</div>
@@ -637,6 +659,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">89.6%</td>
   <td class="hide-mobile" style="color:#8b949e">76622 張</td>
   <td class="hide-mobile" style="color:#3fb950">-197張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.0</span></td>
   <td>
     <div class="price-entry">進 155.38</div>
@@ -659,6 +682,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">93.4%</td>
   <td class="hide-mobile" style="color:#8b949e">56204 張</td>
   <td class="hide-mobile" style="color:#3fb950">-6,302張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">30.0</span></td>
   <td>
     <div class="price-entry">進 72.83</div>
@@ -681,6 +705,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">78.3%</td>
   <td class="hide-mobile" style="color:#8b949e">49054 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,019張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">20.0</span></td>
   <td>
     <div class="price-entry">進 114.00</div>
@@ -703,6 +728,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">82.7%</td>
   <td class="hide-mobile" style="color:#8b949e">60258 張</td>
   <td class="hide-mobile" style="color:#f85149">+411張</td>
+<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">10.0</span></td>
   <td>
     <div class="price-entry">進 741.75</div>
