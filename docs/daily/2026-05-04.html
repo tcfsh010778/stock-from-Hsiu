@@ -314,28 +314,43 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="section-head">
     <div>
       <div class="section-label">評分機制</div>
-      <div class="metric-title">Top20 怎麼排出來</div>
+      <div class="metric-title">M大分數怎麼算</div>
     </div>
     <div class="section-date">資料日 2026-05-04</div>
   </div>
   <div class="score-note-grid">
     <div class="score-note">
-      <div class="k">1. 先看籃位</div>
-      <div class="v">行進籃優先</div>
-      <div class="desc">每日 Top20 本身就是行進籃候選清單，所以表格不再重複放「行進籃」欄位。</div>
+      <div class="k">A. 長均線與大戶基礎</div>
+      <div class="v">30 分</div>
+      <div class="desc">MA120 上彎、收盤站上 MA120，且大戶 4 週增加 >= 0.5% 或 8 週增加 >= 1.0%。</div>
     </div>
     <div class="score-note">
-      <div class="k">2. 再看 Score</div>
-      <div class="v">分數越高排序越前</div>
-      <div class="desc">Score 來自每日原始報告；若舊報告沒有分數，才用排名換算補齊，讓歷史頁仍可比較。</div>
+      <div class="k">B1. 籌碼支撐</div>
+      <div class="v">20 分</div>
+      <div class="desc">散戶 4 週下降 <= -0.3%、8 週下降 <= -0.8%，或總股東人數 4/8 週下降。</div>
     </div>
     <div class="score-note">
-      <div class="k">3. 最後看可執行性</div>
-      <div class="v">價格、量能、外資、R:R 一起看</div>
-      <div class="desc">進場價、目標、初停與 R:R 是閱讀重點；外資買超用紅色、賣超用綠色。</div>
+      <div class="k">A. MA240 結構</div>
+      <div class="v">30 分</div>
+      <div class="desc">收盤站上 MA240 加 15 分；MA240 近 20 日斜率 >= 0 再加 15 分。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">B2. 不破低</div>
+      <div class="v">10 分</div>
+      <div class="desc">近 20 日低點沒有明顯跌破近 60 日低位區，條件為 20 日低點 >= 60 日低點的 98%。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">B2. 量縮</div>
+      <div class="v">10 分</div>
+      <div class="desc">20 日均量比 120 日均量低至少 20%，代表賣壓或追價熱度收斂。</div>
+    </div>
+    <div class="score-note">
+      <div class="k">Top20 排序</div>
+      <div class="v">先籃位，再分數</div>
+      <div class="desc">已發動籃優先，其次空轉多、未發動；同籃再依 M大分數由高到低排序。</div>
     </div>
   </div>
-  <div class="score-rule">排序邏輯：籃位優先 -> Score 由高到低 -> 股票代號。這頁不代表立刻買進，仍要搭配大盤燈號、買點距離與持倉風險。</div>
+  <div class="score-rule">目前公式來源：`mda_universe_scan.py`。滿分 100 分，不含外資買賣超；外資欄位是另外給你判讀短線籌碼，不是這個 Score 的加分項。</div>
 </div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色。</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>

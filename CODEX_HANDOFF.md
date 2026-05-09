@@ -181,6 +181,19 @@ Make the second page / `docs/daily.html` easier to read and explain how the Top2
 - The Top20 page now reads as a ranking / candidate review page.
 - Next page discussion can move to M大全市場, M大已發動, or M大盤整 depending on which decision step should be clarified first.
 
+### Follow-Up Correction
+
+- User pointed out that "Top20 怎麼排出來" was not the requested score explanation.
+- Traced actual score source to `mda_universe_scan.py`.
+- Replaced Daily Top20 explanation with the actual 100-point M大 score components:
+  - 30: MA120 up, close above MA120, and major holders accumulating
+  - 20: retail ratio or total shareholders decreasing
+  - 15: close above MA240
+  - 15: MA240 20-day slope >= 0
+  - 10: 20-day low not breaking the 60-day low area
+  - 10: 20-day volume at least 20% below 120-day volume
+- Added a note that current M大 score does not include foreign buy/sell flow; foreign flow remains a separate reading aid.
+
 ## End-Of-Task Rule
 
 At the end of every website-related task:

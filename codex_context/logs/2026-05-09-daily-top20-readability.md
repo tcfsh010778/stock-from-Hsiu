@@ -40,3 +40,18 @@ Update the second page, `docs/daily.html`, so the Daily Top20 table is easier to
 ## GitHub
 
 Commit and push required after verification, per user preference.
+
+## Follow-Up Correction
+
+The first score explanation described page sorting rather than the actual score formula. The user correctly flagged that this was not useful.
+
+Actual formula source is `mda_universe_scan.py`:
+
+- 30 points: `base_mda_watch` = MA120 up, close above MA120, and major holders accumulating.
+- 20 points: retail ratio declines or total shareholder count declines over 4/8 weeks.
+- 15 points: close above MA240.
+- 15 points: MA240 20-day slope >= 0.
+- 10 points: 20-day low stays above 98% of the 60-day low.
+- 10 points: 20-day average volume is at least 20% lower than 120-day average volume.
+
+Daily Top20 page explanation was replaced with these real components and a note that foreign buy/sell flow is not part of the current Score.
