@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>1721 M大觀察解析 — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
@@ -28,6 +29,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .grid{display:grid;gap:16px}
 .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
@@ -179,6 +181,21 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
 .stock-table tr:hover td{background:#1c2128}
 .stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -227,6 +244,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -235,13 +264,19 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
-  .grid-2,.grid-3{grid-template-columns:1fr}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
 }
 </style>
 </head>
@@ -250,16 +285,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <nav>
   <span class="nav-brand">📊 Stockfrom脩</span>
   <a href="../index.html" class="tab">首頁</a>
-<a href="../daily.html" class="tab">每日Top20</a>
-<a href="../mda.html" class="tab active">M大全市場</a>
-<a href="../mda_launched.html" class="tab">M大已發動</a>
-<a href="../mda_consolidation.html" class="tab">M大盤整</a>
-<a href="../baskets.html" class="tab">SFZ雙籃</a>
-<a href="../signals.html" class="tab">入選追蹤</a>
-<a href="../radar.html" class="tab">買點雷達</a>
+<a href="../selection.html" class="tab">選股池</a>
+<a href="../mda.html" class="tab active">M大觀察</a>
+<a href="../timing.html" class="tab">買賣時機</a>
 <a href="../stocks.html" class="tab">個股查詢</a>
-<a href="../backtest.html" class="tab">歷史回測</a>
-<a href="../history.html" class="tab">歷史報告</a>
+<a href="../history.html" class="tab">歷史分析</a>
 
 </nav>
 
@@ -283,7 +313,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
   </div>
   <div class="diagnosis-list">
-    <div class="panel"><h3>支持理由</h3><ul><li>A階段：已發動長多（A分 40）</li><li>B1：大戶增加、散戶減少，較接近聰明錢結構（B1分 45）</li><li>B2：B2賣壓疑似消失（B2壓力分 102）</li><li>偏正向：大戶比例續增，散戶比例或股東人數沒有同步增加，籌碼較像往聰明錢集中。</li><li>偏正向：量縮時價格沒有破低，目前仍能靠近或挑戰關鍵均線。</li><li>長週期轉多/長多：MA120 16.97 / MA240 14.68；斜率 0.66/0.32</li><li>主力長期動態：大戶4週 4.00% / 8週 6.70%；散戶4週 -2.09% / 8週 -2.86%；股東4週 1035人 / 8週 5126人</li><li>價不破低：近10日低點 24.00 / 前段低點 16.50</li></ul></div>
+    <div class="panel"><h3>支持理由</h3><ul><li>A階段：已發動長多（A分 40）</li><li>B1：大戶增加、散戶減少，較接近聰明錢結構（B1分 45）</li><li>B2：B2賣壓疑似消失（B2壓力分 102）</li><li>偏正向：大戶比例續增，散戶比例或股東人數沒有同步增加，籌碼較像往聰明錢集中。</li><li>偏正向：量縮時價格沒有破低，目前仍能靠近或挑戰關鍵均線。</li><li>長週期轉多/長多：MA120 16.97 / MA240 14.68；斜率 0.66/0.31</li><li>主力長期動態：大戶4週 4.00% / 8週 6.70%；散戶4週 -2.09% / 8週 -2.86%；股東4週 1035人 / 8週 5126人</li><li>價不破低：近10日低點 24.00 / 前段低點 16.50</li></ul></div>
     <div class="panel"><h3>反證與待確認</h3><ul><li>量縮仍能撐住：量價未表態；5日均量 6.1%</li><li>同區間小量推升：同價位量能資料不足</li><li>外資賣壓停止：外資10日 -706 張 / 5日 -534 張 / 主力10日 -734 張</li></ul></div>
   </div>
   <div class="diagnosis-prompt">請依 M大 ABC 架構複判 1721 三晃：
@@ -295,9 +325,9 @@ B2：B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=�
 </div>
   <div class="grid grid-2">
     <div class="card"><div class="section-label">① 為什麼值得觀察</div><div class="telegram-phase"><div class="telegram-line"><div class="k">觀察等級</div><div class="v "><span class="tag tag-yellow">觀察中</span>　分數 84</div></div><div class="telegram-line"><div class="k">長均線狀態</div><div class="v pos">MA120、MA240 已開始向上彎，符合 M 大第一層觀察。</div></div><div class="telegram-line"><div class="k">120日扣抵</div><div class="v pos">120日扣抵值 11.45，收盤高於扣抵 148.9%，扣抵偏低有利均線後續彎上。</div></div></div></div>
-    <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase"><div class="telegram-line"><div class="k">MA120</div><div class="v ">16.97｜斜率 0.66｜距離 67.9%</div></div><div class="telegram-line"><div class="k">MA240</div><div class="v ">14.68｜斜率 0.32｜距離 94.2%</div></div><div class="telegram-line"><div class="k">120日扣抵</div><div class="v ">11.45｜收盤距扣抵 148.9%</div></div><div class="telegram-line"><div class="k">A階段</div><div class="v pos">已發動長多</div></div><div class="telegram-line"><div class="k">A判讀</div><div class="v pos">長多已發動，等 B2 不追高。</div></div></div></div>
+    <div class="card"><div class="section-label">② A：長期趨勢</div><div class="telegram-phase"><div class="telegram-line"><div class="k">MA120</div><div class="v ">16.97｜斜率 0.66｜距離 67.9%</div></div><div class="telegram-line"><div class="k">MA240</div><div class="v ">14.68｜斜率 0.31｜距離 94.2%</div></div><div class="telegram-line"><div class="k">120日扣抵</div><div class="v ">11.45｜收盤距扣抵 148.9%</div></div><div class="telegram-line"><div class="k">A階段</div><div class="v pos">已發動長多</div></div><div class="telegram-line"><div class="k">A判讀</div><div class="v pos">長多已發動，等 B2 不追高。</div></div></div></div>
     <div class="card"><div class="section-label">③ B1：聰明錢與股權結構</div><div class="telegram-phase"><div class="telegram-line"><div class="k">大戶/散戶</div><div class="v ">大戶4週 4.00%｜8週 6.70%｜散戶4週 -2.09%｜8週 -2.86%｜股東4週 1035 人｜8週 5126 人</div></div><div class="telegram-line"><div class="k">法人籌碼</div><div class="v ">外資10日 -706 張｜主力10日 -734 張</div></div><div class="telegram-line"><div class="k">B1判讀</div><div class="v pos">大戶增加、散戶減少，較接近聰明錢結構</div></div></div></div>
-    <div class="card"><div class="section-label">④ B2：賣壓是否變小</div><div class="telegram-phase"><div class="telegram-line"><div class="k">量價</div><div class="v ">量價未表態</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v ">單日 -5.00% / 量比 0.47x / 黑K / 5日均量較前5日 +6.1%</div></div><div class="telegram-line"><div class="k">價量籌碼關聯</div><div class="v pos">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -28 張（融資退場但價格不破，賣壓被吸收）</div></div><div class="telegram-line"><div class="k">賣壓觀察</div><div class="v ">長週期轉多/長多✅（MA120 16.97 / MA240 14.68；斜率 0.66/0.32）；主力長期動態✅（大戶4週 4.00% / 8週 6.70%；散戶4週 -2.09% / 8週 -2.86%；股東4週 1035人 / 8週 5126人）；價不破低✅（近10日低點 24.00 / 前段低點 16.50）；量縮仍能撐住❌（量價未表態；5日均量 6.1%）；同區間小量推升❌（同價位量能資料不足）；跌升過程籌碼✅（跌日主力 -335 張 / 紅K主力 5498 張）；外資拉回不逃✅（紅K外資 5470 張 / 黑K或回檔外資 -315 張）；外資賣壓停止❌（外資10日 -706 張 / 5日 -534 張 / 主力10日 -734 張）；融資沒有失控✅（融資10日 -28 張（融資退場但價格不破，賣壓被吸收））；融資賣壓被吸收✅（融資10日 -28 張（融資退場但價格不破，賣壓被吸收））；20日扣抵量有利✅（20日前量 2202 張 / 近5日均量 4121 張）；240扣抵價有利✅（240日前收盤 12.50 / 現價 28.50）；止跌回升品質✅（紅K 3/10；下影 2/10；站回均線=是；過前高=是）</div></div></div></div>
+    <div class="card"><div class="section-label">④ B2：賣壓是否變小</div><div class="telegram-phase"><div class="telegram-line"><div class="k">量價</div><div class="v ">量價未表態</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v ">單日 -5.00% / 量比 0.47x / 黑K / 5日均量較前5日 +6.1%</div></div><div class="telegram-line"><div class="k">價量籌碼關聯</div><div class="v pos">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -28 張（融資退場但價格不破，賣壓被吸收）</div></div><div class="telegram-line"><div class="k">賣壓觀察</div><div class="v ">長週期轉多/長多✅（MA120 16.97 / MA240 14.68；斜率 0.66/0.31）；主力長期動態✅（大戶4週 4.00% / 8週 6.70%；散戶4週 -2.09% / 8週 -2.86%；股東4週 1035人 / 8週 5126人）；價不破低✅（近10日低點 24.00 / 前段低點 16.50）；量縮仍能撐住❌（量價未表態；5日均量 6.1%）；同區間小量推升❌（同價位量能資料不足）；跌升過程籌碼✅（跌日主力 -335 張 / 紅K主力 5498 張）；外資拉回不逃✅（紅K外資 5470 張 / 黑K或回檔外資 -315 張）；外資賣壓停止❌（外資10日 -706 張 / 5日 -534 張 / 主力10日 -734 張）；融資沒有失控✅（融資10日 -28 張（融資退場但價格不破，賣壓被吸收））；融資賣壓被吸收✅（融資10日 -28 張（融資退場但價格不破，賣壓被吸收））；20日扣抵量有利✅（20日前量 2202 張 / 近5日均量 4121 張）；240扣抵價有利✅（240日前收盤 12.50 / 現價 28.50）；止跌回升品質✅（紅K 3/10；下影 2/10；站回均線=是；過前高=是）</div></div></div></div>
   </div>
   <div class="card"><div class="section-label">⑤ 接下來觀察什麼</div><div class="telegram-phase"><div class="telegram-line"><div class="k">籌碼答案</div><div class="v pos">偏正向：大戶比例續增，散戶比例或股東人數沒有同步增加，籌碼較像往聰明錢集中。</div></div><div class="telegram-line"><div class="k">量價答案</div><div class="v pos">偏正向：量縮時價格沒有破低，目前仍能靠近或挑戰關鍵均線。</div></div><div class="telegram-line"><div class="k">B2追蹤法</div><div class="v ">先拉長看是否長多或轉長多，再拆下跌/拉升段的主力與大戶動態；同時追20日扣抵量、240扣抵價，以及止跌後是否快速站回均線、紅K與下影線是否變多、能否慢慢過前高。</div></div></div></div>
   <div class="card">

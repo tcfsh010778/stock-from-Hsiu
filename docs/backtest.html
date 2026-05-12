@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>歷史回測 — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
@@ -28,6 +29,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .grid{display:grid;gap:16px}
 .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
 .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
 .metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
 .metric-num{font-size:26px;font-weight:800;color:#e6edf3}
 .metric-label{font-size:12px;color:#6e7681;margin-top:2px}
@@ -179,6 +181,21 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
 .stock-table tr:hover td{background:#1c2128}
 .stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -227,6 +244,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Section label */
 .section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
 
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
@@ -235,13 +264,19 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
   .filter-steps{flex-direction:column}
-  .grid-2,.grid-3{grid-template-columns:1fr}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
 }
 </style>
 </head>
@@ -250,17 +285,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <nav>
   <span class="nav-brand">📊 Stockfrom脩</span>
   <a href="index.html" class="tab">首頁</a>
-<a href="daily.html" class="tab">每日Top20</a>
-<a href="mda.html" class="tab">M大全市場</a>
-<a href="mda_launched.html" class="tab">M大已發動</a>
-<a href="mda_consolidation.html" class="tab">M大盤整</a>
-<a href="baskets.html" class="tab">SFZ雙籃</a>
-<a href="signals.html" class="tab">入選追蹤</a>
-<a href="radar.html" class="tab">買點雷達</a>
-<a href="carybot.html" class="tab">CaryBot驗證</a>
+<a href="selection.html" class="tab">選股池</a>
+<a href="mda.html" class="tab">M大觀察</a>
+<a href="timing.html" class="tab">買賣時機</a>
 <a href="stocks.html" class="tab">個股查詢</a>
-<a href="backtest.html" class="tab active">歷史回測</a>
-<a href="history.html" class="tab">歷史報告</a>
+<a href="history.html" class="tab active">歷史分析</a>
 
 </nav>
 
@@ -283,7 +312,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
 <div class="card">
   <div class="section-label">原始回測基準｜不是網站逐日掃描</div>
-  <div class="strategy-note">這裡直接讀取 <code>C:\Users\USER\OneDrive\桌面\股票\自動交易程式/回測/v6_outputs</code> 內先前產出的回測摘要。之前漂亮的數字主要來自「原 168 筆 SFZ/v42 訊號」與「啟動後 MA20」；不是把目前候選股每天重複掃描。</div>
+  <div class="strategy-note">這裡直接讀取 <code>C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs</code> 內先前產出的回測摘要。之前漂亮的數字主要來自「原 168 筆 SFZ/v42 訊號」與「啟動後 MA20」；不是把目前候選股每天重複掃描。</div>
   <div class="chip-line">停損差異：原始 MA20 trailing 沒有固定初始停損，未觸發 +10%/+20% 則以 90 日到期計算；TA3 結構停損則看破近 5 日結構低點、跌破 MA33 且未脫離成本、或箱型假突破。下方網站壓力測試才是用 3%~12% 支撐停損，找不到就預設 6%。</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
@@ -291,39 +320,39 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <tbody>
 <tr>
   <td><strong>原 168 訊號｜漲過10%後 MA20</strong><div class="signal-dates">原 SFZ/v42 入籃訊號，只有已觸發 +10% 的子集合。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>125</td>
+  <td>80.0%</td>
+  <td class="pos">13.4%</td>
+  <td>7.4%</td>
+  <td>7.2%</td>
+  <td>32.9</td>
 </tr>
 <tr>
   <td><strong>原 168 訊號｜漲過20%後 MA20</strong><div class="signal-dates">原 SFZ/v42 入籃訊號，只有已觸發 +20% 的子集合。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>100</td>
+  <td>99.0%</td>
+  <td class="pos">23.9%</td>
+  <td>18.7%</td>
+  <td>1.0%</td>
+  <td>43.7</td>
 </tr>
 <tr>
   <td><strong>原訊號後等 20 日｜Strict+20% MA20</strong><div class="signal-dates">訊號日後最多等 20 個交易日，等到 Strict 才進場。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>10</td>
+  <td>90.0%</td>
+  <td class="pos">22.2%</td>
+  <td>22.6%</td>
+  <td>0.0%</td>
+  <td>42.8</td>
 </tr>
 <tr>
   <td><strong>TA3 唯一進場｜+20% MA20</strong><div class="signal-dates">去除同日同檔重複 setup 後的 TA3 進場。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>18</td>
+  <td>83.3%</td>
+  <td class="pos">18.6%</td>
+  <td>18.2%</td>
+  <td>5.6%</td>
+  <td>40.6</td>
 </tr></tbody>
     </table>
   </div>
@@ -339,8 +368,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
         <table class="stock-table">
           <thead><tr><th>買點層級</th><th>原訊號數</th><th>等到買點</th><th>Fill rate</th><th>勝率</th><th>平均報酬</th></tr></thead>
           <tbody>
-<tr><td>TA3-Strict</td><td>168</td><td>─</td><td>─</td><td>─</td><td>─</td></tr>
-<tr><td>TA3-Soft</td><td>168</td><td>─</td><td>─</td><td>─</td><td>─</td></tr></tbody>
+<tr><td>TA3-Strict</td><td>168</td><td>10</td><td>6.0%</td><td>90.0%</td><td>22.2%</td></tr>
+<tr><td>TA3-Soft</td><td>168</td><td>84</td><td>50.0%</td><td>65.5%</td><td>9.9%</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -355,11 +384,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <tbody>
 <tr>
   <td><strong>Strict｜箱型突破直接買</strong><div class="signal-dates">樣本少，但目前表現最好；比較適合當強加碼。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>3</td>
+  <td>100.0%</td>
+  <td class="pos">34.2%</td>
+  <td>33.3%</td>
+  <td>0.0%</td>
 </tr>
 <tr>
   <td><strong>Strict｜箱型突破後回測買</strong><div class="signal-dates">目前沒有樣本，不下結論。</div></td>
@@ -371,19 +400,19 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><strong>Soft｜短箱突破直接買</strong><div class="signal-dates">攻擊性較高，報酬漂亮但 -5% 虧損仍有 25%。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>4</td>
+  <td>75.0%</td>
+  <td class="pos">24.1%</td>
+  <td>19.9%</td>
+  <td>25.0%</td>
 </tr>
 <tr>
   <td><strong>Soft｜短箱突破後回測</strong><div class="signal-dates">較穩，但目前只有 2 筆，不能定案。</div></td>
-  <td>─</td>
-  <td>─</td>
-  <td class="">─</td>
-  <td>─</td>
-  <td>─</td>
+  <td>2</td>
+  <td>100.0%</td>
+  <td class="pos">15.2%</td>
+  <td>15.2%</td>
+  <td>0.0%</td>
 </tr></tbody>
     </table>
   </div>
@@ -393,18 +422,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="section-label">網站壓力測試｜逐日掃描版 SFZ_TA3</div>
   <div class="strategy-note">資料範圍 2024-07-15 ~ 2026-05-07。前提是 SFZ 選股池，不是全市場掃描。這段不是原 168 筆回測；它是用目前網站候選池逐日掃描 2024 起所有符合點，條件較簡化，所以會重複觸發並放大啟動前停損風險。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
-    <div class="metric"><div class="metric-num">523</div><div class="metric-label">成交筆數</div></div>
-    <div class="metric"><div class="metric-num">26.0%</div><div class="metric-label">全體已出場勝率</div></div>
+    <div class="metric"><div class="metric-num">524</div><div class="metric-label">成交筆數</div></div>
+    <div class="metric"><div class="metric-num">25.9%</div><div class="metric-label">全體已出場勝率</div></div>
     <div class="metric"><div class="metric-num pos">4.1%</div><div class="metric-label">全體平均報酬</div></div>
-    <div class="metric"><div class="metric-num pos">22.8%</div><div class="metric-label">+20%啟動率</div></div>
+    <div class="metric"><div class="metric-num pos">22.7%</div><div class="metric-label">+20%啟動率</div></div>
     <div class="metric"><div class="metric-num pos">99.1%</div><div class="metric-label">+20%啟動後勝率</div></div>
     <div class="metric"><div class="metric-num pos">32.0%</div><div class="metric-label">+20%啟動後均報酬</div></div>
     <div class="metric"><div class="metric-num neg">67.7%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">379.3%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">-17.4%</div><div class="metric-label">最大回撤</div></div>
-    <div class="metric"><div class="metric-num">25.6</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">25.5</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 504 筆｜持有中 19 筆｜全體獲利 131 筆｜全體虧損 373 筆｜+20%啟動 119 筆｜啟動後已出場 111 筆｜啟動後獲利 110 筆｜啟動前初停 354 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.5%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 505 筆｜持有中 19 筆｜全體獲利 131 筆｜全體虧損 374 筆｜+20%啟動 119 筆｜啟動後已出場 111 筆｜啟動後獲利 110 筆｜啟動前初停 355 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.5%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
@@ -511,7 +540,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>持有中<div class="signal-dates">2026-05-08｜出場 88.60</div></td>
   <td class="pos" style="font-weight:800">0.2%</td>
   <td><span class="pos">14.8%</span><div class="signal-dates">最大回撤 <span class="neg">-6.6%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 81.51</div></td>
+  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 81.50</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">訊號 2026-04-20</div></td>
@@ -852,10 +881,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1309.html">1309 台達化（塑膠工業）</a><div class="signal-dates">訊號 2026-03-11</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-11｜13.75</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>初始停損<div class="signal-dates">2026-03-11｜出場 13.34</div></td>
+  <td>初始停損<div class="signal-dates">2026-03-11｜出場 13.33</div></td>
   <td class="neg" style="font-weight:800">-3.0%</td>
   <td><span class="pos">0.7%</span><div class="signal-dates">最大回撤 <span class="neg">-4.4%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 13.34</div></td>
+  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 13.33</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">訊號 2026-03-06</div></td>
@@ -924,10 +953,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/4960.html">4960 誠美材</a><div class="signal-dates">訊號 2026-03-02</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-02｜14.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>初始停損<div class="signal-dates">2026-03-02｜出場 13.85</div></td>
+  <td>初始停損<div class="signal-dates">2026-03-02｜出場 13.86</div></td>
   <td class="neg" style="font-weight:800">-3.8%</td>
   <td><span class="pos">1.4%</span><div class="signal-dates">最大回撤 <span class="neg">-5.6%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 13.85</div></td>
+  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 13.86</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">訊號 2026-03-02</div></td>

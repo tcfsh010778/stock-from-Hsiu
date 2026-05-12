@@ -249,6 +249,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
 footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
@@ -268,6 +276,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
 }
 </style>
 </head>
@@ -276,17 +285,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <nav>
   <span class="nav-brand">📊 Stockfrom脩</span>
   <a href="index.html" class="tab">首頁</a>
-<a href="daily.html" class="tab">每日Top20</a>
-<a href="mda.html" class="tab">M大全市場</a>
-<a href="mda_launched.html" class="tab">M大已發動</a>
-<a href="mda_consolidation.html" class="tab">M大盤整</a>
-<a href="baskets.html" class="tab">SFZ雙籃</a>
-<a href="signals.html" class="tab">入選追蹤</a>
-<a href="radar.html" class="tab">買點雷達</a>
-<a href="carybot.html" class="tab active">CaryBot驗證</a>
+<a href="selection.html" class="tab">選股池</a>
+<a href="mda.html" class="tab">M大觀察</a>
+<a href="timing.html" class="tab active">買賣時機</a>
 <a href="stocks.html" class="tab">個股查詢</a>
-<a href="backtest.html" class="tab">歷史回測</a>
-<a href="history.html" class="tab">歷史報告</a>
+<a href="history.html" class="tab">歷史分析</a>
 
 </nav>
 

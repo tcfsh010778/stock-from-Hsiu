@@ -732,6 +732,14 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
 
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
 /* Footer */
 footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
 footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
@@ -751,24 +759,27 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .section-date{width:max-content}
   .telegram-head{display:grid}
   .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
 }
 """
 
 def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
-        ("home",    "index.html",   "首頁"),
-        ("daily",   "daily.html",   "每日Top20"),
-        ("mda",     "mda.html",     "M大全市場"),
-        ("mda_launched", "mda_launched.html", "M大已發動"),
-        ("mda_consolidation", "mda_consolidation.html", "M大盤整"),
-        ("basket",  "baskets.html", "SFZ雙籃"),
-        ("signals", "signals.html", "入選追蹤"),
-        ("radar",   "radar.html",   "買點雷達"),
-        ("carybot", "carybot.html", "CaryBot驗證"),
-        ("stocks",  "stocks.html",  "個股查詢"),
-        ("backtest", "backtest.html", "歷史回測"),
-        ("history", "history.html", "歷史報告"),
+        ("home",      "index.html",     "首頁"),
+        ("selection", "selection.html", "選股池"),
+        ("mda",       "mda.html",       "M大觀察"),
+        ("timing",    "timing.html",    "買賣時機"),
+        ("stocks",    "stocks.html",    "個股查詢"),
+        ("history",   "history.html",   "歷史分析"),
     ]
+    # legacy nav keys map to new pages
+    _NAV_ALIASES = {
+        "daily": "selection", "basket": "selection", "signals": "selection",
+        "mda_launched": "mda", "mda_consolidation": "mda",
+        "radar": "timing", "carybot": "timing",
+        "backtest": "history",
+    }
+    active = _NAV_ALIASES.get(active, active)
     items = ""
     for key, href, label in tabs:
         cls = "tab active" if key == active else "tab"
@@ -930,6 +941,39 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 {nav_html(nav_key, nav_prefix)}
 {body}
 {footer_html()}
+</body>
+</html>"""
+
+
+
+TAB_JS = """
+<script>
+function initTabs(containerId){
+  var c=document.getElementById(containerId);if(!c)return;
+  var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');
+  function activate(id){
+    btns.forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});
+    panels.forEach(function(p){p.classList.toggle('active',p.id===id)});
+  }
+  btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab);history.replaceState(null,'',location.pathname+'?tab='+b.dataset.tab)})});
+  var p=new URLSearchParams(location.search).get('tab');
+  if(p&&c.querySelector('#'+p)){activate(p)}
+}
+</script>
+"""
+
+
+def redirect_page(target_url: str, title: str = "Redirecting") -> str:
+    """Generate a lightweight redirect HTML page."""
+    return f"""<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="refresh" content="0;url={target_url}">
+<title>{title}</title>
+</head>
+<body>
+<p>頁面已移動，正在跳轉到 <a href="{target_url}">{target_url}</a>…</p>
 </body>
 </html>"""
 
@@ -4556,8 +4600,8 @@ def build_mda_universe_section() -> str:
     </div>
     <div class="strategy-note" style="margin-bottom:12px">本區已先排除收盤價低於 {fmt_num(MDA_MIN_CLOSE, 0)} 元的股票。</div>
     <div class="tag-row">
-      <a class="tag tag-green" href="mda_launched.html">打開 M大已發動籃</a>
-      <a class="tag tag-blue" href="mda_consolidation.html">打開 M大盤整籃</a>
+      <button class="tab-btn tag tag-green" data-tab="launched" style="cursor:pointer">查看 已發動籃</button>
+      <button class="tab-btn tag tag-blue" data-tab="consolidation" style="cursor:pointer">查看 盤整籃</button>
     </div>
   </div>"""
     blocks = []
@@ -4630,6 +4674,8 @@ def build_mda_universe_section() -> str:
 
 
 def build_mda_page(reports: list[dict]) -> str:
+    """M大觀察 — 3 tabs: overview / launched / consolidation"""
+    # ── Tab 1: Overview (原 build_mda_page 內容) ──
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
     scored = [mda_score_stock(enrich_stock_fields(dict(s)), True) for s in latest.get("stocks", [])]
@@ -4639,10 +4685,10 @@ def build_mda_page(reports: list[dict]) -> str:
     wait = [x for x in scored if x["action"] == "觀察中"]
     avoid = [x for x in scored if x["action"] in {"暫緩觀察", "大盤停手"}]
 
-    rows = ""
+    rows_html = ""
     for x in scored:
         change_text, change_cls = x["change"]
-        rows += f"""
+        rows_html += f"""
 <tr>
   <td><a class="stock-link" href="mda_stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}｜M大解析頁</div></td>
   <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
@@ -4651,14 +4697,11 @@ def build_mda_page(reports: list[dict]) -> str:
   <td><div class="m-checks">{x['risk_reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['chip_line'])}</div></td>
   <td><div class="signal-dates">{esc(x['abc'])}｜{esc(x['strict'])}<br>A {x['a_score']}｜B1 {x['b1_score']}｜B2 {x['b2_score']}</div></td>
 </tr>"""
-    if not rows:
-        rows = '<tr><td colspan="6" style="color:#8b949e">目前沒有上市櫃候選標的。</td></tr>'
+    if not rows_html:
+        rows_html = '<tr><td colspan="6" style="color:#8b949e">目前沒有上市櫃候選標的。</td></tr>'
     universe_section = build_mda_universe_section()
 
-    body = f"""
-<div class="container">
-  <div class="page-title">M大全市場</div>
-  <div class="page-sub">全市場用 M大 ABC 先粗篩，再拆成已發動與盤整觀察。重點不是追高，而是看主力還在不在、賣壓有沒有變小。</div>
+    tab1_content = f"""
   <div class="card" style="display:none">
     <div class="section-label">M 大盤前提</div>
     <div class="market-light">
@@ -4680,13 +4723,70 @@ def build_mda_page(reports: list[dict]) -> str:
     <div style="overflow-x:auto">
       <table class="stock-table">
         <thead><tr><th>個股</th><th>觀察等級</th><th>收盤</th><th>值得觀察的跡象</th><th>主要風險</th><th>ABC拆分</th></tr></thead>
-        <tbody>{rows}</tbody>
+        <tbody>{rows_html}</tbody>
       </table>
     </div>
   </div>
-  {universe_section}
-</div>"""
-    return html_page("M大全市場", "mda", body)
+  {universe_section}"""
+
+    # ── Tab 2: Launched (原 build_mda_launched_page 內容) ──
+    all_rows = load_mda_universe_scan_rows()
+    launched_rows = [r for r in all_rows if r.get("basket") == "已發動籃"]
+    core = [r for r in launched_rows if mda_is_core_launched(r)]
+    extended = [r for r in launched_rows if r not in core]
+
+    tab2_content = f"""
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{len(launched_rows)}</div><div class="metric-label">已發動總數</div></div>
+    <div class="metric"><div class="metric-num" style="color:#3fb950">{len(core)}</div><div class="metric-label">核心已發動</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(extended)}</div><div class="metric-label">延伸強勢/等回測</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">核心已發動</div>
+    <div class="strategy-note" style="margin-bottom:12px">條件：分數 >= 90、散戶或股東數有支撐、近20日不破60日低位、20日量低於120日均量、距一年高點不超過 15%、60日區間不超過 90%、收盤不超過 MA120 的 1.55 倍。</div>
+    {mda_candidate_table(core)}
+  </div>
+  <div class="card">
+    <div class="section-label">延伸強勢 / 等回測</div>
+    <div class="strategy-note" style="margin-bottom:12px">這區不是不好，而是價格或波動已經比較延伸，先看主力是否未退、拉回是否量縮不破支撐。</div>
+    {mda_candidate_table(extended, limit=120)}
+  </div>"""
+
+    # ── Tab 3: Consolidation (原 build_mda_consolidation_page 內容) ──
+    turning = [r for r in all_rows if r.get("basket") == "空轉多觀察籃"]
+    dormant = [r for r in all_rows if r.get("basket") == "未發動觀察籃"]
+
+    tab3_content = f"""
+  <div class="grid grid-3">
+    <div class="metric"><div class="metric-num">{len(turning) + len(dormant)}</div><div class="metric-label">盤整候選總數</div></div>
+    <div class="metric"><div class="metric-num" style="color:#d2a520">{len(turning)}</div><div class="metric-label">空轉多觀察</div></div>
+    <div class="metric"><div class="metric-num" style="color:#58a6ff">{len(dormant)}</div><div class="metric-label">未發動觀察</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">空轉多觀察籃</div>
+    {mda_candidate_table(turning, limit=120)}
+  </div>
+  <div class="card">
+    <div class="section-label">未發動觀察籃</div>
+    {mda_candidate_table(dormant, limit=120)}
+  </div>"""
+
+    body = f"""
+<div class="container" id="mda-tabs">
+  <div class="page-title">M大觀察</div>
+  <div class="page-sub">全市場用 M大 ABC 先粗篩，再拆成已發動與盤整觀察。重點不是追高，而是看主力還在不在、賣壓有沒有變小。</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="overview">🌐 全市場總覽</button>
+    <button class="tab-btn" data-tab="launched">🚀 已發動籃</button>
+    <button class="tab-btn" data-tab="consolidation">⏳ 盤整觀察</button>
+  </div>
+  <div class="tab-panel active" id="overview">{tab1_content}</div>
+  <div class="tab-panel" id="launched">{tab2_content}</div>
+  <div class="tab-panel" id="consolidation">{tab3_content}</div>
+</div>
+{TAB_JS}
+<script>initTabs('mda-tabs')</script>"""
+    return html_page("M大觀察", "mda", body)
 
 
 def build_mda_candidate_detail_page(row: dict) -> str:
@@ -8207,10 +8307,10 @@ def main():
     print("   [OK] daily.html", flush=True)
     (OUTPUT_DIR / "mda.html").write_text(build_mda_page(reports), encoding="utf-8")
     print("   [OK] mda.html", flush=True)
-    (OUTPUT_DIR / "mda_launched.html").write_text(build_mda_launched_page(), encoding="utf-8")
-    print("   [OK] mda_launched.html", flush=True)
-    (OUTPUT_DIR / "mda_consolidation.html").write_text(build_mda_consolidation_page(), encoding="utf-8")
-    print("   [OK] mda_consolidation.html", flush=True)
+    (OUTPUT_DIR / "mda_launched.html").write_text(redirect_page("mda.html?tab=launched", "M大已發動"), encoding="utf-8")
+    print("   [OK] mda_launched.html (redirect)", flush=True)
+    (OUTPUT_DIR / "mda_consolidation.html").write_text(redirect_page("mda.html?tab=consolidation", "M大盤整"), encoding="utf-8")
+    print("   [OK] mda_consolidation.html (redirect)", flush=True)
     (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
     print("   [OK] baskets.html", flush=True)
     (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
