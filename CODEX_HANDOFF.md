@@ -314,3 +314,42 @@ At the end of every website-related task:
 - Update this `CODEX_HANDOFF.md`.
 - If the discussion is long or changes the website direction, add a dated summary under `codex_context/logs/`.
 - If implementation changes website output, verify generated `docs/*.html` before saying the work is complete.
+
+## 2026-05-13 Restore 5/11-5/12 Daily Reports After IA Merge
+
+### Goal
+
+Fix the deployed site being stuck on `2026-05-08` after the A1/A2/A3 website-architecture commits.
+
+### Completed
+
+- Diagnosed that GitHub Actions was not the root cause: `Daily Stock Site Update` succeeded on 2026-05-11 and 2026-05-12.
+- Found that those auto-update commits had created `reports/每日選股報告_2026-05-11.md` and `reports/每日選股報告_2026-05-12.md`, but current `main` was not descended from `e3127563` (`Auto update: 2026-05-12`).
+- Restored the 2026-05-11 and 2026-05-12 report files from `e3127563`.
+- Rebuilt the static site with the current IA generator so A1/A2/A3 pages keep their new structure while the homepage and selection/history data advance to `2026-05-12`.
+
+### Changed Files
+
+- `reports/每日選股報告_2026-05-11.md`
+- `reports/每日選股報告_2026-05-12.md`
+- `data/site_reports.json`
+- regenerated `docs/index.html`, `docs/selection.html`, `docs/timing.html`, `docs/mda.html`, `docs/stocks.html`, `docs/history.html`, and `docs/backtest.html`
+- `CODEX_HANDOFF.md`
+
+### Source Of Truth
+
+- Auto-update workflow: `.github/workflows/daily_update.yml`
+- Daily report source files: `reports/每日選股報告_*.md`
+- Site generator: `generate_site.py`
+- Visible output: `docs/*.html`
+
+### Rebuild / Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `python generate_site.py`; it completed after a long full-site rebuild.
+- Verified `docs/index.html` now shows `最新報告：2026-05-12`, `資料日期：2026-05-12`, and `下次交易日：2026-05-13`.
+- Verified `docs/selection.html` includes 2026-05-11 and 2026-05-12 report rows.
+
+### Next Notes
+
+- Future IA/layout branches must be rebased or merged on top of the latest `origin/main` before committing generated `docs/` and `reports/`; otherwise auto-update commits can be dropped even when the scheduler itself is healthy.
