@@ -5935,7 +5935,7 @@ def build_daily_page(report: dict) -> str:
     return html_page(f"{date_str}", "daily", body, nav_prefix="../")
 
 
-def build_latest_daily_page(reports):
+def build_latest_daily_page(reports, section_only=False):
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
@@ -5971,10 +5971,12 @@ def build_latest_daily_page(reports):
         + market_card + build_top20_score_explainer(date_str) + table_section + notes_section
         + '</div>'
     )
+    if section_only:
+        return body
     return html_page("每日Top20", "daily", body)
 
 
-def build_baskets_page(reports):
+def build_baskets_page(reports, section_only=False):
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "-")
     stocks = latest.get("stocks", [])
@@ -6020,10 +6022,12 @@ def build_baskets_page(reports):
         + build_basket_column("過熱/風險觀察", "強勢但不適合追價，或已出現賣出警示；等回測、降溫或重新整理後再評估。", risk_watch, "risk", ledger)
         + '</div>'
     )
+    if section_only:
+        return body
     return html_page("SFZ雙籃", "basket", body)
 
 
-def build_signals_page(reports):
+def build_signals_page(reports, section_only=False):
     ledger = build_signal_ledger(reports)
     latest = latest_stock_report(reports)
     latest_date = latest.get("date", "-")
@@ -6100,6 +6104,8 @@ def build_signals_page(reports):
     </div>
   </div>
 </div>"""
+    if section_only:
+        return body
     return html_page("入選追蹤", "signals", body)
 
 
@@ -6676,7 +6682,7 @@ def radar_bucket(gap) -> tuple[str, str, str]:
     return "跌破買點", "tag", "等重新站回或出現轉強"
 
 
-def build_buy_radar_page(reports: list[dict]) -> str:
+def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str:
     stock_map = find_latest_stock_map(reports)
     rows = []
     for sid, s in stock_map.items():
@@ -6743,6 +6749,8 @@ def build_buy_radar_page(reports: list[dict]) -> str:
     </div>
   </div>
 </div>"""
+    if section_only:
+        return body
     return html_page("買點雷達", "radar", body)
 
 
@@ -6835,7 +6843,7 @@ def _median(values: list[float]) -> float | None:
     return (vals[mid - 1] + vals[mid]) / 2
 
 
-def build_carybot_validation_page(reports: list[dict]) -> str:
+def build_carybot_validation_page(reports: list[dict], section_only: bool = False) -> str:
     master_rows = read_carybot_signal_master()
     rows = master_rows or read_carybot_marker_features()
     summary_rows = read_carybot_signal_summary()
@@ -7208,6 +7216,8 @@ def build_carybot_validation_page(reports: list[dict]) -> str:
     <div class="strategy-note">紅色 CaryBot 箭頭這版仍未納入，因為它與紅 K 棒太像，需要獨立形狀分類器；目前 v50 先以 PreBuy / AI_Buy / PreSell / AI_Sell 建立乾淨母表。</div>
   </div>
 </div>"""
+    if section_only:
+        return body
     return html_page("CaryBot驗證", "carybot", body)
 
 
@@ -8363,6 +8373,52 @@ def build_history_page(reports):
     return html_page("History", "history", body)
 
 
+
+def build_selection_page(reports: list[dict]) -> str:
+    """選股池 — 3 tabs: top20 / sfz / tracking"""
+    tab1 = build_latest_daily_page(reports, section_only=True)
+    tab2 = build_baskets_page(reports, section_only=True)
+    tab3 = build_signals_page(reports, section_only=True)
+
+    body = f"""
+<div class="container" id="selection-tabs">
+  <div class="page-title">選股池</div>
+  <div class="page-sub">從每日 Top20 出發，拆成 SFZ 雙籃，追蹤歷史入選紀錄。</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="top20">🏆 每日 Top20</button>
+    <button class="tab-btn" data-tab="sfz">🧺 SFZ 雙籃</button>
+    <button class="tab-btn" data-tab="tracking">📡 入選追蹤</button>
+  </div>
+  <div class="tab-panel active" id="top20">{tab1}</div>
+  <div class="tab-panel" id="sfz">{tab2}</div>
+  <div class="tab-panel" id="tracking">{tab3}</div>
+</div>
+{TAB_JS}
+<script>initTabs('selection-tabs')</script>"""
+    return html_page("選股池", "selection", body)
+
+
+def build_timing_page(reports: list[dict]) -> str:
+    """買賣時機 — 2 tabs: radar / carybot"""
+    tab1 = build_buy_radar_page(reports, section_only=True)
+    tab2 = build_carybot_validation_page(reports, section_only=True)
+
+    body = f"""
+<div class="container" id="timing-tabs">
+  <div class="page-title">買賣時機</div>
+  <div class="page-sub">選完股後，用買點雷達看離買入區多遠，用 CaryBot 驗證買賣信號強度。</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="radar">🎯 買點雷達</button>
+    <button class="tab-btn" data-tab="carybot">🤖 CaryBot 驗證</button>
+  </div>
+  <div class="tab-panel active" id="radar">{tab1}</div>
+  <div class="tab-panel" id="carybot">{tab2}</div>
+</div>
+{TAB_JS}
+<script>initTabs('timing-tabs')</script>"""
+    return html_page("買賣時機", "timing", body)
+
+
 def main():
     import sys
     sys.stdout.reconfigure(encoding="utf-8")
@@ -8380,24 +8436,28 @@ def main():
     print("\n[Build] Generating pages...", flush=True)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
     print("   [OK] index.html", flush=True)
-    (OUTPUT_DIR / "daily.html").write_text(build_latest_daily_page(reports), encoding="utf-8")
-    print("   [OK] daily.html", flush=True)
+    (OUTPUT_DIR / "selection.html").write_text(build_selection_page(reports), encoding="utf-8")
+    print("   [OK] selection.html", flush=True)
+    (OUTPUT_DIR / "daily.html").write_text(redirect_page("selection.html?tab=top20", "每日Top20"), encoding="utf-8")
+    print("   [OK] daily.html (redirect)", flush=True)
     (OUTPUT_DIR / "mda.html").write_text(build_mda_page(reports), encoding="utf-8")
     print("   [OK] mda.html", flush=True)
     (OUTPUT_DIR / "mda_launched.html").write_text(redirect_page("mda.html?tab=launched", "M大已發動"), encoding="utf-8")
     print("   [OK] mda_launched.html (redirect)", flush=True)
     (OUTPUT_DIR / "mda_consolidation.html").write_text(redirect_page("mda.html?tab=consolidation", "M大盤整"), encoding="utf-8")
     print("   [OK] mda_consolidation.html (redirect)", flush=True)
-    (OUTPUT_DIR / "baskets.html").write_text(build_baskets_page(reports), encoding="utf-8")
-    print("   [OK] baskets.html", flush=True)
-    (OUTPUT_DIR / "signals.html").write_text(build_signals_page(reports), encoding="utf-8")
-    print("   [OK] signals.html", flush=True)
+    (OUTPUT_DIR / "baskets.html").write_text(redirect_page("selection.html?tab=sfz", "SFZ雙籃"), encoding="utf-8")
+    print("   [OK] baskets.html (redirect)", flush=True)
+    (OUTPUT_DIR / "signals.html").write_text(redirect_page("selection.html?tab=tracking", "入選追蹤"), encoding="utf-8")
+    print("   [OK] signals.html (redirect)", flush=True)
     (OUTPUT_DIR / "stocks.html").write_text(build_stocks_index_page(reports), encoding="utf-8")
     print("   [OK] stocks.html", flush=True)
-    (OUTPUT_DIR / "radar.html").write_text(build_buy_radar_page(reports), encoding="utf-8")
-    print("   [OK] radar.html", flush=True)
-    (OUTPUT_DIR / "carybot.html").write_text(build_carybot_validation_page(reports), encoding="utf-8")
-    print("   [OK] carybot.html", flush=True)
+    (OUTPUT_DIR / "timing.html").write_text(build_timing_page(reports), encoding="utf-8")
+    print("   [OK] timing.html", flush=True)
+    (OUTPUT_DIR / "radar.html").write_text(redirect_page("timing.html?tab=radar", "買點雷達"), encoding="utf-8")
+    print("   [OK] radar.html (redirect)", flush=True)
+    (OUTPUT_DIR / "carybot.html").write_text(redirect_page("timing.html?tab=carybot", "CaryBot驗證"), encoding="utf-8")
+    print("   [OK] carybot.html (redirect)", flush=True)
     (OUTPUT_DIR / "backtest.html").write_text(build_backtest_page(reports), encoding="utf-8")
     print("   [OK] backtest.html", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
