@@ -305,17 +305,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="page-title">歷史回測</div>
   <div class="page-sub">先看原始 168 筆 SFZ 回測基準，再看網站逐日掃描壓力測試；兩者分母不同，不能直接混成同一個勝率。</div>
   <div class="grid grid-3">
-    <div class="metric"><div class="metric-num">127</div><div class="metric-label">歷史訊號</div></div>
-    <div class="metric"><div class="metric-num">24</div><div class="metric-label">已觸及買入區</div></div>
-    <div class="metric"><div class="metric-num">24</div><div class="metric-label">持有中</div></div>
-    <div class="metric"><div class="metric-num">─%</div><div class="metric-label">已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">0.6%</div><div class="metric-label">平均報酬，含持有中</div></div>
-    <div class="metric"><div class="metric-num">2.0</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">166</div><div class="metric-label">歷史訊號</div></div>
+    <div class="metric"><div class="metric-num">33</div><div class="metric-label">已觸及買入區</div></div>
+    <div class="metric"><div class="metric-num">29</div><div class="metric-label">持有中</div></div>
+    <div class="metric"><div class="metric-num">75.0%</div><div class="metric-label">已出場勝率</div></div>
+    <div class="metric"><div class="metric-num pos">2.4%</div><div class="metric-label">平均報酬，含持有中</div></div>
+    <div class="metric"><div class="metric-num">5.3</div><div class="metric-label">平均持有天數</div></div>
   </div>
   <div class="card">
     <div class="section-label">回測規則</div>
     <div class="strategy-note">用報告當日以前的資料計算買入區與初始停損；報告日後若日K區間碰到買入區視為成交。成交後同一天同時碰停損/停利時採保守停損優先；尚未碰停利或停損者以最新收盤列為持有中。</div>
-    <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：0 筆｜停利/獲利：0 筆｜停損/虧損：0 筆｜平均已實現：─%｜最佳：13.7%｜最差：-5.3%</div>
+    <div class="chip-line">勝率＝已出場且實現報酬 &gt; 0 的筆數 / 已出場筆數，不含持有中。已出場：4 筆｜停利/獲利：3 筆｜停損/虧損：1 筆｜平均已實現：7.4%｜最佳：14.1%｜最差：-6.7%</div>
   </div>
 
 <div class="card">
@@ -338,15 +338,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td>全體平均報酬</td>
-  <td>4.6%</td>
-  <td>6.0%</td>
-  <td>+1.3%</td>
+  <td>4.9%</td>
+  <td>6.5%</td>
+  <td>+1.5%</td>
 </tr>
 <tr>
   <td>+20%啟動率</td>
-  <td>23.5%</td>
-  <td>26.0%</td>
-  <td>+2.4%</td>
+  <td>24.1%</td>
+  <td>26.7%</td>
+  <td>+2.6%</td>
 </tr></tbody>
     </table>
   </div>
@@ -358,16 +358,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">582</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">26.0%</div><div class="metric-label">全體已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">4.6%</div><div class="metric-label">全體平均報酬</div></div>
-    <div class="metric"><div class="metric-num pos">23.5%</div><div class="metric-label">+20%啟動率</div></div>
+    <div class="metric"><div class="metric-num pos">4.9%</div><div class="metric-label">全體平均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">24.1%</div><div class="metric-label">+20%啟動率</div></div>
     <div class="metric"><div class="metric-num pos">97.6%</div><div class="metric-label">+20%啟動後勝率</div></div>
-    <div class="metric"><div class="metric-num pos">33.1%</div><div class="metric-label">+20%啟動後均報酬</div></div>
-    <div class="metric"><div class="metric-num neg">67.4%</div><div class="metric-label">啟動前初停率</div></div>
+    <div class="metric"><div class="metric-num pos">33.7%</div><div class="metric-label">+20%啟動後均報酬</div></div>
+    <div class="metric"><div class="metric-num neg">67.5%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">379.3%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">-17.4%</div><div class="metric-label">最大回撤</div></div>
-    <div class="metric"><div class="metric-num">27.4</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">27.6</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 558 筆｜持有中 24 筆｜全體獲利 145 筆｜全體虧損 413 筆｜+20%啟動 137 筆｜啟動後已出場 127 筆｜啟動後獲利 124 筆｜啟動前初停 392 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.5%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 558 筆｜持有中 24 筆｜全體獲利 145 筆｜全體虧損 413 筆｜+20%啟動 140 筆｜啟動後已出場 127 筆｜啟動後獲利 124 筆｜啟動前初停 393 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.5%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
@@ -375,17 +375,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a><div class="signal-dates">訊號 2026-05-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-05-07｜2780.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 2750.00</div></td>
-  <td class="neg" style="font-weight:800">-1.1%</td>
-  <td><span class="pos">1.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.2%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 2775.00</div></td>
+  <td class="neg" style="font-weight:800">-0.2%</td>
+  <td><span class="pos">8.3%</span><div class="signal-dates">最大回撤 <span class="neg">-3.2%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 2590.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2236.html">2236 百達-KY</a><div class="signal-dates">訊號 2026-05-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-05-07｜135.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 135.00</div></td>
-  <td class="" style="font-weight:800">0.0%</td>
-  <td><span class="pos">0.7%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 139.50</div></td>
+  <td class="pos" style="font-weight:800">3.3%</td>
+  <td><span class="pos">5.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 129.80</div></td>
 </tr>
 <tr>
@@ -407,41 +407,41 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜218.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 260.50</div></td>
-  <td class="pos" style="font-weight:800">19.5%</td>
-  <td><span class="pos">19.5%</span><div class="signal-dates">最大回撤 <span class="neg">-1.8%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 207.05</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 249.00</div></td>
+  <td class="pos" style="font-weight:800">14.2%</td>
+  <td><span class="pos">24.3%</span><div class="signal-dates">最大回撤 <span class="neg">-1.8%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 207.05</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜555.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 576.00</div></td>
-  <td class="pos" style="font-weight:800">3.8%</td>
-  <td><span class="pos">6.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.4%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 594.00</div></td>
+  <td class="pos" style="font-weight:800">7.0%</td>
+  <td><span class="pos">15.7%</span><div class="signal-dates">最大回撤 <span class="neg">-3.4%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 506.55</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜199.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 224.00</div></td>
-  <td class="pos" style="font-weight:800">12.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 228.50</div></td>
+  <td class="pos" style="font-weight:800">14.5%</td>
   <td><span class="pos">24.8%</span><div class="signal-dates">最大回撤 <span class="neg">-3.8%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 184.40</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2368.html">2368 金像電</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜1360.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 1330.00</div></td>
-  <td class="neg" style="font-weight:800">-2.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 1390.00</div></td>
+  <td class="pos" style="font-weight:800">2.2%</td>
   <td><span class="pos">11.8%</span><div class="signal-dates">最大回撤 <span class="neg">-4.4%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 1285.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">訊號 2026-04-28</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-28｜75.10</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 91.30</div></td>
-  <td class="pos" style="font-weight:800">21.6%</td>
-  <td><span class="pos">31.6%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 104.50</div></td>
+  <td class="pos" style="font-weight:800">39.1%</td>
+  <td><span class="pos">39.1%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 70.59</div></td>
 </tr>
 <tr>
@@ -479,8 +479,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">訊號 2026-04-21</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-21｜88.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 88.60</div></td>
-  <td class="pos" style="font-weight:800">0.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 89.10</div></td>
+  <td class="pos" style="font-weight:800">0.8%</td>
   <td><span class="pos">14.8%</span><div class="signal-dates">最大回撤 <span class="neg">-6.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 81.50</div></td>
 </tr>
@@ -495,9 +495,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">訊號 2026-04-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-20｜179.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 180.00</div></td>
-  <td class="pos" style="font-weight:800">0.3%</td>
-  <td><span class="pos">8.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.9%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 210.00</div></td>
+  <td class="pos" style="font-weight:800">17.0%</td>
+  <td><span class="pos">19.2%</span><div class="signal-dates">最大回撤 <span class="neg">-3.9%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 167.00</div></td>
 </tr>
 <tr>
@@ -511,9 +511,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">訊號 2026-04-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-20｜159.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 172.50</div></td>
-  <td class="pos" style="font-weight:800">8.5%</td>
-  <td><span class="pos">14.5%</span><div class="signal-dates">最大回撤 <span class="neg">-0.3%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 179.50</div></td>
+  <td class="pos" style="font-weight:800">12.9%</td>
+  <td><span class="pos">15.1%</span><div class="signal-dates">最大回撤 <span class="neg">-0.3%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 153.70</div></td>
 </tr>
 <tr>
@@ -527,8 +527,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1727.html">1727 中華化</a><div class="signal-dates">訊號 2026-04-17</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-17｜56.30</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 72.30</div></td>
-  <td class="pos" style="font-weight:800">28.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 78.60</div></td>
+  <td class="pos" style="font-weight:800">39.6%</td>
   <td><span class="pos">51.0%</span><div class="signal-dates">最大回撤 <span class="neg">-4.6%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 53.61</div></td>
 </tr>
@@ -559,40 +559,40 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/3037.html">3037 欣興</a><div class="signal-dates">訊號 2026-04-15</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-15｜618.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-04｜出場 911.00</div></td>
-  <td class="pos" style="font-weight:800">47.4%</td>
-  <td><span class="pos">48.9%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 875.00</div></td>
+  <td class="pos" style="font-weight:800">41.6%</td>
+  <td><span class="pos">49.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 574.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">訊號 2026-04-15</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-15｜521.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 572.00</div></td>
-  <td class="pos" style="font-weight:800">9.8%</td>
-  <td><span class="pos">18.4%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 498.50</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 668.00</div></td>
+  <td class="pos" style="font-weight:800">28.2%</td>
+  <td><span class="pos">31.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 498.50</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">訊號 2026-04-14</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-14｜82.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 89.30</div></td>
-  <td class="pos" style="font-weight:800">8.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-0.7%</td>
   <td><span class="pos">9.8%</span><div class="signal-dates">最大回撤 <span class="neg">-1.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 79.18</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">訊號 2026-04-14</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-14｜157.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 166.00</div></td>
-  <td class="pos" style="font-weight:800">5.4%</td>
-  <td><span class="pos">14.9%</span><div class="signal-dates">最大回撤 <span class="neg">-1.3%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 152.23</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 234.50</div></td>
+  <td class="pos" style="font-weight:800">48.9%</td>
+  <td><span class="pos">56.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.3%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 152.23</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">訊號 2026-04-13</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-13｜70.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 74.60</div></td>
-  <td class="pos" style="font-weight:800">5.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">3.5%</td>
   <td><span class="pos">10.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 67.96</div></td>
 </tr>
@@ -623,32 +623,32 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-07｜234.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 319.50</div></td>
-  <td class="pos" style="font-weight:800">36.5%</td>
-  <td><span class="pos">43.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 367.50</div></td>
+  <td class="pos" style="font-weight:800">57.1%</td>
+  <td><span class="pos">58.3%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 226.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-07｜47.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 48.55</div></td>
-  <td class="pos" style="font-weight:800">2.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 47.65</div></td>
+  <td class="pos" style="font-weight:800">0.3%</td>
   <td><span class="pos">18.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 45.82</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6147.html">6147 頎邦</a><div class="signal-dates">訊號 2026-04-01</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-01｜76.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 198.00</div></td>
-  <td class="pos" style="font-weight:800">159.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 196.00</div></td>
+  <td class="pos" style="font-weight:800">156.5%</td>
   <td><span class="pos">165.1%</span><div class="signal-dates">最大回撤 <span class="neg">-5.4%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 71.48</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">訊號 2026-04-01</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-01｜376.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 536.00</div></td>
-  <td class="pos" style="font-weight:800">42.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 512.00</div></td>
+  <td class="pos" style="font-weight:800">36.0%</td>
   <td><span class="pos">69.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 353.10</div></td>
 </tr>
@@ -719,9 +719,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a><div class="signal-dates">訊號 2026-03-25</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-25｜207.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 421.00</div></td>
-  <td class="pos" style="font-weight:800">102.9%</td>
-  <td><span class="pos">102.9%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 407.00</div></td>
+  <td class="pos" style="font-weight:800">96.1%</td>
+  <td><span class="pos">109.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 198.60</div></td>
 </tr>
 <tr>
@@ -759,9 +759,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">訊號 2026-03-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-20｜80.30</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 143.50</div></td>
-  <td class="pos" style="font-weight:800">78.7%</td>
-  <td><span class="pos">78.7%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 187.00</div></td>
+  <td class="pos" style="font-weight:800">132.9%</td>
+  <td><span class="pos">135.4%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 77.14</div></td>
 </tr>
 <tr>
@@ -1022,16 +1022,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">416</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">28.4%</div><div class="metric-label">全體已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">6.0%</div><div class="metric-label">全體平均報酬</div></div>
-    <div class="metric"><div class="metric-num pos">26.0%</div><div class="metric-label">+20%啟動率</div></div>
+    <div class="metric"><div class="metric-num pos">6.5%</div><div class="metric-label">全體平均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">26.7%</div><div class="metric-label">+20%啟動率</div></div>
     <div class="metric"><div class="metric-num pos">100.0%</div><div class="metric-label">+20%啟動後勝率</div></div>
-    <div class="metric"><div class="metric-num pos">34.3%</div><div class="metric-label">+20%啟動後均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">35.3%</div><div class="metric-label">+20%啟動後均報酬</div></div>
     <div class="metric"><div class="metric-num neg">65.1%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">379.3%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">-14.2%</div><div class="metric-label">最大回撤</div></div>
-    <div class="metric"><div class="metric-num">25.3</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">25.7</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 391 筆｜持有中 25 筆｜全體獲利 111 筆｜全體虧損 280 筆｜+20%啟動 108 筆｜啟動後已出場 96 筆｜啟動後獲利 96 筆｜啟動前初停 271 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.4%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 391 筆｜持有中 25 筆｜全體獲利 111 筆｜全體虧損 280 筆｜+20%啟動 111 筆｜啟動後已出場 96 筆｜啟動後獲利 96 筆｜啟動前初停 271 筆｜最佳實現 328.6%｜最差實現 -10.8%｜平均回撤 -5.4%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
@@ -1039,17 +1039,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a><div class="signal-dates">訊號 2026-05-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-05-07｜2780.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 2750.00</div></td>
-  <td class="neg" style="font-weight:800">-1.1%</td>
-  <td><span class="pos">1.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.2%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 2775.00</div></td>
+  <td class="neg" style="font-weight:800">-0.2%</td>
+  <td><span class="pos">8.3%</span><div class="signal-dates">最大回撤 <span class="neg">-3.2%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 2590.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2236.html">2236 百達-KY</a><div class="signal-dates">訊號 2026-05-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-05-07｜135.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 135.00</div></td>
-  <td class="" style="font-weight:800">0.0%</td>
-  <td><span class="pos">0.7%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 139.50</div></td>
+  <td class="pos" style="font-weight:800">3.3%</td>
+  <td><span class="pos">5.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 129.80</div></td>
 </tr>
 <tr>
@@ -1071,33 +1071,33 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜218.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 260.50</div></td>
-  <td class="pos" style="font-weight:800">19.5%</td>
-  <td><span class="pos">19.5%</span><div class="signal-dates">最大回撤 <span class="neg">-1.8%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 207.05</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 249.00</div></td>
+  <td class="pos" style="font-weight:800">14.2%</td>
+  <td><span class="pos">24.3%</span><div class="signal-dates">最大回撤 <span class="neg">-1.8%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 207.05</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜555.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 576.00</div></td>
-  <td class="pos" style="font-weight:800">3.8%</td>
-  <td><span class="pos">6.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.4%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 594.00</div></td>
+  <td class="pos" style="font-weight:800">7.0%</td>
+  <td><span class="pos">15.7%</span><div class="signal-dates">最大回撤 <span class="neg">-3.4%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 506.55</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">訊號 2026-04-29</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-29｜199.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 224.00</div></td>
-  <td class="pos" style="font-weight:800">12.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 228.50</div></td>
+  <td class="pos" style="font-weight:800">14.5%</td>
   <td><span class="pos">24.8%</span><div class="signal-dates">最大回撤 <span class="neg">-3.8%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 184.40</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">訊號 2026-04-28</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-28｜75.10</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 91.30</div></td>
-  <td class="pos" style="font-weight:800">21.6%</td>
-  <td><span class="pos">31.6%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 104.50</div></td>
+  <td class="pos" style="font-weight:800">39.1%</td>
+  <td><span class="pos">39.1%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 70.59</div></td>
 </tr>
 <tr>
@@ -1143,8 +1143,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">訊號 2026-04-21</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-21｜88.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 88.60</div></td>
-  <td class="pos" style="font-weight:800">0.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 89.10</div></td>
+  <td class="pos" style="font-weight:800">0.8%</td>
   <td><span class="pos">14.8%</span><div class="signal-dates">最大回撤 <span class="neg">-6.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 81.50</div></td>
 </tr>
@@ -1159,9 +1159,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">訊號 2026-04-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-20｜179.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 180.00</div></td>
-  <td class="pos" style="font-weight:800">0.3%</td>
-  <td><span class="pos">8.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.9%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 210.00</div></td>
+  <td class="pos" style="font-weight:800">17.0%</td>
+  <td><span class="pos">19.2%</span><div class="signal-dates">最大回撤 <span class="neg">-3.9%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 167.00</div></td>
 </tr>
 <tr>
@@ -1175,9 +1175,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">訊號 2026-04-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-20｜159.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 172.50</div></td>
-  <td class="pos" style="font-weight:800">8.5%</td>
-  <td><span class="pos">14.5%</span><div class="signal-dates">最大回撤 <span class="neg">-0.3%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 179.50</div></td>
+  <td class="pos" style="font-weight:800">12.9%</td>
+  <td><span class="pos">15.1%</span><div class="signal-dates">最大回撤 <span class="neg">-0.3%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 153.70</div></td>
 </tr>
 <tr>
@@ -1191,8 +1191,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1727.html">1727 中華化</a><div class="signal-dates">訊號 2026-04-17</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-17｜56.30</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 72.30</div></td>
-  <td class="pos" style="font-weight:800">28.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 78.60</div></td>
+  <td class="pos" style="font-weight:800">39.6%</td>
   <td><span class="pos">51.0%</span><div class="signal-dates">最大回撤 <span class="neg">-4.6%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 53.61</div></td>
 </tr>
@@ -1223,40 +1223,40 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/3037.html">3037 欣興</a><div class="signal-dates">訊號 2026-04-15</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-15｜618.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-04｜出場 911.00</div></td>
-  <td class="pos" style="font-weight:800">47.4%</td>
-  <td><span class="pos">48.9%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 875.00</div></td>
+  <td class="pos" style="font-weight:800">41.6%</td>
+  <td><span class="pos">49.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 574.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">訊號 2026-04-15</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-15｜521.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 572.00</div></td>
-  <td class="pos" style="font-weight:800">9.8%</td>
-  <td><span class="pos">18.4%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 498.50</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 668.00</div></td>
+  <td class="pos" style="font-weight:800">28.2%</td>
+  <td><span class="pos">31.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.9%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 498.50</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">訊號 2026-04-14</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-14｜82.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 89.30</div></td>
-  <td class="pos" style="font-weight:800">8.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-0.7%</td>
   <td><span class="pos">9.8%</span><div class="signal-dates">最大回撤 <span class="neg">-1.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 79.18</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">訊號 2026-04-14</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-14｜157.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 166.00</div></td>
-  <td class="pos" style="font-weight:800">5.4%</td>
-  <td><span class="pos">14.9%</span><div class="signal-dates">最大回撤 <span class="neg">-1.3%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 152.23</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 234.50</div></td>
+  <td class="pos" style="font-weight:800">48.9%</td>
+  <td><span class="pos">56.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.3%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 152.23</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">訊號 2026-04-13</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-13｜70.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 74.60</div></td>
-  <td class="pos" style="font-weight:800">5.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">3.5%</td>
   <td><span class="pos">10.1%</span><div class="signal-dates">最大回撤 <span class="neg">-3.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 67.96</div></td>
 </tr>
@@ -1287,32 +1287,32 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-07｜234.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 319.50</div></td>
-  <td class="pos" style="font-weight:800">36.5%</td>
-  <td><span class="pos">43.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 367.50</div></td>
+  <td class="pos" style="font-weight:800">57.1%</td>
+  <td><span class="pos">58.3%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 226.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-07｜47.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 48.55</div></td>
-  <td class="pos" style="font-weight:800">2.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 47.65</div></td>
+  <td class="pos" style="font-weight:800">0.3%</td>
   <td><span class="pos">18.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 45.82</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6147.html">6147 頎邦</a><div class="signal-dates">訊號 2026-04-01</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-01｜76.40</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 198.00</div></td>
-  <td class="pos" style="font-weight:800">159.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 196.00</div></td>
+  <td class="pos" style="font-weight:800">156.5%</td>
   <td><span class="pos">165.1%</span><div class="signal-dates">最大回撤 <span class="neg">-5.4%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 71.48</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">訊號 2026-04-01</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-04-01｜376.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 536.00</div></td>
-  <td class="pos" style="font-weight:800">42.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 512.00</div></td>
+  <td class="pos" style="font-weight:800">36.0%</td>
   <td><span class="pos">69.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 353.10</div></td>
 </tr>
@@ -1375,8 +1375,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/8021.html">8021 尖點</a><div class="signal-dates">訊號 2026-03-25</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-25｜247.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 401.00</div></td>
-  <td class="pos" style="font-weight:800">62.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 471.50</div></td>
+  <td class="pos" style="font-weight:800">90.5%</td>
   <td><span class="pos">98.0%</span><div class="signal-dates">最大回撤 <span class="neg">-3.2%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 232.65</div></td>
 </tr>
@@ -1391,9 +1391,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a><div class="signal-dates">訊號 2026-03-25</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-25｜207.50</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 421.00</div></td>
-  <td class="pos" style="font-weight:800">102.9%</td>
-  <td><span class="pos">102.9%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 407.00</div></td>
+  <td class="pos" style="font-weight:800">96.1%</td>
+  <td><span class="pos">109.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.7%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 198.60</div></td>
 </tr>
 <tr>
@@ -1431,9 +1431,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">訊號 2026-03-20</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-20｜80.30</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 143.50</div></td>
-  <td class="pos" style="font-weight:800">78.7%</td>
-  <td><span class="pos">78.7%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 187.00</div></td>
+  <td class="pos" style="font-weight:800">132.9%</td>
+  <td><span class="pos">135.4%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 77.14</div></td>
 </tr>
 <tr>
@@ -1495,8 +1495,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2368.html">2368 金像電</a><div class="signal-dates">訊號 2026-03-17</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-03-17｜917.00</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 1330.00</div></td>
-  <td class="pos" style="font-weight:800">45.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 1390.00</div></td>
+  <td class="pos" style="font-weight:800">51.6%</td>
   <td><span class="pos">65.8%</span><div class="signal-dates">最大回撤 <span class="neg">-6.9%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 838.50</div></td>
 </tr>
@@ -1639,8 +1639,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/1570.html">1570 力肯</a><div class="signal-dates">訊號 2026-02-03</div></td>
   <td><strong>SFZ_TA3 初始買點｜成交 2026-02-03｜30.65</strong><div class="signal-dates">波段初始買點<br>尚未完全發動時找波段趨勢的一開始：SMA5斜率&gt;0 / 回到SMA5±1.5% / 紅K確認</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 37.50</div></td>
-  <td class="pos" style="font-weight:800">22.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 39.10</div></td>
+  <td class="pos" style="font-weight:800">27.6%</td>
   <td><span class="pos">46.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 29.70</div></td>
 </tr>
@@ -1687,27 +1687,27 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <tbody>
 <tr>
   <td>成交筆數</td>
-  <td>235.0</td>
+  <td>237.0</td>
   <td>175.0</td>
-  <td>-60.0</td>
+  <td>-62.0</td>
 </tr>
 <tr>
   <td>全體勝率</td>
-  <td>52.9%</td>
+  <td>52.7%</td>
   <td>55.9%</td>
-  <td>+3.0%</td>
+  <td>+3.2%</td>
 </tr>
 <tr>
   <td>全體平均報酬</td>
-  <td>13.2%</td>
-  <td>15.2%</td>
-  <td>+1.9%</td>
+  <td>13.3%</td>
+  <td>15.4%</td>
+  <td>+2.1%</td>
 </tr>
 <tr>
   <td>+20%啟動率</td>
   <td>48.1%</td>
-  <td>52.0%</td>
-  <td>+3.9%</td>
+  <td>52.6%</td>
+  <td>+4.5%</td>
 </tr></tbody>
     </table>
   </div>
@@ -1715,61 +1715,77 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="card">
   <div class="section-label">網站壓力測試｜行進籃 Williams 回落｜Legacy（含倖存者偏差）</div>
   <div class="strategy-note" style="font-weight:800">Legacy（含倖存者偏差）：沿用今天回頭看的候選池。</div>
-  <div class="strategy-note">資料範圍 2024-07-17 ~ 2026-04-30。前提是 SFZ 選股池，不是全市場掃描。這段同樣是網站逐日掃描版；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區，不等同原 SFZ 168 訊號母體。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
+  <div class="strategy-note">資料範圍 2024-07-17 ~ 2026-05-08。前提是 SFZ 選股池，不是全市場掃描。這段同樣是網站逐日掃描版；先確認攻擊波已出現，再用 Williams -65~-85 反推回測區，不等同原 SFZ 168 訊號母體。 出場沿用回測資料夾的 high-water activation：先守初始停損；交易期間最高價曾漲過 +20% 後才啟動 MA20 主線續抱，啟動後收盤跌破 MA20 出場；量大長黑且外資連賣則立即檢查；不設固定 +10% 停利。</div>
   <div class="grid grid-3" style="margin-top:12px">
-    <div class="metric"><div class="metric-num">235</div><div class="metric-label">成交筆數</div></div>
-    <div class="metric"><div class="metric-num">52.9%</div><div class="metric-label">全體已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">13.2%</div><div class="metric-label">全體平均報酬</div></div>
+    <div class="metric"><div class="metric-num">237</div><div class="metric-label">成交筆數</div></div>
+    <div class="metric"><div class="metric-num">52.7%</div><div class="metric-label">全體已出場勝率</div></div>
+    <div class="metric"><div class="metric-num pos">13.3%</div><div class="metric-label">全體平均報酬</div></div>
     <div class="metric"><div class="metric-num pos">48.1%</div><div class="metric-label">+20%啟動率</div></div>
     <div class="metric"><div class="metric-num pos">100.0%</div><div class="metric-label">+20%啟動後勝率</div></div>
-    <div class="metric"><div class="metric-num pos">31.7%</div><div class="metric-label">+20%啟動後均報酬</div></div>
-    <div class="metric"><div class="metric-num neg">39.1%</div><div class="metric-label">啟動前初停率</div></div>
+    <div class="metric"><div class="metric-num pos">31.9%</div><div class="metric-label">+20%啟動後均報酬</div></div>
+    <div class="metric"><div class="metric-num neg">39.2%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">206.6%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">-14.6%</div><div class="metric-label">最大回撤</div></div>
-    <div class="metric"><div class="metric-num">31.6</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">31.7</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 221 筆｜持有中 14 筆｜全體獲利 117 筆｜全體虧損 104 筆｜+20%啟動 113 筆｜啟動後已出場 106 筆｜啟動後獲利 106 筆｜啟動前初停 92 筆｜最佳實現 181.9%｜最差實現 -11.6%｜平均回撤 -4.3%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 222 筆｜持有中 15 筆｜全體獲利 117 筆｜全體虧損 105 筆｜+20%啟動 114 筆｜啟動後已出場 106 筆｜啟動後獲利 106 筆｜啟動前初停 93 筆｜最佳實現 181.9%｜最差實現 -11.6%｜平均回撤 -4.3%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
       <tbody>
 <tr>
+  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">訊號 2026-05-08</div></td>
+  <td><strong>行進籃 Williams 回落買點｜成交 2026-05-08｜39.01</strong><div class="signal-dates">38.35 ~ 39.68<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
+  <td>初始停損<div class="signal-dates">2026-05-08｜出場 37.70</div></td>
+  <td class="neg" style="font-weight:800">-3.4%</td>
+  <td><span class="pos">9.3%</span><div class="signal-dates">最大回撤 <span class="neg">-3.4%</span></div></td>
+  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 37.70</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">訊號 2026-05-08</div></td>
+  <td><strong>行進籃 Williams 回落買點｜成交 2026-05-08｜87.33</strong><div class="signal-dates">85.44 ~ 89.22<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 89.10</div></td>
+  <td class="pos" style="font-weight:800">2.0%</td>
+  <td><span class="pos">6.4%</span><div class="signal-dates">最大回撤 <span class="neg">-0.8%</span></div></td>
+  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 80.00</div></td>
+</tr>
+<tr>
   <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">訊號 2026-04-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-30｜113.12</strong><div class="signal-dates">111.47 ~ 114.78<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 112.50</div></td>
-  <td class="neg" style="font-weight:800">-0.6%</td>
-  <td><span class="pos">6.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 135.50</div></td>
+  <td class="pos" style="font-weight:800">19.8%</td>
+  <td><span class="pos">19.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 106.34</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">訊號 2026-04-28</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-28｜522.35</strong><div class="signal-dates">510.15 ~ 522.35<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 572.00</div></td>
-  <td class="pos" style="font-weight:800">9.5%</td>
-  <td><span class="pos">18.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.0%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 505.38</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 668.00</div></td>
+  <td class="pos" style="font-weight:800">27.9%</td>
+  <td><span class="pos">30.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.0%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 505.38</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜83.38</strong><div class="signal-dates">81.22 ~ 83.38<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 89.30</div></td>
-  <td class="pos" style="font-weight:800">7.1%</td>
-  <td><span class="pos">8.5%</span><div class="signal-dates">最大回撤 <span class="neg">-2.4%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-1.9%</td>
+  <td><span class="pos">8.5%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 80.20</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜498.88</strong><div class="signal-dates">456.38 ~ 498.88<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 536.00</div></td>
-  <td class="pos" style="font-weight:800">7.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 512.00</div></td>
+  <td class="pos" style="font-weight:800">2.6%</td>
   <td><span class="pos">12.3%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 471.18</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜63.31</strong><div class="signal-dates">59.14 ~ 63.31<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 68.90</div></td>
-  <td class="pos" style="font-weight:800">8.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 71.10</div></td>
+  <td class="pos" style="font-weight:800">12.3%</td>
   <td><span class="pos">19.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 57.11</div></td>
 </tr>
@@ -1800,9 +1816,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-07｜230.78</strong><div class="signal-dates">221.47 ~ 230.78<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 319.50</div></td>
-  <td class="pos" style="font-weight:800">38.4%</td>
-  <td><span class="pos">45.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.2%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 367.50</div></td>
+  <td class="pos" style="font-weight:800">59.2%</td>
+  <td><span class="pos">60.5%</span><div class="signal-dates">最大回撤 <span class="neg">-1.2%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 216.93</div></td>
 </tr>
 <tr>
@@ -1824,16 +1840,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/6234.html">6234 高僑</a><div class="signal-dates">訊號 2026-03-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-30｜27.70</strong><div class="signal-dates">26.91 ~ 27.84<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 57.80</div></td>
-  <td class="pos" style="font-weight:800">108.7%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 55.50</div></td>
+  <td class="pos" style="font-weight:800">100.4%</td>
   <td><span class="pos">128.5%</span><div class="signal-dates">最大回撤 <span class="neg">0.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 26.04</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">訊號 2026-03-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-30｜41.25</strong><div class="signal-dates">40.25 ~ 41.25<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 98.20</div></td>
-  <td class="pos" style="font-weight:800">138.1%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 90.50</div></td>
+  <td class="pos" style="font-weight:800">119.4%</td>
   <td><span class="pos">144.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 38.77</div></td>
 </tr>
@@ -1856,17 +1872,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/8358.html">8358 金居</a><div class="signal-dates">訊號 2026-03-26</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-26｜231.00</strong><div class="signal-dates">223.05 ~ 236.45<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 454.50</div></td>
-  <td class="pos" style="font-weight:800">96.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 477.00</div></td>
+  <td class="pos" style="font-weight:800">106.5%</td>
   <td><span class="pos">116.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 222.88</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">訊號 2026-03-10</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-10｜316.23</strong><div class="signal-dates">295.52 ~ 316.23<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 576.00</div></td>
-  <td class="pos" style="font-weight:800">82.1%</td>
-  <td><span class="pos">87.5%</span><div class="signal-dates">最大回撤 <span class="neg">-5.3%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 594.00</div></td>
+  <td class="pos" style="font-weight:800">87.8%</td>
+  <td><span class="pos">103.0%</span><div class="signal-dates">最大回撤 <span class="neg">-5.3%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 298.00</div></td>
 </tr>
 <tr>
@@ -1968,8 +1984,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2455.html">2455 全新</a><div class="signal-dates">訊號 2026-02-09</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-02-09｜167.72</strong><div class="signal-dates">159.03 ~ 167.72<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 347.50</div></td>
-  <td class="pos" style="font-weight:800">107.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 375.00</div></td>
+  <td class="pos" style="font-weight:800">123.6%</td>
   <td><span class="pos">128.9%</span><div class="signal-dates">最大回撤 <span class="neg">-0.1%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 157.66</div></td>
 </tr>
@@ -1987,7 +2003,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>跌破MA20｜曾漲過20%後啟動MA20續抱<div class="signal-dates">2026-03-09｜出場 27.80</div></td>
   <td class="pos" style="font-weight:800">4.1%</td>
   <td><span class="pos">36.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.1%</span></div></td>
-  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 24.38</div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 25.37</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">訊號 2026-02-02</div></td>
@@ -2200,7 +2216,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2340.html">2340 台亞（半導體）</a><div class="signal-dates">訊號 2025-12-18</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-18｜26.53</strong><div class="signal-dates">25.77 ~ 26.53<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 38.05</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 38.05</div></td>
   <td class="pos" style="font-weight:800">43.4%</td>
   <td><span class="pos">73.0%</span><div class="signal-dates">最大回撤 <span class="neg">-9.5%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 23.88</div></td>
@@ -2248,8 +2264,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2606.html">2606 裕民</a><div class="signal-dates">訊號 2025-12-11</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-11｜60.17</strong><div class="signal-dates">57.27 ~ 60.17<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 65.00</div></td>
-  <td class="pos" style="font-weight:800">8.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 63.90</div></td>
+  <td class="pos" style="font-weight:800">6.2%</td>
   <td><span class="pos">18.8%</span><div class="signal-dates">最大回撤 <span class="neg">-5.9%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 56.56</div></td>
 </tr>
@@ -2264,8 +2280,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">訊號 2025-12-08</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-08｜67.09</strong><div class="signal-dates">64.36 ~ 67.09<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 74.60</div></td>
-  <td class="pos" style="font-weight:800">11.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">8.8%</td>
   <td><span class="pos">15.7%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 63.07</div></td>
 </tr>
@@ -2356,22 +2372,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="pos" style="font-weight:800">2.4%</td>
   <td><span class="pos">20.9%</span><div class="signal-dates">最大回撤 <span class="neg">-0.2%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 109.25</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">訊號 2025-11-10</div></td>
-  <td><strong>行進籃 Williams 回落買點｜成交 2025-11-10｜28.43</strong><div class="signal-dates">27.70 ~ 28.43<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>跌破MA20｜曾漲過20%後啟動MA20續抱<div class="signal-dates">2025-12-16｜出場 34.55</div></td>
-  <td class="pos" style="font-weight:800">21.5%</td>
-  <td><span class="pos">46.9%</span><div class="signal-dates">最大回撤 <span class="neg">-0.1%</span></div></td>
-  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 26.72</div></td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">訊號 2025-11-07</div></td>
-  <td><strong>行進籃 Williams 回落買點｜成交 2025-11-07｜89.03</strong><div class="signal-dates">84.72 ~ 89.03<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>立即檢查｜量大長黑且外資連賣<div class="signal-dates">2026-01-21｜出場 148.50</div></td>
-  <td class="pos" style="font-weight:800">66.8%</td>
-  <td><span class="pos">89.3%</span><div class="signal-dates">最大回撤 <span class="neg">-4.5%</span></div></td>
-  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 83.68</div></td>
 </tr></tbody>
     </table>
   </div>
@@ -2383,16 +2383,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="grid grid-3" style="margin-top:12px">
     <div class="metric"><div class="metric-num">175</div><div class="metric-label">成交筆數</div></div>
     <div class="metric"><div class="metric-num">55.9%</div><div class="metric-label">全體已出場勝率</div></div>
-    <div class="metric"><div class="metric-num pos">15.2%</div><div class="metric-label">全體平均報酬</div></div>
-    <div class="metric"><div class="metric-num pos">52.0%</div><div class="metric-label">+20%啟動率</div></div>
+    <div class="metric"><div class="metric-num pos">15.4%</div><div class="metric-label">全體平均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">52.6%</div><div class="metric-label">+20%啟動率</div></div>
     <div class="metric"><div class="metric-num pos">100.0%</div><div class="metric-label">+20%啟動後勝率</div></div>
-    <div class="metric"><div class="metric-num pos">32.6%</div><div class="metric-label">+20%啟動後均報酬</div></div>
+    <div class="metric"><div class="metric-num pos">32.8%</div><div class="metric-label">+20%啟動後均報酬</div></div>
     <div class="metric"><div class="metric-num neg">35.4%</div><div class="metric-label">啟動前初停率</div></div>
     <div class="metric"><div class="metric-num pos">206.6%</div><div class="metric-label">最大曾有報酬</div></div>
     <div class="metric"><div class="metric-num neg">-13.5%</div><div class="metric-label">最大回撤</div></div>
-    <div class="metric"><div class="metric-num">31.8</div><div class="metric-label">平均持有天數</div></div>
+    <div class="metric"><div class="metric-num">32.3</div><div class="metric-label">平均持有天數</div></div>
   </div>
-  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 161 筆｜持有中 14 筆｜全體獲利 90 筆｜全體虧損 71 筆｜+20%啟動 91 筆｜啟動後已出場 84 筆｜啟動後獲利 84 筆｜啟動前初停 62 筆｜最佳實現 181.9%｜最差實現 -11.6%｜平均回撤 -4.2%</div>
+  <div class="chip-line">全體勝率＝所有成交中已出場獲利 / 已出場；+20%啟動後勝率＝只看曾漲過20%的子集合。已出場 161 筆｜持有中 14 筆｜全體獲利 90 筆｜全體虧損 71 筆｜+20%啟動 92 筆｜啟動後已出場 84 筆｜啟動後獲利 84 筆｜啟動前初停 62 筆｜最佳實現 181.9%｜最差實現 -11.6%｜平均回撤 -4.2%</div>
   <div style="overflow-x:auto;margin-top:14px">
     <table class="stock-table">
       <thead><tr><th>個股/訊號日</th><th>買點與成交</th><th>出場</th><th>實現報酬</th><th>最大報酬/回撤</th><th>MA20啟動/初停</th></tr></thead>
@@ -2400,40 +2400,40 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">訊號 2026-04-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-30｜113.12</strong><div class="signal-dates">111.47 ~ 114.78<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 112.50</div></td>
-  <td class="neg" style="font-weight:800">-0.6%</td>
-  <td><span class="pos">6.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 135.50</div></td>
+  <td class="pos" style="font-weight:800">19.8%</td>
+  <td><span class="pos">19.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 106.34</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">訊號 2026-04-28</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-28｜522.35</strong><div class="signal-dates">510.15 ~ 522.35<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 572.00</div></td>
-  <td class="pos" style="font-weight:800">9.5%</td>
-  <td><span class="pos">18.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.0%</span></div></td>
-  <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 505.38</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 668.00</div></td>
+  <td class="pos" style="font-weight:800">27.9%</td>
+  <td><span class="pos">30.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.0%</span></div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 505.38</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜83.38</strong><div class="signal-dates">81.22 ~ 83.38<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 89.30</div></td>
-  <td class="pos" style="font-weight:800">7.1%</td>
-  <td><span class="pos">8.5%</span><div class="signal-dates">最大回撤 <span class="neg">-2.4%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-1.9%</td>
+  <td><span class="pos">8.5%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 80.20</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜498.88</strong><div class="signal-dates">456.38 ~ 498.88<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 536.00</div></td>
-  <td class="pos" style="font-weight:800">7.4%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 512.00</div></td>
+  <td class="pos" style="font-weight:800">2.6%</td>
   <td><span class="pos">12.3%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 471.18</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">訊號 2026-04-27</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-27｜63.31</strong><div class="signal-dates">59.14 ~ 63.31<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 68.90</div></td>
-  <td class="pos" style="font-weight:800">8.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 71.10</div></td>
+  <td class="pos" style="font-weight:800">12.3%</td>
   <td><span class="pos">19.2%</span><div class="signal-dates">最大回撤 <span class="neg">-2.6%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 57.11</div></td>
 </tr>
@@ -2464,9 +2464,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">訊號 2026-04-07</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-04-07｜230.78</strong><div class="signal-dates">221.47 ~ 230.78<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 319.50</div></td>
-  <td class="pos" style="font-weight:800">38.4%</td>
-  <td><span class="pos">45.2%</span><div class="signal-dates">最大回撤 <span class="neg">-1.2%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 367.50</div></td>
+  <td class="pos" style="font-weight:800">59.2%</td>
+  <td><span class="pos">60.5%</span><div class="signal-dates">最大回撤 <span class="neg">-1.2%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 216.93</div></td>
 </tr>
 <tr>
@@ -2488,16 +2488,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/6234.html">6234 高僑</a><div class="signal-dates">訊號 2026-03-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-30｜27.70</strong><div class="signal-dates">26.91 ~ 27.84<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 57.80</div></td>
-  <td class="pos" style="font-weight:800">108.7%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 55.50</div></td>
+  <td class="pos" style="font-weight:800">100.4%</td>
   <td><span class="pos">128.5%</span><div class="signal-dates">最大回撤 <span class="neg">0.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 26.04</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">訊號 2026-03-30</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-30｜41.25</strong><div class="signal-dates">40.25 ~ 41.25<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 98.20</div></td>
-  <td class="pos" style="font-weight:800">138.1%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 90.50</div></td>
+  <td class="pos" style="font-weight:800">119.4%</td>
   <td><span class="pos">144.8%</span><div class="signal-dates">最大回撤 <span class="neg">-2.8%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 38.77</div></td>
 </tr>
@@ -2520,17 +2520,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/8358.html">8358 金居</a><div class="signal-dates">訊號 2026-03-26</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-26｜231.00</strong><div class="signal-dates">223.05 ~ 236.45<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 454.50</div></td>
-  <td class="pos" style="font-weight:800">96.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 477.00</div></td>
+  <td class="pos" style="font-weight:800">106.5%</td>
   <td><span class="pos">116.5%</span><div class="signal-dates">最大回撤 <span class="neg">-3.0%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 222.88</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">訊號 2026-03-10</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-03-10｜316.23</strong><div class="signal-dates">295.52 ~ 316.23<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 576.00</div></td>
-  <td class="pos" style="font-weight:800">82.1%</td>
-  <td><span class="pos">87.5%</span><div class="signal-dates">最大回撤 <span class="neg">-5.3%</span></div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 594.00</div></td>
+  <td class="pos" style="font-weight:800">87.8%</td>
+  <td><span class="pos">103.0%</span><div class="signal-dates">最大回撤 <span class="neg">-5.3%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 298.00</div></td>
 </tr>
 <tr>
@@ -2616,8 +2616,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2455.html">2455 全新</a><div class="signal-dates">訊號 2026-02-09</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2026-02-09｜167.72</strong><div class="signal-dates">159.03 ~ 167.72<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 347.50</div></td>
-  <td class="pos" style="font-weight:800">107.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 375.00</div></td>
+  <td class="pos" style="font-weight:800">123.6%</td>
   <td><span class="pos">128.9%</span><div class="signal-dates">最大回撤 <span class="neg">-0.1%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 157.66</div></td>
 </tr>
@@ -2635,7 +2635,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>跌破MA20｜曾漲過20%後啟動MA20續抱<div class="signal-dates">2026-03-09｜出場 27.80</div></td>
   <td class="pos" style="font-weight:800">4.1%</td>
   <td><span class="pos">36.1%</span><div class="signal-dates">最大回撤 <span class="neg">-2.1%</span></div></td>
-  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 24.38</div></td>
+  <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 25.37</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">訊號 2026-02-02</div></td>
@@ -2840,7 +2840,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2340.html">2340 台亞（半導體）</a><div class="signal-dates">訊號 2025-12-18</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-18｜26.53</strong><div class="signal-dates">25.77 ~ 26.53<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-04-30｜出場 38.05</div></td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 38.05</div></td>
   <td class="pos" style="font-weight:800">43.4%</td>
   <td><span class="pos">73.0%</span><div class="signal-dates">最大回撤 <span class="neg">-9.5%</span></div></td>
   <td><div class="price-target">+20%已啟動</div><div class="price-stop">初停 23.88</div></td>
@@ -2888,8 +2888,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2606.html">2606 裕民</a><div class="signal-dates">訊號 2025-12-11</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-11｜60.17</strong><div class="signal-dates">57.27 ~ 60.17<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 65.00</div></td>
-  <td class="pos" style="font-weight:800">8.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 63.90</div></td>
+  <td class="pos" style="font-weight:800">6.2%</td>
   <td><span class="pos">18.8%</span><div class="signal-dates">最大回撤 <span class="neg">-5.9%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 56.56</div></td>
 </tr>
@@ -2904,8 +2904,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">訊號 2025-12-08</div></td>
   <td><strong>行進籃 Williams 回落買點｜成交 2025-12-08｜67.09</strong><div class="signal-dates">64.36 ~ 67.09<br>已走一段攻擊波、進入行進籃後，等回落到 Williams -65~-85 反推區找再進場/加碼點</div></td>
-  <td>持有中<div class="signal-dates">2026-05-08｜出場 74.60</div></td>
-  <td class="pos" style="font-weight:800">11.2%</td>
+  <td>持有中<div class="signal-dates">2026-05-12｜出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">8.8%</td>
   <td><span class="pos">15.7%</span><div class="signal-dates">最大回撤 <span class="neg">-5.1%</span></div></td>
   <td><div class="signal-dates">未啟動</div><div class="price-stop">初停 63.07</div></td>
 </tr>
@@ -3158,123 +3158,123 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <tbody>
 <tr>
   <td><strong>WR -65~-85 + MA20</strong><div class="signal-dates">放寬低接區且訊號日不跌破 MA20</div></td>
-  <td>24 / 127<div class="signal-dates">18.9%</div></td>
-  <td>54.2%<div class="signal-dates">已出場 ─%</div></td>
-  <td class="neg">41.7%</td>
-  <td class="">0.0%</td>
-  <td class="pos">-5.3%</td>
-  <td><span class="neg">-5.3%</span><div class="signal-dates">均虧 -3.2%</div></td>
-  <td>2.4</td>
+  <td>33 / 170<div class="signal-dates">19.4%</div></td>
+  <td>69.7%<div class="signal-dates">已出場 75.0%</div></td>
+  <td class="pos">30.3%</td>
+  <td class="">3.0%</td>
+  <td class="pos">-4.8%</td>
+  <td><span class="neg">-6.5%</span><div class="signal-dates">均虧 -3.5%</div></td>
+  <td>2.3</td>
 </tr>
 <tr>
   <td><strong>正式買入區</strong><div class="signal-dates">Williams -65~-85 + MA20濾網</div></td>
-  <td>24 / 127<div class="signal-dates">18.9%</div></td>
-  <td>54.2%<div class="signal-dates">已出場 ─%</div></td>
-  <td class="neg">41.7%</td>
-  <td class="">0.0%</td>
-  <td class="pos">-5.3%</td>
-  <td><span class="neg">-5.3%</span><div class="signal-dates">均虧 -3.2%</div></td>
-  <td>2.4</td>
+  <td>33 / 170<div class="signal-dates">19.4%</div></td>
+  <td>69.7%<div class="signal-dates">已出場 75.0%</div></td>
+  <td class="pos">30.3%</td>
+  <td class="">3.0%</td>
+  <td class="pos">-4.8%</td>
+  <td><span class="neg">-6.5%</span><div class="signal-dates">均虧 -3.5%</div></td>
+  <td>2.3</td>
+</tr>
+<tr>
+  <td><strong>WR -70~-85 + MA20</strong><div class="signal-dates">低接區且訊號日不跌破 MA20</div></td>
+  <td>22 / 170<div class="signal-dates">12.9%</div></td>
+  <td>59.1%<div class="signal-dates">已出場 60.0%</div></td>
+  <td class="neg">40.9%</td>
+  <td class="">9.1%</td>
+  <td class="pos">-6.2%</td>
+  <td><span class="neg">-6.2%</span><div class="signal-dates">均虧 -3.8%</div></td>
+  <td>2.2</td>
 </tr>
 <tr>
   <td><strong>Williams -65~-85</strong><div class="signal-dates">放寬上緣，提高成交機會</div></td>
-  <td>28 / 127<div class="signal-dates">22.0%</div></td>
-  <td>46.4%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">50.0%</td>
-  <td class="">3.6%</td>
-  <td class="pos">-4.5%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.7%</div></td>
-  <td>2.2</td>
+  <td>39 / 170<div class="signal-dates">22.9%</div></td>
+  <td>59.0%<div class="signal-dates">已出場 42.9%</div></td>
+  <td class="neg">41.0%</td>
+  <td class="">10.3%</td>
+  <td class="pos">-4.2%</td>
+  <td><span class="neg">-6.5%</span><div class="signal-dates">均虧 -4.1%</div></td>
+  <td>2.1</td>
 </tr>
 <tr>
   <td><strong>WR -65~-85 + 非放量下跌</strong><div class="signal-dates">放寬低接區且排除放量下跌</div></td>
-  <td>28 / 127<div class="signal-dates">22.0%</div></td>
-  <td>46.4%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">50.0%</td>
-  <td class="">3.6%</td>
-  <td class="pos">-4.5%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.7%</div></td>
-  <td>2.2</td>
+  <td>39 / 170<div class="signal-dates">22.9%</div></td>
+  <td>59.0%<div class="signal-dates">已出場 42.9%</div></td>
+  <td class="neg">41.0%</td>
+  <td class="">10.3%</td>
+  <td class="pos">-4.2%</td>
+  <td><span class="neg">-6.5%</span><div class="signal-dates">均虧 -4.1%</div></td>
+  <td>2.1</td>
 </tr>
 <tr>
   <td><strong>Williams -70~-85</strong><div class="signal-dates">較寬鬆 Williams 低接區</div></td>
-  <td>22 / 127<div class="signal-dates">17.3%</div></td>
-  <td>36.4%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">59.1%</td>
-  <td class="">4.5%</td>
-  <td class="pos">-5.3%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.1%</div></td>
+  <td>28 / 170<div class="signal-dates">16.5%</div></td>
+  <td>46.4%<div class="signal-dates">已出場 37.5%</div></td>
+  <td class="neg">53.6%</td>
+  <td class="">17.9%</td>
+  <td class="pos">-5.1%</td>
+  <td><span class="neg">-6.2%</span><div class="signal-dates">均虧 -4.3%</div></td>
   <td>2.0</td>
 </tr>
 <tr>
   <td><strong>WR -70~-85 + 非放量下跌</strong><div class="signal-dates">低接區且排除放量下跌</div></td>
-  <td>22 / 127<div class="signal-dates">17.3%</div></td>
-  <td>36.4%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">59.1%</td>
-  <td class="">4.5%</td>
-  <td class="pos">-5.3%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.1%</div></td>
+  <td>28 / 170<div class="signal-dates">16.5%</div></td>
+  <td>46.4%<div class="signal-dates">已出場 37.5%</div></td>
+  <td class="neg">53.6%</td>
+  <td class="">17.9%</td>
+  <td class="pos">-5.1%</td>
+  <td><span class="neg">-6.2%</span><div class="signal-dates">均虧 -4.3%</div></td>
   <td>2.0</td>
 </tr>
 <tr>
   <td><strong>WR -70~-85 + B1未離開</strong><div class="signal-dates">低接區且籌碼未明顯離開</div></td>
-  <td>22 / 127<div class="signal-dates">17.3%</div></td>
-  <td>36.4%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">59.1%</td>
-  <td class="">4.5%</td>
-  <td class="pos">-5.3%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.1%</div></td>
+  <td>28 / 170<div class="signal-dates">16.5%</div></td>
+  <td>46.4%<div class="signal-dates">已出場 37.5%</div></td>
+  <td class="neg">53.6%</td>
+  <td class="">17.9%</td>
+  <td class="pos">-5.1%</td>
+  <td><span class="neg">-6.2%</span><div class="signal-dates">均虧 -4.3%</div></td>
   <td>2.0</td>
 </tr>
 <tr>
-  <td><strong>WR -70~-85 + MA20</strong><div class="signal-dates">低接區且訊號日不跌破 MA20</div></td>
-  <td>18 / 127<div class="signal-dates">14.2%</div></td>
-  <td>38.9%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">55.6%</td>
-  <td class="">5.6%</td>
-  <td class="pos">-6.5%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -2.6%</div></td>
-  <td>2.2</td>
+  <td><strong>Williams -60~-80</strong><div class="signal-dates">更寬鬆 Williams 觀察區</div></td>
+  <td>46 / 170<div class="signal-dates">27.1%</div></td>
+  <td>47.8%<div class="signal-dates">已出場 30.8%</div></td>
+  <td class="neg">52.2%</td>
+  <td class="">19.6%</td>
+  <td class="pos">-3.1%</td>
+  <td><span class="neg">-7.2%</span><div class="signal-dates">均虧 -3.5%</div></td>
+  <td>1.7</td>
 </tr>
 <tr>
   <td><strong>Williams -80~-90</strong><div class="signal-dates">14日 Williams 低接區</div></td>
-  <td>11 / 127<div class="signal-dates">8.7%</div></td>
-  <td>36.4%<div class="signal-dates">已出場 ─%</div></td>
-  <td class="neg">63.6%</td>
-  <td class="">0.0%</td>
-  <td class="pos">-3.1%</td>
-  <td><span class="neg">-4.1%</span><div class="signal-dates">均虧 -3.3%</div></td>
+  <td>18 / 170<div class="signal-dates">10.6%</div></td>
+  <td>27.8%<div class="signal-dates">已出場 50.0%</div></td>
+  <td class="neg">72.2%</td>
+  <td class="">11.1%</td>
+  <td class="pos">-4.5%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.4%</div></td>
   <td>2.7</td>
 </tr>
 <tr>
-  <td><strong>Williams -60~-80</strong><div class="signal-dates">更寬鬆 Williams 觀察區</div></td>
-  <td>34 / 127<div class="signal-dates">26.8%</div></td>
-  <td>44.1%<div class="signal-dates">已出場 0.0%</div></td>
-  <td class="neg">55.9%</td>
-  <td class="">17.6%</td>
-  <td class="pos">-3.3%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.8%</div></td>
-  <td>1.5</td>
+  <td><strong>KD RSV 20~35</strong><div class="signal-dates">9日 KD 低檔價格區</div></td>
+  <td>60 / 170<div class="signal-dates">35.3%</div></td>
+  <td>53.3%<div class="signal-dates">已出場 43.8%</div></td>
+  <td class="neg">46.7%</td>
+  <td class="">15.0%</td>
+  <td class="pos">-2.6%</td>
+  <td><span class="neg">-6.7%</span><div class="signal-dates">均虧 -3.7%</div></td>
+  <td>1.8</td>
 </tr>
 <tr>
   <td><strong>WR/KD 重疊</strong><div class="signal-dates">Williams 與 KD 低接區交集</div></td>
-  <td>8 / 127<div class="signal-dates">6.3%</div></td>
-  <td>37.5%<div class="signal-dates">已出場 ─%</div></td>
-  <td class="neg">62.5%</td>
-  <td class="">0.0%</td>
-  <td class="pos">-1.9%</td>
-  <td><span class="neg">-4.6%</span><div class="signal-dates">均虧 -3.8%</div></td>
+  <td>9 / 170<div class="signal-dates">5.3%</div></td>
+  <td>22.2%<div class="signal-dates">已出場 66.7%</div></td>
+  <td class="neg">77.8%</td>
+  <td class="">11.1%</td>
+  <td class="pos">-2.2%</td>
+  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -4.5%</div></td>
   <td>2.4</td>
-</tr>
-<tr>
-  <td><strong>KD RSV 20~35</strong><div class="signal-dates">9日 KD 低檔價格區</div></td>
-  <td>48 / 127<div class="signal-dates">37.8%</div></td>
-  <td>50.0%<div class="signal-dates">已出場 28.6%</div></td>
-  <td class="neg">47.9%</td>
-  <td class="">10.4%</td>
-  <td class="pos">-2.4%</td>
-  <td><span class="neg">-6.0%</span><div class="signal-dates">均虧 -3.2%</div></td>
-  <td>1.4</td>
 </tr></tbody>
     </table>
   </div>
@@ -3284,130 +3284,130 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <thead><tr><th>近期成交樣本</th><th>買入區/成交</th><th>買貴/便宜</th><th>出場</th><th>報酬</th></tr></thead>
       <tbody>
 <tr>
-  <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-07</div></td>
-  <td>53.54 ~ 54.32<div class="signal-dates">成交 2026-05-08｜53.93</div></td>
-  <td>-0.1%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">0.1%</td>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">正式買入區｜報告 2026-05-11</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>-2.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="pos" style="font-weight:800">0.2%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">正式買入區｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 38.28<div class="signal-dates">成交 2026-05-08｜38.28</div></td>
-  <td>-8.5%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">4.1%</td>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">Williams -65~-85｜報告 2026-05-11</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>-2.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="pos" style="font-weight:800">0.2%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">Williams -70~-85｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 37.84<div class="signal-dates">成交 2026-05-08｜37.84</div></td>
-  <td>-9.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">5.3%</td>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">Williams -60~-80｜報告 2026-05-11</div></td>
+  <td>71.76 ~ 73.22<div class="signal-dates">成交 2026-05-12｜73.22</div></td>
+  <td>-1.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-0.3%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">Williams -65~-85｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 38.28<div class="signal-dates">成交 2026-05-08｜38.28</div></td>
-  <td>-8.5%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">4.1%</td>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-05-11</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>-2.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="pos" style="font-weight:800">0.2%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">Williams -60~-80｜報告 2026-05-07</div></td>
-  <td>36.96 ~ 38.72<div class="signal-dates">成交 2026-05-08｜37.84</div></td>
-  <td>-9.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">5.3%</td>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-11</div></td>
+  <td>71.76 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>-2.3%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="pos" style="font-weight:800">0.2%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">WR -70~-85 + MA20｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 37.84<div class="signal-dates">成交 2026-05-08｜37.84</div></td>
-  <td>-9.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">5.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">WR -70~-85 + 非放量下跌｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 37.84<div class="signal-dates">成交 2026-05-08｜37.84</div></td>
-  <td>-9.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">5.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 38.28<div class="signal-dates">成交 2026-05-08｜38.28</div></td>
-  <td>-8.5%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">4.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">WR -70~-85 + B1未離開｜報告 2026-05-07</div></td>
-  <td>36.52 ~ 37.84<div class="signal-dates">成交 2026-05-08｜37.84</div></td>
-  <td>-9.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">5.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-07</div></td>
-  <td>39.16 ~ 40.07<div class="signal-dates">成交 2026-05-08｜39.61</div></td>
-  <td>-5.3%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">0.6%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-07</div></td>
-  <td>169.60 ~ 171.93<div class="signal-dates">成交 2026-05-08｜171.93</div></td>
-  <td>-2.6%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="pos" style="font-weight:800">0.3%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1727.html">1727 中華化</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-07</div></td>
-  <td>69.48 ~ 72.39<div class="signal-dates">成交 2026-05-08｜72.39</div></td>
-  <td>-7.4%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">正式買入區｜報告 2026-05-11</div></td>
+  <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-12｜89.22</div></td>
+  <td>0.7%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
   <td class="neg" style="font-weight:800">-0.1%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">Williams -80~-90｜報告 2026-05-07</div></td>
-  <td>48.47 ~ 49.14<div class="signal-dates">成交 2026-05-08｜48.80</div></td>
-  <td>-1.3%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-3.8%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">Williams -70~-85｜報告 2026-05-07</div></td>
-  <td>48.80 ~ 49.81<div class="signal-dates">成交 2026-05-08｜49.31</div></td>
-  <td>-0.3%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-4.8%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">Williams -65~-85｜報告 2026-05-07</div></td>
-  <td>48.80 ~ 50.14<div class="signal-dates">成交 2026-05-08｜49.47</div></td>
-  <td>0.1%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-5.1%</td>
-</tr>
-<tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">Williams -60~-80｜報告 2026-05-07</div></td>
-  <td>49.14 ~ 50.48<div class="signal-dates">成交 2026-05-08｜49.81</div></td>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">Williams -65~-85｜報告 2026-05-11</div></td>
+  <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-12｜89.22</div></td>
   <td>0.7%</td>
-  <td>初始停損<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-6.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-0.1%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">WR -70~-85 + 非放量下跌｜報告 2026-05-07</div></td>
-  <td>48.80 ~ 49.81<div class="signal-dates">成交 2026-05-08｜49.31</div></td>
-  <td>-0.3%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-4.8%</td>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">Williams -60~-80｜報告 2026-05-11</div></td>
+  <td>86.38 ~ 90.16<div class="signal-dates">成交 2026-05-12｜90.16</div></td>
+  <td>1.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-1.2%</td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-05-07</div></td>
-  <td>48.80 ~ 50.14<div class="signal-dates">成交 2026-05-08｜49.47</div></td>
-  <td>0.1%</td>
-  <td>持有中<div class="signal-dates">2026-05-08</div></td>
-  <td class="neg" style="font-weight:800">-5.1%</td>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-05-11</div></td>
+  <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-12｜89.22</div></td>
+  <td>0.7%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-0.1%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">KD RSV 20~35｜報告 2026-05-11</div></td>
+  <td>89.02 ~ 91.36<div class="signal-dates">成交 2026-05-12｜90.19</div></td>
+  <td>1.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-1.2%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">正式買入區｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>-6.6%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">Williams -80~-90｜報告 2026-05-08</div></td>
+  <td>82.04 ~ 82.98<div class="signal-dates">成交 2026-05-12｜82.51</div></td>
+  <td>-7.6%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-0.9%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">Williams -70~-85｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 83.92<div class="signal-dates">成交 2026-05-12｜83.22</div></td>
+  <td>-6.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-1.7%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">Williams -65~-85｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>-6.6%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">Williams -60~-80｜報告 2026-05-08</div></td>
+  <td>82.98 ~ 84.86<div class="signal-dates">成交 2026-05-12｜83.92</div></td>
+  <td>-6.0%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-2.5%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">WR -70~-85 + MA20｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 83.92<div class="signal-dates">成交 2026-05-12｜83.22</div></td>
+  <td>-6.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-1.7%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">WR -70~-85 + 非放量下跌｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 83.92<div class="signal-dates">成交 2026-05-12｜83.22</div></td>
+  <td>-6.8%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-1.7%</td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">WR -65~-85 + 非放量下跌｜報告 2026-05-08</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>-6.6%</td>
+  <td>持有中<div class="signal-dates">2026-05-12</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
 </tr></tbody>
     </table>
   </div>
@@ -3419,6 +3419,330 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
         <thead><tr><th>個股</th><th>狀態</th><th>買入區/成交</th><th>出場</th><th>報酬</th><th>天數</th><th>目標/初停</th></tr></thead>
         <tbody>
 <tr>
+  <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>969.25 ~ 1088.25<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 1504.50</div><div class="price-stop">初停 967.02</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6134.html">6134 萬旭</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>29.78 ~ 30.82<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 35.19</div><div class="price-stop">初停 28.86</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/4979.html">4979 華星光</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>548.65 ~ 598.85<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 777.24</div><div class="price-stop">初停 539.32</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/3443.html">3443 創意</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>3765.75 ~ 4186.75<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 5844.60</div><div class="price-stop">初停 3737.67</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">+0.2%</td>
+  <td>0</td>
+  <td><div class="price-target">目 79.15</div><div class="price-stop">初停 67.96</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2606.html">2606 裕民</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>60.89 ~ 62.21<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 67.83</div><div class="price-stop">初停 59.50</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2368.html">2368 金像電</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>1201.25 ~ 1276.25<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 1550.40</div><div class="price-stop">初停 1164.42</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">濾網排除</span><div class="signal-dates">訊號日收盤跌破MA20</div></td>
+  <td>MA20濾網排除<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 89.25</div><div class="price-stop">初停 78.10</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>294.62 ~ 304.12<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 358.02</div><div class="price-stop">初停 275.50</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>162.03 ~ 166.72<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 188.19</div><div class="price-stop">初停 150.25</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1727.html">1727 中華化</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>60.01 ~ 65.89<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 86.70</div><div class="price-stop">初停 59.17</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1721.html">1721 三晃</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>22.82 ~ 24.51<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 31.98</div><div class="price-stop">初停 22.24</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>108.65 ~ 116.85<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 193.80</div><div class="price-stop">初停 105.98</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>57.65 ~ 67.85<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 103.02</div><div class="price-stop">初停 58.98</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1570.html">1570 力肯</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>34.60 ~ 37.00<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 45.70</div><div class="price-stop">初停 33.65</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">行進籃｜報告 2026-05-11</div></td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-12｜89.22</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 89.10</div></td>
+  <td class="neg" style="font-weight:800">-0.1%</td>
+  <td>0</td>
+  <td><div class="price-target">目 103.53</div><div class="price-stop">初停 80.00</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>202.70 ~ 216.30<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 265.71</div><div class="price-stop">初停 196.93</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+  <td>0</td>
+  <td><div class="price-target">目 92.31</div><div class="price-stop">初停 80.20</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">濾網排除</span><div class="signal-dates">訊號日收盤跌破MA20</div></td>
+  <td>MA20濾網排除<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 60.18</div><div class="price-stop">初停 51.04</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>969.25 ~ 1088.25<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 1504.50</div><div class="price-stop">初停 967.02</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>2455.75 ~ 2576.75<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 3029.40</div><div class="price-stop">初停 2365.28</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/3443.html">3443 創意</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>3765.75 ~ 4186.75<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 5666.10</div><div class="price-stop">初停 3737.67</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">+0.2%</td>
+  <td>0</td>
+  <td><div class="price-target">目 79.15</div><div class="price-stop">初停 67.96</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2606.html">2606 裕民</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>60.89 ~ 62.21<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 67.83</div><div class="price-stop">初停 59.50</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">濾網排除</span><div class="signal-dates">訊號日收盤跌破MA20</div></td>
+  <td>MA20濾網排除<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 87.21</div><div class="price-stop">初停 78.10</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">濾網排除</span><div class="signal-dates">訊號日收盤跌破MA20</div></td>
+  <td>MA20濾網排除<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 128.01</div><div class="price-stop">初停 106.34</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>74.92 ~ 80.53<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 100.78</div><div class="price-stop">初停 74.00</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2236.html">2236 百達-KY</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>126.83 ~ 129.93<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 142.80</div><div class="price-stop">初停 120.00</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2059.html">2059 川湖</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>3768.75 ~ 4133.75<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 5426.40</div><div class="price-stop">初停 3745.00</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>294.62 ~ 304.12<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 341.70</div><div class="price-stop">初停 275.50</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>63.98 ~ 67.02<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 78.44</div><div class="price-stop">初停 61.57</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1785.html">1785 光洋科</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>139.53 ~ 150.22<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 188.70</div><div class="price-stop">初停 136.18</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>162.03 ~ 166.72<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 185.64</div><div class="price-stop">初停 147.26</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1721.html">1721 三晃</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>22.82 ~ 24.51<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 30.60</div><div class="price-stop">初停 22.24</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>57.65 ~ 67.85<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 103.02</div><div class="price-stop">初停 58.98</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">行進籃｜報告 2026-05-08</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>522.65 ~ 544.85<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 629.34</div><div class="price-stop">初停 498.50</div></td>
+</tr>
+<tr>
   <td><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
   <td>189.28 ~ 204.97<div class="signal-dates">成交 ─｜─</div></td>
@@ -3429,11 +3753,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>82.51 ~ 84.39<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+  <td>0</td>
   <td><div class="price-target">目 92.31</div><div class="price-stop">初停 79.20</div></td>
 </tr>
 <tr>
@@ -3453,6 +3777,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
   <td><div class="price-target">目 1473.90</div><div class="price-stop">初停 959.97</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/6217.html">6217 中探針</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>235.50 ~ 253.50<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 318.24</div><div class="price-stop">初停 230.00</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/4979.html">4979 華星光</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
@@ -3476,18 +3809,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>36.52 ~ 38.28<div class="signal-dates">成交 2026-05-08｜38.28</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 39.85</div></td>
-  <td class="pos" style="font-weight:800">+4.1%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 38.90</div></td>
+  <td class="pos" style="font-weight:800">+1.6%</td>
+  <td>4</td>
   <td><div class="price-target">目 44.88</div><div class="price-stop">初停 35.20</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>71.39 ~ 72.85<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>71.39 ~ 72.85<div class="signal-dates">成交 2026-05-12｜72.85</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">+0.2%</td>
+  <td>0</td>
   <td><div class="price-target">目 79.15</div><div class="price-stop">初停 67.96</div></td>
 </tr>
 <tr>
@@ -3575,9 +3908,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">行進籃｜報告 2026-05-07</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-08｜87.33</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 88.60</div></td>
-  <td class="pos" style="font-weight:800">+1.5%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 89.10</div></td>
+  <td class="pos" style="font-weight:800">+2.0%</td>
+  <td>4</td>
   <td><div class="price-target">目 103.53</div><div class="price-stop">初停 80.00</div></td>
 </tr>
 <tr>
@@ -3600,21 +3933,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>82.51 ~ 84.39<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>82.51 ~ 84.39<div class="signal-dates">成交 2026-05-12｜83.45</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 81.80</div></td>
+  <td class="neg" style="font-weight:800">-2.0%</td>
+  <td>0</td>
   <td><div class="price-target">目 92.31</div><div class="price-stop">初停 75.42</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>52.34 ~ 53.71<div class="signal-dates">成交 2026-05-12｜53.02</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 53.30</div></td>
+  <td class="pos" style="font-weight:800">+0.5%</td>
+  <td>0</td>
+  <td><div class="price-target">目 60.18</div><div class="price-stop">初停 50.35</div></td>
+</tr>
+<tr>
+  <td><a class="stock-link" href="stocks/8042.html">8042 金山電</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
   <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>52.34 ~ 53.71<div class="signal-dates">成交 ─｜─</div></td>
+  <td>57.06 ~ 61.94<div class="signal-dates">成交 ─｜─</div></td>
   <td>─<div class="signal-dates">出場 ─</div></td>
   <td class="" style="font-weight:800">─</td>
   <td>─</td>
-  <td><div class="price-target">目 60.18</div><div class="price-stop">初停 50.35</div></td>
+  <td><div class="price-target">目 79.36</div><div class="price-stop">初停 55.93</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
@@ -3647,18 +3989,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>654.30 ~ 710.70<div class="signal-dates">成交 2026-05-08｜710.70</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 684.00</div></td>
-  <td class="neg" style="font-weight:800">-3.8%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 760.00</div></td>
+  <td class="pos" style="font-weight:800">+6.9%</td>
+  <td>4</td>
   <td><div class="price-target">目 911.88</div><div class="price-stop">初停 641.55</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
-  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
-  <td>71.35 ~ 72.75<div class="signal-dates">成交 ─｜─</div></td>
-  <td>─<div class="signal-dates">出場 ─</div></td>
-  <td class="" style="font-weight:800">─</td>
-  <td>─</td>
+  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td>71.35 ~ 72.75<div class="signal-dates">成交 2026-05-12｜72.75</div></td>
+  <td>2026-05-12<div class="signal-dates">出場 73.00</div></td>
+  <td class="pos" style="font-weight:800">+0.3%</td>
+  <td>0</td>
   <td><div class="price-target">目 78.85</div><div class="price-stop">初停 67.36</div></td>
 </tr>
 <tr>
@@ -3737,18 +4079,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>48.80 ~ 50.14<div class="signal-dates">成交 2026-05-07｜49.47</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 46.95</div></td>
-  <td class="neg" style="font-weight:800">-5.1%</td>
-  <td>1</td>
+  <td>2026-05-12<div class="signal-dates">出場 47.05</div></td>
+  <td class="neg" style="font-weight:800">-4.9%</td>
+  <td>5</td>
   <td><div class="price-target">目 56.10</div><div class="price-stop">初停 43.83</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">行進籃｜報告 2026-05-06</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>85.44 ~ 89.22<div class="signal-dates">成交 2026-05-08｜87.33</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 88.60</div></td>
-  <td class="pos" style="font-weight:800">+1.5%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 89.10</div></td>
+  <td class="pos" style="font-weight:800">+2.0%</td>
+  <td>4</td>
   <td><div class="price-target">目 103.53</div><div class="price-stop">初停 78.70</div></td>
 </tr>
 <tr>
@@ -3791,9 +4133,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">行進籃｜報告 2026-05-04</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>654.30 ~ 710.70<div class="signal-dates">成交 2026-05-08｜710.70</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 684.00</div></td>
-  <td class="neg" style="font-weight:800">-3.8%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 760.00</div></td>
+  <td class="pos" style="font-weight:800">+6.9%</td>
+  <td>4</td>
   <td><div class="price-target">目 911.88</div><div class="price-stop">初停 641.55</div></td>
 </tr>
 <tr>
@@ -3824,12 +4166,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-target">目 87.11</div><div class="price-stop">初停 78.10</div></td>
 </tr>
 <tr>
+  <td><a class="stock-link" href="stocks/2345.html">2345 智邦</a><div class="signal-dates">行進籃｜報告 2026-05-04</div></td>
+  <td><span class="tag tag">未成交</span><div class="signal-dates">未觸及買入區</div></td>
+  <td>1948.25 ~ 2079.25<div class="signal-dates">成交 ─｜─</div></td>
+  <td>─<div class="signal-dates">出場 ─</div></td>
+  <td class="" style="font-weight:800">─</td>
+  <td>─</td>
+  <td><div class="price-target">目 2555.10</div><div class="price-stop">初停 1892.92</div></td>
+</tr>
+<tr>
   <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">行進籃｜報告 2026-05-04</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td><span class="tag tag-green">停利</span><div class="signal-dates">停利</div></td>
   <td>111.47 ~ 114.78<div class="signal-dates">成交 2026-05-05｜113.12</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 112.50</div></td>
-  <td class="neg" style="font-weight:800">-0.6%</td>
-  <td>3</td>
+  <td>2026-05-12<div class="signal-dates">出場 128.01</div></td>
+  <td class="pos" style="font-weight:800">+13.2%</td>
+  <td>7</td>
   <td><div class="price-target">目 128.01</div><div class="price-stop">初停 106.34</div></td>
 </tr>
 <tr>
@@ -3908,9 +4259,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">行進籃｜報告 2026-05-04</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>48.88 ~ 50.32<div class="signal-dates">成交 2026-05-07｜49.60</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 46.95</div></td>
-  <td class="neg" style="font-weight:800">-5.3%</td>
-  <td>1</td>
+  <td>2026-05-12<div class="signal-dates">出場 47.05</div></td>
+  <td class="neg" style="font-weight:800">-5.1%</td>
+  <td>5</td>
   <td><div class="price-target">目 56.10</div><div class="price-stop">初停 43.83</div></td>
 </tr>
 <tr>
@@ -3926,9 +4277,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">行進籃｜報告 2026-05-04</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>50.27 ~ 51.69<div class="signal-dates">成交 2026-05-05｜50.98</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 48.55</div></td>
-  <td class="neg" style="font-weight:800">-4.8%</td>
-  <td>3</td>
+  <td>2026-05-12<div class="signal-dates">出場 47.65</div></td>
+  <td class="neg" style="font-weight:800">-6.5%</td>
+  <td>7</td>
   <td><div class="price-target">目 57.43</div><div class="price-stop">初停 45.52</div></td>
 </tr>
 <tr>
@@ -3953,9 +4304,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>654.30 ~ 710.70<div class="signal-dates">成交 2026-05-08｜710.70</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 684.00</div></td>
-  <td class="neg" style="font-weight:800">-3.8%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 760.00</div></td>
+  <td class="pos" style="font-weight:800">+6.9%</td>
+  <td>4</td>
   <td><div class="price-target">目 964.32</div><div class="price-stop">初停 641.98</div></td>
 </tr>
 <tr>
@@ -3989,18 +4340,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>80.05 ~ 81.30<div class="signal-dates">成交 2026-05-04｜81.30</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 82.20</div></td>
-  <td class="pos" style="font-weight:800">+1.1%</td>
-  <td>4</td>
+  <td>2026-05-12<div class="signal-dates">出場 84.90</div></td>
+  <td class="pos" style="font-weight:800">+4.4%</td>
+  <td>8</td>
   <td><div class="price-target">目 92.40</div><div class="price-stop">初停 78.10</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td><span class="tag tag-green">停利</span><div class="signal-dates">停利</div></td>
   <td>111.47 ~ 114.78<div class="signal-dates">成交 2026-05-04｜113.12</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 112.50</div></td>
-  <td class="neg" style="font-weight:800">-0.6%</td>
-  <td>4</td>
+  <td>2026-05-12<div class="signal-dates">出場 126.00</div></td>
+  <td class="pos" style="font-weight:800">+11.4%</td>
+  <td>8</td>
   <td><div class="price-target">目 126.00</div><div class="price-stop">初停 101.25</div></td>
 </tr>
 <tr>
@@ -4014,11 +4365,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2243.html">2243 宏旭-KY</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td><span class="tag tag-red">停損/出場</span><div class="signal-dates">初始停損</div></td>
   <td>22.93 ~ 24.31<div class="signal-dates">成交 2026-05-08｜23.80</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 23.80</div></td>
-  <td class="" style="font-weight:800">+0.0%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 22.21</div></td>
+  <td class="neg" style="font-weight:800">-6.7%</td>
+  <td>4</td>
   <td><div class="price-target">目 30.52</div><div class="price-stop">初停 22.21</div></td>
 </tr>
 <tr>
@@ -4088,9 +4439,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>47.35 ~ 49.15<div class="signal-dates">成交 2026-05-08｜48.25</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 46.95</div></td>
-  <td class="neg" style="font-weight:800">-2.7%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 47.05</div></td>
+  <td class="neg" style="font-weight:800">-2.5%</td>
+  <td>4</td>
   <td><div class="price-target">目 58.58</div><div class="price-stop">初停 45.35</div></td>
 </tr>
 <tr>
@@ -4106,9 +4457,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">行進籃｜報告 2026-04-30</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>48.52 ~ 50.35<div class="signal-dates">成交 2026-05-07｜49.44</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 48.55</div></td>
-  <td class="neg" style="font-weight:800">-1.8%</td>
-  <td>1</td>
+  <td>2026-05-12<div class="signal-dates">出場 47.65</div></td>
+  <td class="neg" style="font-weight:800">-3.6%</td>
+  <td>5</td>
   <td><div class="price-target">目 57.68</div><div class="price-stop">初停 46.35</div></td>
 </tr>
 <tr>
@@ -4149,11 +4500,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">盤整籃｜報告 2026-04-29</div></td>
-  <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
+  <td><span class="tag tag-green">停利</span><div class="signal-dates">停利</div></td>
   <td>174.88 ~ 179.38<div class="signal-dates">成交 2026-04-30｜177.12</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 180.00</div></td>
-  <td class="pos" style="font-weight:800">+1.6%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 197.88</div></td>
+  <td class="pos" style="font-weight:800">+11.7%</td>
+  <td>12</td>
   <td><div class="price-target">目 197.88</div><div class="price-stop">初停 167.00</div></td>
 </tr>
 <tr>
@@ -4187,9 +4538,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">盤整籃｜報告 2026-04-29</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>348.32 ~ 375.43<div class="signal-dates">成交 2026-04-30｜375.43</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 388.00</div></td>
-  <td class="pos" style="font-weight:800">+3.3%</td>
-  <td>8</td>
+  <td>2026-05-12<div class="signal-dates">出場 381.00</div></td>
+  <td class="pos" style="font-weight:800">+1.5%</td>
+  <td>12</td>
   <td><div class="price-target">目 472.77</div><div class="price-stop">初停 340.16</div></td>
 </tr>
 <tr>
@@ -4214,9 +4565,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">盤整籃｜報告 2026-04-29</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>53.19 ~ 58.36<div class="signal-dates">成交 2026-05-06｜58.36</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 59.00</div></td>
-  <td class="pos" style="font-weight:800">+1.1%</td>
-  <td>2</td>
+  <td>2026-05-12<div class="signal-dates">出場 60.60</div></td>
+  <td class="pos" style="font-weight:800">+3.8%</td>
+  <td>6</td>
   <td><div class="price-target">目 76.70</div><div class="price-stop">初停 52.43</div></td>
 </tr>
 <tr>
@@ -4250,9 +4601,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2402.html">2402 毅嘉</a><div class="signal-dates">盤整籃｜報告 2026-04-29</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>61.11 ~ 66.73<div class="signal-dates">成交 2026-05-08｜66.73</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 68.00</div></td>
-  <td class="pos" style="font-weight:800">+1.9%</td>
-  <td>0</td>
+  <td>2026-05-12<div class="signal-dates">出場 70.80</div></td>
+  <td class="pos" style="font-weight:800">+6.1%</td>
+  <td>4</td>
   <td><div class="price-target">目 86.70</div><div class="price-stop">初停 60.09</div></td>
 </tr>
 <tr>
@@ -4358,9 +4709,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3673.html">3673 TPK觸控</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>53.19 ~ 58.36<div class="signal-dates">成交 2026-05-06｜58.36</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 59.00</div></td>
-  <td class="pos" style="font-weight:800">+1.1%</td>
-  <td>2</td>
+  <td>2026-05-12<div class="signal-dates">出場 60.60</div></td>
+  <td class="pos" style="font-weight:800">+3.8%</td>
+  <td>6</td>
   <td><div class="price-target">目 73.54</div><div class="price-stop">初停 52.43</div></td>
 </tr>
 <tr>
@@ -4376,9 +4727,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">行進籃｜報告 2026-04-28</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>462.33 ~ 503.42<div class="signal-dates">成交 2026-04-29｜499.50</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 536.00</div></td>
-  <td class="pos" style="font-weight:800">+7.3%</td>
-  <td>1</td>
+  <td>2026-05-12<div class="signal-dates">出場 512.00</div></td>
+  <td class="pos" style="font-weight:800">+2.5%</td>
+  <td>13</td>
   <td><div class="price-target">目 629.34</div><div class="price-stop">初停 453.90</div></td>
 </tr>
 <tr>
@@ -4457,9 +4808,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">盤整籃｜報告 2026-04-24</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>40.91 ~ 43.99<div class="signal-dates">成交 2026-04-27｜42.45</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 44.10</div></td>
-  <td class="pos" style="font-weight:800">+3.9%</td>
-  <td>3</td>
+  <td>2026-05-12<div class="signal-dates">出場 48.45</div></td>
+  <td class="pos" style="font-weight:800">+14.1%</td>
+  <td>15</td>
   <td><div class="price-target">目 52.33</div><div class="price-stop">初停 39.90</div></td>
 </tr>
 <tr>
@@ -4493,18 +4844,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3221.html">3221 台嘉碩（通信網路）</a><div class="signal-dates">盤整籃｜報告 2026-04-24</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>36.95 ~ 40.90<div class="signal-dates">成交 2026-04-27｜40.90</div></td>
-  <td>2026-04-30<div class="signal-dates">出場 42.85</div></td>
-  <td class="pos" style="font-weight:800">+4.8%</td>
-  <td>3</td>
+  <td>2026-05-12<div class="signal-dates">出場 43.80</div></td>
+  <td class="pos" style="font-weight:800">+7.1%</td>
+  <td>15</td>
   <td><div class="price-target">目 54.67</div><div class="price-stop">初停 36.59</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2484.html">2484 希華（電子零組件）</a><div class="signal-dates">盤整籃｜報告 2026-04-24</div></td>
   <td><span class="tag tag-yellow">持有中</span><div class="signal-dates">持有中</div></td>
   <td>32.33 ~ 36.77<div class="signal-dates">成交 2026-04-27｜36.77</div></td>
-  <td>2026-05-08<div class="signal-dates">出場 41.80</div></td>
-  <td class="pos" style="font-weight:800">+13.7%</td>
-  <td>11</td>
+  <td>2026-05-12<div class="signal-dates">出場 38.90</div></td>
+  <td class="pos" style="font-weight:800">+5.8%</td>
+  <td>15</td>
   <td><div class="price-target">目 50.24</div><div class="price-stop">初停 32.48</div></td>
 </tr>
 <tr>

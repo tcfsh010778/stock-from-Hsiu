@@ -1,6 +1,6 @@
 # Codex Handoff
 
-Last updated: 2026-05-10
+Last updated: 2026-05-13
 
 ## Startup Reminder
 
@@ -233,6 +233,70 @@ Fix the home page buy/sell recommendation cards that still showed 2026-05-08 clo
 
 - If this happens again, first check whether the report stocks carry `report_date` before debugging report parsing or GitHub Pages caching.
 - Local price CSV caches may still lag the report date; the report-date merge path is the intended bridge for current report display.
+
+## 2026-05-13 Full-Market Pages 5/8 Price Fix
+
+### Goal
+
+Fix the remaining stale pages after the home page fix: MDA launched/consolidation baskets, buy/sell timing, and stock query/detail pages still contained 2026-05-08 full-market prices.
+
+### Root Cause
+
+- `docs/mda.html`, `docs/stocks.html`, stock detail pages, and the MDA candidate pages are driven by `data/prices/*.csv` plus `data/mda_universe_scan.*`, not only by the latest daily report.
+- Most `data/prices/*.csv` files still ended on 2026-05-08, so full-market and stock-query pages regenerated from stale local cache rows.
+- The buy/sell timing page also reads the CaryBot v51 daily radar from `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\carybot_daily_ai_buy_v51*.csv`; that v51 snapshot was still `global_data_date=2026-05-08`.
+
+### Completed
+
+- Ran the full-market one-day price refresh for 2026-05-12:
+  - `python mda_full_market_refresh.py --skip-holding --one-day-price --price-start 2026-05-12`
+  - refreshed 1964 matched stock price files.
+- Rebuilt MDA full-market scan:
+  - `python mda_universe_scan.py`
+  - latest key prices now include `2347 84.90`, `2606 63.90`, `2637 73.00`, `3443 5570.00`, `6274 1450.00`.
+- Rebuilt CaryBot v51 daily AI_Buy-like radar:
+  - `python build_carybot_daily_ai_buy_v51.py` from the sibling `自動交易程式\回測` folder
+  - v51 summary now shows `global_data_date=2026-05-12`, `price_cache_stock_n=1968`, `scored_stock_n=649`, `candidate_pass_n=56`, top pick `2897`.
+- Regenerated the static website with `python generate_site.py`.
+
+### Changed Files
+
+- `data/prices/*.csv`
+- `data/mda_full_market_refresh_summary.json`
+- `data/mda_universe_scan.csv`
+- `data/mda_universe_scan.json`
+- `data/mda_universe_scan_preview.html`
+- regenerated `docs/mda.html`
+- regenerated `docs/timing.html`
+- regenerated `docs/stocks.html`
+- regenerated `docs/stocks/*.html`
+- regenerated `docs/mda_candidates/*.html`
+- external v51 source files under `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\v6_outputs\`
+
+### Source Of Truth
+
+- Full-market price refresh: `mda_full_market_refresh.py`
+- MDA full-market scan: `mda_universe_scan.py`
+- Website generator: `generate_site.py`
+- CaryBot v51 radar generator: `C:\Users\USER\OneDrive\桌面\股票\自動交易程式\回測\build_carybot_daily_ai_buy_v51.py`
+- Visible output: `docs/mda.html`, `docs/timing.html`, `docs/stocks.html`, `docs/stocks/*.html`
+
+### Rebuild / Verification
+
+- Ran `python mda_full_market_refresh.py --skip-holding --one-day-price --price-start 2026-05-12`.
+- Ran `python mda_universe_scan.py`.
+- Ran `python build_carybot_daily_ai_buy_v51.py`.
+- Ran `python generate_site.py`; it generated 2492 files.
+- Verified locally:
+  - MDA active/full-market rows show latest prices, and full-market rows show 2026-05-12.
+  - Stock query and stock detail pages show 2026-05-12 latest prices.
+  - Buy/sell timing buy radar shows latest prices.
+  - CaryBot v51 timing section contains `2026-05-12`, top pick `2897`, and no stale 2026-05-08 in the checked v51 chunk.
+
+### Next Notes
+
+- For future daily refreshes, the report date alone is not enough. Run the full-market price refresh and MDA scan before rebuilding static docs when pages outside the home report need to be current.
+- If the timing page v51 block is stale, rerun the sibling `build_carybot_daily_ai_buy_v51.py` before `generate_site.py`.
 
 ## 2026-05-09 Home Page Simplification
 
