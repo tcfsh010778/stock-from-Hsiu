@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2357 華碩 — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-title-link{display:inline-flex;align-items:baseline;gap:6px;color:#e6edf3;text-decoration:none;border-bottom:1px solid transparent}
+.basket-title-link:hover{color:#58a6ff;border-bottom-color:#58a6ff}
+.basket-title-link:hover .basket-name{color:#58a6ff}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
+.basket-change{font-size:13px;font-weight:800}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+.signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
+.signal-foot strong{color:#e6edf3}
+.signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
+.signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
+.push-ok{color:#3fb950;font-weight:700}
+.push-wait{color:#d2a520;font-weight:700}
+.push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-price-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.telegram-price-line .k{font-size:11px;color:#8b949e}
+.telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
+.telegram-price-line .change{font-size:13px;font-weight:800}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.hover-chart,.indicator-hover{position:relative}
+.chart-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(88,166,255,.85);display:none;pointer-events:none}
+.chart-tooltip{position:absolute;z-index:5;display:none;min-width:190px;max-width:240px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:9px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;box-shadow:0 10px 28px rgba(0,0,0,.35);pointer-events:none}
+.chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
+.chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
+.chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chart-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.tv-chart-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:10px;position:relative}
+.tv-chart-title{font-size:12px;font-weight:800;color:#e6edf3;margin:0 0 6px}
+.tv-chart{height:150px;min-height:150px;position:relative}
+.tv-chart.main{height:360px;min-height:360px}
+.tv-chart-note{font-size:11px;color:#6e7681;margin-top:8px;line-height:1.5}
+.tv-tooltip{position:absolute;z-index:8;display:none;top:34px;left:14px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;pointer-events:none;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+.tv-draw-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:-2px 0 8px}
+.tv-draw-btn{border:1px solid #30363d;background:#161b22;color:#8b949e;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.tv-draw-btn:hover,.tv-draw-btn.active{border-color:#58a6ff;color:#58a6ff;background:#0d2142}
+.tv-draw-layer{position:absolute;inset:0;z-index:7;pointer-events:none}
+.tv-draw-layer.active{pointer-events:auto;cursor:crosshair}
+.tv-draw-layer line{vector-effect:non-scaling-stroke}
+.tv-draw-layer .draft{stroke-dasharray:5 4;opacity:.9}
+.tv-chip-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chip-chart{height:280px;min-height:280px}
+.tv-chip-chart.compact{height:240px;min-height:240px}
+.holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
+.tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.chip-indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.indicator-box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:8px}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
+.ma-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:280px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between}
+.ma-name{font-size:12px;color:#8b949e}
+.ma-value{font-size:15px;font-weight:800;color:#e6edf3}
+.arrow-up{color:#f85149;font-weight:900}
+.arrow-down{color:#3fb950;font-weight:900}
+.arrow-flat{color:#8b949e;font-weight:900}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#f85149}
+.neg{color:#3fb950}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#f85149;font-size:12px}
+.price-stop{color:#3fb950;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
+.m-score{font-size:24px;font-weight:900;color:#e6edf3}
+.m-checks{display:flex;flex-wrap:wrap;gap:6px}
+.m-check{display:inline-flex;align-items:center;border:1px solid #30363d;border-radius:999px;padding:2px 8px;font-size:11px;color:#c9d1d9;background:#0d1117}
+.m-check.ok{border-color:rgba(63,185,80,.45);color:#3fb950}
+.m-check.warn{border-color:rgba(210,153,34,.45);color:#d2a520}
+.m-check.bad{border-color:rgba(248,81,73,.45);color:#f85149}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
+  .stock-table .hide-mobile{display:none}
+  .filter-steps{flex-direction:column}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="../index.html" class="tab">首頁</a>
+<a href="../selection.html" class="tab">選股池</a>
+<a href="../mda.html" class="tab">M大觀察</a>
+<a href="../timing.html" class="tab">買賣時機</a>
+<a href="../stocks.html" class="tab active">個股查詢</a>
+<a href="../history.html" class="tab">歷史分析</a>
+
+</nav>
+
+<div class="container">
+  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div class="page-title">2357 華碩</div>
+  <div class="page-sub">v44 個股研究頁 · 報告日期 ─</div>
+  <div class="detail-hero">
+    <div class="card">
+      <div class="section-label">資訊卡</div>
+      
+<div class="telegram-report-card">
+  <div class="telegram-head">
+    <div>
+      <div class="telegram-title">2357 華碩 個股資訊卡</div>
+      <div class="telegram-meta">收盤日期 2025-03-04｜報告日期 ─</div>
+    </div>
+    <div class="telegram-rating ">觀望</div>
+  </div>
+  <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">670.00</div></div><div class="change pos">單日 +1.00（+0.15%）</div></div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score ─</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 整理/修正 / 量能資料不足 / B1主力未離開 / B2資料不足</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">首次或尚未建立歷史台帳</div></div></div>
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">區間整理</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量能資料不足</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 0.15% / 量比 ─x / 紅K / 5日均量資料不足</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">資料不足，先等量價結構明確。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">─</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v neg">外資5日 -13,102張；三大法人當日 301 張；大戶 62.35% / 散戶 12.79%</div></div><div class="telegram-line"><div class="k">籌碼數字</div><div class="v">外資10日 -42564 張；主力10日 -11927 張</div></div></div>
+  <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
+</div>
+    </div>
+    <div>
+      <div class="card">
+        <div class="section-label">操作規劃</div>
+        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 683.00｜近支撐 629.80</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">資料不足</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">696.66</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">629.80（買點-6%，-6.0%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-bad">1:0.7</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜MA20資料不足；外資連賣10日</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。</div></div></div>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <div class="section-label">Quick 分析</div>
+        <div class="mini-report">分類：個股查詢
+操作評價：觀望｜買進區間：資料不足｜關鍵防守：資料不足
+現況：收盤 670.00，RSI ─，%B ─。
+理由：距買進區間偏遠，不追價
+台帳：未在目前籃中，從已快取價格/籌碼資料建立查詢頁。
+操作：先當作獨立個股觀察：重點看價格是否不再破低，外資/融資賣壓是否收斂，以及少量買盤能否守住關鍵支撐。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">v44 技術 / 買點雷達</div>
+    
+<div class="tech-panel">
+  <div class="ma-strip"><div class="ma-pill"><div class="ma-name">MA5</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div><div class="ma-pill"><div class="ma-name">MA10</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div><div class="ma-pill"><div class="ma-name">MA20</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div><div class="ma-pill"><div class="ma-name">MA60</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div><div class="ma-pill"><div class="ma-name">MA120</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div><div class="ma-pill"><div class="ma-name">MA240</div><div class="ma-value">─ <span class="arrow-flat">→</span></div></div></div>
+  <div class="tech-summary-grid">
+    <div class="info-cell"><div class="k">量價評分</div><div class="v">量能資料不足</div></div>
+    <div class="info-cell"><div class="k">判斷依據</div><div class="v">單日 0.15% / 量比 ─x / 紅K / 5日均量資料不足</div></div>
+    <div class="info-cell"><div class="k">趨勢型態</div><div class="v">區間整理</div></div>
+    <div class="info-cell"><div class="k">120日扣抵值</div><div class="v">─</div><div class="signal-dates">收盤距扣抵 ─%</div></div>
+  </div>
+</div>
+    <div class="strategy-note" style="margin-top:12px">
+      行進籃以 SFZ 訊號與 MA20 續抱為主；盤整籃以 MABC 值得等待、量價轉強買點浮現為主。若距建議買點已明顯過高，視為不追價，等待 MA5/MA10/箱頂回測。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">日K / 週K / 月K</div>
+    
+<div id="mda-tv-2357" class="tv-chart-grid">
+  <div class="tv-chart-panel" data-kind="k">
+  <div class="tv-chart-title">日K</div>
+  <div class="tv-draw-toolbar" data-draw-toolbar="mda-tv-2357">
+    <button type="button" class="tv-draw-btn" data-draw-tool="trend">趨勢線</button>
+    <button type="button" class="tv-draw-btn" data-draw-tool="arrow">箭頭</button>
+    <button type="button" class="tv-draw-btn" data-draw-tool="clear">清除畫線</button>
+  </div>
+  <div id="mda-tv-2357-k" class="tv-chart main"></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="volume">
+  <div class="tv-chart-title">成交量（張）</div>
+  
+  <div id="mda-tv-2357-volume" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="foreignShares">
+  <div class="tv-chart-title">外資持股張數</div>
+  
+  <div id="mda-tv-2357-foreignShares" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="foreign">
+  <div class="tv-chart-title">外資買賣超（張）</div>
+  
+  <div id="mda-tv-2357-foreign" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="marginBalance">
+  <div class="tv-chart-title">融資餘額</div>
+  
+  <div id="mda-tv-2357-marginBalance" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="major">
+  <div class="tv-chart-title">千張大戶持股比例</div>
+  
+  <div id="mda-tv-2357-major" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="retail">
+  <div class="tv-chart-title">散戶持股比例</div>
+  
+  <div id="mda-tv-2357-retail" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div><div class="tv-chart-panel" data-kind="totalPeople">
+  <div class="tv-chart-title">總股東人數</div>
+  
+  <div id="mda-tv-2357-totalPeople" class="tv-chart "></div>
+  <div class="tv-tooltip"></div>
+</div>
+  <div class="tv-chart-note">圖表使用 TradingView Lightweight Charts；K 線與台股籌碼資料仍由本站 FinMind 快取提供。</div>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){
+  const root=document.getElementById('mda-tv-2357');
+  const rows=[{"date": "2025-03-03", "open": 670.0, "high": 683.0, "low": 666.0, "close": 669.0, "change": null, "changePct": null, "volume": 3410.924, "foreign": 182.275, "foreignCum": 182.275, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-04", "open": 661.0, "high": 673.0, "low": 657.0, "close": 670.0, "change": 1.0, "changePct": 0.1494768310911887, "volume": 3559.707, "foreign": 8.464, "foreignCum": 190.739, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}];
+  if(!root || !rows.length) return;
+  const L=window.LightweightCharts;
+  if(!L){
+    root.innerHTML='<div class="strategy-note">TradingView Lightweight Charts 載入失敗，請檢查網路或 CDN。</div>';
+    return;
+  }
+  const chartApis=[];
+  let syncing=false;
+  let crosshairSyncing=false;
+  const gridColor='#21262d';
+  const textColor='#8b949e';
+  const baseOptions=(height)=>({
+    height,
+    layout:{background:{type:'solid',color:'#0d1117'},textColor},
+    grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
+    rightPriceScale:{borderColor:'#30363d'},
+    timeScale:{borderColor:'#30363d',timeVisible:false,secondsVisible:false,fixLeftEdge:true,fixRightEdge:true},
+    crosshair:{mode:L.CrosshairMode.Normal},
+    localization:{locale:'zh-TW'},
+  });
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW',{maximumFractionDigits:d,minimumFractionDigits:d}) : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
+  const byTime=new Map(rows.map(x=>[x.date,x]));
+  const maxLogical=Math.max(0,rows.length-1);
+  const drawingKey='stockDrawings:mda-tv-2357';
+  let activeDrawTool=null;
+  let mainDrawApi=null;
+  function lineData(key){ return rows.filter(x=>x[key]!=null).map(x=>({time:x.date,value:Number(x[key])})); }
+  function histData(key, colorFn){ return rows.filter(x=>x[key]!=null).map(x=>({time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'})); }
+  function clampLogicalRange(range){
+    if(!range) return range;
+    let from=Number(range.from);
+    let to=Number(range.to);
+    if(!Number.isFinite(from) || !Number.isFinite(to)) return range;
+    const span=to-from;
+    if(span>=maxLogical) return {from:0,to:maxLogical};
+    if(from<0){ to-=from; from=0; }
+    if(to>maxLogical){ from-=to-maxLogical; to=maxLogical; }
+    return {from:Math.max(0,from),to:Math.min(maxLogical,to)};
+  }
+  function isSameRange(a,b){
+    return a && b && Math.abs(Number(a.from)-Number(b.from))<0.01 && Math.abs(Number(a.to)-Number(b.to))<0.01;
+  }
+  function makeTooltip(kind,x){
+    if(!x) return '';
+    if(kind==='k') return `<b>${x.date}</b><br>開 ${fmt(x.open)} 高 ${fmt(x.high)} 低 ${fmt(x.low)} 收 ${fmt(x.close)}<br>漲跌 ${fmt(x.change)} / ${pct(x.changePct)}`;
+    if(kind==='volume') return `<b>${x.date}</b><br>成交量 ${fmtInt(x.volume)} 張`;
+    if(kind==='foreignShares') return `<b>${x.date}</b><br>外資持股 ${fmtInt(x.foreignShares)} 張<br>比例 ${pct(x.foreignRatio)}`;
+    if(kind==='foreign') return `<b>${x.date}</b><br>外資買賣超 ${fmtInt(x.foreign)} 張<br>區間累積 ${fmtInt(x.foreignCum)} 張`;
+    if(kind==='marginBalance') return `<b>${x.date}</b><br>融資餘額 ${fmtInt(x.marginBalance)} 張<br>融券餘額 ${fmtInt(x.shortBalance)} 張`;
+    if(kind==='major') return `<b>${x.date}</b><br>千張大戶 ${pct(x.major)}`;
+    if(kind==='retail') return `<b>${x.date}</b><br>散戶持股 ${pct(x.retail)}`;
+    if(kind==='totalPeople') return `<b>${x.date}</b><br>總股東人數 ${fmtInt(x.totalPeople)} 人`;
+    return `<b>${x.date}</b>`;
+  }
+  function valueForKind(kind,x){
+    if(!x) return 0;
+    const map={
+      k:x.close,
+      volume:x.volume,
+      foreignShares:x.foreignShares,
+      foreign:x.foreign,
+      marginBalance:x.marginBalance,
+      major:x.major,
+      retail:x.retail,
+      totalPeople:x.totalPeople,
+    };
+    const v=Number(map[kind]);
+    return Number.isFinite(v) ? v : 0;
+  }
+  function showTip(item,x){
+    if(!item.tip) return;
+    item.tip.innerHTML=makeTooltip(item.kind,x);
+    item.tip.style.display='block';
+  }
+  function clearAllCrosshairs(){
+    chartApis.forEach(item=>{
+      item.chart.clearCrosshairPosition();
+      if(item.tip) item.tip.style.display='none';
+    });
+  }
+  function syncAllCrosshairs(time){
+    const x=byTime.get(time);
+    if(!x) return;
+    chartApis.forEach(item=>{
+      item.chart.setCrosshairPosition(valueForKind(item.kind,x), time, item.series);
+      showTip(item,x);
+    });
+  }
+  function normalizeTime(t){
+    if(!t) return null;
+    if(typeof t==='string') return t;
+    if(typeof t==='object' && t.year) return `${t.year}-${String(t.month).padStart(2,'0')}-${String(t.day).padStart(2,'0')}`;
+    return String(t);
+  }
+  function loadDrawings(){
+    try{ return JSON.parse(localStorage.getItem(drawingKey) || '[]').filter(x=>x && x.start && x.end); }
+    catch(e){ return []; }
+  }
+  function saveDrawings(drawings){
+    localStorage.setItem(drawingKey, JSON.stringify(drawings.slice(-80)));
+  }
+  function setDrawingButtons(mode){
+    root.querySelectorAll('.tv-draw-btn').forEach(btn=>btn.classList.toggle('active', btn.dataset.drawTool===mode));
+  }
+  function updateDrawingMode(mode){
+    activeDrawTool=mode;
+    setDrawingButtons(mode);
+    if(mainDrawApi){
+      mainDrawApi.layer.classList.toggle('active', !!mode);
+      mainDrawApi.chart.applyOptions({handleScroll:!mode,handleScale:!mode});
+    }
+  }
+  function setupDrawing(item){
+    const layer=document.createElementNS('http://www.w3.org/2000/svg','svg');
+    layer.classList.add('tv-draw-layer');
+    layer.setAttribute('aria-label','畫線圖層');
+    layer.innerHTML='<defs><marker id="mda-tv-2357-arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth"><path d="M0,0 L0,6 L9,3 z" fill="#f2cc60"></path></marker></defs>';
+    item.el.appendChild(layer);
+    const api={...item,layer};
+    mainDrawApi=api;
+    let draft=null;
+    const color='#f2cc60';
+    function pointFromEvent(ev){
+      const box=layer.getBoundingClientRect();
+      const x=ev.clientX-box.left;
+      const y=ev.clientY-box.top;
+      const time=normalizeTime(item.chart.timeScale().coordinateToTime(x));
+      const price=item.series.coordinateToPrice(y);
+      if(!time || !Number.isFinite(Number(price))) return null;
+      return {x,y,time,price:Number(price)};
+    }
+    function lineNode(d, cls=''){
+      const x1=item.chart.timeScale().timeToCoordinate(d.start.time);
+      const x2=item.chart.timeScale().timeToCoordinate(d.end.time);
+      const y1=item.series.priceToCoordinate(Number(d.start.price));
+      const y2=item.series.priceToCoordinate(Number(d.end.price));
+      if(x1==null || x2==null || y1==null || y2==null) return null;
+      const n=document.createElementNS('http://www.w3.org/2000/svg','line');
+      n.setAttribute('x1',x1); n.setAttribute('y1',y1);
+      n.setAttribute('x2',x2); n.setAttribute('y2',y2);
+      n.setAttribute('stroke',color); n.setAttribute('stroke-width','2');
+      n.setAttribute('fill','none');
+      if(d.type==='arrow') n.setAttribute('marker-end','url(#mda-tv-2357-arrow)');
+      if(cls) n.classList.add(cls);
+      return n;
+    }
+    function render(extra=null){
+      layer.setAttribute('width', item.el.clientWidth);
+      layer.setAttribute('height', item.el.clientHeight);
+      Array.from(layer.querySelectorAll('line')).forEach(n=>n.remove());
+      loadDrawings().forEach(d=>{ const n=lineNode(d); if(n) layer.appendChild(n); });
+      if(extra){ const n=lineNode(extra,'draft'); if(n) layer.appendChild(n); }
+    }
+    layer.addEventListener('pointerdown',ev=>{
+      if(!activeDrawTool) return;
+      const p=pointFromEvent(ev);
+      if(!p) return;
+      ev.preventDefault();
+      layer.setPointerCapture(ev.pointerId);
+      draft={type:activeDrawTool,start:{time:p.time,price:p.price},end:{time:p.time,price:p.price}};
+      render(draft);
+    });
+    layer.addEventListener('pointermove',ev=>{
+      if(!draft) return;
+      const p=pointFromEvent(ev);
+      if(!p) return;
+      draft.end={time:p.time,price:p.price};
+      render(draft);
+    });
+    layer.addEventListener('pointerup',ev=>{
+      if(!draft) return;
+      const p=pointFromEvent(ev);
+      if(p) draft.end={time:p.time,price:p.price};
+      const drawings=loadDrawings();
+      drawings.push(draft);
+      saveDrawings(drawings);
+      draft=null;
+      render();
+    });
+    const toolbar=root.querySelector('[data-draw-toolbar="mda-tv-2357"]');
+    if(toolbar){
+      toolbar.addEventListener('click',ev=>{
+        const btn=ev.target.closest('[data-draw-tool]');
+        if(!btn) return;
+        const tool=btn.dataset.drawTool;
+        if(tool==='clear'){ saveDrawings([]); updateDrawingMode(null); render(); return; }
+        updateDrawingMode(activeDrawTool===tool ? null : tool);
+      });
+    }
+    item.chart.timeScale().subscribeVisibleLogicalRangeChange(()=>render());
+    render();
+  }
+  function addPanel(kind, title, height){
+    const el=document.getElementById('mda-tv-2357-'+kind);
+    if(!el) return;
+    const chart=L.createChart(el, baseOptions(height));
+    let series=null;
+    if(kind==='k'){
+      series=chart.addSeries(L.CandlestickSeries, {
+        upColor:'#f85149',downColor:'#3fb950',borderUpColor:'#f85149',borderDownColor:'#3fb950',wickUpColor:'#f85149',wickDownColor:'#3fb950'
+      });
+      series.setData(rows.map(x=>({time:x.date,open:Number(x.open),high:Number(x.high),low:Number(x.low),close:Number(x.close)})));
+      [[5,'#58a6ff'],[20,'#f0883e'],[60,'#3fb950'],[120,'#a78bfa'],[240,'#8b949e']].forEach(([n,c])=>{
+        const s=chart.addSeries(L.LineSeries,{color:c,lineWidth:1,priceLineVisible:false,lastValueVisible:false});
+        const vals=[];
+        for(let i=0;i<rows.length;i++){
+          if(i+1<n) continue;
+          const avg=rows.slice(i+1-n,i+1).reduce((a,b)=>a+Number(b.close||0),0)/n;
+          vals.push({time:rows[i].date,value:avg});
+        }
+        s.setData(vals);
+      });
+    } else if(kind==='volume'){
+      series=chart.addSeries(L.HistogramSeries,{priceFormat:{type:'volume'},priceLineVisible:false,lastValueVisible:false});
+      series.setData(histData('volume',x=>Number(x.close)>=Number(x.open)?'#f85149':'#3fb950'));
+    } else if(kind==='foreign'){
+      series=chart.addSeries(L.HistogramSeries,{priceFormat:{type:'volume'},priceLineVisible:false,lastValueVisible:false});
+      series.setData(histData('foreign',x=>Number(x.foreign)>=0?'#f85149':'#3fb950'));
+    } else {
+      const key={foreignShares:'foreignShares',marginBalance:'marginBalance',major:'major',retail:'retail',totalPeople:'totalPeople'}[kind];
+      const color={foreignShares:'#7ee787',marginBalance:'#a78bfa',major:'#f85149',retail:'#3fb950',totalPeople:'#58a6ff'}[kind] || '#58a6ff';
+      series=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false});
+      series.setData(lineData(key));
+    }
+    chart.timeScale().fitContent();
+    chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{
+      if(syncing || !range) return;
+      const next=clampLogicalRange(range);
+      syncing=true;
+      if(!isSameRange(range,next)){
+        chart.timeScale().setVisibleLogicalRange(next);
+      }
+      chartApis.forEach(item=>{ if(item.chart!==chart) item.chart.timeScale().setVisibleLogicalRange(next); });
+      syncing=false;
+    });
+    const wrapper=el.closest('.tv-chart-panel');
+    const tip=wrapper ? wrapper.querySelector('.tv-tooltip') : null;
+    chart.subscribeCrosshairMove(param=>{
+      if(crosshairSyncing) return;
+      if(!param || !param.time){
+        crosshairSyncing=true;
+        clearAllCrosshairs();
+        crosshairSyncing=false;
+        return;
+      }
+      crosshairSyncing=true;
+      syncAllCrosshairs(param.time);
+      crosshairSyncing=false;
+    });
+    const item={chart,el,series,kind,tip};
+    chartApis.push(item);
+    if(kind==='k') setupDrawing(item);
+  }
+  addPanel('k','日K',360);
+  addPanel('volume','成交量',150);
+  addPanel('foreignShares','外資持股張數',150);
+  addPanel('foreign','外資買賣超',150);
+  addPanel('marginBalance','融資餘額',150);
+  addPanel('major','千張大戶持股比例',150);
+  addPanel('retail','散戶持股比例',150);
+  addPanel('totalPeople','總股東人數',150);
+  window.addEventListener('resize',()=>chartApis.forEach(item=>item.chart.applyOptions({width:item.el.clientWidth})));
+})();
+</script>
+    <div id="chart-2357" class="chart-box" style="display:none">
+      <div class="chart-tabs">
+        <button type="button" class="active" data-btn="daily" onclick="showChart_2357('daily')">日K</button>
+        <button type="button" data-btn="weekly" onclick="showChart_2357('weekly')">週K</button>
+        <button type="button" data-btn="monthly" onclick="showChart_2357('monthly')">月K</button>
+      </div>
+      <div class="chart-pane" data-pane="daily"><div class="hover-chart" data-mode="daily">
+<svg viewBox="0 0 900 360" width="100%" role="img" aria-label="日K">
+  <rect x="0" y="0" width="900" height="360" fill="#0d1117"/>
+  <line x1="50" y1="18.0" x2="882" y2="18.0" stroke="#21262d"/><text x="4" y="22.0" fill="#6e7681" font-size="11">670.0</text><line x1="50" y1="78.0" x2="882" y2="78.0" stroke="#21262d"/><text x="4" y="82.0" fill="#6e7681" font-size="11">669.8</text><line x1="50" y1="138.0" x2="882" y2="138.0" stroke="#21262d"/><text x="4" y="142.0" fill="#6e7681" font-size="11">669.5</text><line x1="50" y1="198.0" x2="882" y2="198.0" stroke="#21262d"/><text x="4" y="202.0" fill="#6e7681" font-size="11">669.2</text><line x1="50" y1="258.0" x2="882" y2="258.0" stroke="#21262d"/><text x="4" y="262.0" fill="#6e7681" font-size="11">669.0</text>
+  <line x1="50" y1="276.0" x2="882" y2="276.0" stroke="#30363d"/>
+  <text x="4" y="288.0" fill="#6e7681" font-size="11">量</text>
+  <text x="4" y="304.0" fill="#6e7681" font-size="11">3560張</text>
+  
+  <line x1="50.0" y1="-3102.0" x2="50.0" y2="978.0" stroke="#3fb950" stroke-width="1"/><rect x="46.0" y="18.0" width="8.0" height="240.0" fill="#3fb950" opacity=".78"/><rect x="46.0" y="278.4" width="8.0" height="55.6" fill="#3fb950" opacity=".35"/><line x1="882.0" y1="-702.0" x2="882.0" y2="3138.0" stroke="#f85149" stroke-width="1"/><rect x="878.0" y="18.0" width="8.0" height="2160.0" fill="#f85149" opacity=".78"/><rect x="878.0" y="276.0" width="8.0" height="58.0" fill="#f85149" opacity=".35"/>
+  
+  <text x="50" y="352" fill="#6e7681" font-size="11">2025-03-03</text>
+  <text x="788" y="352" fill="#6e7681" font-size="11">2025-03-04</text>
+  <text x="50" y="14" fill="#e6edf3" font-size="12">日K ｜ 收 670.00</text>
+  <text x="585" y="14" fill="#58a6ff" font-size="11">MA5</text>
+  <text x="635" y="14" fill="#d2a520" font-size="11">MA10</text>
+  <text x="690" y="14" fill="#f0883e" font-size="11">MA20</text>
+  <text x="745" y="14" fill="#3fb950" font-size="11">MA60</text>
+  <text x="805" y="14" fill="#8b949e" font-size="11">BB</text>
+</svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow">
+<svg viewBox="0 0 900 150" width="100%" role="img" aria-label="外資買賣超 / 區間累積">
+  <rect x="0" y="0" width="900" height="150" fill="#0d1117"/>
+  <line x1="50" y1="74.0" x2="844" y2="74.0" stroke="#8b949e" stroke-dasharray="3 3"/><line x1="50" y1="22.0" x2="844" y2="22.0" stroke="#21262d"/><text x="3" y="26.0" fill="#6e7681" font-size="10">500</text><line x1="50" y1="74.0" x2="844" y2="74.0" stroke="#21262d"/><text x="3" y="78.0" fill="#6e7681" font-size="10">0</text><line x1="50" y1="126.0" x2="844" y2="126.0" stroke="#21262d"/><text x="3" y="130.0" fill="#6e7681" font-size="10">-500</text><text x="852" y="26.0" fill="#6e7681" font-size="10">200</text><text x="852" y="78.0" fill="#6e7681" font-size="10">100</text><text x="852" y="130.0" fill="#6e7681" font-size="10">0</text>
+  <rect x="46.0" y="55.0" width="8.0" height="19.0" fill="#f85149" opacity=".78"/><rect x="840.0" y="73.1" width="8.0" height="1.3" fill="#f85149" opacity=".78"/>
+  <polyline fill="none" stroke="#58a6ff" stroke-width="2" points="50.0,31.2 844.0,26.8"/>
+  <text x="50" y="14" fill="#e6edf3" font-size="11">外資買賣超 / 區間累積（張）</text>
+  <text x="660" y="14" fill="#f85149" font-size="10">買超</text><text x="718" y="14" fill="#3fb950" font-size="10">賣超</text><text x="778" y="14" fill="#58a6ff" font-size="10">累積線</text>
+</svg><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
+      <div class="chart-pane" data-pane="weekly" style="display:none"><div class="hover-chart" data-mode="weekly"><div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
+      <div class="chart-pane" data-pane="monthly" style="display:none"><div class="hover-chart" data-mode="monthly"><div class="strategy-note">尚未找到 v44 價格快取，之後接上每日更新後會顯示 K 線。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="strategy-note" style="margin-top:10px">指標資料不足。</div><div class="chip-indicator-stack"><div class="indicator-box indicator-hover" data-source="aligned" data-kind="holdingPack"><div class="strategy-note">股權分配資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div><div class="indicator-box indicator-hover" data-source="aligned" data-kind="foreignFlow"><div class="strategy-note">外資買賣超資料不足。</div><div class="chart-crosshair"></div><div class="chart-tooltip"></div></div></div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">10 日籌碼動向折線圖｜法人 2025-12-31｜股權 2026-04-24</div>
+    <div class="info-grid">
+  <div class="info-cell"><div class="k">外資買賣超</div><div class="v neg">-751張</div></div>
+  <div class="info-cell"><div class="k">投信買賣超</div><div class="v pos">1014張</div></div>
+  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v pos">38張</div></div>
+  <div class="info-cell"><div class="k">主力當日合計</div><div class="v pos">301張</div></div>
+  <div class="info-cell"><div class="k">外資5日</div><div class="v neg">-13102張</div></div>
+  <div class="info-cell"><div class="k">投信5日</div><div class="v pos">10120張</div></div>
+  <div class="info-cell"><div class="k">主力5日合計</div><div class="v neg">-2933張</div></div>
+</div>
+<div class="holding-info-grid">
+  <div class="info-cell"><div class="k">大戶比例</div><div class="v">62.35%</div></div>
+  <div class="info-cell"><div class="k">散戶比例</div><div class="v">12.79%</div></div>
+  <div class="info-cell"><div class="k">總股東人數</div><div class="v">125620</div></div>
+</div>
+<div class="chip-line">外資10日 -42564 張｜主力10日 -11927 張｜大戶週變化 0.27%｜散戶週變化 -0.27%</div>
+    
+<div id="chip-tv-2357" class="tv-chip-grid">
+  <div class="tv-chart-panel">
+    <div class="tv-chart-title">籌碼動向｜外資 / 投信 / 自營商 / 合計</div>
+    <div class="chip-line">柱狀圖為三大法人合計；折線分別為外資、投信、自營商。可縮放、拖曳，並限制在資料範圍內。</div>
+    <div id="chip-tv-2357-flow" class="tv-chip-chart"></div>
+    <div class="tv-tooltip"></div>
+  </div>
+  <div class="tv-chart-panel">
+    <div class="tv-chart-title">主力增減張數與收盤價關係</div>
+    <div class="chip-line">左軸為主力合計張數，右軸為收盤價；滑鼠移到圖上可看當日漲幅，觀察少量買賣是否就能推動價格。</div>
+    <div id="chip-tv-2357-force" class="tv-chip-chart"></div>
+    <div class="tv-tooltip"></div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+(function(){
+  const root=document.getElementById('chip-tv-2357');
+  const rows=[{"date": "2023-11-13", "foreign": 8.28, "trust": 190.603, "dealer": 31.76, "total": 230.643, "close": null, "changePct": null}, {"date": "2023-11-14", "foreign": 1726.405, "trust": 871.808, "dealer": 215.59799999999998, "total": 2813.8109999999997, "close": null, "changePct": null}, {"date": "2023-11-15", "foreign": -722.928, "trust": 169.411, "dealer": 121.62299999999999, "total": -431.894, "close": null, "changePct": null}, {"date": "2023-11-16", "foreign": -666.926, "trust": 59.616, "dealer": -191.85899999999998, "total": -799.1690000000001, "close": null, "changePct": null}, {"date": "2023-11-17", "foreign": 2307.273, "trust": 17.822, "dealer": -41.932, "total": 2283.1630000000005, "close": null, "changePct": null}, {"date": "2023-11-20", "foreign": -697.831, "trust": 43.206, "dealer": 26.515, "total": -628.11, "close": null, "changePct": null}, {"date": "2023-11-21", "foreign": 147.466, "trust": 18.749, "dealer": -38.181000000000004, "total": 128.034, "close": null, "changePct": null}, {"date": "2023-11-22", "foreign": -462.78, "trust": -2.588, "dealer": -24.288999999999998, "total": -489.657, "close": null, "changePct": null}, {"date": "2023-11-23", "foreign": 581.118, "trust": -967.574, "dealer": 20.205000000000002, "total": -366.2509999999999, "close": null, "changePct": null}, {"date": "2023-11-24", "foreign": 511.8, "trust": -527.135, "dealer": -26.654, "total": -41.988999999999976, "close": null, "changePct": null}, {"date": "2023-11-27", "foreign": -60.815, "trust": -522.97, "dealer": -26.220999999999997, "total": -610.006, "close": null, "changePct": null}, {"date": "2023-11-28", "foreign": 1252.118, "trust": -468.0, "dealer": -11.177, "total": 772.9409999999999, "close": null, "changePct": null}, {"date": "2023-11-29", "foreign": 1362.889, "trust": -485.397, "dealer": -32.35, "total": 845.1419999999999, "close": null, "changePct": null}, {"date": "2023-11-30", "foreign": 782.744, "trust": -905.029, "dealer": -140.661, "total": -262.94599999999997, "close": null, "changePct": null}, {"date": "2023-12-01", "foreign": 972.346, "trust": -1000.397, "dealer": -33.894, "total": -61.944999999999936, "close": null, "changePct": null}, {"date": "2023-12-04", "foreign": 862.916, "trust": -694.155, "dealer": -5.573, "total": 163.18800000000007, "close": null, "changePct": null}, {"date": "2023-12-05", "foreign": 948.134, "trust": -148.0, "dealer": -10.234, "total": 789.9, "close": null, "changePct": null}, {"date": "2023-12-06", "foreign": 555.825, "trust": 256.0, "dealer": 147.708, "total": 959.5330000000001, "close": null, "changePct": null}, {"date": "2023-12-07", "foreign": -33.396, "trust": 244.706, "dealer": -1.9020000000000001, "total": 209.408, "close": null, "changePct": null}, {"date": "2023-12-08", "foreign": 1149.278, "trust": 80.839, "dealer": -1.7049999999999983, "total": 1228.4119999999998, "close": null, "changePct": null}, {"date": "2023-12-11", "foreign": -164.64, "trust": 22.297, "dealer": -24.341, "total": -166.68399999999997, "close": null, "changePct": null}, {"date": "2023-12-12", "foreign": 170.05, "trust": 8.372, "dealer": -62.744, "total": 115.67800000000003, "close": null, "changePct": null}, {"date": "2023-12-13", "foreign": 3669.551, "trust": 576.039, "dealer": 368.922, "total": 4614.512, "close": null, "changePct": null}, {"date": "2023-12-14", "foreign": -999.531, "trust": 138.373, "dealer": 229.997, "total": -631.161, "close": null, "changePct": null}, {"date": "2023-12-15", "foreign": -511.884, "trust": 57.966, "dealer": -39.43, "total": -493.348, "close": null, "changePct": null}, {"date": "2023-12-18", "foreign": 2756.496, "trust": 523.436, "dealer": 67.187, "total": 3347.1190000000006, "close": null, "changePct": null}, {"date": "2023-12-19", "foreign": -1289.885, "trust": 352.693, "dealer": -37.658, "total": -974.85, "close": null, "changePct": null}, {"date": "2023-12-20", "foreign": 2045.179, "trust": 1499.0, "dealer": 201.548, "total": 3745.7270000000003, "close": null, "changePct": null}, {"date": "2023-12-21", "foreign": -606.382, "trust": 1376.945, "dealer": -115.12899999999999, "total": 655.434, "close": null, "changePct": null}, {"date": "2023-12-22", "foreign": -83.967, "trust": 184.727, "dealer": 101.752, "total": 202.51200000000003, "close": null, "changePct": null}, {"date": "2023-12-25", "foreign": -338.207, "trust": 847.255, "dealer": 385.127, "total": 894.1750000000001, "close": null, "changePct": null}, {"date": "2023-12-26", "foreign": 499.771, "trust": 78.369, "dealer": -13.863, "total": 564.277, "close": null, "changePct": null}, {"date": "2023-12-27", "foreign": 993.21, "trust": 1238.105, "dealer": 41.162000000000006, "total": 2272.477, "close": null, "changePct": null}, {"date": "2023-12-28", "foreign": 890.003, "trust": 51.12, "dealer": -488.34000000000003, "total": 452.783, "close": null, "changePct": null}, {"date": "2023-12-29", "foreign": 271.402, "trust": 83.603, "dealer": -83.013, "total": 271.99199999999996, "close": null, "changePct": null}, {"date": "2024-01-02", "foreign": 653.875, "trust": 188.0, "dealer": -214.525, "total": 627.35, "close": null, "changePct": null}, {"date": "2024-01-03", "foreign": 3666.381, "trust": -582.321, "dealer": 548.979, "total": 3633.0389999999998, "close": null, "changePct": null}, {"date": "2024-01-04", "foreign": 2195.039, "trust": -1901.397, "dealer": 145.582, "total": 439.2240000000003, "close": null, "changePct": null}, {"date": "2024-01-05", "foreign": -280.926, "trust": 164.523, "dealer": -52.495999999999995, "total": -168.899, "close": null, "changePct": null}, {"date": "2024-01-08", "foreign": -410.773, "trust": 343.324, "dealer": 63.058, "total": -4.3910000000000124, "close": null, "changePct": null}, {"date": "2024-01-09", "foreign": 56.289, "trust": 483.0, "dealer": 69.535, "total": 608.824, "close": null, "changePct": null}, {"date": "2024-01-10", "foreign": 96.404, "trust": 43.161, "dealer": 48.046, "total": 187.611, "close": null, "changePct": null}, {"date": "2024-01-11", "foreign": -379.742, "trust": 15.0, "dealer": 94.186, "total": -270.55600000000004, "close": null, "changePct": null}, {"date": "2024-01-12", "foreign": -647.49, "trust": -535.397, "dealer": -170.37300000000002, "total": -1353.2600000000002, "close": null, "changePct": null}, {"date": "2024-01-15", "foreign": -706.495, "trust": -48.0, "dealer": -23.117999999999995, "total": -777.6129999999999, "close": null, "changePct": null}, {"date": "2024-01-16", "foreign": -311.96, "trust": -705.397, "dealer": 222.357, "total": -795.0, "close": null, "changePct": null}, {"date": "2024-01-17", "foreign": -434.366, "trust": 72.295, "dealer": 259.998, "total": -102.07299999999998, "close": null, "changePct": null}, {"date": "2024-01-18", "foreign": 182.192, "trust": -2.621, "dealer": 103.44099999999999, "total": 283.012, "close": null, "changePct": null}, {"date": "2024-01-19", "foreign": -469.681, "trust": 13.0, "dealer": 77.527, "total": -379.154, "close": null, "changePct": null}, {"date": "2024-01-22", "foreign": -231.027, "trust": -217.644, "dealer": 54.766000000000005, "total": -393.90500000000003, "close": null, "changePct": null}, {"date": "2024-01-23", "foreign": 210.73, "trust": -1.587, "dealer": -48.091, "total": 161.052, "close": null, "changePct": null}, {"date": "2024-01-24", "foreign": 273.602, "trust": -303.831, "dealer": -165.678, "total": -195.90700000000004, "close": null, "changePct": null}, {"date": "2024-01-25", "foreign": 291.887, "trust": -40.414, "dealer": -79.239, "total": 172.234, "close": null, "changePct": null}, {"date": "2024-01-26", "foreign": -1394.212, "trust": -158.54, "dealer": -216.454, "total": -1769.206, "close": null, "changePct": null}, {"date": "2024-01-29", "foreign": -117.639, "trust": -3.597, "dealer": -48.293, "total": -169.529, "close": null, "changePct": null}, {"date": "2024-01-30", "foreign": -620.226, "trust": -139.263, "dealer": -26.884, "total": -786.373, "close": null, "changePct": null}, {"date": "2024-01-31", "foreign": -1282.22, "trust": -185.101, "dealer": -58.602, "total": -1525.923, "close": null, "changePct": null}, {"date": "2024-02-01", "foreign": -3.75, "trust": -223.691, "dealer": 21.555, "total": -205.886, "close": null, "changePct": null}, {"date": "2024-02-02", "foreign": 583.398, "trust": -660.985, "dealer": -99.797, "total": -177.384, "close": null, "changePct": null}, {"date": "2024-02-05", "foreign": -993.241, "trust": -337.932, "dealer": -6.169, "total": -1337.3419999999999, "close": null, "changePct": null}, {"date": "2024-02-15", "foreign": -392.237, "trust": 172.982, "dealer": 79.69399999999999, "total": -139.561, "close": null, "changePct": null}, {"date": "2024-02-16", "foreign": -496.77, "trust": 621.004, "dealer": 190.958, "total": 315.192, "close": null, "changePct": null}, {"date": "2024-02-19", "foreign": -805.632, "trust": 84.012, "dealer": -174.15800000000002, "total": -895.7779999999999, "close": null, "changePct": null}, {"date": "2024-02-20", "foreign": -144.444, "trust": -20.58, "dealer": -50.354, "total": -215.378, "close": null, "changePct": null}, {"date": "2024-02-21", "foreign": -479.183, "trust": 86.29, "dealer": -62.559999999999995, "total": -455.453, "close": null, "changePct": null}, {"date": "2024-02-22", "foreign": -335.6, "trust": -437.245, "dealer": -149.676, "total": -922.521, "close": null, "changePct": null}, {"date": "2024-02-23", "foreign": 634.45, "trust": -16.312, "dealer": 113.007, "total": 731.145, "close": null, "changePct": null}, {"date": "2024-02-26", "foreign": -392.104, "trust": -369.94, "dealer": -54.696, "total": -816.74, "close": null, "changePct": null}, {"date": "2024-02-27", "foreign": -2853.16, "trust": -280.764, "dealer": -240.816, "total": -3374.74, "close": null, "changePct": null}, {"date": "2024-02-29", "foreign": -1067.054, "trust": -273.754, "dealer": -108.66300000000001, "total": -1449.471, "close": null, "changePct": null}, {"date": "2024-03-01", "foreign": 530.625, "trust": -405.151, "dealer": -41.163000000000004, "total": 84.31099999999999, "close": null, "changePct": null}, {"date": "2024-03-04", "foreign": -439.663, "trust": -288.142, "dealer": -78.208, "total": -806.013, "close": null, "changePct": null}, {"date": "2024-03-05", "foreign": 648.823, "trust": -197.659, "dealer": 126.018, "total": 577.182, "close": null, "changePct": null}, {"date": "2024-03-06", "foreign": 313.507, "trust": -195.943, "dealer": -96.122, "total": 21.441999999999986, "close": null, "changePct": null}, {"date": "2024-03-07", "foreign": -655.237, "trust": -59.484, "dealer": -253.99, "total": -968.711, "close": null, "changePct": null}, {"date": "2024-03-08", "foreign": -279.886, "trust": -398.98, "dealer": -119.74799999999999, "total": -798.614, "close": null, "changePct": null}, {"date": "2024-03-11", "foreign": -983.212, "trust": -711.0, "dealer": -377.553, "total": -2071.765, "close": null, "changePct": null}, {"date": "2024-03-12", "foreign": -549.078, "trust": -797.067, "dealer": 33.456, "total": -1312.6889999999999, "close": null, "changePct": null}, {"date": "2024-03-13", "foreign": -1826.956, "trust": -122.285, "dealer": -23.012, "total": -1972.253, "close": null, "changePct": null}, {"date": "2024-03-14", "foreign": -331.444, "trust": -101.932, "dealer": -64.304, "total": -497.68000000000006, "close": null, "changePct": null}, {"date": "2024-03-15", "foreign": -1002.389, "trust": -273.787, "dealer": 37.437, "total": -1238.739, "close": null, "changePct": null}, {"date": "2024-03-18", "foreign": -3851.163, "trust": -25.573, "dealer": 100.74600000000001, "total": -3775.99, "close": null, "changePct": null}, {"date": "2024-03-19", "foreign": -191.472, "trust": -19.23, "dealer": -7.9270000000000005, "total": -218.629, "close": null, "changePct": null}, {"date": "2024-03-20", "foreign": -539.87, "trust": -119.311, "dealer": -103.741, "total": -762.922, "close": null, "changePct": null}, {"date": "2024-03-21", "foreign": -740.33, "trust": 72.603, "dealer": 63.129999999999995, "total": -604.5970000000001, "close": null, "changePct": null}, {"date": "2024-03-22", "foreign": -1634.44, "trust": 354.843, "dealer": 8.727999999999998, "total": -1270.869, "close": null, "changePct": null}, {"date": "2024-03-25", "foreign": -864.641, "trust": 46.412, "dealer": 62.438, "total": -755.7909999999999, "close": null, "changePct": null}, {"date": "2024-03-26", "foreign": -1083.679, "trust": 52.383, "dealer": 243.779, "total": -787.517, "close": null, "changePct": null}, {"date": "2024-03-27", "foreign": -296.584, "trust": 185.206, "dealer": -60.839, "total": -172.217, "close": null, "changePct": null}, {"date": "2024-03-28", "foreign": -1168.841, "trust": -19.268, "dealer": 60.028, "total": -1128.081, "close": null, "changePct": null}, {"date": "2024-03-29", "foreign": 453.97, "trust": -40.412, "dealer": -127.648, "total": 285.9100000000001, "close": null, "changePct": null}, {"date": "2024-04-01", "foreign": -574.913, "trust": -1.398, "dealer": -11.646, "total": -587.957, "close": null, "changePct": null}, {"date": "2024-04-02", "foreign": -598.337, "trust": -302.122, "dealer": 0.133, "total": -900.326, "close": null, "changePct": null}, {"date": "2024-04-03", "foreign": -615.357, "trust": -24.245, "dealer": 20.08, "total": -619.5219999999999, "close": null, "changePct": null}, {"date": "2024-04-08", "foreign": -244.349, "trust": -3.041, "dealer": 166.375, "total": -81.01499999999999, "close": null, "changePct": null}, {"date": "2024-04-09", "foreign": -692.976, "trust": 8.371, "dealer": 107.656, "total": -576.9490000000001, "close": null, "changePct": null}, {"date": "2024-04-10", "foreign": -60.811, "trust": 49.948, "dealer": 681.862, "total": 670.9989999999999, "close": null, "changePct": null}, {"date": "2024-04-11", "foreign": 830.78, "trust": 0.0, "dealer": 820.542, "total": 1651.322, "close": null, "changePct": null}, {"date": "2024-04-12", "foreign": -1317.54, "trust": 117.769, "dealer": -57.173, "total": -1256.944, "close": null, "changePct": null}, {"date": "2024-04-15", "foreign": -208.44, "trust": -18.0, "dealer": 16.197, "total": -210.243, "close": null, "changePct": null}, {"date": "2024-04-16", "foreign": -1959.581, "trust": -21.796, "dealer": 487.832, "total": -1493.5449999999998, "close": null, "changePct": null}, {"date": "2024-04-17", "foreign": -1212.111, "trust": -75.293, "dealer": 573.239, "total": -714.165, "close": null, "changePct": null}, {"date": "2024-04-18", "foreign": -451.463, "trust": -166.398, "dealer": 151.547, "total": -466.31399999999996, "close": null, "changePct": null}, {"date": "2024-04-19", "foreign": -1862.204, "trust": -56.403, "dealer": 319.27700000000004, "total": -1599.33, "close": null, "changePct": null}, {"date": "2024-04-22", "foreign": -649.284, "trust": 23.0, "dealer": 5.301, "total": -620.983, "close": null, "changePct": null}, {"date": "2024-04-23", "foreign": -1509.484, "trust": 24.0, "dealer": 81.756, "total": -1403.7279999999998, "close": null, "changePct": null}, {"date": "2024-04-24", "foreign": 122.504, "trust": -33.482, "dealer": 133.553, "total": 222.575, "close": null, "changePct": null}, {"date": "2024-04-25", "foreign": -1290.473, "trust": 106.0, "dealer": -45.363, "total": -1229.836, "close": null, "changePct": null}, {"date": "2024-04-26", "foreign": 82.433, "trust": -27.0, "dealer": 50.473, "total": 105.906, "close": null, "changePct": null}, {"date": "2024-04-29", "foreign": 70.179, "trust": -23.0, "dealer": 11.228, "total": 58.407000000000004, "close": null, "changePct": null}, {"date": "2024-04-30", "foreign": -529.265, "trust": 30.0, "dealer": 372.42499999999995, "total": -126.84, "close": null, "changePct": null}, {"date": "2024-05-02", "foreign": -1020.804, "trust": 197.267, "dealer": 321.04, "total": -502.49700000000007, "close": null, "changePct": null}, {"date": "2024-05-03", "foreign": -458.733, "trust": 8.933, "dealer": 167.304, "total": -282.496, "close": null, "changePct": null}, {"date": "2024-05-06", "foreign": 864.337, "trust": 400.975, "dealer": 249.745, "total": 1515.0569999999998, "close": null, "changePct": null}, {"date": "2024-05-07", "foreign": 1145.23, "trust": 206.388, "dealer": 189.698, "total": 1541.3159999999998, "close": null, "changePct": null}, {"date": "2024-05-08", "foreign": 402.87, "trust": 285.044, "dealer": 104.607, "total": 792.521, "close": null, "changePct": null}, {"date": "2024-05-09", "foreign": 1356.3, "trust": 517.879, "dealer": -143.474, "total": 1730.705, "close": null, "changePct": null}, {"date": "2024-05-10", "foreign": 236.495, "trust": 35.496, "dealer": 187.662, "total": 459.653, "close": null, "changePct": null}, {"date": "2024-05-13", "foreign": -371.736, "trust": 170.578, "dealer": 107.337, "total": -93.821, "close": null, "changePct": null}, {"date": "2024-05-14", "foreign": 5951.204, "trust": 1143.411, "dealer": -79.004, "total": 7015.611, "close": null, "changePct": null}, {"date": "2024-05-15", "foreign": 745.986, "trust": 459.247, "dealer": 480.466, "total": 1685.699, "close": null, "changePct": null}, {"date": "2024-05-16", "foreign": 1358.07, "trust": 650.297, "dealer": 374.84299999999996, "total": 2383.21, "close": null, "changePct": null}, {"date": "2024-05-17", "foreign": -3437.476, "trust": 2938.466, "dealer": -72.81800000000001, "total": -571.828, "close": null, "changePct": null}, {"date": "2024-05-20", "foreign": -4179.431, "trust": 3047.758, "dealer": 57.486, "total": -1074.187, "close": null, "changePct": null}, {"date": "2024-05-21", "foreign": -4388.851, "trust": 1715.149, "dealer": 357.539, "total": -2316.1629999999996, "close": null, "changePct": null}, {"date": "2024-05-22", "foreign": 2812.691, "trust": -112.21, "dealer": 312.371, "total": 3012.852, "close": null, "changePct": null}, {"date": "2024-05-23", "foreign": -1211.38, "trust": 682.928, "dealer": 134.772, "total": -393.6800000000001, "close": null, "changePct": null}, {"date": "2024-05-24", "foreign": 1634.092, "trust": -1549.605, "dealer": 103.09, "total": 187.57700000000023, "close": null, "changePct": null}, {"date": "2024-05-27", "foreign": 4215.6, "trust": -1943.518, "dealer": -53.22800000000001, "total": 2218.8540000000003, "close": null, "changePct": null}, {"date": "2024-05-28", "foreign": -1246.49, "trust": -2008.049, "dealer": 69.465, "total": -3185.0739999999996, "close": null, "changePct": null}, {"date": "2024-05-29", "foreign": 2106.886, "trust": -2775.623, "dealer": 25.724000000000004, "total": -643.0129999999999, "close": null, "changePct": null}, {"date": "2024-05-30", "foreign": 2197.095, "trust": -2924.0, "dealer": -64.175, "total": -791.0800000000004, "close": null, "changePct": null}, {"date": "2024-05-31", "foreign": 2437.346, "trust": -3032.325, "dealer": -38.334, "total": -633.3129999999996, "close": null, "changePct": null}, {"date": "2024-06-03", "foreign": 1413.213, "trust": -2811.0, "dealer": 53.57, "total": -1344.217, "close": null, "changePct": null}, {"date": "2024-06-04", "foreign": 2750.873, "trust": -3070.0, "dealer": -156.255, "total": -475.38200000000006, "close": null, "changePct": null}, {"date": "2024-06-05", "foreign": 172.656, "trust": -1910.351, "dealer": -110.24600000000001, "total": -1847.941, "close": null, "changePct": null}, {"date": "2024-06-06", "foreign": 788.25, "trust": -163.626, "dealer": -151.993, "total": 472.63100000000003, "close": null, "changePct": null}, {"date": "2024-06-07", "foreign": 220.036, "trust": -1344.318, "dealer": -175.235, "total": -1299.517, "close": null, "changePct": null}, {"date": "2024-06-11", "foreign": 38.021, "trust": -123.318, "dealer": -75.67099999999999, "total": -160.968, "close": null, "changePct": null}, {"date": "2024-06-12", "foreign": -945.211, "trust": 248.133, "dealer": -0.6549999999999994, "total": -697.733, "close": null, "changePct": null}, {"date": "2024-06-13", "foreign": -197.063, "trust": -133.229, "dealer": 57.022999999999996, "total": -273.269, "close": null, "changePct": null}, {"date": "2024-06-14", "foreign": -7.697, "trust": -343.529, "dealer": -136.833, "total": -488.05899999999997, "close": null, "changePct": null}, {"date": "2024-06-17", "foreign": -308.134, "trust": -37.297, "dealer": -202.202, "total": -547.633, "close": null, "changePct": null}, {"date": "2024-06-18", "foreign": -402.522, "trust": 521.752, "dealer": 6.096, "total": 125.32599999999996, "close": null, "changePct": null}, {"date": "2024-06-19", "foreign": -213.74, "trust": 31.96, "dealer": -90.664, "total": -272.44399999999996, "close": null, "changePct": null}, {"date": "2024-06-20", "foreign": -6.173, "trust": 70.0, "dealer": 332.402, "total": 396.229, "close": null, "changePct": null}, {"date": "2024-06-21", "foreign": 520.338, "trust": 115.225, "dealer": 85.23499999999999, "total": 720.798, "close": null, "changePct": null}, {"date": "2024-06-24", "foreign": -155.401, "trust": 493.742, "dealer": 31.421000000000003, "total": 369.762, "close": null, "changePct": null}, {"date": "2024-06-25", "foreign": -585.489, "trust": -293.0, "dealer": -5.2940000000000005, "total": -883.783, "close": null, "changePct": null}, {"date": "2024-06-26", "foreign": -550.756, "trust": -53.0, "dealer": 133.09799999999998, "total": -470.65799999999996, "close": null, "changePct": null}, {"date": "2024-06-27", "foreign": -1505.965, "trust": 304.0, "dealer": 4.653999999999999, "total": -1197.311, "close": null, "changePct": null}, {"date": "2024-06-28", "foreign": -725.166, "trust": -134.08, "dealer": 7.219, "total": -852.027, "close": null, "changePct": null}, {"date": "2024-07-01", "foreign": -1220.86, "trust": -336.022, "dealer": 181.781, "total": -1375.1009999999999, "close": null, "changePct": null}, {"date": "2024-07-02", "foreign": -1452.855, "trust": 126.563, "dealer": 17.028999999999996, "total": -1309.263, "close": null, "changePct": null}, {"date": "2024-07-03", "foreign": -1494.231, "trust": 2957.032, "dealer": 8.069000000000003, "total": 1470.8700000000003, "close": null, "changePct": null}, {"date": "2024-07-04", "foreign": 1237.363, "trust": -662.605, "dealer": 73.698, "total": 648.4560000000001, "close": null, "changePct": null}, {"date": "2024-07-05", "foreign": 281.521, "trust": -309.484, "dealer": 30.072, "total": 2.1090000000000337, "close": null, "changePct": null}, {"date": "2024-07-08", "foreign": 133.149, "trust": 64.911, "dealer": 3.5730000000000004, "total": 201.633, "close": null, "changePct": null}, {"date": "2024-07-09", "foreign": -426.438, "trust": 64.959, "dealer": 4.7669999999999995, "total": -356.712, "close": null, "changePct": null}, {"date": "2024-07-10", "foreign": 3666.599, "trust": -407.0, "dealer": 111.669, "total": 3371.268, "close": null, "changePct": null}, {"date": "2024-07-11", "foreign": 871.606, "trust": 187.0, "dealer": 90.46700000000001, "total": 1149.073, "close": null, "changePct": null}, {"date": "2024-07-12", "foreign": 485.559, "trust": 470.0, "dealer": -70.19399999999999, "total": 885.365, "close": null, "changePct": null}, {"date": "2024-07-15", "foreign": -413.043, "trust": 17.0, "dealer": -191.45399999999998, "total": -587.4970000000001, "close": null, "changePct": null}, {"date": "2024-07-16", "foreign": 4.104, "trust": -7.979, "dealer": 72.52, "total": 68.645, "close": null, "changePct": null}, {"date": "2024-07-17", "foreign": -350.464, "trust": 9.147, "dealer": -182.63600000000002, "total": -523.953, "close": null, "changePct": null}, {"date": "2024-07-18", "foreign": 246.29, "trust": 436.327, "dealer": 111.43, "total": 794.047, "close": null, "changePct": null}, {"date": "2024-07-19", "foreign": -958.605, "trust": 104.0, "dealer": 3.1079999999999988, "total": -851.497, "close": null, "changePct": null}, {"date": "2024-07-22", "foreign": -691.695, "trust": 52.0, "dealer": 28.522, "total": -611.173, "close": null, "changePct": null}, {"date": "2024-07-23", "foreign": -134.679, "trust": -23.0, "dealer": -80.228, "total": -237.90699999999998, "close": null, "changePct": null}, {"date": "2024-07-26", "foreign": -205.699, "trust": 47.77, "dealer": -92.57900000000001, "total": -250.508, "close": null, "changePct": null}, {"date": "2024-07-29", "foreign": 195.61, "trust": 83.0, "dealer": -1161.126, "total": -882.516, "close": null, "changePct": null}, {"date": "2024-07-30", "foreign": 630.175, "trust": 464.1, "dealer": -980.6850000000001, "total": 113.59000000000006, "close": null, "changePct": null}, {"date": "2024-07-31", "foreign": -211.372, "trust": 194.772, "dealer": 76.287, "total": 59.686999999999955, "close": null, "changePct": null}, {"date": "2024-08-01", "foreign": 2662.516, "trust": 583.245, "dealer": -353.377, "total": 2892.384, "close": null, "changePct": null}, {"date": "2024-08-02", "foreign": 671.096, "trust": 195.344, "dealer": -752.365, "total": 114.07500000000002, "close": null, "changePct": null}, {"date": "2024-08-05", "foreign": -488.149, "trust": 266.404, "dealer": -317.99, "total": -539.735, "close": null, "changePct": null}, {"date": "2024-08-06", "foreign": -1598.894, "trust": 321.78, "dealer": 267.124, "total": -1009.99, "close": null, "changePct": null}, {"date": "2024-08-07", "foreign": -650.075, "trust": 82.658, "dealer": 101.545, "total": -465.872, "close": null, "changePct": null}, {"date": "2024-08-08", "foreign": 2173.088, "trust": 888.011, "dealer": 335.496, "total": 3396.5950000000003, "close": null, "changePct": null}, {"date": "2024-08-09", "foreign": -640.7, "trust": 772.351, "dealer": -262.632, "total": -130.98100000000005, "close": null, "changePct": null}, {"date": "2024-08-12", "foreign": -563.676, "trust": 397.44, "dealer": -44.917, "total": -211.15300000000005, "close": null, "changePct": null}, {"date": "2024-08-13", "foreign": 771.06, "trust": 123.475, "dealer": 6.780000000000001, "total": 901.3149999999999, "close": null, "changePct": null}, {"date": "2024-08-14", "foreign": 1621.556, "trust": 64.604, "dealer": -14.149000000000001, "total": 1672.0110000000002, "close": null, "changePct": null}, {"date": "2024-08-15", "foreign": 408.102, "trust": 350.0, "dealer": 35.054, "total": 793.156, "close": null, "changePct": null}, {"date": "2024-08-16", "foreign": 711.327, "trust": 241.659, "dealer": 45.385000000000005, "total": 998.3710000000001, "close": null, "changePct": null}, {"date": "2024-08-19", "foreign": 568.648, "trust": 344.903, "dealer": 70.371, "total": 983.922, "close": null, "changePct": null}, {"date": "2024-08-20", "foreign": -62.153, "trust": 308.756, "dealer": -287.612, "total": -41.00900000000007, "close": null, "changePct": null}, {"date": "2024-08-21", "foreign": 578.507, "trust": 453.378, "dealer": -386.036, "total": 645.8489999999999, "close": null, "changePct": null}, {"date": "2024-08-22", "foreign": -386.706, "trust": 74.25, "dealer": -28.523, "total": -340.97900000000004, "close": null, "changePct": null}, {"date": "2024-08-23", "foreign": -111.159, "trust": 10.621, "dealer": -74.52799999999999, "total": -175.06600000000003, "close": null, "changePct": null}, {"date": "2024-08-26", "foreign": 130.579, "trust": 1375.878, "dealer": 181.668, "total": 1688.125, "close": null, "changePct": null}, {"date": "2024-08-27", "foreign": -551.06, "trust": 1746.878, "dealer": -19.961000000000002, "total": 1175.857, "close": null, "changePct": null}, {"date": "2024-08-28", "foreign": -567.885, "trust": 197.993, "dealer": -76.872, "total": -446.764, "close": null, "changePct": null}, {"date": "2024-08-29", "foreign": -894.561, "trust": 797.744, "dealer": -100.294, "total": -197.111, "close": null, "changePct": null}, {"date": "2024-08-30", "foreign": -750.624, "trust": -4.257, "dealer": -127.412, "total": -882.293, "close": null, "changePct": null}, {"date": "2024-09-02", "foreign": 258.964, "trust": 916.499, "dealer": 64.37299999999999, "total": 1239.836, "close": null, "changePct": null}, {"date": "2024-09-03", "foreign": -380.549, "trust": 190.319, "dealer": -44.249, "total": -234.47899999999998, "close": null, "changePct": null}, {"date": "2024-09-04", "foreign": -1206.561, "trust": 267.363, "dealer": -206.885, "total": -1146.0829999999999, "close": null, "changePct": null}, {"date": "2024-09-05", "foreign": -662.993, "trust": 341.762, "dealer": -94.30900000000001, "total": -415.5400000000001, "close": null, "changePct": null}, {"date": "2024-09-06", "foreign": 91.144, "trust": 54.798, "dealer": 56.291, "total": 202.233, "close": null, "changePct": null}, {"date": "2024-09-09", "foreign": -107.862, "trust": 401.562, "dealer": -159.635, "total": 134.06500000000005, "close": null, "changePct": null}, {"date": "2024-09-10", "foreign": -22.265, "trust": 328.158, "dealer": -66.218, "total": 239.675, "close": null, "changePct": null}, {"date": "2024-09-11", "foreign": -219.917, "trust": 399.905, "dealer": 6.359, "total": 186.34699999999998, "close": null, "changePct": null}, {"date": "2024-09-12", "foreign": 1153.419, "trust": 201.772, "dealer": 224.24800000000002, "total": 1579.4389999999999, "close": null, "changePct": null}, {"date": "2024-09-13", "foreign": 41.498, "trust": 175.731, "dealer": 81.917, "total": 299.14599999999996, "close": null, "changePct": null}, {"date": "2024-09-16", "foreign": 158.769, "trust": 154.865, "dealer": 7.991, "total": 321.625, "close": null, "changePct": null}, {"date": "2024-09-18", "foreign": 226.358, "trust": 339.302, "dealer": -152.101, "total": 413.559, "close": null, "changePct": null}, {"date": "2024-09-19", "foreign": 941.365, "trust": 530.372, "dealer": 296.647, "total": 1768.384, "close": null, "changePct": null}, {"date": "2024-09-20", "foreign": -412.549, "trust": 1977.931, "dealer": 85.526, "total": 1650.9080000000001, "close": null, "changePct": null}, {"date": "2024-09-23", "foreign": -418.424, "trust": 1097.0, "dealer": 16.677000000000003, "total": 695.253, "close": null, "changePct": null}, {"date": "2024-09-24", "foreign": -960.448, "trust": 644.616, "dealer": 112.144, "total": -203.6880000000001, "close": null, "changePct": null}, {"date": "2024-09-25", "foreign": -1296.54, "trust": 122.962, "dealer": 167.306, "total": -1006.2719999999999, "close": null, "changePct": null}, {"date": "2024-09-26", "foreign": -891.669, "trust": 162.84, "dealer": -36.265, "total": -765.0939999999999, "close": null, "changePct": null}, {"date": "2024-09-27", "foreign": -189.421, "trust": -292.339, "dealer": 109.96100000000001, "total": -371.799, "close": null, "changePct": null}, {"date": "2024-09-30", "foreign": -1138.878, "trust": 4.544, "dealer": 7.574, "total": -1126.7599999999998, "close": null, "changePct": null}, {"date": "2024-10-01", "foreign": 506.292, "trust": 38.97, "dealer": 278.576, "total": 823.838, "close": null, "changePct": null}, {"date": "2024-10-04", "foreign": -1144.81, "trust": 287.687, "dealer": -17.176, "total": -874.299, "close": null, "changePct": null}, {"date": "2024-10-07", "foreign": 791.526, "trust": -47.0, "dealer": 66.29299999999999, "total": 810.819, "close": null, "changePct": null}, {"date": "2024-10-08", "foreign": -285.49, "trust": -148.606, "dealer": 50.474000000000004, "total": -383.622, "close": null, "changePct": null}, {"date": "2024-10-09", "foreign": -482.593, "trust": -11.728, "dealer": 83.946, "total": -410.37500000000006, "close": null, "changePct": null}, {"date": "2024-10-11", "foreign": 276.024, "trust": 114.111, "dealer": -11.001000000000001, "total": 379.134, "close": null, "changePct": null}, {"date": "2024-10-14", "foreign": 295.847, "trust": -407.483, "dealer": 62.864000000000004, "total": -48.77200000000002, "close": null, "changePct": null}, {"date": "2024-10-15", "foreign": 1212.005, "trust": 30.056, "dealer": -59.93599999999999, "total": 1182.1250000000002, "close": null, "changePct": null}, {"date": "2024-10-16", "foreign": -565.476, "trust": -96.646, "dealer": 270.16200000000003, "total": -391.96, "close": null, "changePct": null}, {"date": "2024-10-17", "foreign": -94.436, "trust": 5.0, "dealer": 110.323, "total": 20.886999999999986, "close": null, "changePct": null}, {"date": "2024-10-18", "foreign": 893.295, "trust": -75.456, "dealer": 86.914, "total": 904.7529999999999, "close": null, "changePct": null}, {"date": "2024-10-21", "foreign": 471.288, "trust": 58.644, "dealer": -75.611, "total": 454.32099999999997, "close": null, "changePct": null}, {"date": "2024-10-22", "foreign": 1211.115, "trust": -364.955, "dealer": 50.6, "total": 896.7600000000001, "close": null, "changePct": null}, {"date": "2024-10-23", "foreign": -453.99, "trust": -435.756, "dealer": -48.418, "total": -938.164, "close": null, "changePct": null}, {"date": "2024-10-24", "foreign": 13.151, "trust": -64.678, "dealer": -41.567, "total": -93.09400000000002, "close": null, "changePct": null}, {"date": "2024-10-25", "foreign": 223.223, "trust": -106.695, "dealer": -18.848000000000003, "total": 97.68, "close": null, "changePct": null}, {"date": "2024-10-28", "foreign": 207.671, "trust": 58.289, "dealer": -68.946, "total": 197.01399999999998, "close": null, "changePct": null}, {"date": "2024-10-29", "foreign": -762.723, "trust": 101.984, "dealer": 15.795000000000002, "total": -644.944, "close": null, "changePct": null}, {"date": "2024-10-30", "foreign": -283.976, "trust": -324.24, "dealer": 61.762, "total": -546.454, "close": null, "changePct": null}, {"date": "2024-11-01", "foreign": -209.867, "trust": 23.156, "dealer": 107.986, "total": -78.725, "close": null, "changePct": null}, {"date": "2024-11-04", "foreign": 537.932, "trust": 43.243, "dealer": 10.783000000000001, "total": 591.9580000000001, "close": null, "changePct": null}, {"date": "2024-11-05", "foreign": 141.413, "trust": -57.49, "dealer": -30.15, "total": 53.77300000000001, "close": null, "changePct": null}, {"date": "2024-11-06", "foreign": 263.601, "trust": 25.221, "dealer": 66.106, "total": 354.928, "close": null, "changePct": null}, {"date": "2024-11-07", "foreign": 318.057, "trust": -208.882, "dealer": 146.035, "total": 255.21000000000004, "close": null, "changePct": null}, {"date": "2024-11-08", "foreign": 549.89, "trust": -76.424, "dealer": 50.457, "total": 523.923, "close": null, "changePct": null}, {"date": "2024-11-11", "foreign": 289.334, "trust": -171.914, "dealer": -5.327999999999996, "total": 112.09200000000004, "close": null, "changePct": null}, {"date": "2024-11-12", "foreign": 196.476, "trust": 364.373, "dealer": 122.60999999999999, "total": 683.4590000000001, "close": null, "changePct": null}, {"date": "2024-11-13", "foreign": 497.517, "trust": -457.473, "dealer": 17.288999999999994, "total": 57.33299999999998, "close": null, "changePct": null}, {"date": "2024-11-14", "foreign": 2180.298, "trust": -476.306, "dealer": 68.679, "total": 1772.6709999999996, "close": null, "changePct": null}, {"date": "2024-11-15", "foreign": -1772.194, "trust": -328.629, "dealer": 266.58500000000004, "total": -1834.2379999999998, "close": null, "changePct": null}, {"date": "2024-11-18", "foreign": -449.728, "trust": 1682.132, "dealer": -92.567, "total": 1139.837, "close": null, "changePct": null}, {"date": "2024-11-19", "foreign": -683.548, "trust": 2255.348, "dealer": 99.466, "total": 1671.2659999999998, "close": null, "changePct": null}, {"date": "2024-11-20", "foreign": -2453.615, "trust": 2803.353, "dealer": 41.631, "total": 391.3690000000003, "close": null, "changePct": null}, {"date": "2024-11-21", "foreign": -3284.252, "trust": 3302.0, "dealer": -69.326, "total": -51.577999999999975, "close": null, "changePct": null}, {"date": "2024-11-22", "foreign": -3037.024, "trust": 3018.0, "dealer": 79.636, "total": 60.61200000000011, "close": null, "changePct": null}, {"date": "2024-11-25", "foreign": -4750.033, "trust": 4029.798, "dealer": 135.792, "total": -584.4430000000006, "close": null, "changePct": null}, {"date": "2024-11-26", "foreign": -1999.432, "trust": 4453.271, "dealer": -129.484, "total": 2324.3549999999996, "close": null, "changePct": null}, {"date": "2024-11-27", "foreign": -2958.804, "trust": 1695.653, "dealer": 173.339, "total": -1089.812, "close": null, "changePct": null}, {"date": "2024-11-28", "foreign": -1393.676, "trust": 274.356, "dealer": 136.84799999999998, "total": -982.4719999999999, "close": null, "changePct": null}, {"date": "2024-11-29", "foreign": -1403.231, "trust": 380.477, "dealer": 25.005, "total": -997.749, "close": null, "changePct": null}, {"date": "2024-12-02", "foreign": -612.533, "trust": 45.985, "dealer": -14.845, "total": -581.393, "close": null, "changePct": null}, {"date": "2024-12-03", "foreign": -720.647, "trust": -858.142, "dealer": 168.789, "total": -1410.0, "close": null, "changePct": null}, {"date": "2024-12-04", "foreign": -262.1, "trust": -89.221, "dealer": 5.327, "total": -345.994, "close": null, "changePct": null}, {"date": "2024-12-05", "foreign": -179.104, "trust": -194.878, "dealer": -18.837, "total": -392.81899999999996, "close": null, "changePct": null}, {"date": "2024-12-06", "foreign": -317.818, "trust": -727.788, "dealer": -4.635000000000001, "total": -1050.241, "close": null, "changePct": null}, {"date": "2024-12-09", "foreign": 819.039, "trust": -72.69, "dealer": 55.441, "total": 801.7899999999998, "close": null, "changePct": null}, {"date": "2024-12-10", "foreign": -443.46, "trust": 57.25, "dealer": -31.573000000000004, "total": -417.783, "close": null, "changePct": null}, {"date": "2024-12-11", "foreign": -75.248, "trust": -287.949, "dealer": 29.415000000000003, "total": -333.78200000000004, "close": null, "changePct": null}, {"date": "2024-12-12", "foreign": 352.114, "trust": -98.941, "dealer": 29.144, "total": 282.317, "close": null, "changePct": null}, {"date": "2024-12-13", "foreign": 300.747, "trust": 164.497, "dealer": 57.876999999999995, "total": 523.1210000000001, "close": null, "changePct": null}, {"date": "2024-12-16", "foreign": -1279.801, "trust": 110.183, "dealer": 66.42600000000002, "total": -1103.1919999999998, "close": null, "changePct": null}, {"date": "2024-12-17", "foreign": -942.239, "trust": 303.594, "dealer": 154.01999999999998, "total": -484.62500000000006, "close": null, "changePct": null}, {"date": "2024-12-18", "foreign": -265.592, "trust": 551.848, "dealer": -9.538999999999998, "total": 276.717, "close": null, "changePct": null}, {"date": "2024-12-19", "foreign": -1300.182, "trust": 128.527, "dealer": 82.709, "total": -1088.946, "close": null, "changePct": null}, {"date": "2024-12-20", "foreign": 131.847, "trust": -156.738, "dealer": 34.03, "total": 9.13900000000001, "close": null, "changePct": null}, {"date": "2024-12-23", "foreign": 1925.51, "trust": -412.0, "dealer": 85.072, "total": 1598.582, "close": null, "changePct": null}, {"date": "2024-12-24", "foreign": 501.811, "trust": -353.0, "dealer": 1.8469999999999995, "total": 150.65799999999996, "close": null, "changePct": null}, {"date": "2024-12-25", "foreign": 814.698, "trust": -638.0, "dealer": 36.916, "total": 213.61399999999998, "close": null, "changePct": null}, {"date": "2024-12-26", "foreign": 985.988, "trust": -574.196, "dealer": 67.025, "total": 478.817, "close": null, "changePct": null}, {"date": "2024-12-27", "foreign": 514.48, "trust": -59.671, "dealer": 56.379999999999995, "total": 511.189, "close": null, "changePct": null}, {"date": "2024-12-30", "foreign": -298.721, "trust": -78.839, "dealer": 14.739, "total": -362.82099999999997, "close": null, "changePct": null}, {"date": "2024-12-31", "foreign": 203.337, "trust": -448.796, "dealer": 12.567, "total": -232.892, "close": null, "changePct": null}, {"date": "2025-01-02", "foreign": 267.387, "trust": -911.935, "dealer": 126.508, "total": -518.04, "close": null, "changePct": null}, {"date": "2025-01-03", "foreign": 2022.2, "trust": 198.0, "dealer": 107.174, "total": 2327.374, "close": null, "changePct": null}, {"date": "2025-01-06", "foreign": 167.07, "trust": 116.0, "dealer": 165.915, "total": 448.985, "close": null, "changePct": null}, {"date": "2025-01-07", "foreign": 1637.443, "trust": 60.0, "dealer": 218.76, "total": 1916.203, "close": null, "changePct": null}, {"date": "2025-01-08", "foreign": -523.415, "trust": 414.433, "dealer": 45.800000000000004, "total": -63.18199999999997, "close": null, "changePct": null}, {"date": "2025-01-09", "foreign": 522.613, "trust": 26.78, "dealer": 54.007999999999996, "total": 603.4010000000001, "close": null, "changePct": null}, {"date": "2025-01-10", "foreign": -428.704, "trust": -190.0, "dealer": 116.879, "total": -501.82499999999993, "close": null, "changePct": null}, {"date": "2025-01-13", "foreign": -780.498, "trust": 227.0, "dealer": 219.28199999999998, "total": -334.2160000000001, "close": null, "changePct": null}, {"date": "2025-01-14", "foreign": -548.904, "trust": 76.0, "dealer": 75.631, "total": -397.273, "close": null, "changePct": null}, {"date": "2025-01-15", "foreign": -2165.27, "trust": 11.0, "dealer": 168.395, "total": -1985.8749999999998, "close": null, "changePct": null}, {"date": "2025-01-16", "foreign": -68.792, "trust": -511.0, "dealer": 92.376, "total": -487.416, "close": null, "changePct": null}, {"date": "2025-01-17", "foreign": -563.651, "trust": -71.0, "dealer": 140.614, "total": -494.0369999999999, "close": null, "changePct": null}, {"date": "2025-01-20", "foreign": -415.964, "trust": 197.401, "dealer": 38.281000000000006, "total": -180.28199999999998, "close": null, "changePct": null}, {"date": "2025-01-21", "foreign": -1256.922, "trust": -286.538, "dealer": -2.59, "total": -1546.05, "close": null, "changePct": null}, {"date": "2025-01-22", "foreign": -424.621, "trust": 154.8, "dealer": 97.982, "total": -171.83899999999997, "close": null, "changePct": null}, {"date": "2025-02-03", "foreign": 1868.095, "trust": 2023.597, "dealer": 325.717, "total": 4217.409, "close": null, "changePct": null}, {"date": "2025-02-04", "foreign": -1680.183, "trust": 1373.5, "dealer": 373.155, "total": 66.472, "close": null, "changePct": null}, {"date": "2025-02-05", "foreign": 202.518, "trust": 494.0, "dealer": 14.065, "total": 710.583, "close": null, "changePct": null}, {"date": "2025-02-06", "foreign": -112.025, "trust": 217.0, "dealer": -5.0, "total": 99.975, "close": null, "changePct": null}, {"date": "2025-02-07", "foreign": 886.876, "trust": 281.204, "dealer": 87.398, "total": 1255.4779999999998, "close": null, "changePct": null}, {"date": "2025-02-10", "foreign": -515.338, "trust": 362.803, "dealer": -22.698, "total": -175.23299999999998, "close": null, "changePct": null}, {"date": "2025-02-11", "foreign": -89.793, "trust": 146.0, "dealer": 126.316, "total": 182.523, "close": null, "changePct": null}, {"date": "2025-02-12", "foreign": -256.934, "trust": 280.0, "dealer": -15.335999999999999, "total": 7.729999999999976, "close": null, "changePct": null}, {"date": "2025-02-13", "foreign": 56.194, "trust": 30.0, "dealer": -24.444, "total": 61.75000000000001, "close": null, "changePct": null}, {"date": "2025-02-14", "foreign": -285.359, "trust": 1.0, "dealer": -62.327, "total": -346.686, "close": null, "changePct": null}, {"date": "2025-02-17", "foreign": 109.048, "trust": 226.0, "dealer": 0.764, "total": 335.812, "close": null, "changePct": null}, {"date": "2025-02-18", "foreign": 653.381, "trust": 597.0, "dealer": 40.77, "total": 1291.1509999999998, "close": null, "changePct": null}, {"date": "2025-02-19", "foreign": -505.755, "trust": -442.0, "dealer": -123.118, "total": -1070.873, "close": null, "changePct": null}, {"date": "2025-02-20", "foreign": 606.858, "trust": 384.435, "dealer": 84.154, "total": 1075.447, "close": null, "changePct": null}, {"date": "2025-02-21", "foreign": -60.347, "trust": 519.0, "dealer": -11.175999999999998, "total": 447.477, "close": null, "changePct": null}, {"date": "2025-02-24", "foreign": -140.244, "trust": -134.0, "dealer": 1.7510000000000012, "total": -272.493, "close": null, "changePct": null}, {"date": "2025-02-25", "foreign": 644.4, "trust": -120.098, "dealer": -38.36599999999999, "total": 485.93600000000004, "close": null, "changePct": null}, {"date": "2025-02-26", "foreign": 399.447, "trust": -532.098, "dealer": 80.384, "total": -52.26699999999995, "close": null, "changePct": null}, {"date": "2025-02-27", "foreign": -1315.81, "trust": -670.083, "dealer": 17.129999999999995, "total": -1968.763, "close": null, "changePct": null}, {"date": "2025-03-03", "foreign": 182.275, "trust": -411.0, "dealer": 187.899, "total": -40.82599999999999, "close": 669.0, "changePct": null}, {"date": "2025-03-04", "foreign": 8.464, "trust": 1.621, "dealer": 59.799, "total": 69.884, "close": 670.0, "changePct": 0.1494768310911887}, {"date": "2025-03-05", "foreign": -254.824, "trust": -10.5, "dealer": 28.052, "total": -237.27200000000002, "close": 670.0, "changePct": null}, {"date": "2025-03-06", "foreign": -482.651, "trust": -50.0, "dealer": -17.563, "total": -550.2140000000002, "close": 670.0, "changePct": null}, {"date": "2025-03-07", "foreign": -827.066, "trust": -336.0, "dealer": -42.013, "total": -1205.0790000000002, "close": 670.0, "changePct": null}, {"date": "2025-03-10", "foreign": -597.104, "trust": -314.0, "dealer": 62.91, "total": -848.1940000000001, "close": 670.0, "changePct": null}, {"date": "2025-03-11", "foreign": -338.138, "trust": 45.0, "dealer": 99.99000000000001, "total": -193.14799999999997, "close": 670.0, "changePct": null}, {"date": "2025-03-12", "foreign": -8110.336, "trust": -985.222, "dealer": 194.793, "total": -8900.765000000001, "close": 670.0, "changePct": null}, {"date": "2025-03-13", "foreign": -613.048, "trust": 574.0, "dealer": 64.59700000000001, "total": 25.549, "close": 670.0, "changePct": null}, {"date": "2025-03-14", "foreign": -978.776, "trust": -41.0, "dealer": 5.6839999999999975, "total": -1014.0919999999999, "close": 670.0, "changePct": null}, {"date": "2025-03-17", "foreign": -106.874, "trust": 715.0, "dealer": -8.802, "total": 599.3240000000001, "close": 670.0, "changePct": null}, {"date": "2025-03-18", "foreign": -9.054, "trust": 1241.3, "dealer": -147.105, "total": 1085.1409999999998, "close": 670.0, "changePct": null}, {"date": "2025-03-19", "foreign": -790.97, "trust": 166.0, "dealer": 12.868, "total": -612.102, "close": 670.0, "changePct": null}, {"date": "2025-03-20", "foreign": -75.882, "trust": 176.0, "dealer": 66.375, "total": 166.493, "close": 670.0, "changePct": null}, {"date": "2025-03-21", "foreign": -557.471, "trust": 641.526, "dealer": -2.829, "total": 81.226, "close": 670.0, "changePct": null}, {"date": "2025-03-24", "foreign": -1357.637, "trust": 429.0, "dealer": 48.92, "total": -879.717, "close": 670.0, "changePct": null}, {"date": "2025-03-25", "foreign": -1992.465, "trust": 310.5, "dealer": 428.602, "total": -1253.3629999999998, "close": 670.0, "changePct": null}, {"date": "2025-03-26", "foreign": -1286.683, "trust": 902.0, "dealer": 28.769999999999996, "total": -355.913, "close": 670.0, "changePct": null}, {"date": "2025-03-27", "foreign": -1618.395, "trust": 1275.238, "dealer": 161.29399999999998, "total": -181.86299999999994, "close": 670.0, "changePct": null}, {"date": "2025-03-28", "foreign": 145.358, "trust": 373.3, "dealer": 196.388, "total": 715.046, "close": 670.0, "changePct": null}, {"date": "2025-03-31", "foreign": -1477.153, "trust": 978.0, "dealer": 397.56600000000003, "total": -101.58699999999999, "close": 670.0, "changePct": null}, {"date": "2025-04-01", "foreign": -728.541, "trust": 160.0, "dealer": 174.21300000000002, "total": -394.32800000000003, "close": 670.0, "changePct": null}, {"date": "2025-04-02", "foreign": -1514.731, "trust": 116.515, "dealer": 214.264, "total": -1183.9519999999998, "close": 670.0, "changePct": null}, {"date": "2025-04-07", "foreign": 380.961, "trust": -10.0, "dealer": -16.998, "total": 353.963, "close": 670.0, "changePct": null}, {"date": "2025-04-08", "foreign": 120.791, "trust": -1066.968, "dealer": 545.278, "total": -400.8990000000001, "close": 670.0, "changePct": null}, {"date": "2025-04-09", "foreign": -1496.373, "trust": 145.931, "dealer": 1184.737, "total": -165.70500000000004, "close": 670.0, "changePct": null}, {"date": "2025-04-10", "foreign": -1264.534, "trust": -66.0, "dealer": 102.0, "total": -1228.534, "close": 670.0, "changePct": null}, {"date": "2025-04-11", "foreign": 1339.489, "trust": -2110.561, "dealer": 79.555, "total": -691.517, "close": 670.0, "changePct": null}, {"date": "2025-04-14", "foreign": -1673.419, "trust": 159.886, "dealer": 290.94, "total": -1222.593, "close": 670.0, "changePct": null}, {"date": "2025-04-15", "foreign": -541.653, "trust": 530.926, "dealer": 230.126, "total": 219.39900000000003, "close": 670.0, "changePct": null}, {"date": "2025-04-16", "foreign": -1010.824, "trust": 366.096, "dealer": -46.968, "total": -691.696, "close": 670.0, "changePct": null}, {"date": "2025-04-17", "foreign": -881.872, "trust": 23.0, "dealer": -6.021999999999991, "total": -864.894, "close": 670.0, "changePct": null}, {"date": "2025-04-18", "foreign": -1208.653, "trust": 10.246, "dealer": 11.887, "total": -1186.52, "close": 670.0, "changePct": null}, {"date": "2025-04-21", "foreign": -652.165, "trust": 9.0, "dealer": 86.242, "total": -556.923, "close": 670.0, "changePct": null}, {"date": "2025-04-22", "foreign": -4.295, "trust": 223.0, "dealer": 224.177, "total": 442.882, "close": 670.0, "changePct": null}, {"date": "2025-04-23", "foreign": -176.116, "trust": 200.098, "dealer": 70.188, "total": 94.17, "close": 670.0, "changePct": null}, {"date": "2025-04-24", "foreign": -152.407, "trust": -46.853, "dealer": 28.323, "total": -170.937, "close": 670.0, "changePct": null}, {"date": "2025-04-25", "foreign": -501.037, "trust": 916.248, "dealer": -122.712, "total": 292.4990000000001, "close": 670.0, "changePct": null}, {"date": "2025-04-28", "foreign": -668.055, "trust": 204.144, "dealer": 114.0, "total": -349.91099999999994, "close": 670.0, "changePct": null}, {"date": "2025-04-29", "foreign": -101.487, "trust": 330.19, "dealer": 5.986000000000001, "total": 234.689, "close": 670.0, "changePct": null}, {"date": "2025-04-30", "foreign": -360.205, "trust": 98.39, "dealer": -104.266, "total": -366.081, "close": 670.0, "changePct": null}, {"date": "2025-05-02", "foreign": 87.001, "trust": 55.445, "dealer": 0.8170000000000002, "total": 143.263, "close": 670.0, "changePct": null}, {"date": "2025-05-05", "foreign": 1354.981, "trust": -107.457, "dealer": -131.412, "total": 1116.112, "close": 670.0, "changePct": null}, {"date": "2025-05-06", "foreign": -137.008, "trust": 82.314, "dealer": -74.96199999999999, "total": -129.656, "close": 670.0, "changePct": null}, {"date": "2025-05-07", "foreign": -19.149, "trust": 440.055, "dealer": -87.595, "total": 333.31100000000004, "close": 670.0, "changePct": null}, {"date": "2025-05-08", "foreign": -92.265, "trust": -82.689, "dealer": 17.567, "total": -157.387, "close": 670.0, "changePct": null}, {"date": "2025-05-09", "foreign": 316.376, "trust": 6.85, "dealer": 22.659, "total": 345.885, "close": 670.0, "changePct": null}, {"date": "2025-05-12", "foreign": -94.154, "trust": 326.399, "dealer": -21.848999999999997, "total": 210.39600000000002, "close": 670.0, "changePct": null}, {"date": "2025-05-13", "foreign": -424.765, "trust": 40.797, "dealer": 34.422, "total": -349.546, "close": 670.0, "changePct": null}, {"date": "2025-05-14", "foreign": -363.426, "trust": -121.25, "dealer": 214.82999999999998, "total": -269.846, "close": 670.0, "changePct": null}, {"date": "2025-05-15", "foreign": 403.546, "trust": -90.729, "dealer": -34.917, "total": 277.9, "close": 670.0, "changePct": null}, {"date": "2025-05-16", "foreign": -318.107, "trust": -232.887, "dealer": 29.32, "total": -521.6740000000001, "close": 670.0, "changePct": null}, {"date": "2025-05-19", "foreign": 63.464, "trust": -212.57, "dealer": -23.700000000000003, "total": -172.806, "close": 670.0, "changePct": null}, {"date": "2025-05-20", "foreign": 724.067, "trust": -311.301, "dealer": 34.797, "total": 447.563, "close": 670.0, "changePct": null}, {"date": "2025-05-21", "foreign": 10.92, "trust": -257.0, "dealer": -63.943999999999996, "total": -310.02399999999994, "close": 670.0, "changePct": null}, {"date": "2025-05-22", "foreign": 592.442, "trust": -28.369, "dealer": -76.481, "total": 487.592, "close": 670.0, "changePct": null}, {"date": "2025-05-23", "foreign": 41.884, "trust": -166.248, "dealer": -49.565, "total": -173.92899999999997, "close": 670.0, "changePct": null}, {"date": "2025-05-26", "foreign": 1646.33, "trust": -1320.768, "dealer": -115.418, "total": 210.1439999999999, "close": 670.0, "changePct": null}, {"date": "2025-05-27", "foreign": 925.382, "trust": -1440.226, "dealer": -67.459, "total": -582.3030000000001, "close": 670.0, "changePct": null}, {"date": "2025-05-28", "foreign": 2517.522, "trust": -1148.0, "dealer": -31.732, "total": 1337.79, "close": 670.0, "changePct": null}, {"date": "2025-05-29", "foreign": 1003.333, "trust": -760.697, "dealer": 21.579, "total": 264.215, "close": 670.0, "changePct": null}, {"date": "2025-06-02", "foreign": -730.456, "trust": 350.753, "dealer": -30.283, "total": -409.98600000000005, "close": 670.0, "changePct": null}, {"date": "2025-06-03", "foreign": -1273.291, "trust": 2035.099, "dealer": -18.456000000000003, "total": 743.3520000000001, "close": 670.0, "changePct": null}, {"date": "2025-06-04", "foreign": 294.466, "trust": -246.496, "dealer": 42.045, "total": 90.015, "close": 670.0, "changePct": null}, {"date": "2025-06-05", "foreign": 702.64, "trust": -636.495, "dealer": 38.925, "total": 105.06999999999998, "close": 670.0, "changePct": null}, {"date": "2025-06-06", "foreign": 203.884, "trust": 15.504, "dealer": 10.51, "total": 229.89799999999997, "close": 670.0, "changePct": null}, {"date": "2025-06-09", "foreign": -381.966, "trust": 86.106, "dealer": -2.7220000000000004, "total": -298.582, "close": 670.0, "changePct": null}, {"date": "2025-06-10", "foreign": 749.153, "trust": -115.549, "dealer": 34.944, "total": 668.548, "close": 670.0, "changePct": null}, {"date": "2025-06-11", "foreign": 364.526, "trust": 571.752, "dealer": 45.914, "total": 982.192, "close": 670.0, "changePct": null}, {"date": "2025-06-12", "foreign": -328.524, "trust": 293.584, "dealer": 85.112, "total": 50.172000000000025, "close": 670.0, "changePct": null}, {"date": "2025-06-13", "foreign": 44.004, "trust": 337.407, "dealer": 46.090999999999994, "total": 427.502, "close": 670.0, "changePct": null}, {"date": "2025-06-16", "foreign": -393.754, "trust": 265.274, "dealer": 173.21699999999998, "total": 44.73699999999998, "close": 670.0, "changePct": null}, {"date": "2025-06-17", "foreign": -972.189, "trust": 1026.466, "dealer": 124.413, "total": 178.68999999999994, "close": 670.0, "changePct": null}, {"date": "2025-06-18", "foreign": -670.707, "trust": 862.061, "dealer": 361.742, "total": 553.096, "close": 670.0, "changePct": null}, {"date": "2025-06-19", "foreign": -45.121, "trust": 594.75, "dealer": 385.924, "total": 935.5530000000001, "close": 670.0, "changePct": null}, {"date": "2025-06-20", "foreign": -425.888, "trust": 497.111, "dealer": 238.81900000000002, "total": 310.04200000000003, "close": 670.0, "changePct": null}, {"date": "2025-06-23", "foreign": -95.306, "trust": 408.597, "dealer": 212.064, "total": 525.355, "close": 670.0, "changePct": null}, {"date": "2025-06-24", "foreign": -4847.362, "trust": 7059.781, "dealer": 35.518, "total": 2247.937, "close": 670.0, "changePct": null}, {"date": "2025-06-25", "foreign": -7082.167, "trust": 3187.403, "dealer": 566.437, "total": -3328.3270000000007, "close": 670.0, "changePct": null}, {"date": "2025-06-26", "foreign": 2797.059, "trust": 1303.655, "dealer": -401.08, "total": 3699.634, "close": 670.0, "changePct": null}, {"date": "2025-06-27", "foreign": 991.805, "trust": 630.241, "dealer": -396.64099999999996, "total": 1225.4049999999997, "close": 670.0, "changePct": null}, {"date": "2025-06-30", "foreign": 5422.22, "trust": -2905.932, "dealer": -75.084, "total": 2441.2040000000006, "close": 670.0, "changePct": null}, {"date": "2025-07-01", "foreign": 1240.612, "trust": 559.689, "dealer": -37.138, "total": 1763.163, "close": 670.0, "changePct": null}, {"date": "2025-07-02", "foreign": 1041.423, "trust": -356.592, "dealer": -75.055, "total": 609.7760000000001, "close": 670.0, "changePct": null}, {"date": "2025-07-03", "foreign": -4122.145, "trust": -1305.796, "dealer": -256.119, "total": -5684.060000000001, "close": 670.0, "changePct": null}, {"date": "2025-07-04", "foreign": -358.517, "trust": -1453.201, "dealer": -1.9720000000000013, "total": -1813.69, "close": 670.0, "changePct": null}, {"date": "2025-07-07", "foreign": 307.962, "trust": 302.056, "dealer": 104.41000000000001, "total": 714.428, "close": 670.0, "changePct": null}, {"date": "2025-07-08", "foreign": 1077.317, "trust": -456.474, "dealer": -3.7239999999999966, "total": 617.119, "close": 670.0, "changePct": null}, {"date": "2025-07-09", "foreign": 740.043, "trust": -109.2, "dealer": -16.279999999999998, "total": 614.563, "close": 670.0, "changePct": null}, {"date": "2025-07-10", "foreign": 969.023, "trust": -365.809, "dealer": -267.28, "total": 335.93399999999997, "close": 670.0, "changePct": null}, {"date": "2025-07-11", "foreign": 1215.296, "trust": -360.258, "dealer": -186.689, "total": 668.349, "close": 670.0, "changePct": null}, {"date": "2025-07-14", "foreign": -162.935, "trust": 1289.208, "dealer": -1706.5700000000002, "total": -580.2969999999999, "close": 670.0, "changePct": null}, {"date": "2025-07-15", "foreign": 1248.099, "trust": -55.494, "dealer": -10.850000000000001, "total": 1181.755, "close": 670.0, "changePct": null}, {"date": "2025-07-16", "foreign": 732.172, "trust": -603.76, "dealer": -1.3069999999999986, "total": 127.10500000000003, "close": 670.0, "changePct": null}, {"date": "2025-07-17", "foreign": 2128.958, "trust": -749.755, "dealer": 34.864999999999995, "total": 1414.068, "close": 670.0, "changePct": null}, {"date": "2025-07-18", "foreign": 103.102, "trust": -20.375, "dealer": 126.185, "total": 208.912, "close": 670.0, "changePct": null}, {"date": "2025-07-21", "foreign": 1981.192, "trust": -505.356, "dealer": 103.538, "total": 1579.374, "close": 670.0, "changePct": null}, {"date": "2025-07-22", "foreign": -448.269, "trust": -809.409, "dealer": 119.01700000000001, "total": -1138.661, "close": 670.0, "changePct": null}, {"date": "2025-07-23", "foreign": 1185.919, "trust": -49.076, "dealer": -185.109, "total": 951.734, "close": 670.0, "changePct": null}, {"date": "2025-07-24", "foreign": 925.232, "trust": 61.91, "dealer": -2.7990000000000004, "total": 984.343, "close": 670.0, "changePct": null}, {"date": "2025-07-25", "foreign": 1603.348, "trust": 275.654, "dealer": -53.311, "total": 1825.691, "close": 670.0, "changePct": null}, {"date": "2025-07-28", "foreign": 426.124, "trust": 368.0, "dealer": -48.879999999999995, "total": 745.244, "close": 670.0, "changePct": null}, {"date": "2025-07-29", "foreign": -144.123, "trust": 333.655, "dealer": 88.094, "total": 277.626, "close": 670.0, "changePct": null}, {"date": "2025-07-30", "foreign": 293.623, "trust": 349.479, "dealer": 31.029000000000003, "total": 674.1310000000001, "close": 670.0, "changePct": null}, {"date": "2025-07-31", "foreign": 168.094, "trust": 454.578, "dealer": 26.211, "total": 648.883, "close": 670.0, "changePct": null}, {"date": "2025-08-01", "foreign": -8.271, "trust": 561.276, "dealer": -2.629999999999999, "total": 550.375, "close": 670.0, "changePct": null}, {"date": "2025-08-04", "foreign": -28.15, "trust": 663.312, "dealer": -19.756999999999998, "total": 615.4050000000001, "close": 670.0, "changePct": null}, {"date": "2025-08-05", "foreign": 228.729, "trust": 376.966, "dealer": 9.605, "total": 615.3000000000001, "close": 670.0, "changePct": null}, {"date": "2025-08-06", "foreign": -706.788, "trust": 426.402, "dealer": -5.226, "total": -285.612, "close": 670.0, "changePct": null}, {"date": "2025-08-07", "foreign": -189.728, "trust": 276.311, "dealer": 3.1899999999999995, "total": 89.77299999999997, "close": 670.0, "changePct": null}, {"date": "2025-08-08", "foreign": 900.474, "trust": -798.606, "dealer": 15.443000000000001, "total": 117.31100000000004, "close": 670.0, "changePct": null}, {"date": "2025-08-11", "foreign": -485.806, "trust": -27.284, "dealer": 3.1299999999999955, "total": -509.96, "close": 670.0, "changePct": null}, {"date": "2025-08-12", "foreign": 567.863, "trust": -680.648, "dealer": 18.535, "total": -94.25, "close": 670.0, "changePct": null}, {"date": "2025-08-13", "foreign": -835.939, "trust": -362.195, "dealer": -38.339999999999996, "total": -1236.474, "close": 670.0, "changePct": null}, {"date": "2025-08-14", "foreign": -2534.976, "trust": -408.841, "dealer": 207.382, "total": -2736.435, "close": 670.0, "changePct": null}, {"date": "2025-08-15", "foreign": -1491.81, "trust": -298.709, "dealer": 157.263, "total": -1633.256, "close": 670.0, "changePct": null}, {"date": "2025-08-18", "foreign": -836.369, "trust": 64.42, "dealer": 44.037, "total": -727.912, "close": 670.0, "changePct": null}, {"date": "2025-08-19", "foreign": -918.709, "trust": 109.831, "dealer": 64.35499999999999, "total": -744.5229999999999, "close": 670.0, "changePct": null}, {"date": "2025-08-20", "foreign": -2216.398, "trust": 241.337, "dealer": 347.322, "total": -1627.739, "close": 670.0, "changePct": null}, {"date": "2025-08-21", "foreign": -681.385, "trust": -244.852, "dealer": 35.077, "total": -891.16, "close": 670.0, "changePct": null}, {"date": "2025-08-22", "foreign": -1099.802, "trust": -29.048, "dealer": 49.028000000000006, "total": -1079.822, "close": 670.0, "changePct": null}, {"date": "2025-08-25", "foreign": -186.765, "trust": -1.467, "dealer": -13.781000000000002, "total": -202.013, "close": 670.0, "changePct": null}, {"date": "2025-08-26", "foreign": -403.928, "trust": -104.968, "dealer": -42.355000000000004, "total": -551.251, "close": 670.0, "changePct": null}, {"date": "2025-08-27", "foreign": -761.954, "trust": -140.5, "dealer": 1.1159999999999997, "total": -901.338, "close": 670.0, "changePct": null}, {"date": "2025-08-28", "foreign": -403.367, "trust": -230.65, "dealer": -8.986, "total": -643.003, "close": 670.0, "changePct": null}, {"date": "2025-08-29", "foreign": -869.489, "trust": 131.789, "dealer": -18.117, "total": -755.817, "close": 670.0, "changePct": null}, {"date": "2025-09-01", "foreign": -1020.896, "trust": 239.161, "dealer": -36.015, "total": -817.7499999999999, "close": 670.0, "changePct": null}, {"date": "2025-09-02", "foreign": -374.252, "trust": 135.599, "dealer": 25.739, "total": -212.91400000000002, "close": 670.0, "changePct": null}, {"date": "2025-09-03", "foreign": 84.201, "trust": -96.101, "dealer": 39.686, "total": 27.785999999999998, "close": 670.0, "changePct": null}, {"date": "2025-09-04", "foreign": 223.816, "trust": 48.652, "dealer": 10.118, "total": 282.586, "close": 670.0, "changePct": null}, {"date": "2025-09-05", "foreign": 550.145, "trust": -180.311, "dealer": -3.428, "total": 366.40599999999995, "close": 670.0, "changePct": null}, {"date": "2025-09-08", "foreign": 418.069, "trust": -164.7, "dealer": -5.422000000000001, "total": 247.947, "close": 670.0, "changePct": null}, {"date": "2025-09-09", "foreign": 1695.803, "trust": 58.283, "dealer": 37.263999999999996, "total": 1791.3500000000001, "close": 670.0, "changePct": null}, {"date": "2025-09-10", "foreign": 454.81, "trust": 1.084, "dealer": -150.56, "total": 305.33400000000006, "close": 670.0, "changePct": null}, {"date": "2025-09-11", "foreign": 2145.312, "trust": -105.38, "dealer": 71.622, "total": 2111.5539999999996, "close": 670.0, "changePct": null}, {"date": "2025-09-12", "foreign": 1206.289, "trust": 400.618, "dealer": 136.565, "total": 1743.472, "close": 670.0, "changePct": null}, {"date": "2025-09-15", "foreign": 306.833, "trust": -40.655, "dealer": -81.33200000000001, "total": 184.846, "close": 670.0, "changePct": null}, {"date": "2025-09-16", "foreign": 802.791, "trust": -531.149, "dealer": -125.154, "total": 146.48800000000006, "close": 670.0, "changePct": null}, {"date": "2025-09-17", "foreign": 292.718, "trust": -291.62, "dealer": -18.802, "total": -17.703999999999986, "close": 670.0, "changePct": null}, {"date": "2025-09-18", "foreign": 410.4, "trust": -563.45, "dealer": -40.219, "total": -193.26900000000006, "close": 670.0, "changePct": null}, {"date": "2025-09-19", "foreign": -615.497, "trust": 333.894, "dealer": 31.942999999999998, "total": -249.65999999999997, "close": 670.0, "changePct": null}, {"date": "2025-09-22", "foreign": 275.12, "trust": 68.065, "dealer": -2.2380000000000013, "total": 340.947, "close": 670.0, "changePct": null}, {"date": "2025-09-23", "foreign": 204.785, "trust": -6.366, "dealer": -40.422, "total": 157.99699999999999, "close": 670.0, "changePct": null}, {"date": "2025-09-24", "foreign": -249.207, "trust": -53.177, "dealer": -46.711999999999996, "total": -349.096, "close": 670.0, "changePct": null}, {"date": "2025-09-25", "foreign": 508.742, "trust": -155.0, "dealer": -38.569, "total": 315.173, "close": 670.0, "changePct": null}, {"date": "2025-09-26", "foreign": -92.723, "trust": 119.302, "dealer": -25.256, "total": 1.3230000000000075, "close": 670.0, "changePct": null}, {"date": "2025-09-30", "foreign": -1100.116, "trust": 177.293, "dealer": 199.973, "total": -722.85, "close": 670.0, "changePct": null}, {"date": "2025-10-01", "foreign": -54.215, "trust": 266.478, "dealer": 31.981, "total": 244.244, "close": 670.0, "changePct": null}, {"date": "2025-10-02", "foreign": 203.848, "trust": -71.848, "dealer": -1.138, "total": 130.862, "close": 670.0, "changePct": null}, {"date": "2025-10-03", "foreign": 331.515, "trust": -476.26, "dealer": -1.27, "total": -146.015, "close": 670.0, "changePct": null}, {"date": "2025-10-07", "foreign": 872.623, "trust": -362.368, "dealer": 16.801000000000002, "total": 527.0560000000002, "close": 670.0, "changePct": null}, {"date": "2025-10-08", "foreign": 298.562, "trust": -103.397, "dealer": 14.873000000000001, "total": 210.038, "close": 670.0, "changePct": null}, {"date": "2025-10-09", "foreign": -679.271, "trust": -604.925, "dealer": -45.624, "total": -1329.82, "close": 670.0, "changePct": null}, {"date": "2025-10-13", "foreign": 1142.038, "trust": -35.594, "dealer": 285.462, "total": 1391.906, "close": 670.0, "changePct": null}, {"date": "2025-10-14", "foreign": 381.307, "trust": -41.845, "dealer": 176.583, "total": 516.0450000000001, "close": 670.0, "changePct": null}, {"date": "2025-10-15", "foreign": -861.118, "trust": -43.398, "dealer": 363.533, "total": -540.9830000000001, "close": 670.0, "changePct": null}, {"date": "2025-10-16", "foreign": -351.583, "trust": -87.264, "dealer": 28.465, "total": -410.382, "close": 670.0, "changePct": null}, {"date": "2025-10-17", "foreign": 416.414, "trust": -287.0, "dealer": -52.403999999999996, "total": 77.01, "close": 670.0, "changePct": null}, {"date": "2025-10-20", "foreign": 1.732, "trust": -111.988, "dealer": 52.277, "total": -57.979, "close": 670.0, "changePct": null}, {"date": "2025-10-21", "foreign": 588.181, "trust": -296.007, "dealer": 31.786, "total": 323.96000000000004, "close": 670.0, "changePct": null}, {"date": "2025-10-22", "foreign": 514.986, "trust": -132.447, "dealer": 100.253, "total": 482.792, "close": 670.0, "changePct": null}, {"date": "2025-10-23", "foreign": 257.633, "trust": -38.264, "dealer": 182.581, "total": 401.94999999999993, "close": 670.0, "changePct": null}, {"date": "2025-10-27", "foreign": 1299.394, "trust": -189.374, "dealer": 82.818, "total": 1192.838, "close": 670.0, "changePct": null}, {"date": "2025-10-28", "foreign": 485.125, "trust": -284.702, "dealer": 21.383, "total": 221.806, "close": 670.0, "changePct": null}, {"date": "2025-10-29", "foreign": 620.074, "trust": -261.405, "dealer": -93.19, "total": 265.479, "close": 670.0, "changePct": null}, {"date": "2025-10-30", "foreign": 860.003, "trust": -369.933, "dealer": -38.436, "total": 451.63400000000007, "close": 670.0, "changePct": null}, {"date": "2025-10-31", "foreign": -63.442, "trust": -163.989, "dealer": -13.397000000000002, "total": -240.828, "close": 670.0, "changePct": null}, {"date": "2025-11-03", "foreign": 132.731, "trust": -91.339, "dealer": 36.719, "total": 78.11099999999999, "close": 670.0, "changePct": null}, {"date": "2025-11-04", "foreign": -290.803, "trust": -86.669, "dealer": -38.751, "total": -416.223, "close": 670.0, "changePct": null}, {"date": "2025-11-05", "foreign": -216.312, "trust": -39.257, "dealer": -34.57000000000001, "total": -290.139, "close": 670.0, "changePct": null}, {"date": "2025-11-06", "foreign": 977.098, "trust": -42.044, "dealer": 16.775, "total": 951.829, "close": 670.0, "changePct": null}, {"date": "2025-11-07", "foreign": -1352.109, "trust": -305.461, "dealer": 30.423, "total": -1627.147, "close": 670.0, "changePct": null}, {"date": "2025-11-10", "foreign": -203.234, "trust": -237.797, "dealer": 38.972, "total": -402.059, "close": 670.0, "changePct": null}, {"date": "2025-11-11", "foreign": -668.089, "trust": -33.105, "dealer": -10.81, "total": -712.004, "close": 670.0, "changePct": null}, {"date": "2025-11-12", "foreign": -1703.105, "trust": -166.542, "dealer": -33.685, "total": -1903.332, "close": 670.0, "changePct": null}, {"date": "2025-11-13", "foreign": -2208.048, "trust": -339.809, "dealer": 21.532, "total": -2526.325, "close": 670.0, "changePct": null}, {"date": "2025-11-14", "foreign": -627.415, "trust": -18.811, "dealer": 118.50999999999999, "total": -527.716, "close": 670.0, "changePct": null}, {"date": "2025-11-17", "foreign": -2492.852, "trust": -120.627, "dealer": 115.86900000000001, "total": -2497.6099999999997, "close": 670.0, "changePct": null}, {"date": "2025-11-18", "foreign": -3652.952, "trust": -445.692, "dealer": 234.998, "total": -3863.646, "close": 670.0, "changePct": null}, {"date": "2025-11-19", "foreign": -791.437, "trust": -91.513, "dealer": 130.951, "total": -751.9990000000001, "close": 670.0, "changePct": null}, {"date": "2025-11-20", "foreign": -518.309, "trust": -145.179, "dealer": 8.717, "total": -654.771, "close": 670.0, "changePct": null}, {"date": "2025-11-21", "foreign": 64.603, "trust": -47.276, "dealer": 197.51299999999998, "total": 214.83999999999997, "close": 670.0, "changePct": null}, {"date": "2025-11-24", "foreign": -682.112, "trust": 437.955, "dealer": 108.02000000000001, "total": -136.137, "close": 670.0, "changePct": null}, {"date": "2025-11-25", "foreign": -1540.801, "trust": 1236.183, "dealer": -10.12, "total": -314.73799999999994, "close": 670.0, "changePct": null}, {"date": "2025-11-26", "foreign": -1051.837, "trust": 1080.234, "dealer": 32.568, "total": 60.96499999999993, "close": 670.0, "changePct": null}, {"date": "2025-11-27", "foreign": -1164.03, "trust": 872.888, "dealer": -0.8219999999999992, "total": -291.96399999999994, "close": 670.0, "changePct": null}, {"date": "2025-11-28", "foreign": -667.343, "trust": -55.387, "dealer": 26.915, "total": -695.815, "close": 670.0, "changePct": null}, {"date": "2025-12-01", "foreign": 284.072, "trust": -29.0, "dealer": 1.6219999999999999, "total": 256.694, "close": 670.0, "changePct": null}, {"date": "2025-12-02", "foreign": -144.143, "trust": -57.326, "dealer": 6.753, "total": -194.71599999999998, "close": 670.0, "changePct": null}, {"date": "2025-12-03", "foreign": 373.392, "trust": -78.587, "dealer": 16.25, "total": 311.055, "close": 670.0, "changePct": null}, {"date": "2025-12-04", "foreign": -653.461, "trust": -82.094, "dealer": -10.089, "total": -745.644, "close": 670.0, "changePct": null}, {"date": "2025-12-05", "foreign": -285.705, "trust": 1.613, "dealer": 7.902, "total": -276.18999999999994, "close": 670.0, "changePct": null}, {"date": "2025-12-08", "foreign": -466.265, "trust": 16.36, "dealer": 15.366, "total": -434.539, "close": 670.0, "changePct": null}, {"date": "2025-12-09", "foreign": -793.541, "trust": -9.153, "dealer": -13.564, "total": -816.2580000000002, "close": 670.0, "changePct": null}, {"date": "2025-12-10", "foreign": -443.434, "trust": -53.169, "dealer": -19.905, "total": -516.508, "close": 670.0, "changePct": null}, {"date": "2025-12-11", "foreign": -625.767, "trust": 88.621, "dealer": 8.69, "total": -528.4560000000001, "close": 670.0, "changePct": null}, {"date": "2025-12-12", "foreign": -453.699, "trust": 5.653, "dealer": 20.527, "total": -427.519, "close": 670.0, "changePct": null}, {"date": "2025-12-15", "foreign": 313.951, "trust": -235.337, "dealer": 78.67, "total": 157.28400000000005, "close": 670.0, "changePct": null}, {"date": "2025-12-16", "foreign": -4934.546, "trust": 4671.731, "dealer": 149.947, "total": -112.8680000000004, "close": 670.0, "changePct": null}, {"date": "2025-12-17", "foreign": -5622.546, "trust": 4263.306, "dealer": 20.344, "total": -1338.8960000000009, "close": 670.0, "changePct": null}, {"date": "2025-12-18", "foreign": -7306.314, "trust": 4319.8, "dealer": 75.48, "total": -2911.034, "close": 670.0, "changePct": null}, {"date": "2025-12-19", "foreign": -5685.542, "trust": 3685.236, "dealer": 34.115, "total": -1966.1910000000007, "close": 670.0, "changePct": null}, {"date": "2025-12-22", "foreign": -5360.251, "trust": 4069.411, "dealer": -8.838999999999999, "total": -1299.679, "close": 670.0, "changePct": null}, {"date": "2025-12-23", "foreign": -5487.613, "trust": 3975.305, "dealer": 34.61, "total": -1477.6980000000005, "close": 670.0, "changePct": null}, {"date": "2025-12-24", "foreign": -4618.796, "trust": 4293.066, "dealer": 7.494999999999999, "total": -318.23500000000047, "close": 670.0, "changePct": null}, {"date": "2025-12-26", "foreign": -4449.308, "trust": 4099.305, "dealer": 34.429, "total": -315.5739999999997, "close": 670.0, "changePct": null}, {"date": "2025-12-29", "foreign": -1863.688, "trust": 417.829, "dealer": -82.693, "total": -1528.5520000000001, "close": 670.0, "changePct": null}, {"date": "2025-12-30", "foreign": -1418.433, "trust": 295.671, "dealer": 50.679, "total": -1072.0829999999999, "close": 670.0, "changePct": null}, {"date": "2025-12-31", "foreign": -751.477, "trust": 1014.133, "dealer": 38.351, "total": 301.00700000000006, "close": 670.0, "changePct": null}];
+  if(!root || !rows.length) return;
+  const L=window.LightweightCharts;
+  if(!L){
+    root.innerHTML='<div class="strategy-note">TradingView Lightweight Charts 載入失敗，請檢查網路或 CDN。</div>';
+    return;
+  }
+  const charts=[];
+  let syncing=false;
+  const maxLogical=Math.max(0,rows.length-1);
+  const gridColor='#21262d';
+  const textColor='#8b949e';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW',{maximumFractionDigits:d,minimumFractionDigits:d}) : '-';
+  const baseOptions=(height)=>({
+    height,
+    layout:{background:{type:'solid',color:'#0d1117'},textColor},
+    grid:{vertLines:{color:gridColor},horzLines:{color:gridColor}},
+    rightPriceScale:{borderColor:'#30363d'},
+    leftPriceScale:{visible:true,borderColor:'#30363d'},
+    timeScale:{borderColor:'#30363d',timeVisible:false,secondsVisible:false,fixLeftEdge:true,fixRightEdge:true},
+    crosshair:{mode:L.CrosshairMode.Normal},
+    localization:{locale:'zh-TW'},
+  });
+  function clampRange(range){
+    if(!range) return range;
+    let from=Number(range.from), to=Number(range.to);
+    if(!Number.isFinite(from) || !Number.isFinite(to)) return range;
+    const span=to-from;
+    if(span>=maxLogical) return {from:0,to:maxLogical};
+    if(from<0){ to-=from; from=0; }
+    if(to>maxLogical){ from-=to-maxLogical; to=maxLogical; }
+    return {from:Math.max(0,from),to:Math.min(maxLogical,to)};
+  }
+  function sameRange(a,b){
+    return a && b && Math.abs(Number(a.from)-Number(b.from))<0.01 && Math.abs(Number(a.to)-Number(b.to))<0.01;
+  }
+  function histData(key,colorFn){
+    return rows.filter(x=>x[key]!=null).map(x=>({time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'}));
+  }
+  function lineData(key){
+    return rows.filter(x=>x[key]!=null).map(x=>({time:x.date,value:Number(x[key])}));
+  }
+  function wireRange(chart){
+    chart.timeScale().fitContent();
+    chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{
+      if(syncing || !range) return;
+      const next=clampRange(range);
+      syncing=true;
+      if(!sameRange(range,next)) chart.timeScale().setVisibleLogicalRange(next);
+      charts.forEach(other=>{ if(other!==chart) other.timeScale().setVisibleLogicalRange(next); });
+      syncing=false;
+    });
+  }
+  function chipTip(x){
+    return `<b>${x.date}</b><br>外資 ${fmtInt(x.foreign)} 張<br>投信 ${fmtInt(x.trust)} 張<br>自營商 ${fmtInt(x.dealer)} 張<br>合計 ${fmtInt(x.total)} 張`;
+  }
+  function forceTip(x){
+    const pct=Number.isFinite(Number(x.changePct)) ? `${Number(x.changePct).toFixed(2)}%` : '-';
+    return `<b>${x.date}</b><br>主力合計 ${fmtInt(x.total)} 張<br>收盤價 ${fmt(x.close)}<br>漲幅 ${pct}`;
+  }
+  function addTip(chart, wrapper, tipFn){
+    const tip=wrapper.querySelector('.tv-tooltip');
+    chart.subscribeCrosshairMove(param=>{
+      if(!tip) return;
+      if(!param || !param.time){ tip.style.display='none'; return; }
+      const x=rows.find(r=>r.date===param.time);
+      if(!x){ tip.style.display='none'; return; }
+      tip.innerHTML=tipFn(x);
+      tip.style.display='block';
+    });
+  }
+  const chipEl=document.getElementById('chip-tv-2357-flow');
+  if(chipEl){
+    const chart=L.createChart(chipEl, baseOptions(280));
+    chart.applyOptions({rightPriceScale:{visible:false},leftPriceScale:{visible:true,borderColor:'#30363d'}});
+    const total=chart.addSeries(L.HistogramSeries,{priceScaleId:'left',priceFormat:{type:'volume'},priceLineVisible:false,lastValueVisible:false});
+    total.setData(histData('total',x=>Number(x.total)>=0?'rgba(248,81,73,.55)':'rgba(63,185,80,.55)'));
+    [['foreign','#58a6ff'],['trust','#d2a520'],['dealer','#f85149']].forEach(([key,color])=>{
+      const s=chart.addSeries(L.LineSeries,{priceScaleId:'left',color,lineWidth:2,priceLineVisible:false,lastValueVisible:false});
+      s.setData(lineData(key));
+    });
+    charts.push(chart);
+    wireRange(chart);
+    addTip(chart, chipEl.closest('.tv-chart-panel'), chipTip);
+  }
+  const forceEl=document.getElementById('chip-tv-2357-force');
+  if(forceEl){
+    const chart=L.createChart(forceEl, baseOptions(280));
+    chart.applyOptions({
+      rightPriceScale:{visible:true,borderColor:'#30363d'},
+      leftPriceScale:{visible:true,borderColor:'#30363d'},
+    });
+    const force=chart.addSeries(L.HistogramSeries,{priceScaleId:'left',priceFormat:{type:'volume'},priceLineVisible:false,lastValueVisible:false});
+    force.setData(histData('total',x=>Number(x.total)>=0?'#f85149':'#3fb950'));
+    const close=chart.addSeries(L.LineSeries,{priceScaleId:'right',color:'#58a6ff',lineWidth:2,priceLineVisible:false});
+    close.setData(lineData('close'));
+    charts.push(chart);
+    wireRange(chart);
+    addTip(chart, forceEl.closest('.tv-chart-panel'), forceTip);
+  }
+  window.addEventListener('resize',()=>{
+    const flow=document.getElementById('chip-tv-2357-flow');
+    const force=document.getElementById('chip-tv-2357-force');
+    charts.forEach((chart,i)=>chart.applyOptions({width:(i===0?flow:force)?.clientWidth || 0}));
+  });
+})();
+</script>
+    <div class="strategy-note" style="margin-top:12px">
+      外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">歷史訊號</div>
+    <div style="overflow-x:auto">
+      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody><tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr></tbody></table>
+    </div>
+    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
+  </div>
+</div>
+
+<script>
+const chartData_2357 = {"daily": [{"date": "2025-03-03", "open": 670.0, "high": 683.0, "low": 666.0, "close": 669.0, "volume": 3410924.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}, {"date": "2025-03-04", "open": 661.0, "high": 673.0, "low": 657.0, "close": 670.0, "volume": 3559707.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0797720797720558, "dea": 0.01595441595441116, "macd": 0.1276353276352893, "wr": null}], "weekly": [{"date": "2025-03-04", "open": 670.0, "high": 683.0, "low": 657.0, "close": 670.0, "volume": 6970631.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "monthly": [{"date": "2025-03-04", "open": 670.0, "high": 683.0, "low": 657.0, "close": 670.0, "volume": 6970631.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}]};
+const holdingData_2357 = [{"date": "2025-12-19", "major": 64.94, "large": 8.9, "retail": 11.03, "totalPeople": 112136}, {"date": "2025-12-26", "major": 64.04, "large": 9.2, "retail": 11.41, "totalPeople": 114564}, {"date": "2026-01-02", "major": 63.73, "large": 9.06, "retail": 11.63, "totalPeople": 116052}, {"date": "2026-01-09", "major": 63.43, "large": 8.91, "retail": 11.93, "totalPeople": 118193}, {"date": "2026-01-16", "major": 62.72, "large": 9.14, "retail": 12.52, "totalPeople": 121661}, {"date": "2026-01-23", "major": 62.04, "large": 8.95, "retail": 13.08, "totalPeople": 124653}, {"date": "2026-01-30", "major": 61.35, "large": 9.5, "retail": 13.28, "totalPeople": 126188}, {"date": "2026-02-06", "major": 61.39, "large": 9.26, "retail": 13.420000000000002, "totalPeople": 127200}, {"date": "2026-02-13", "major": 61.75, "large": 9.209999999999999, "retail": 13.29, "totalPeople": 126496}, {"date": "2026-03-06", "major": 62.14, "large": 8.93, "retail": 13.239999999999998, "totalPeople": 126206}, {"date": "2026-03-13", "major": 62.26, "large": 9.059999999999999, "retail": 12.989999999999998, "totalPeople": 124406}, {"date": "2026-03-20", "major": 62.58, "large": 8.4, "retail": 13.15, "totalPeople": 129985}, {"date": "2026-03-27", "major": 62.51, "large": 8.52, "retail": 13.18, "totalPeople": 130272}, {"date": "2026-04-10", "major": 62.35, "large": 8.69, "retail": 13.180000000000001, "totalPeople": 129869}, {"date": "2026-04-17", "major": 62.08, "large": 8.950000000000001, "retail": 13.06, "totalPeople": 128459}, {"date": "2026-04-24", "major": 62.35, "large": 8.989999999999998, "retail": 12.79, "totalPeople": 125620}];
+const chipFlowData_2357 = [{"date": "2025-12-17", "foreign": -5622.546, "trust": 4263.306, "dealer": 20.344, "total": -1338.8960000000009}, {"date": "2025-12-18", "foreign": -7306.314, "trust": 4319.8, "dealer": 75.48, "total": -2911.034}, {"date": "2025-12-19", "foreign": -5685.542, "trust": 3685.236, "dealer": 34.115, "total": -1966.1910000000007}, {"date": "2025-12-22", "foreign": -5360.251, "trust": 4069.411, "dealer": -8.838999999999999, "total": -1299.679}, {"date": "2025-12-23", "foreign": -5487.613, "trust": 3975.305, "dealer": 34.61, "total": -1477.6980000000005}, {"date": "2025-12-24", "foreign": -4618.796, "trust": 4293.066, "dealer": 7.494999999999999, "total": -318.23500000000047}, {"date": "2025-12-26", "foreign": -4449.308, "trust": 4099.305, "dealer": 34.429, "total": -315.5739999999997}, {"date": "2025-12-29", "foreign": -1863.688, "trust": 417.829, "dealer": -82.693, "total": -1528.5520000000001}, {"date": "2025-12-30", "foreign": -1418.433, "trust": 295.671, "dealer": 50.679, "total": -1072.0829999999999}, {"date": "2025-12-31", "foreign": -751.477, "trust": 1014.133, "dealer": 38.351, "total": 301.00700000000006}];
+const alignedChipData_2357 = {"daily": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": 182.275, "foreignCum": 182.275}, {"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": 8.464, "foreignCum": 190.739}], "weekly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": 8.464, "foreignCum": 8.464}], "monthly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": 8.464, "foreignCum": 8.464}]};
+const mainForceData_2357 = [];
+function showChart_2357(mode){
+  const root=document.getElementById('chart-2357');
+  root.querySelectorAll('.chart-pane').forEach(x=>x.style.display='none');
+  root.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  root.querySelector('[data-pane="'+mode+'"]').style.display='block';
+  root.querySelector('[data-btn="'+mode+'"]').classList.add('active');
+}
+function nearestByDate_2357(data, date){
+  const target=Date.parse(date || '');
+  if(!data || !data.length || Number.isNaN(target)) return -1;
+  let best=0;
+  let bestGap=Infinity;
+  data.forEach((item, idx)=>{
+    const t=Date.parse(item.date || '');
+    if(Number.isNaN(t)) return;
+    const gap=Math.abs(t-target);
+    if(gap < bestGap){
+      best=idx;
+      bestGap=gap;
+    }
+  });
+  return best;
+}
+function positionTooltip_2357(chart, line, tip, dataLength, idx, html, xHint, yHint){
+  if(!chart || !line || !tip || dataLength < 2 || idx < 0) return;
+  const rect=chart.getBoundingClientRect();
+  const left=rect.width * 50 / 900;
+  const right=rect.width * (900 - 18) / 900;
+  const clamped=left + (right-left) * idx / Math.max(1, dataLength-1);
+  line.style.display='block';
+  line.style.left=`${clamped}px`;
+  tip.innerHTML=html;
+  tip.style.display='block';
+  const tipWidth=tip.offsetWidth || 210;
+  const tipHeight=tip.offsetHeight || 128;
+  let tx=(Number.isFinite(xHint) ? xHint : clamped) + 14;
+  let ty=(Number.isFinite(yHint) ? yHint : 18);
+  if(tx + tipWidth > rect.width) tx=(Number.isFinite(xHint) ? xHint : clamped) - tipWidth - 14;
+  if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+  tip.style.left=`${Math.max(6, tx)}px`;
+  tip.style.top=`${Math.max(6, ty)}px`;
+}
+function clearOverlay_2357(chart){
+  if(!chart) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(tip) tip.style.display='none';
+  if(line) line.style.display='none';
+}
+function initHoverCharts_2357(){
+  const root=document.getElementById('chart-2357');
+  if(!root) return;
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const html=(x)=>`
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>開 ${fmt(x.open)}</span><span>高 ${fmt(x.high)}</span>
+      <span>低 ${fmt(x.low)}</span><span>收 ${fmt(x.close)}</span>
+      <span>量 ${fmtInt((x.volume || 0)/1000)} 張</span><span></span>
+    </div>
+    <div class="t-ma">
+      BB上 ${fmt(x.bbUpper)} / BB下 ${fmt(x.bbLower)}<br>
+      MA5 ${fmt(x.ma5)} / MA10 ${fmt(x.ma10)}<br>
+      MA20 ${fmt(x.ma20)} / MA60 ${fmt(x.ma60)}<br>
+      KD ${fmt(x.k,1)} / ${fmt(x.d,1)}<br>
+      MACD ${fmt(x.dif,2)} / ${fmt(x.dea,2)} / ${fmt(x.macd,2)}<br>
+      W%R ${fmt(x.wr,1)}
+    </div>`;
+  root.querySelectorAll('.hover-chart').forEach(chart=>{
+    if(chart.dataset.hoverReady==='1') return;
+    chart.dataset.hoverReady='1';
+    const mode=chart.dataset.mode;
+    const data=chartData_2357[mode] || [];
+    const tip=chart.querySelector('.chart-tooltip');
+    const line=chart.querySelector('.chart-crosshair');
+    if(!tip || !line || data.length < 2) return;
+    chart.addEventListener('mousemove', ev=>{
+      const rect=chart.getBoundingClientRect();
+      const x=ev.clientX - rect.left;
+      const left=rect.width * 50 / 900;
+      const right=rect.width * (900 - 18) / 900;
+      const clamped=Math.max(left, Math.min(right, x));
+      const pct=(clamped-left) / Math.max(1, right-left);
+      const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+      const item=data[idx];
+      line.style.display='block';
+      line.style.left=`${clamped}px`;
+      tip.innerHTML=html(item);
+      tip.style.display='block';
+      const tipWidth=tip.offsetWidth || 210;
+      const tipHeight=tip.offsetHeight || 128;
+      let tx=x + 14;
+      let ty=ev.clientY - rect.top + 14;
+      if(tx + tipWidth > rect.width) tx=x - tipWidth - 14;
+      if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+      tip.style.left=`${Math.max(6, tx)}px`;
+      tip.style.top=`${Math.max(6, ty)}px`;
+      syncIndicatorPack_2357(item.date, mode);
+    });
+    chart.addEventListener('mouseleave', ()=>{
+      tip.style.display='none';
+      line.style.display='none';
+      clearIndicatorPack_2357(mode);
+    });
+  });
+}
+initHoverCharts_2357();
+function holdingHtml_2357(x){
+  const fmtPct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  return `
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>大戶&gt;1000張</span><span>${fmtPct(x.major)}</span>
+      <span>400~1000張</span><span>${fmtPct(x.large)}</span>
+      <span>散戶&lt;1萬股</span><span>${fmtPct(x.retail)}</span>
+      <span>總股東數</span><span>${fmtInt(x.totalPeople)}</span>
+    </div>`;
+}
+function kHtml_2357(x){
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  return `
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>開 ${fmt(x.open)}</span><span>高 ${fmt(x.high)}</span>
+      <span>低 ${fmt(x.low)}</span><span>收 ${fmt(x.close)}</span>
+      <span>量 ${fmtInt((x.volume || 0)/1000)} 張</span><span></span>
+    </div>
+    <div class="t-ma">
+      BB上 ${fmt(x.bbUpper)} / BB下 ${fmt(x.bbLower)}<br>
+      MA5 ${fmt(x.ma5)} / MA10 ${fmt(x.ma10)}<br>
+      MA20 ${fmt(x.ma20)} / MA60 ${fmt(x.ma60)}<br>
+      KD ${fmt(x.k,1)} / ${fmt(x.d,1)}<br>
+      MACD ${fmt(x.dif,2)} / ${fmt(x.dea,2)} / ${fmt(x.macd,2)}<br>
+      W%R ${fmt(x.wr,1)}
+    </div>`;
+}
+function indicatorData_2357(chart, mode){
+  const source=chart.dataset.source;
+  if(source==='price') return chartData_2357[chart.dataset.mode || mode] || [];
+  if(source==='aligned') return alignedChipData_2357[mode] || [];
+  if(source==='holding') return holdingData_2357 || [];
+  return [];
+}
+function indicatorHtml_2357(chart, x){
+  const fmt=(v,d=2)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const fmtInt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
+  const wrState=(v)=>!Number.isFinite(Number(v)) ? '-' : (Number(v) >= -20 ? '偏過熱，留意賣出/降溫' : (Number(v) <= -80 ? '偏超賣，留意反彈/買點' : '中性區'));
+  const kdState=(k,d)=>!Number.isFinite(Number(k)) || !Number.isFinite(Number(d)) ? '-' : (Number(k) >= 80 && Number(d) >= 80 ? '偏過熱，留意賣出/降溫' : (Number(k) <= 20 && Number(d) <= 20 ? '偏超賣，留意反彈/買點' : '中性區'));
+  const macdState=(x)=>!Number.isFinite(Number(x.dif)) || !Number.isFinite(Number(x.dea)) ? '-' : (Number(x.dif) > Number(x.dea) && Number(x.macd) > 0 ? '買進區' : (Number(x.dif) < Number(x.dea) && Number(x.macd) < 0 ? '賣出區' : '觀察區'));
+  const kind=chart.dataset.kind;
+  if(kind==='wr') return `<div class="t-date">${x.date || '-'}</div><div class="t-grid"><span>Williams %R</span><span>${fmt(x.wr,1)}</span><span>區間</span><span>${wrState(x.wr)}</span></div>`;
+  if(kind==='kd') return `<div class="t-date">${x.date || '-'}</div><div class="t-grid"><span>K</span><span>${fmt(x.k,1)}</span><span>D</span><span>${fmt(x.d,1)}</span><span>區間</span><span>${kdState(x.k,x.d)}</span></div>`;
+  if(kind==='macd') return `<div class="t-date">${x.date || '-'}</div><div class="t-grid"><span>MACD</span><span>${macdState(x)}</span></div>`;
+  if(kind==='holdingPack') return `<div class="t-date">${x.date || '-'}${x.holdingDate ? '｜股權 '+x.holdingDate : ''}</div><div class="t-grid"><span>大戶持股比例</span><span>${pct(x.major)}</span><span>散戶持股比例</span><span>${pct(x.retail)}</span><span>總股東人數</span><span>${fmtInt(x.totalPeople)} 人</span></div>`;
+  if(kind==='foreignFlow') return `<div class="t-date">${x.date || '-'}</div><div class="t-grid"><span>外資買賣超</span><span>${fmtInt(x.foreign)} 張</span><span>區間累積</span><span>${fmtInt(x.foreignCum)} 張</span></div>`;
+  return `<div class="t-date">${x.date || '-'}</div>`;
+}
+function syncIndicatorPack_2357(date, mode){
+  const root=document.getElementById('chart-2357');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  if(!pane) return;
+  pane.querySelectorAll('.indicator-hover').forEach(chart=>{
+    const data=indicatorData_2357(chart, mode);
+    const idx=nearestByDate_2357(data, date);
+    if(idx < 0) return;
+    positionTooltip_2357(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, indicatorHtml_2357(chart, data[idx]));
+  });
+}
+function clearIndicatorPack_2357(mode){
+  const root=document.getElementById('chart-2357');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  if(!pane) return;
+  pane.querySelectorAll('.indicator-hover').forEach(chart=>clearOverlay_2357(chart));
+}
+function syncMainK_2357(date, mode){
+  const root=document.getElementById('chart-2357');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  const chart=pane ? pane.querySelector('.hover-chart[data-mode="'+mode+'"]') : null;
+  const data=chartData_2357[mode] || [];
+  const idx=nearestByDate_2357(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_2357(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, kHtml_2357(data[idx]));
+}
+function clearMainK_2357(mode){
+  const root=document.getElementById('chart-2357');
+  const pane=root ? root.querySelector('[data-pane="'+mode+'"]') : null;
+  clearOverlay_2357(pane ? pane.querySelector('.hover-chart[data-mode="'+mode+'"]') : null);
+}
+function initIndicatorHover_2357(){
+  const root=document.getElementById('chart-2357');
+  if(!root) return;
+  root.querySelectorAll('.indicator-hover').forEach(chart=>{
+    if(chart.dataset.hoverReady==='1') return;
+    chart.dataset.hoverReady='1';
+    const tip=chart.querySelector('.chart-tooltip');
+    const line=chart.querySelector('.chart-crosshair');
+    if(!tip || !line) return;
+    chart.addEventListener('mousemove', ev=>{
+      const pane=chart.closest('.chart-pane');
+      const mode=pane ? pane.dataset.pane : 'daily';
+      const data=indicatorData_2357(chart, mode);
+      if(data.length < 2) return;
+      const rect=chart.getBoundingClientRect();
+      const x=ev.clientX - rect.left;
+      const left=rect.width * 50 / 900;
+      const right=rect.width * (900 - 18) / 900;
+      const clamped=Math.max(left, Math.min(right, x));
+      const pct=(clamped-left) / Math.max(1, right-left);
+      const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+      const item=data[idx];
+      syncMainK_2357(item.date, mode);
+      syncIndicatorPack_2357(item.date, mode);
+    });
+    chart.addEventListener('mouseleave', ()=>{
+      const pane=chart.closest('.chart-pane');
+      const mode=pane ? pane.dataset.pane : 'daily';
+      clearIndicatorPack_2357(mode);
+      clearMainK_2357(mode);
+    });
+  });
+}
+initIndicatorHover_2357();
+function syncHoldingFromK_2357(date){
+  const chart=document.getElementById('holding-chart-2357');
+  const data=holdingData_2357 || [];
+  const idx=nearestByDate_2357(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_2357(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, holdingHtml_2357(data[idx]));
+}
+function clearHoldingHover_2357(){
+  clearOverlay_2357(document.getElementById('holding-chart-2357'));
+}
+function syncDailyFromHolding_2357(date){
+  const root=document.getElementById('chart-2357');
+  const chart=root ? root.querySelector('.hover-chart[data-mode="daily"]') : null;
+  const data=chartData_2357.daily || [];
+  const idx=nearestByDate_2357(data, date);
+  if(!chart || idx < 0) return;
+  positionTooltip_2357(chart, chart.querySelector('.chart-crosshair'), chart.querySelector('.chart-tooltip'), data.length, idx, kHtml_2357(data[idx]));
+}
+function clearDailyHover_2357(){
+  const root=document.getElementById('chart-2357');
+  clearOverlay_2357(root ? root.querySelector('.hover-chart[data-mode="daily"]') : null);
+}
+function initHoldingHover_2357(){
+  const chart=document.getElementById('holding-chart-2357');
+  const data=holdingData_2357 || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  chart.addEventListener('mousemove', ev=>{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 50 / 900;
+    const right=rect.width * (900 - 18) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    const item=data[idx];
+    line.style.display='block';
+    line.style.left=`${clamped}px`;
+    tip.innerHTML=holdingHtml_2357(item);
+    tip.style.display='block';
+    const tipWidth=tip.offsetWidth || 210;
+    const tipHeight=tip.offsetHeight || 112;
+    let tx=x + 14;
+    let ty=ev.clientY - rect.top + 14;
+    if(tx + tipWidth > rect.width) tx=x - tipWidth - 14;
+    if(ty + tipHeight > rect.height) ty=rect.height - tipHeight - 8;
+    tip.style.left=`${Math.max(6, tx)}px`;
+    tip.style.top=`${Math.max(6, ty)}px`;
+    syncDailyFromHolding_2357(item.date);
+  });
+  chart.addEventListener('mouseleave', ()=>{
+    tip.style.display='none';
+    line.style.display='none';
+    clearDailyHover_2357();
+  });
+}
+initHoldingHover_2357();
+function initChipFlowHover_2357(){
+  const chart=document.getElementById('chip-flow-2357');
+  const data=chipFlowData_2357 || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  const fmt=(v)=>Number.isFinite(Number(v)) ? Math.round(Number(v)).toLocaleString('zh-TW') : '-';
+  const html=(x)=>`
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>外資</span><span>${fmt(x.foreign)} 張</span>
+      <span>投信</span><span>${fmt(x.trust)} 張</span>
+      <span>自營商</span><span>${fmt(x.dealer)} 張</span>
+      <span>三大合計</span><span>${fmt(x.total)} 張</span>
+    </div>`;
+  chart.addEventListener('mousemove', ev=>{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 54 / 900;
+    const right=rect.width * (900 - 18) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    positionTooltip_2357(chart, line, tip, data.length, idx, html(data[idx]), x, ev.clientY - rect.top);
+  });
+  chart.addEventListener('mouseleave', ()=>clearOverlay_2357(chart));
+}
+function initMainForceHover_2357(){
+  const chart=document.getElementById('main-force-2357');
+  const data=mainForceData_2357 || [];
+  if(!chart || data.length < 2) return;
+  const tip=chart.querySelector('.chart-tooltip');
+  const line=chart.querySelector('.chart-crosshair');
+  if(!tip || !line) return;
+  const fmt=(v,d=0)=>Number.isFinite(Number(v)) ? Number(v).toLocaleString('zh-TW', {maximumFractionDigits:d, minimumFractionDigits:d}) : '-';
+  const pct=(v)=>Number.isFinite(Number(v)) ? `${Number(v).toFixed(2)}%` : '-';
+  const html=(x)=>`
+    <div class="t-date">${x.date || '-'}</div>
+    <div class="t-grid">
+      <span>主力合計</span><span>${fmt(x.total,0)} 張</span>
+      <span>收盤價</span><span>${fmt(x.close,2)}</span>
+      <span>漲幅</span><span>${pct(x.changePct)}</span>
+    </div>`;
+  chart.addEventListener('mousemove', ev=>{
+    const rect=chart.getBoundingClientRect();
+    const x=ev.clientX - rect.left;
+    const left=rect.width * 54 / 900;
+    const right=rect.width * (900 - 54) / 900;
+    const clamped=Math.max(left, Math.min(right, x));
+    const pct=(clamped-left) / Math.max(1, right-left);
+    const idx=Math.max(0, Math.min(data.length-1, Math.round(pct*(data.length-1))));
+    positionTooltip_2357(chart, line, tip, data.length, idx, html(data[idx]), x, ev.clientY - rect.top);
+  });
+  chart.addEventListener('mouseleave', ()=>clearOverlay_2357(chart));
+}
+initChipFlowHover_2357();
+initMainForceHover_2357();
+</script>
+
+<footer>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>
