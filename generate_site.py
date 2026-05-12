@@ -4268,6 +4268,37 @@ def build_risk_watchlist(stocks: list[dict], limit: int = 6) -> list[dict]:
     return candidates[:limit]
 
 
+
+def build_top5_card(stocks: list[dict]) -> str:
+    """首頁 Top5 快速摘要卡片"""
+    top5 = stocks[:5]
+    if not top5:
+        return ""
+    items = ""
+    for i, s in enumerate(top5, 1):
+        s = enrich_stock_fields(s)
+        sid = s.get("id", "")
+        name = s.get("name", "")
+        close = s.get("close", "")
+        score = s.get("score", "")
+        basket = basket_label(classify_basket(s))
+        items += f"""
+    <a href="stocks/{esc(sid)}.html" style="text-decoration:none;display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;background:#161b22;transition:background .2s" onmouseover="this.style.background='#1c2128'" onmouseout="this.style.background='#161b22'">
+      <div style="font-size:20px;font-weight:900;color:#484f58;min-width:28px">#{i}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:700;color:#e6edf3;font-size:14px">{esc(sid)} {esc(name)}</div>
+        <div style="font-size:12px;color:#8b949e;margin-top:2px">{esc(basket)}｜收盤 {esc(str(close))}</div>
+      </div>
+      <div style="font-size:18px;font-weight:900;color:#58a6ff">{esc(str(score))}</div>
+    </a>"""
+    return f"""
+  <div class="card">
+    <div class="section-label">今日 Top5 快速摘要</div>
+    <div class="strategy-note" style="margin-bottom:10px">選股池前 5 名，<a href="selection.html">查看完整 Top20 →</a></div>
+    <div style="display:flex;flex-direction:column;gap:6px">{items}</div>
+  </div>"""
+
+
 def build_index_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "─")
@@ -4279,6 +4310,7 @@ def build_index_page(reports: list[dict]) -> str:
   {build_market_light_card(latest, latest.get("stocks", []), date_str)}
   {build_today_action_card(latest.get("stocks", []), date_str)}
   {build_holding_status_card(date_str)}
+  {build_top5_card(latest.get("stocks", []))}
 </div>"""
 
     return html_page("首頁", "home", body)
@@ -8260,7 +8292,7 @@ def build_ta3_box_split_reference_html() -> str:
 </div>"""
 
 
-def build_backtest_page(reports: list[dict]) -> str:
+def build_backtest_page(reports: list[dict], section_only: bool = False) -> str:
     results = build_backtest_results(reports)
     filled = [x for x in results if x.get("entry") is not None]
     closed = [x for x in filled if x.get("exit_reason") != "持有中"]
@@ -8325,6 +8357,8 @@ def build_backtest_page(reports: list[dict]) -> str:
     </div>
   </div>
 </div>"""
+    if section_only:
+        return body
     return html_page("歷史回測", "backtest", body)
 
 
@@ -8344,7 +8378,7 @@ def build_stock_pages(reports: list[dict]) -> int:
     return count
 
 
-def build_history_page(reports):
+def build_history_page(reports, section_only=False):
     items = ""
     for r in reports:
         cnt   = len(r.get("stocks", []))
@@ -8370,8 +8404,32 @@ def build_history_page(reports):
         + '<div class="card">' + items + '</div>'
         + '</div>'
     )
+    if section_only:
+        return body
     return html_page("History", "history", body)
 
+
+
+
+def build_history_combined_page(reports: list[dict]) -> str:
+    """歷史分析 — 2 tabs: backtest / reports"""
+    tab1 = build_backtest_page(reports, section_only=True)
+    tab2 = build_history_page(reports, section_only=True)
+
+    body = f"""
+<div class="container" id="history-tabs">
+  <div class="page-title">歷史分析</div>
+  <div class="page-sub">回測結果與歷史報告合併在同一頁，先看策略績效，再查每日原始報告。</div>
+  <div class="tab-bar">
+    <button class="tab-btn active" data-tab="backtest">📊 歷史回測</button>
+    <button class="tab-btn" data-tab="reports">📄 歷史報告</button>
+  </div>
+  <div class="tab-panel active" id="backtest">{tab1}</div>
+  <div class="tab-panel" id="reports">{tab2}</div>
+</div>
+{TAB_JS}
+<script>initTabs('history-tabs')</script>"""
+    return html_page("歷史分析", "history", body)
 
 
 def build_selection_page(reports: list[dict]) -> str:
@@ -8458,9 +8516,9 @@ def main():
     print("   [OK] radar.html (redirect)", flush=True)
     (OUTPUT_DIR / "carybot.html").write_text(redirect_page("timing.html?tab=carybot", "CaryBot驗證"), encoding="utf-8")
     print("   [OK] carybot.html (redirect)", flush=True)
-    (OUTPUT_DIR / "backtest.html").write_text(build_backtest_page(reports), encoding="utf-8")
-    print("   [OK] backtest.html", flush=True)
-    (OUTPUT_DIR / "history.html").write_text(build_history_page(reports), encoding="utf-8")
+    (OUTPUT_DIR / "backtest.html").write_text(redirect_page("history.html?tab=backtest", "歷史回測"), encoding="utf-8")
+    print("   [OK] backtest.html (redirect)", flush=True)
+    (OUTPUT_DIR / "history.html").write_text(build_history_combined_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
     stock_page_count = build_stock_pages(reports)
     print(f"   [OK] stocks/*.html ({stock_page_count})", flush=True)
