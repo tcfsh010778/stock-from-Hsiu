@@ -421,6 +421,25 @@ def load_stock_market_map() -> dict[str, str]:
     return {code: item.get("market", "") for code, item in refs.items()}
 
 
+def with_report_date(stocks: list[dict], date_str: str) -> list[dict]:
+    out = []
+    for stock in stocks or []:
+        item = dict(stock)
+        if date_str and not item.get("report_date"):
+            item["report_date"] = date_str
+        out.append(item)
+    return out
+
+
+def attach_report_dates(reports: list[dict]) -> list[dict]:
+    out = []
+    for report in reports:
+        item = dict(report)
+        item["stocks"] = with_report_date(report.get("stocks", []), item.get("date", ""))
+        out.append(item)
+    return out
+
+
 def filter_listed_otc_reports(reports: list[dict]) -> list[dict]:
     markets = load_stock_market_map()
     if not markets:
@@ -436,6 +455,8 @@ def filter_listed_otc_reports(reports: list[dict]) -> list[dict]:
             market = markets.get(sid)
             if market in ALLOWED_MARKETS:
                 item = dict(stock)
+                if r.get("date", "") and not item.get("report_date"):
+                    item["report_date"] = r.get("date", "")
                 item["market"] = market
                 kept.append(item)
             else:
@@ -471,13 +492,14 @@ def load_reports() -> list[dict]:
                     reports.sort(key=lambda r: r.get("date", ""), reverse=True)
                 except Exception:
                     pass
+            reports = attach_report_dates(reports)
             LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
             REPORTS_CACHE_PATH.write_text(json.dumps(reports, ensure_ascii=False, indent=2), encoding="utf-8")
             return filter_listed_otc_reports(reports)
 
     if REPORTS_CACHE_PATH.exists():
         print(f"\n[Read] No MD reports found; using cache {REPORTS_CACHE_PATH}", flush=True)
-        return filter_listed_otc_reports(json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8")))
+        return filter_listed_otc_reports(attach_report_dates(json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8"))))
 
     return []
 
@@ -1303,8 +1325,9 @@ def load_push_log() -> dict[tuple[str, str], list[dict]]:
 
 
 def event_trade_snapshot(s: dict, report_date: str) -> dict:
-    event_stock = enrich_stock_fields(dict(s))
+    event_stock = dict(s)
     event_stock["report_date"] = report_date
+    event_stock = enrich_stock_fields(event_stock)
     sid = event_stock.get("id", "")
     rows = []
     if sid:
@@ -1380,8 +1403,10 @@ def find_latest_stock_map(reports: list[dict]) -> dict[str, dict]:
         for s in report.get("stocks", []):
             sid = s.get("id", "")
             if sid:
-                item = enrich_stock_fields(s)
-                item["report_date"] = report.get("date", "")
+                item = dict(s)
+                if report.get("date", "") and not item.get("report_date"):
+                    item["report_date"] = report.get("date", "")
+                item = enrich_stock_fields(item)
                 stocks[sid] = item
     return stocks
 
@@ -3848,7 +3873,7 @@ def enrich_stock_fields(s: dict) -> dict:
     out = dict(s)
     out["name"] = clean_stock_name(out.get("name", ""))
     sid = out.get("id", "")
-    daily = aggregate_ohlcv(read_price_history(sid), "daily")
+    daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), out), "daily")
     if daily:
         closes = [r["close"] for r in daily]
         latest = daily[-1]
@@ -4279,7 +4304,7 @@ def build_top5_card(stocks: list[dict]) -> str:
         s = enrich_stock_fields(s)
         sid = s.get("id", "")
         name = s.get("name", "")
-        close = s.get("close", "")
+        close = s.get("price") or s.get("close", "")
         score = s.get("score", "")
         basket = basket_label(classify_basket(s))
         items += f"""
@@ -4301,16 +4326,17 @@ def build_top5_card(stocks: list[dict]) -> str:
 
 def build_index_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
+    latest_stocks = with_report_date(latest.get("stocks", []), latest.get("date", ""))
     date_str = latest.get("date", "─")
 
     body = f"""
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
-  {build_market_light_card(latest, latest.get("stocks", []), date_str)}
-  {build_today_action_card(latest.get("stocks", []), date_str)}
+  {build_market_light_card(latest, latest_stocks, date_str)}
+  {build_today_action_card(latest_stocks, date_str)}
   {build_holding_status_card(date_str)}
-  {build_top5_card(latest.get("stocks", []))}
+  {build_top5_card(latest_stocks)}
 </div>"""
 
     return html_page("首頁", "home", body)

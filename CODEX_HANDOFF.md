@@ -185,6 +185,55 @@ Record the current conversation before old chats are deleted, then use this hand
    - what links lead to stock detail, buy radar, CaryBot, or history
 4. Only after those decisions, modify `generate_site.py`.
 
+## 2026-05-13 Home Page 5/8 Price Fix
+
+### Goal
+
+Fix the home page buy/sell recommendation cards that still showed 2026-05-08 close prices after the visible site date was restored to 2026-05-12.
+
+### Root Cause
+
+- The 2026-05-12 Markdown report and `data/site_reports.json` contained the correct report prices.
+- The home page action cards passed raw report stock dicts into `stock_trade_context()` without `report_date`.
+- `merge_report_close()` can merge the report close into stale local price history only when `report_date` is present, so the home page fell back to stale `data/prices/*.csv` rows ending on 2026-05-08.
+- The new Top5 summary card also read `close`, but report stocks use `price`, so the card displayed blank close values.
+
+### Completed
+
+- Added report-date stamping helpers in `generate_site.py`.
+- Ensured loaded reports and cached reports attach `report_date` to each report stock.
+- Ensured `find_latest_stock_map()` and `event_trade_snapshot()` set `report_date` before enrichment.
+- Changed `enrich_stock_fields()` to merge report close before deriving daily technical fallback fields.
+- Changed the home page to pass date-stamped latest stocks into market-light, action, and Top5 cards.
+- Changed Top5 summary close display to use report `price` before fallback `close`.
+
+### Changed Files
+
+- `generate_site.py`
+- `data/site_reports.json`
+- regenerated `docs/index.html`
+- regenerated related visible site outputs under `docs/`
+
+### Source Of Truth
+
+- Durable fix: `generate_site.py`
+- Visible page checked by user: `docs/index.html`
+- Latest report source: `reports/每日選股報告_2026-05-12.md`
+
+### Rebuild / Verification
+
+- Ran `PYTHONIOENCODING=utf-8 python -m py_compile generate_site.py`.
+- Ran `PYTHONIOENCODING=utf-8 python generate_site.py`.
+- Verified `docs/index.html` contains `2026-05-12`.
+- Verified old stale 5/8 tokens are absent from `docs/index.html`: `82.20`, `1370.00`, `5210.00`, `74.60`, `65.00`.
+- Verified home-page sell alerts now show report-close prices such as `2637` at `73.00`.
+- Verified Top5 summary close values are no longer blank: `2347 84.9`, `2606 63.9`, `2637 73`, `3443 5570`, `4764 324.5`.
+
+### Next Notes
+
+- If this happens again, first check whether the report stocks carry `report_date` before debugging report parsing or GitHub Pages caching.
+- Local price CSV caches may still lag the report date; the report-date merge path is the intended bridge for current report display.
+
 ## 2026-05-09 Home Page Simplification
 
 ### Goal
