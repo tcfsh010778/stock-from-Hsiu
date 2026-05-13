@@ -466,3 +466,47 @@ Fix the deployed site being stuck on `2026-05-08` after the A1/A2/A3 website-arc
 ### Next Notes
 
 - Future IA/layout branches must be rebased or merged on top of the latest `origin/main` before committing generated `docs/` and `reports/`; otherwise auto-update commits can be dropped even when the scheduler itself is healthy.
+
+## 2026-05-14 Harden Daily Auto Update Workflow
+
+### Goal
+
+Fix the daily after-market auto-update reliability concern end to end.
+
+### Root Cause / Evidence
+
+- GitHub Actions was not completely stopped: the latest scheduled `Daily Stock Site Update` run on 2026-05-13 completed successfully.
+- Remote `origin/main` already had `ccd5b146` (`Auto update: 2026-05-13`), and the live GitHub Pages site showed latest report/date text for `2026-05-13`.
+- Local checkout was one commit behind `origin/main`, which can make the site look stale during local inspection.
+- The workflow still had structural push fragility: checkout used shallow default history, it did not sync latest `main` before refresh, it did not verify the rendered latest date before commit, and `git push` did not rebase if `main` advanced during the run.
+
+### Completed
+
+- Fast-forwarded local checkout to `origin/main` (`ccd5b146`).
+- Hardened `.github/workflows/daily_update.yml`:
+  - full checkout history with `fetch-depth: 0`
+  - workflow-level concurrency group
+  - `git pull --ff-only origin main` before refresh
+  - generated-artifact date verification before commit
+  - Taiwan-date commit message via `TZ=Asia/Taipei`
+  - `git pull --rebase origin main` before final push
+- Added `tools/verify_daily_update_artifacts.py`.
+- Added `tools/test_verify_daily_update_artifacts.py`.
+
+### Rebuild / Verification
+
+- GitHub API check:
+  - latest scheduled `Daily Stock Site Update`: success, run id `25796744796`
+  - latest auto-update commit: `ccd5b146`, `Auto update: 2026-05-13`
+- Live site check:
+  - `https://tcfsh010778.github.io/stock-from-Hsiu/` showed `2026-05-13`.
+- Local checks:
+  - `python -m py_compile .\tools\verify_daily_update_artifacts.py .\tools\test_verify_daily_update_artifacts.py`
+  - `python .\tools\test_verify_daily_update_artifacts.py`
+  - `python .\tools\verify_daily_update_artifacts.py`
+  - verification result: latest report date `2026-05-13`, report date count `8`.
+
+### Next Notes
+
+- The next scheduled run should create/push an `Auto update: 2026-05-14` commit after the workflow runs.
+- If the page appears stale again, first compare the live page date, `origin/main`, and local `HEAD`; local being behind is a separate issue from GitHub Actions failure.
