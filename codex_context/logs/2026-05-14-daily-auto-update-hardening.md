@@ -30,6 +30,8 @@ There was still real workflow fragility:
 ## Changes
 
 - Updated `.github/workflows/daily_update.yml`:
+  - kept the primary 17:30 Taipei schedule
+  - added a 20:30 Taipei fallback retry schedule
   - added `concurrency`
   - added checkout `fetch-depth: 0`
   - added `git pull --ff-only origin main` before refresh

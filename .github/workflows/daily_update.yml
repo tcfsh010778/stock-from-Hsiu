@@ -4,6 +4,8 @@ on:
   schedule:
     # Taiwan market after close: 17:30 Taipei / 09:30 UTC, Monday-Friday.
     - cron: "30 9 * * 1-5"
+    # Fallback retry: 20:30 Taipei / 12:30 UTC. If nothing changed, no commit is made.
+    - cron: "30 12 * * 1-5"
   workflow_dispatch:
 
 permissions:

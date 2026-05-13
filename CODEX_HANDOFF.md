@@ -484,6 +484,7 @@ Fix the daily after-market auto-update reliability concern end to end.
 
 - Fast-forwarded local checkout to `origin/main` (`ccd5b146`).
 - Hardened `.github/workflows/daily_update.yml`:
+  - primary schedule at 17:30 Taipei and fallback retry at 20:30 Taipei
   - full checkout history with `fetch-depth: 0`
   - workflow-level concurrency group
   - `git pull --ff-only origin main` before refresh
