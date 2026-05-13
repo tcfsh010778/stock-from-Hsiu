@@ -310,8 +310,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="telegram-rating ">觀望</div>
   </div>
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">336.00</div></div><div class="change ">單日 單日 ─</div></div>
-  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score ─</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 整理/修正 / 量能資料不足 / B1資料不足 / B2資料不足</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">首次或尚未建立歷史台帳</div></div></div>
-  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">區間整理</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量能資料不足</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -5.35% / 量比 ─x / 黑K / 5日均量資料不足</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">資料不足，先等量價結構明確。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">─</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v">外資5日 ─；三大法人當日 ─ 張；大戶 ─% / 散戶 ─%</div></div></div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score ─</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 整理/修正 / 量能資料不足 / B1/B2籌碼偏弱 / B2資料不足</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">首次或尚未建立歷史台帳</div></div></div>
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">區間整理</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量能資料不足</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -5.35% / 量比 ─x / 黑K / 5日均量資料不足</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">資料不足，先等量價結構明確。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">─</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v">外資5日 ─；三大法人當日 ─ 張；大戶 54.01% / 散戶 10.17%</div></div></div>
   <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
 </div>
     </div>
@@ -405,7 +405,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <script>
 (function(){
   const root=document.getElementById('mda-tv-7768');
-  const rows=[{"date": "2026-05-12", "open": 355.0, "high": 355.0, "low": 334.0, "close": 336.0, "change": null, "changePct": null, "volume": 578.562, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}];
+  const rows=[{"date": "2026-05-12", "open": 355.0, "high": 355.0, "low": 334.0, "close": 336.0, "change": null, "changePct": null, "volume": 578.562, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": 54.01, "retail": 10.17, "totalPeople": 5958, "holdingDate": "2026-05-08"}];
   if(!root || !rows.length) return;
   const L=window.LightweightCharts;
   if(!L){
@@ -685,8 +685,22 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
 
   <div class="card">
-    <div class="section-label">10 日籌碼動向折線圖｜法人 ─｜股權 ─</div>
-    <div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>
+    <div class="section-label">10 日籌碼動向折線圖｜法人 ─｜股權 2026-05-08</div>
+    <div class="info-grid">
+  <div class="info-cell"><div class="k">外資買賣超</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">投信買賣超</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">主力當日合計</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">外資5日</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">投信5日</div><div class="v pos">─張</div></div>
+  <div class="info-cell"><div class="k">主力5日合計</div><div class="v pos">─張</div></div>
+</div>
+<div class="holding-info-grid">
+  <div class="info-cell"><div class="k">大戶比例</div><div class="v">54.01%</div></div>
+  <div class="info-cell"><div class="k">散戶比例</div><div class="v">10.17%</div></div>
+  <div class="info-cell"><div class="k">總股東人數</div><div class="v">5958</div></div>
+</div>
+<div class="chip-line">外資10日 ─ 張｜主力10日 ─ 張｜大戶週變化 -7.33%｜散戶週變化 4.71%</div>
     <div class="strategy-note">籌碼資料不足，暫時無法形成 TradingView 籌碼圖。</div>
     <div class="strategy-note" style="margin-top:12px">
       外資、投信、自營商以 FinMind 法人買賣超換算為張數；主力增減張數先以三大法人合計近似。柱狀圖向上為買超，向下為賣超。
@@ -704,9 +718,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
 <script>
 const chartData_7768 = {"daily": [{"date": "2026-05-12", "open": 355.0, "high": 355.0, "low": 334.0, "close": 336.0, "volume": 578562.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "weekly": [{"date": "2026-05-12", "open": 355.0, "high": 355.0, "low": 334.0, "close": 336.0, "volume": 578562.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}], "monthly": [{"date": "2026-05-12", "open": 355.0, "high": 355.0, "low": 334.0, "close": 336.0, "volume": 578562.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}]};
-const holdingData_7768 = [];
+const holdingData_7768 = [{"date": "2025-12-26", "major": 64.02, "large": 9.309999999999999, "retail": 3.5, "totalPeople": 1448}, {"date": "2026-01-02", "major": 64.02, "large": 9.309999999999999, "retail": 3.75, "totalPeople": 1527}, {"date": "2026-01-09", "major": 64.02, "large": 9.309999999999999, "retail": 3.8999999999999995, "totalPeople": 1567}, {"date": "2026-01-16", "major": 64.02, "large": 9.3, "retail": 4.0, "totalPeople": 1666}, {"date": "2026-01-23", "major": 61.3, "large": 12.09, "retail": 4.19, "totalPeople": 1778}, {"date": "2026-01-30", "major": 61.15, "large": 11.6, "retail": 4.0600000000000005, "totalPeople": 2039}, {"date": "2026-02-06", "major": 60.46, "large": 11.65, "retail": 4.1899999999999995, "totalPeople": 2163}, {"date": "2026-02-13", "major": 60.23, "large": 11.73, "retail": 4.29, "totalPeople": 2208}, {"date": "2026-03-06", "major": 60.11, "large": 11.719999999999999, "retail": 4.359999999999999, "totalPeople": 2262}, {"date": "2026-03-13", "major": 62.1, "large": 9.74, "retail": 4.45, "totalPeople": 2279}, {"date": "2026-03-20", "major": 62.0, "large": 9.75, "retail": 4.49, "totalPeople": 2386}, {"date": "2026-03-27", "major": 61.96, "large": 9.76, "retail": 4.5, "totalPeople": 2413}, {"date": "2026-04-10", "major": 61.69, "large": 9.78, "retail": 4.76, "totalPeople": 2606}, {"date": "2026-04-17", "major": 61.66, "large": 9.74, "retail": 5.0, "totalPeople": 2782}, {"date": "2026-04-24", "major": 61.34, "large": 9.73, "retail": 5.46, "totalPeople": 3335}, {"date": "2026-05-08", "major": 54.01, "large": 9.219999999999999, "retail": 10.17, "totalPeople": 5958}];
 const chipFlowData_7768 = [];
-const alignedChipData_7768 = {"daily": [{"date": "2026-05-12", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2026-05-12", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2026-05-12", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}]};
+const alignedChipData_7768 = {"daily": [{"date": "2026-05-12", "major": 54.01, "retail": 10.17, "totalPeople": 5958, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2026-05-12", "major": 54.01, "retail": 10.17, "totalPeople": 5958, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2026-05-12", "major": 54.01, "retail": 10.17, "totalPeople": 5958, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}]};
 const mainForceData_7768 = [];
 function showChart_7768(mode){
   const root=document.getElementById('chart-7768');
