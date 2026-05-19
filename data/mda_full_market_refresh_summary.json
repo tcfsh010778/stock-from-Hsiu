@@ -1,14 +1,14 @@
 {
-  "date": "2026-05-18",
+  "date": "2026-05-19",
   "universe_count": 1078,
   "include_etf": false,
-  "price_start": "2025-03-14",
+  "price_start": "2025-03-15",
   "price_months": 15,
-  "holding_start": "2025-12-29",
+  "holding_start": "2025-12-30",
   "price": {
-    "dataset_rows": 47415,
-    "matched_stocks": 1071,
-    "written_files": 1071
+    "dataset_rows": 0,
+    "matched_stocks": 0,
+    "written_files": 0
   },
   "holding": null,
   "candidate_count": null
