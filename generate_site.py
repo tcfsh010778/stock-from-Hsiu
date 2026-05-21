@@ -39,6 +39,7 @@ LOCAL_FOREIGN_SHAREHOLDING_DIR = LOCAL_DATA_DIR / "foreign_shareholding"
 LOCAL_MARGIN_DIR = LOCAL_DATA_DIR / "margin"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
+INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
@@ -48,6 +49,8 @@ V44_BACKTEST_OUTPUT_DIR = V44_ROOT / "回測" / "v6_outputs"
 V44_DB_PATH = V44_ROOT / "v9_reports" / "stockfromshu_records.sqlite"
 _V44_FETCHER = None
 _PRICE_HISTORY_CACHE: dict[str, list[dict]] = {}
+SITE_LATEST_REPORT_DATE = ""
+_INDUSTRY_CACHE: dict[str, dict] | None = None
 
 if os.environ.get("REPORTS_DIR"):
     REPORTS_DIR = Path(os.environ["REPORTS_DIR"])
@@ -816,8 +819,12 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
 
 
 def footer_html() -> str:
+    freshness = ""
+    if SITE_LATEST_REPORT_DATE:
+        freshness = f'<p class="site-freshness">Site data date: {esc(SITE_LATEST_REPORT_DATE)}</p>'
     return f"""
 <footer>
+  {freshness}
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© {datetime.now().year} Stockfrom脩 · 每個交易日自動更新</p>
@@ -864,6 +871,34 @@ def is_blank(value) -> bool:
 
 def esc(value) -> str:
     return html.escape(str(value if value is not None else ""))
+
+
+def set_site_latest_report_date(reports: list[dict]) -> None:
+    global SITE_LATEST_REPORT_DATE
+    dates = sorted(str(r.get("date") or "") for r in reports if r.get("date"))
+    SITE_LATEST_REPORT_DATE = dates[-1] if dates else ""
+
+
+def industry_cache() -> dict[str, dict]:
+    global _INDUSTRY_CACHE
+    if _INDUSTRY_CACHE is not None:
+        return _INDUSTRY_CACHE
+    try:
+        payload = json.loads(INDUSTRY_CACHE_PATH.read_text(encoding="utf-8-sig"))
+        stocks = payload.get("stocks") or {}
+        _INDUSTRY_CACHE = stocks if isinstance(stocks, dict) else {}
+    except Exception:
+        _INDUSTRY_CACHE = {}
+    return _INDUSTRY_CACHE
+
+
+def stock_sector(stock_id: str, fallback: str = "") -> str:
+    info = industry_cache().get(str(stock_id)) or {}
+    sector = info.get("industry_category") or info.get("sector") or fallback
+    sector = str(sector or "").strip()
+    if not sector or sector.upper() == "ETF":
+        return "未分類"
+    return sector
 
 
 def stock_href(stock_id: str, prefix: str = "stocks") -> str:
@@ -989,6 +1024,7 @@ function initTabs(containerId){
 
 def redirect_page(target_url: str, title: str = "Redirecting") -> str:
     """Generate a lightweight redirect HTML page."""
+    freshness = f"<p>Site data date: {esc(SITE_LATEST_REPORT_DATE)}</p>" if SITE_LATEST_REPORT_DATE else ""
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -997,6 +1033,7 @@ def redirect_page(target_url: str, title: str = "Redirecting") -> str:
 <title>{title}</title>
 </head>
 <body>
+{freshness}
 <p>頁面已移動，正在跳轉到 <a href="{target_url}">{target_url}</a>…</p>
 </body>
 </html>"""
@@ -1034,6 +1071,7 @@ def build_stock_table(
   <td><span style="color:#6e7681;font-size:11px">#{i}</span></td>
   <td>
     <div><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']} {s['name']}</a></div>
+    <div class="signal-dates">{esc(s.get('sector', '未分類'))}</div>
 {badge_line}
   </td>
   <td class="price-main">{s['price']}</td>
@@ -1053,6 +1091,7 @@ def build_stock_table(
   <td>
     <div style="font-size:14px"><a class="stock-link" href="{stock_href(s['id'], stock_link_prefix)}">{s['id']}</a></div>
     <div style="color:#8b949e;font-size:12px">{s['name']}</div>
+    <div class="signal-dates">{esc(s.get('sector', '未分類'))}</div>
   </td>
 {basket_cell}
   <td class="price-main">{s['price']}</td>
@@ -3873,6 +3912,7 @@ def enrich_stock_fields(s: dict) -> dict:
     out = dict(s)
     out["name"] = clean_stock_name(out.get("name", ""))
     sid = out.get("id", "")
+    out["sector"] = out.get("sector") or stock_sector(sid)
     daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), out), "daily")
     if daily:
         closes = [r["close"] for r in daily]
@@ -5993,6 +6033,69 @@ def build_daily_page(report: dict) -> str:
     return html_page(f"{date_str}", "daily", body, nav_prefix="../")
 
 
+def build_sector_focus_section(stocks: list[dict], top_n: int = 8) -> str:
+    try:
+        import run_screener as daily_screener
+        sector_scores = daily_screener.market_sector_flow(daily_screener.load_industry_map())
+    except Exception:
+        sector_scores = {}
+    if not sector_scores:
+        return ""
+    top = sorted(sector_scores.values(), key=lambda r: float(r.get("rank") or 999))[:top_n]
+    sector_rank = {str(row.get("sector")): row for row in top}
+    hits = []
+    for stock in stocks:
+        sid = str(stock.get("id") or stock.get("stock_id") or "")
+        sector = stock.get("sector") or stock_sector(sid)
+        summary = sector_scores.get(str(sector))
+        if summary and float(summary.get("rank") or 999) <= top_n:
+            hits.append((stock, sector, summary))
+
+    sector_rows = ""
+    for row in top:
+        avg_ret5_text = f"{fmt_num(row.get('avg_ret5'), 2)}%"
+        sector_rows += f"""
+<tr>
+  <td>#{fmt_num(row.get('rank'), 0)}</td>
+  <td>{esc(row.get('sector'))}</td>
+  <td>{fmt_num(row.get('score'), 1)}</td>
+  <td>{fmt_num(row.get('turnover_billion'), 1)}</td>
+  <td class="{gain_color(avg_ret5_text)}">{avg_ret5_text}</td>
+  <td>{fmt_num(row.get('avg_vol_ratio'), 2)}x</td>
+</tr>"""
+
+    hit_items = ""
+    for stock, sector, summary in hits[:12]:
+        sid = str(stock.get("id") or stock.get("stock_id") or "")
+        hit_items += (
+            f'<span class="tag tag-blue" style="margin:2px 4px 2px 0">'
+            f'{esc(sid)} {esc(clean_stock_name(stock.get("name", "")))}｜{esc(sector)} #{fmt_num(summary.get("rank"), 0)}'
+            f'</span>'
+        )
+    if not hit_items:
+        hit_items = '<span class="muted">今日 Top20 尚未命中前排資金熱族群，先保留原 M大名單觀察。</span>'
+
+    latest_date = next((row.get("date") for row in top if row.get("date")), "")
+    return f"""
+<div class="card">
+  <div class="section-head">
+    <div>
+      <div class="section-label">市場資金族群</div>
+      <div class="metric-title">資金追捧 TOP{len(top)}</div>
+    </div>
+    <div class="section-date">資料日期：{esc(latest_date)}</div>
+  </div>
+  <div class="strategy-note" style="margin-bottom:12px">以全市場價格快取計算成交金額、5/20日動能、量能比與上漲家數；每日 Top20 會優先挑前 {top_n} 名熱族群內的 M大候選，單一族群設上限避免名單過度集中。</div>
+  <div style="overflow-x:auto">
+    <table class="stock-table">
+      <thead><tr><th>排名</th><th>族群</th><th>分數</th><th>成交金額(億)</th><th>5日動能</th><th>量能比</th></tr></thead>
+      <tbody>{sector_rows}</tbody>
+    </table>
+  </div>
+  <div class="strategy-note" style="margin-top:12px"><strong>Top20 命中熱族群：</strong><br>{hit_items}</div>
+</div>"""
+
+
 def build_latest_daily_page(reports, section_only=False):
     latest = latest_stock_report(reports)
     date_str = latest.get("date", "-")
@@ -6026,7 +6129,7 @@ def build_latest_daily_page(reports, section_only=False):
         '<div class="container">'
         '<div class="page-title">每日 Top20</div>'
         + f'<div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。資料日期：{date_str} &middot; <a href="history.html">歷史報告 &rarr;</a></div>'
-        + market_card + build_top20_score_explainer(date_str) + table_section + notes_section
+        + market_card + build_sector_focus_section(stocks) + build_top20_score_explainer(date_str) + table_section + notes_section
         + '</div>'
     )
     if section_only:
@@ -8516,6 +8619,7 @@ def main():
     if not reports:
         print("[ERROR] No reports parsed or cached.", flush=True)
         return
+    set_site_latest_report_date(reports)
 
     print("\n[Build] Generating pages...", flush=True)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")

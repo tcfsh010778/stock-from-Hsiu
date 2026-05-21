@@ -48,6 +48,9 @@ jobs:
             echo "::warning::FINMIND_TOKEN is not set; skip MDA full-market refresh."
           fi
 
+      - name: Refresh industry category cache
+        run: python tools/refresh_industry_cache.py
+
       - name: Generate daily Top20 report
         run: python run_screener.py
 

@@ -1,6 +1,6 @@
 # Codex Handoff
 
-Last updated: 2026-05-13
+Last updated: 2026-05-21
 
 ## Startup Reminder
 
@@ -511,3 +511,90 @@ Fix the daily after-market auto-update reliability concern end to end.
 
 - The next scheduled run should create/push an `Auto update: 2026-05-14` commit after the workflow runs.
 - If the page appears stale again, first compare the live page date, `origin/main`, and local `HEAD`; local being behind is a separate issue from GitHub Actions failure.
+
+## 2026-05-21 Full-Page Freshness And Sector-Aware Top20
+
+### Goal
+
+Fix the remaining issue where not every generated page visibly reflected the latest daily update, and make the daily Top20 prefer stocks from the market sectors currently attracting the most capital.
+
+### Root Cause / Evidence
+
+- GitHub Actions itself was still running scheduled jobs; the public workflow page showed repeated scheduled `Daily Stock Site Update` runs.
+- Local checkout was behind `origin/main`; fast-forwarding brought it to the latest auto-update commit for `2026-05-21`.
+- The old verifier only checked `docs/index.html` and `data/site_reports.json`, so redirect pages, historical daily pages, stock pages, and other generated HTML could be stale without failing CI.
+- Running the broadened verifier before regenerating the full site found many generated HTML pages without `2026-05-21`.
+
+### Completed
+
+- Broadened `tools/verify_daily_update_artifacts.py` to scan every `docs/**/*.html` page for the latest report date.
+- Added regression coverage in `tools/test_verify_daily_update_artifacts.py` for a stale nested HTML page.
+- Added `tools/refresh_industry_cache.py` to refresh `data/stock_industries.json` from FinMind `TaiwanStockInfo`.
+- Added industry-cache tests in `tools/test_refresh_industry_cache.py`.
+- Added sector-aware ranking tests in `tools/test_run_screener_sector_filter.py`.
+- Updated `.github/workflows/daily_update.yml` so the daily workflow refreshes the industry cache before generating Top20.
+- Updated `run_screener.py` so Top20 candidates get sector labels and are ranked with market sector-flow context, capped by sector concentration.
+- Updated `generate_site.py` so every generated page gets `Site data date: <latest report date>`, redirect pages included.
+- Added a market sector-flow block to `docs/selection.html` and visible sector labels in Top20 stock rows.
+- Rebuilt the full static site: `2654` files generated under `docs/`.
+
+### Changed Files
+
+- `.github/workflows/daily_update.yml`
+- `generate_site.py`
+- `run_screener.py`
+- `tools/verify_daily_update_artifacts.py`
+- `tools/test_verify_daily_update_artifacts.py`
+- `tools/refresh_industry_cache.py`
+- `tools/test_refresh_industry_cache.py`
+- `tools/test_run_screener_sector_filter.py`
+- `data/stock_industries.json`
+- `data/site_reports.json`
+- `data/stock_markets.json`
+- `reports/每日選股報告_2026-05-21.md`
+- regenerated `docs/**/*.html`
+
+### Source Of Truth
+
+- Daily workflow: `.github/workflows/daily_update.yml`
+- Industry source cache: `tools/refresh_industry_cache.py` -> `data/stock_industries.json`
+- Daily Top20 ranking: `run_screener.py`
+- Static site generator and visible freshness marker: `generate_site.py`
+- Visible output: `docs/selection.html`, `docs/**/*.html`
+
+### Rebuild / Verification
+
+- Ran `git fetch --progress origin main` and `git pull --ff-only origin main`.
+- Ran `python tools\refresh_industry_cache.py`; wrote `data\stock_industries.json`, stocks=`3091`.
+- Ran `PYTHONIOENCODING=utf-8 python run_screener.py`; wrote `reports\每日選股報告_2026-05-21.md`, rows=`20`.
+- Ran `PYTHONIOENCODING=utf-8 python -u generate_site.py`; generated `2654` files.
+- Ran `python -m py_compile generate_site.py run_screener.py tools\refresh_industry_cache.py tools\verify_daily_update_artifacts.py`.
+- Ran:
+  - `python tools\test_run_screener_sector_filter.py`
+  - `python tools\test_refresh_industry_cache.py`
+  - `python tools\test_verify_daily_update_artifacts.py`
+  - all passed.
+- Ran `python tools\verify_daily_update_artifacts.py`; passed with latest report date `2026-05-21`, report date count `14`.
+- Checked `docs/selection.html`, `docs/daily.html`, `docs/backtest.html`, `docs/carybot.html`, `docs/stocks/2330.html`, and `docs/daily/2026-04-24.html`; all contain `Site data date: 2026-05-21`.
+- Opened local preview at `http://127.0.0.1:8765/selection.html`; browser DOM verification confirmed the date marker, sector-flow section, hot sectors, and Top20 sector labels.
+
+### Current Market Sector-Flow Snapshot
+
+As of the generated `2026-05-21` report, the top capital-flow sectors are:
+
+1. 電子零組件業
+2. 電子工業
+3. 半導體業
+4. 綠能環保
+5. 電子通路業
+6. 汽車工業
+7. 電腦及週邊設備業
+8. 光電業
+
+The visible Top20 starts with `6126 信音`, `6173 信昌電`, `6274 台燿`, `8042 金山電`, then moves into the next hot sectors.
+
+### Next Notes
+
+- If the user says "every page is stale" again, run `python tools\verify_daily_update_artifacts.py` first; it now checks the full rendered site rather than just the homepage.
+- The sector ranking is a report-layer selection improvement. It does not change SFZ / M-ABC universe, signal, or exit semantics.
+- The full site rebuild is slow in OneDrive; use `python -u generate_site.py` and allow a long timeout.

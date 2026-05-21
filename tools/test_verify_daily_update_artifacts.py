@@ -45,6 +45,24 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 verify_artifacts(root)
 
+    def test_rejects_site_when_any_generated_html_page_is_stale(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "reports").mkdir()
+            (root / "docs" / "stocks").mkdir(parents=True)
+            (root / "data").mkdir()
+            (root / "reports" / "daily_report_2026-05-21.md").write_text("# report", encoding="utf-8")
+            (root / "docs" / "index.html").write_text("latest report 2026-05-21", encoding="utf-8")
+            (root / "docs" / "daily.html").write_text("redirect generated on 2026-05-21", encoding="utf-8")
+            (root / "docs" / "stocks" / "2330.html").write_text("stock detail 2026-05-20", encoding="utf-8")
+            (root / "data" / "site_reports.json").write_text(
+                json.dumps([{"date": "2026-05-21"}]),
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(SystemExit):
+                verify_artifacts(root)
+
 
 if __name__ == "__main__":
     unittest.main()

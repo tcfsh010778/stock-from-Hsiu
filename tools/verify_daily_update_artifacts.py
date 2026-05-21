@@ -40,6 +40,12 @@ def collect_json_dates(value: Any) -> set[str]:
     return dates
 
 
+def html_pages(docs_dir: Path) -> list[Path]:
+    if not docs_dir.exists():
+        fail(f"missing {docs_dir}")
+    return sorted(path for path in docs_dir.rglob("*.html") if path.is_file())
+
+
 def fail(message: str) -> None:
     raise SystemExit(f"daily update artifact verification failed: {message}")
 
@@ -59,6 +65,16 @@ def verify_artifacts(root: Path) -> VerificationResult:
     index_text = index.read_text(encoding="utf-8", errors="replace")
     if latest not in index_text:
         fail(f"latest report date {latest} is missing from {index}")
+
+    stale_pages: list[Path] = []
+    for page in html_pages(root / "docs"):
+        page_text = page.read_text(encoding="utf-8", errors="replace")
+        if latest not in page_text:
+            stale_pages.append(page.relative_to(root))
+    if stale_pages:
+        sample = ", ".join(str(path) for path in stale_pages[:10])
+        more = "" if len(stale_pages) <= 10 else f", ... (+{len(stale_pages) - 10} more)"
+        fail(f"latest report date {latest} is missing from generated HTML pages: {sample}{more}")
 
     if not site_reports.exists():
         fail(f"missing {site_reports}")

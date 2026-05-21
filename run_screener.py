@@ -4,6 +4,7 @@ import csv
 import json
 import math
 import os
+from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
@@ -14,8 +15,11 @@ REPORTS_DIR = ROOT / "reports"
 PRICE_DIR = DATA_DIR / "prices"
 SCAN_PATH = DATA_DIR / "mda_universe_scan.json"
 MARKETS_PATH = DATA_DIR / "stock_markets.json"
+INDUSTRY_PATH = DATA_DIR / "stock_industries.json"
 MIN_CLOSE = float(os.environ.get("DAILY_TOP20_MIN_CLOSE", "20"))
 TOP_N = int(os.environ.get("DAILY_TOP20_N", "20"))
+SECTOR_TOP_N = int(os.environ.get("DAILY_TOP20_SECTOR_TOP_N", "8"))
+SECTOR_MAX_PER_GROUP = int(os.environ.get("DAILY_TOP20_SECTOR_MAX_PER_GROUP", "4"))
 
 
 def to_float(value, default=None):
@@ -131,6 +135,124 @@ def load_scan_rows() -> list[dict]:
     return [r for r in rows if to_float(r.get("close"), 0) >= MIN_CLOSE]
 
 
+def load_industry_map(path: Path = INDUSTRY_PATH) -> dict[str, dict]:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {}
+    stocks = payload.get("stocks") if isinstance(payload, dict) else payload
+    if not isinstance(stocks, dict):
+        return {}
+    out: dict[str, dict] = {}
+    for sid, item in stocks.items():
+        if isinstance(item, str):
+            out[str(sid)] = {"industry_category": item}
+        elif isinstance(item, dict):
+            out[str(sid)] = item
+    return out
+
+
+def sector_for_stock(stock_id: str, industry_map: dict[str, dict], fallback: str = "") -> str:
+    info = industry_map.get(str(stock_id)) or {}
+    sector = info.get("industry_category") or info.get("sector") or fallback
+    sector = str(sector or "").strip()
+    if not sector or sector.upper() == "ETF":
+        return "未分類"
+    return sector
+
+
+def price_money_metric(stock_id: str) -> dict | None:
+    rows = price_rows(stock_id)
+    if len(rows) < 6:
+        return None
+    latest = rows[-1]
+    close = to_float(latest.get("close"))
+    volume = to_float(latest.get("volume"), 0)
+    if close is None or close < MIN_CLOSE or not volume:
+        return None
+    ret5 = pct_change(close, rows[-6].get("close"))
+    ret20 = pct_change(close, rows[-21].get("close")) if len(rows) >= 21 else None
+    vol5 = sum(to_float(r.get("volume"), 0) for r in rows[-5:]) / 5
+    vol20 = sum(to_float(r.get("volume"), 0) for r in rows[-20:]) / min(20, len(rows))
+    vol_ratio = vol5 / vol20 if vol20 else None
+    return {
+        "date": latest.get("date") or "",
+        "close": close,
+        "volume": volume,
+        "turnover_billion": close * volume / 100_000_000,
+        "ret5": ret5,
+        "ret20": ret20,
+        "vol_ratio": vol_ratio,
+    }
+
+
+def market_sector_flow(industry_map: dict[str, dict]) -> dict[str, dict]:
+    if not industry_map:
+        return {}
+    stock_metrics = []
+    for path in PRICE_DIR.glob("*.csv"):
+        sid = path.stem
+        sector = sector_for_stock(sid, industry_map)
+        if sector == "未分類":
+            continue
+        metric = price_money_metric(sid)
+        if not metric:
+            continue
+        stock_metrics.append({"stock_id": sid, "sector": sector, **metric})
+    latest_date = max((m.get("date", "") for m in stock_metrics), default="")
+    if latest_date:
+        stock_metrics = [m for m in stock_metrics if m.get("date") == latest_date]
+
+    groups: dict[str, dict] = defaultdict(lambda: {
+        "stock_count": 0,
+        "turnover_billion": 0.0,
+        "weighted_ret5": 0.0,
+        "weighted_ret20": 0.0,
+        "weighted_vol_ratio": 0.0,
+        "advance_count": 0,
+    })
+    for metric in stock_metrics:
+        turnover = to_float(metric.get("turnover_billion"), 0) or 0
+        weight = max(turnover, 0.01)
+        g = groups[str(metric["sector"])]
+        g["stock_count"] += 1
+        g["turnover_billion"] += turnover
+        g["weighted_ret5"] += (to_float(metric.get("ret5"), 0) or 0) * weight
+        g["weighted_ret20"] += (to_float(metric.get("ret20"), 0) or 0) * weight
+        g["weighted_vol_ratio"] += (to_float(metric.get("vol_ratio"), 1) or 1) * weight
+        if (to_float(metric.get("ret5"), 0) or 0) > 0:
+            g["advance_count"] += 1
+
+    summaries = []
+    for sector, g in groups.items():
+        turnover = g["turnover_billion"]
+        if turnover <= 0:
+            continue
+        avg_ret5 = g["weighted_ret5"] / turnover
+        avg_ret20 = g["weighted_ret20"] / turnover
+        avg_vol_ratio = g["weighted_vol_ratio"] / turnover
+        breadth = g["advance_count"] / max(g["stock_count"], 1)
+        score = math.log1p(turnover) * 18 + avg_ret5 * 2.5 + avg_ret20 * 0.8 + min(avg_vol_ratio, 3.0) * 8 + breadth * 12
+        summaries.append({
+            "sector": sector,
+            "rank": 0,
+            "score": score,
+            "stock_count": g["stock_count"],
+            "turnover_billion": turnover,
+            "avg_ret5": avg_ret5,
+            "avg_ret20": avg_ret20,
+            "avg_vol_ratio": avg_vol_ratio,
+            "breadth": breadth,
+            "date": latest_date,
+        })
+    summaries.sort(key=lambda r: (-to_float(r.get("score"), 0), str(r.get("sector") or "")))
+    for idx, row in enumerate(summaries, 1):
+        row["rank"] = idx
+    return {str(row["sector"]): row for row in summaries}
+
+
 def stock_status(row: dict) -> tuple[str, str]:
     basket = row.get("basket", "")
     if basket == "已發動籃":
@@ -140,7 +262,7 @@ def stock_status(row: dict) -> tuple[str, str]:
     return "🔴", "過熱/風險"
 
 
-def enrich(row: dict) -> dict:
+def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
     sid = str(row.get("stock_id") or "")
     rows = price_rows(sid)
     closes = [r["close"] for r in rows]
@@ -160,6 +282,7 @@ def enrich(row: dict) -> dict:
         **row,
         "stock_id": sid,
         "name": row.get("name") or sid,
+        "sector": row.get("sector") or row.get("industry_category") or sector_for_stock(sid, industry_map or {}),
         "date": latest.get("date") or row.get("date") or "",
         "close": close,
         "icon": icon,
@@ -178,22 +301,127 @@ def enrich(row: dict) -> dict:
     }
 
 
-def select_top20(rows: list[dict]) -> list[dict]:
-    basket_rank = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}
-    enriched = [enrich(r) for r in rows]
+def _basket_rank(row: dict) -> int:
+    basket = str(row.get("basket") or "")
+    if basket == "已發動籃" or "已發動" in basket:
+        return 0
+    if "空轉多" in basket:
+        return 1
+    if "未發動" in basket:
+        return 2
+    if "不納入" in basket:
+        return 3
+    return 9
+
+
+def rank_candidates_with_sector_flow(
+    rows: list[dict],
+    sector_scores: dict[str, dict],
+    top_n: int = TOP_N,
+    sector_top_n: int = SECTOR_TOP_N,
+    max_per_sector: int = SECTOR_MAX_PER_GROUP,
+) -> list[dict]:
+    def base_key(row: dict):
+        return (
+            _basket_rank(row),
+            -to_float(row.get("score"), 0),
+            str(row.get("stock_id") or ""),
+        )
+
+    if not sector_scores:
+        return sorted(rows, key=base_key)[:top_n]
+
+    ranked_rows = []
+    for row in rows:
+        item = dict(row)
+        sector = str(item.get("sector") or "未分類")
+        summary = sector_scores.get(sector) or {}
+        item["sector_rank"] = summary.get("rank")
+        item["sector_flow_score"] = summary.get("score")
+        item["sector_turnover_billion"] = summary.get("turnover_billion")
+        ranked_rows.append(item)
+
+    def sector_key(row: dict):
+        rank = to_float(row.get("sector_rank"), 999) or 999
+        hot_rank = rank if rank <= sector_top_n else 999
+        return (
+            hot_rank,
+            -to_float(row.get("sector_flow_score"), 0),
+            *base_key(row),
+        )
+
+    sorted_rows = sorted(ranked_rows, key=sector_key)
+    selected = []
+    selected_ids = set()
+    sector_counts: dict[str, int] = defaultdict(int)
+    for row in sorted_rows:
+        sector = str(row.get("sector") or "未分類")
+        if sector_counts[sector] >= max_per_sector:
+            continue
+        selected.append(row)
+        selected_ids.add(row.get("stock_id"))
+        sector_counts[sector] += 1
+        if len(selected) >= top_n:
+            return selected
+    for row in sorted_rows:
+        if row.get("stock_id") in selected_ids:
+            continue
+        selected.append(row)
+        if len(selected) >= top_n:
+            break
+    return selected
+
+
+def select_top20(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+) -> list[dict]:
+    industry_map = industry_map if industry_map is not None else load_industry_map()
+    sector_scores = sector_scores if sector_scores is not None else market_sector_flow(industry_map)
+    enriched = [enrich(r, industry_map) for r in rows]
     enriched = [r for r in enriched if r.get("close") and r.get("date")]
     latest_date = max((r.get("date", "") for r in enriched), default="")
     if latest_date:
         enriched = [r for r in enriched if r.get("date") == latest_date]
-    enriched.sort(key=lambda r: (
-        basket_rank.get(r.get("basket", ""), 9),
-        -to_float(r.get("score"), 0),
-        str(r.get("stock_id") or ""),
-    ))
-    return enriched[:TOP_N]
+    return rank_candidates_with_sector_flow(enriched, sector_scores, TOP_N, SECTOR_TOP_N, SECTOR_MAX_PER_GROUP)
 
 
-def report_markdown(rows: list[dict], report_date: str) -> str:
+def sector_flow_markdown(sector_scores: dict[str, dict], top_n: int = SECTOR_TOP_N) -> list[str]:
+    if not sector_scores:
+        return []
+    top = sorted(sector_scores.values(), key=lambda r: to_float(r.get("rank"), 999))[:top_n]
+    if not top:
+        return []
+    lines = [
+        "## 市場資金追捧族群",
+        "",
+        "| 排名 | 族群 | 資金分數 | 成交金額(億) | 5日動能 | 20日動能 | 量能比 | 上漲家數 |",
+        "|------|------|----------|--------------|---------|----------|--------|----------|",
+    ]
+    for row in top:
+        lines.append(
+            "| "
+            f"{int(to_float(row.get('rank'), 0) or 0)} | "
+            f"{row.get('sector')} | "
+            f"{fmt_num(row.get('score'), 1)} | "
+            f"{fmt_num(row.get('turnover_billion'), 1)} | "
+            f"{fmt_num(row.get('avg_ret5'), 2, '%')} | "
+            f"{fmt_num(row.get('avg_ret20'), 2, '%')} | "
+            f"{fmt_num(row.get('avg_vol_ratio'), 2)}x | "
+            f"{fmt_num((to_float(row.get('breadth'), 0) or 0) * 100, 0, '%')} |"
+        )
+    lines.extend([
+        "",
+        f"> Top20 已改為先看前 {top_n} 名資金熱族群，再回到 M大分數與籃子排序；單一族群最多 {SECTOR_MAX_PER_GROUP} 檔，避免同族群塞滿整張名單。",
+        "",
+        "---",
+        "",
+    ])
+    return lines
+
+
+def report_markdown(rows: list[dict], report_date: str, sector_scores: dict[str, dict] | None = None) -> str:
     latest_price_date = max((r.get("date", "") for r in rows), default=report_date)
     lines = [
         f"# 每日選股報告｜{report_date}",
@@ -222,6 +450,7 @@ def report_markdown(rows: list[dict], report_date: str) -> str:
         f"## Top {len(rows)} 精選個股｜{latest_price_date}",
         "",
     ]
+    lines.extend(sector_flow_markdown(sector_scores or {}))
     for idx, r in enumerate(rows, 1):
         sid = r["stock_id"]
         lines.extend([
@@ -231,6 +460,8 @@ def report_markdown(rows: list[dict], report_date: str) -> str:
             "|------|------|",
             f"| 收盤價 | **{fmt_num(r.get('close'), 2)} 元** |",
             f"| 近6週漲幅 | **{fmt_num(r.get('gain_6w'), 2, '%')}** |",
+            f"| 產業族群 | {r.get('sector') or '未分類'} |",
+            f"| 族群資金排名 | #{fmt_num(r.get('sector_rank'), 0)}（分數 {fmt_num(r.get('sector_flow_score'), 1)}） |",
             f"| RSI\\(14\\) | {fmt_num(r.get('rsi'), 1)} |",
             f"| 布林 %B | {fmt_num(r.get('bb_pct'), 1, '%')} |",
             f"| 近5日量 | {fmt_num(r.get('vol5_lot'), 0)} 張 |",
@@ -251,13 +482,15 @@ def report_markdown(rows: list[dict], report_date: str) -> str:
 
 
 def main() -> None:
-    rows = select_top20(load_scan_rows())
+    industry_map = load_industry_map()
+    sector_scores = market_sector_flow(industry_map)
+    rows = select_top20(load_scan_rows(), industry_map, sector_scores)
     if not rows:
         raise SystemExit("No rows available. Run mda_full_market_refresh.py and mda_universe_scan.py first.")
     report_date = max((r.get("date", "") for r in rows), default=date.today().isoformat())
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     out = REPORTS_DIR / f"每日選股報告_{report_date}.md"
-    out.write_text(report_markdown(rows, report_date), encoding="utf-8")
+    out.write_text(report_markdown(rows, report_date, sector_scores), encoding="utf-8")
     print(f"[run_screener] wrote {out} rows={len(rows)}")
 
 
