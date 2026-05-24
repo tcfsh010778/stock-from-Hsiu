@@ -248,6 +248,36 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}
+.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}
+.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}
+.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}
+.inline-placeholder{margin:0;background:transparent;border-color:#30363d}
+.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:12px;margin-bottom:12px}
+.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900;color:#e6edf3}
+.traffic-light .reason{font-size:13px;line-height:1.6;color:#c9d1d9;margin-top:6px}
+.traffic-light.go{border-color:rgba(63,185,80,.45)}
+.traffic-light.watch{border-color:rgba(210,165,32,.55)}
+.traffic-light.nogo{border-color:rgba(248,81,73,.55)}
+.ledger-controls,.radar-filter-bar{position:sticky;top:41px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}
+.ledger-controls input,.ledger-controls select,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}
+.filter-chip input{accent-color:#58a6ff}
+.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.pager button:disabled{opacity:.45;cursor:not-allowed}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}
+.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}
+.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -264,6 +294,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}
+  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}
+  .stock-table.responsive-card td:last-child{border-bottom:0}
+  .stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}
+  .ledger-controls,.radar-filter-bar{position:static}
+  .heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -294,11 +333,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </nav>
 
 <div class="container">
-  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
   <div class="page-title">3002 歐格</div>
   <div class="page-sub">v44 個股研究頁 · 報告日期 ─</div>
+  
   <div class="detail-hero">
     <div class="card">
+      <div class="traffic-light nogo">
+  <div class="signal"><span>🔴</span><span>NO-GO</span></div>
+  <div class="reason">趨勢或量價仍有分歧，但 MACD 仍為 賣出區，建議小部位試單或等待訊號收斂。</div>
+</div>
       <div class="section-label">資訊卡</div>
       
 <div class="telegram-report-card">
@@ -330,6 +374,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 操作：先當作獨立個股觀察：重點看價格是否不再破低，外資/融資賣壓是否收斂，以及少量買盤能否守住關鍵支撐。</div>
       </div>
     </div>
+  </div>
+
+  
+  <div class="card">
+    <div class="section-label">M大 ABC 拆分</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-num">31</div><div class="metric-label">M大綜合分</div></div>
+      <div class="metric"><div class="metric-num">0</div><div class="metric-label">A 趨勢</div></div>
+      <div class="metric"><div class="metric-num">20 / 0</div><div class="metric-label">B1 籌碼 / B2 賣壓</div></div>
+    </div>
+    <div class="m-checks" style="margin-top:10px"></div>
+    <div class="strategy-note" style="margin-top:10px">&lt;span class=&quot;m-check warn&quot;&gt;A：長多/空轉多&lt;/span&gt; &lt;span class=&quot;m-check warn&quot;&gt;B1籌碼未離開&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;B2賣壓吸收&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;MA120上彎&lt;/span&gt; &lt;span class=&quot;m-check ok&quot;&gt;MA240上彎&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;接近/突破120日&lt;/span&gt; &lt;span class=&quot;m-check ok&quot;&gt;120/240扣抵有利&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;有量挑戰關鍵線&lt;/span&gt; &lt;span class=&quot;m-check ok&quot;&gt;外資停止賣或偏買&lt;/span&gt;<br>B2賣壓未確認｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資資料不足</div>
   </div>
 
   <div class="card">
@@ -1218,7 +1274,11 @@ initMainForceHover_3002();
 </script>
 
 <footer>
+<<<<<<< HEAD
   <p class="site-freshness">Site data date: 2026-05-22</p>
+=======
+  <p class="site-freshness">資料更新：2026-05-21 收盤後</p>
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>

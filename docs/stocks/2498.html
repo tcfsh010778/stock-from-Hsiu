@@ -248,6 +248,36 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}
+.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}
+.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}
+.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}
+.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}
+.inline-placeholder{margin:0;background:transparent;border-color:#30363d}
+.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:12px;margin-bottom:12px}
+.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900;color:#e6edf3}
+.traffic-light .reason{font-size:13px;line-height:1.6;color:#c9d1d9;margin-top:6px}
+.traffic-light.go{border-color:rgba(63,185,80,.45)}
+.traffic-light.watch{border-color:rgba(210,165,32,.55)}
+.traffic-light.nogo{border-color:rgba(248,81,73,.55)}
+.ledger-controls,.radar-filter-bar{position:sticky;top:41px;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}
+.ledger-controls input,.ledger-controls select,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}
+.filter-chip input{accent-color:#58a6ff}
+.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.pager button:disabled{opacity:.45;cursor:not-allowed}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}
+.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}
+.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}
+.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -264,6 +294,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}
+  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}
+  .stock-table.responsive-card td:last-child{border-bottom:0}
+  .stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}
+  .ledger-controls,.radar-filter-bar{position:static}
+  .heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -294,11 +333,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </nav>
 
 <div class="container">
-  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
   <div class="page-title">2498 宏達電</div>
   <div class="page-sub">v44 個股研究頁 · 報告日期 ─</div>
+  
   <div class="detail-hero">
     <div class="card">
+      <div class="traffic-light watch">
+  <div class="signal"><span>🟡</span><span>WATCH</span></div>
+  <div class="reason">趨勢或量價仍有分歧，但 MACD 仍為 未確認，建議小部位試單或等待訊號收斂。</div>
+</div>
       <div class="section-label">資訊卡</div>
       
 <div class="telegram-report-card">
@@ -311,14 +355,22 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </div>
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">41.30</div></div><div class="change neg">單日 -4.30（-9.43%）</div></div>
   <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score ─</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 整理/修正 / 量能資料不足 / B1資料不足 / B2資料不足</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">首次或尚未建立歷史台帳</div></div></div>
+<<<<<<< HEAD
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">區間整理</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量能資料不足</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -9.43% / 量比 ─x / 紅K / 5日均量資料不足</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">資料不足，先等量價結構明確。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">─</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v">外資5日 ─；三大法人當日 ─ 張；大戶 35.59% / 散戶 26.65%</div></div></div>
+=======
+  <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">區間整理</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量能資料不足</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 -8.02% / 量比 ─x / 紅K / 5日均量資料不足</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">資料不足，先等量價結構明確。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">─</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">─</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v">外資5日 ─；三大法人當日 ─ 張；大戶 35.59% / 散戶 26.65%</div></div></div>
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
   <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
 </div>
     </div>
     <div>
       <div class="card">
         <div class="section-label">操作規劃</div>
+<<<<<<< HEAD
         <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 46.10｜近支撐 39.15</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">資料不足</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">47.02</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">39.15（原始防守，-5.2%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-good">1:2.7</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜MA20資料不足</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。</div></div></div>
+=======
+        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 46.05｜近支撐 39.15</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">資料不足</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">46.97</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">39.15（原始防守，-5.2%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-good">1:2.6</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜MA20資料不足</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。</div></div></div>
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
       </div>
       <div class="card" style="margin-top:12px">
         <div class="section-label">Quick 分析</div>
@@ -330,6 +382,18 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 操作：先當作獨立個股觀察：重點看價格是否不再破低，外資/融資賣壓是否收斂，以及少量買盤能否守住關鍵支撐。</div>
       </div>
     </div>
+  </div>
+
+  
+  <div class="card">
+    <div class="section-label">M大 ABC 拆分</div>
+    <div class="grid grid-3">
+      <div class="metric"><div class="metric-num">16</div><div class="metric-label">M大綜合分</div></div>
+      <div class="metric"><div class="metric-num">0</div><div class="metric-label">A 趨勢</div></div>
+      <div class="metric"><div class="metric-num">20 / 0</div><div class="metric-label">B1 籌碼 / B2 賣壓</div></div>
+    </div>
+    <div class="m-checks" style="margin-top:10px"></div>
+    <div class="strategy-note" style="margin-top:10px">&lt;span class=&quot;m-check bad&quot;&gt;A：長多/空轉多&lt;/span&gt; &lt;span class=&quot;m-check warn&quot;&gt;B1籌碼未離開&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;B2賣壓吸收&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;MA120上彎&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;MA240上彎&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;接近/突破120日&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;120/240扣抵有利&lt;/span&gt; &lt;span class=&quot;m-check bad&quot;&gt;有量挑戰關鍵線&lt;/span&gt; &lt;span class=&quot;m-check ok&quot;&gt;外資停止賣或偏買&lt;/span&gt;<br>B2資料不足：至少需要約25個交易日價量資料</div>
   </div>
 
   <div class="card">
@@ -405,7 +469,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <script>
 (function(){
   const root=document.getElementById('mda-tv-2498');
+<<<<<<< HEAD
   const rows=[{"date": "2025-03-03", "open": 46.0, "high": 46.0, "low": 44.5, "close": 44.7, "change": null, "changePct": null, "volume": 10478.539, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-04", "open": 43.75, "high": 44.7, "low": 43.05, "close": 44.5, "change": -0.20000000000000284, "changePct": -0.4474272930648837, "volume": 7504.696, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-10", "open": 44.4, "high": 45.15, "low": 44.3, "close": 44.85, "change": 0.3500000000000014, "changePct": 0.786516853932584, "volume": 4796.705, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-11", "open": 43.8, "high": 44.75, "low": 42.3, "close": 44.7, "change": -0.14999999999999858, "changePct": -0.33444816053511683, "volume": 11947.635, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-14", "open": 44.75, "high": 46.0, "low": 44.55, "close": 45.75, "change": 1.0499999999999972, "changePct": 2.348993288590595, "volume": 7622.506, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-17", "open": 45.95, "high": 46.05, "low": 44.9, "close": 44.9, "change": -0.8500000000000014, "changePct": -1.857923497267766, "volume": 5741.846, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-18", "open": 45.35, "high": 46.1, "low": 45.2, "close": 45.6, "change": 0.7000000000000028, "changePct": 1.5590200445434466, "volume": 5473.797, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2026-05-12", "open": 40.35, "high": 41.3, "low": 39.35, "close": 41.3, "change": -4.300000000000004, "changePct": -9.429824561403521, "volume": 12069.492, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08"}];
+=======
+  const rows=[{"date": "2025-03-03", "open": 46.0, "high": 46.0, "low": 44.5, "close": 44.7, "change": null, "changePct": null, "volume": 10478.539, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-04", "open": 43.75, "high": 44.7, "low": 43.05, "close": 44.5, "change": -0.20000000000000284, "changePct": -0.4474272930648837, "volume": 7504.696, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-10", "open": 44.4, "high": 45.15, "low": 44.3, "close": 44.85, "change": 0.3500000000000014, "changePct": 0.786516853932584, "volume": 4796.705, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-11", "open": 43.8, "high": 44.75, "low": 42.3, "close": 44.7, "change": -0.14999999999999858, "changePct": -0.33444816053511683, "volume": 11947.635, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-14", "open": 44.75, "high": 46.0, "low": 44.55, "close": 45.75, "change": 1.0499999999999972, "changePct": 2.348993288590595, "volume": 7622.506, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2025-03-17", "open": 45.95, "high": 46.05, "low": 44.9, "close": 44.9, "change": -0.8500000000000014, "changePct": -1.857923497267766, "volume": 5741.846, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": null, "retail": null, "totalPeople": null, "holdingDate": ""}, {"date": "2026-05-12", "open": 40.35, "high": 41.3, "low": 39.35, "close": 41.3, "change": -3.6000000000000014, "changePct": -8.01781737193764, "volume": 12069.492, "foreign": null, "foreignCum": 0.0, "foreignShares": null, "foreignRatio": null, "marginBalance": null, "shortBalance": null, "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08"}];
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
   if(!root || !rows.length) return;
   const L=window.LightweightCharts;
   if(!L){
@@ -774,7 +842,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 const chartData_2498 = {"daily": [{"date": "2025-03-03", "open": 46.0, "high": 46.0, "low": 44.5, "close": 44.7, "volume": 10478539.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}, {"date": "2025-03-04", "open": 43.75, "high": 44.7, "low": 43.05, "close": 44.5, "volume": 7504696.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -0.015954415954418266, "dea": -0.0031908831908836533, "macd": -0.025527065527069227, "wr": null}, {"date": "2025-03-10", "open": 44.4, "high": 45.15, "low": 44.3, "close": 44.85, "volume": 4796705.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -0.0003522698679390146, "dea": -0.002623160526294726, "macd": 0.004541781316711423, "wr": null}, {"date": "2025-03-11", "open": 43.8, "high": 44.75, "low": 42.3, "close": 44.7, "volume": 11947635.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -9.01637333186045e-05, "dea": -0.0021165611676995017, "macd": 0.0040527948687617945, "wr": null}, {"date": "2025-03-14", "open": 44.75, "high": 46.0, "low": 44.55, "close": 45.75, "volume": 7622506.0, "ma5": 44.9, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.08387690134347991, "dea": 0.015082131334536383, "macd": 0.13758954001788706, "wr": null}, {"date": "2025-03-17", "open": 45.95, "high": 46.05, "low": 44.9, "close": 44.9, "volume": 5741846.0, "ma5": 44.940000000000005, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.08090093351083993, "dea": 0.028245891769797093, "macd": 0.10531008348208568, "wr": null}, {"date": "2025-03-18", "open": 45.35, "high": 46.1, "low": 45.2, "close": 45.6, "volume": 5473797.0, "ma5": 45.160000000000004, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.13348784266178626, "dea": 0.04929428194819493, "macd": 0.16838712142718265, "wr": null}, {"date": "2026-05-12", "open": 40.35, "high": 41.3, "low": 39.35, "close": 41.3, "volume": 12069492.0, "ma5": 44.45, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -0.16985275948674428, "dea": 0.005464873661207091, "macd": -0.35063526629590275, "wr": null}], "weekly": [{"date": "2025-03-04", "open": 46.0, "high": 46.0, "low": 43.05, "close": 44.5, "volume": 17983235.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}, {"date": "2025-03-14", "open": 44.4, "high": 46.0, "low": 42.3, "close": 45.75, "volume": 24366846.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.09971509971510528, "dea": 0.019943019943021056, "macd": 0.15954415954416845, "wr": null}, {"date": "2025-03-18", "open": 45.95, "high": 46.1, "low": 44.9, "close": 45.6, "volume": 11215643.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.1647372992102376, "dea": 0.048901875796464364, "macd": 0.2316708468275465, "wr": null}, {"date": "2026-05-12", "open": 40.35, "high": 41.3, "low": 39.35, "close": 41.3, "volume": 12069492.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -0.12921667325608155, "dea": 0.01327816598595518, "macd": -0.28498967848407347, "wr": null}], "monthly": [{"date": "2025-03-18", "open": 46.0, "high": 46.1, "low": 42.3, "close": 45.6, "volume": 53565724.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": 0.0, "dea": 0.0, "macd": 0.0, "wr": null}, {"date": "2026-05-12", "open": 40.35, "high": 41.3, "low": 39.35, "close": 41.3, "volume": 12069492.0, "ma5": null, "ma10": null, "ma20": null, "ma60": null, "bbUpper": null, "bbLower": null, "k": null, "d": null, "dif": -0.34301994301993943, "dea": -0.06860398860398789, "macd": -0.5488319088319031, "wr": null}]};
 const holdingData_2498 = [{"date": "2025-12-19", "major": 34.51, "large": 5.3100000000000005, "retail": 27.700000000000003, "totalPeople": 167111}, {"date": "2025-12-26", "major": 34.73, "large": 5.32, "retail": 27.560000000000002, "totalPeople": 166655}, {"date": "2026-01-02", "major": 34.52, "large": 5.489999999999999, "retail": 27.590000000000003, "totalPeople": 166705}, {"date": "2026-01-09", "major": 34.32, "large": 5.7, "retail": 27.6, "totalPeople": 166325}, {"date": "2026-01-16", "major": 34.41, "large": 5.449999999999999, "retail": 27.73, "totalPeople": 166460}, {"date": "2026-01-23", "major": 34.88, "large": 5.33, "retail": 27.529999999999998, "totalPeople": 165861}, {"date": "2026-01-30", "major": 34.43, "large": 5.51, "retail": 27.58, "totalPeople": 166159}, {"date": "2026-02-06", "major": 34.93, "large": 5.059999999999999, "retail": 27.45, "totalPeople": 165753}, {"date": "2026-02-13", "major": 34.82, "large": 5.3, "retail": 27.37, "totalPeople": 165549}, {"date": "2026-03-06", "major": 35.62, "large": 4.970000000000001, "retail": 27.16, "totalPeople": 164963}, {"date": "2026-03-13", "major": 35.31, "large": 5.14, "retail": 27.17, "totalPeople": 165546}, {"date": "2026-03-20", "major": 35.52, "large": 4.89, "retail": 27.18, "totalPeople": 166077}, {"date": "2026-03-27", "major": 35.62, "large": 5.18, "retail": 27.099999999999998, "totalPeople": 166520}, {"date": "2026-04-10", "major": 36.22, "large": 5.14, "retail": 26.96, "totalPeople": 166584}, {"date": "2026-04-17", "major": 36.21, "large": 5.029999999999999, "retail": 26.930000000000003, "totalPeople": 167288}, {"date": "2026-04-24", "major": 35.75, "large": 4.73, "retail": 27.03, "totalPeople": 167236}, {"date": "2026-05-08", "major": 35.45, "large": 5.06, "retail": 26.87, "totalPeople": 166556}, {"date": "2026-05-15", "major": 35.59, "large": 5.11, "retail": 26.65, "totalPeople": 165543}];
 const chipFlowData_2498 = [];
+<<<<<<< HEAD
 const alignedChipData_2498 = {"daily": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-10", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-11", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-14", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-17", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-18", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-14", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-18", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2025-03-18", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}]};
+=======
+const alignedChipData_2498 = {"daily": [{"date": "2025-03-03", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-10", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-11", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-14", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-17", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "weekly": [{"date": "2025-03-04", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-14", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2025-03-17", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}], "monthly": [{"date": "2025-03-17", "major": null, "retail": null, "totalPeople": null, "holdingDate": "", "foreign": null, "foreignCum": 0.0}, {"date": "2026-05-12", "major": 35.45, "retail": 26.87, "totalPeople": 166556, "holdingDate": "2026-05-08", "foreign": null, "foreignCum": 0.0}]};
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
 const mainForceData_2498 = [];
 function showChart_2498(mode){
   const root=document.getElementById('chart-2498');
@@ -1122,7 +1194,11 @@ initMainForceHover_2498();
 </script>
 
 <footer>
+<<<<<<< HEAD
   <p class="site-freshness">Site data date: 2026-05-22</p>
+=======
+  <p class="site-freshness">資料更新：2026-05-21 收盤後</p>
+>>>>>>> 46fb97ed9 ([PR4] UX 改善：P1 互動頁與個股燈號)
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>

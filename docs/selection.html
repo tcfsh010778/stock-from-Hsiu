@@ -248,6 +248,15 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -264,6 +273,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -297,11 +310,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="page-title">選股池</div>
   <div class="page-sub">從每日 Top20 出發，拆成 SFZ 雙籃，追蹤歷史入選紀錄。</div>
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="top20">🏆 每日 Top20</button>
-    <button class="tab-btn" data-tab="sfz">🧺 SFZ 雙籃</button>
-    <button class="tab-btn" data-tab="tracking">📡 入選追蹤</button>
+    <button class="tab-btn active" data-tab="daily-top20">🏆 每日 Top20</button>
+    <button class="tab-btn" data-tab="sfz-baskets">🧺 SFZ 雙籃</button>
+    <button class="tab-btn" data-tab="signal-ledger">📡 入選追蹤</button>
   </div>
-  <div class="tab-panel active" id="top20"><div class="container"><div class="page-title">每日 Top20</div><div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。資料日期：2026-05-22 &middot; <a href="history.html">歷史報告 &rarr;</a></div><div class="card"><div class="section-label">Market Overview</div><div class="market-text"></div></div>
+  <div class="tab-panel active" id="daily-top20"><div class="container"><div class="page-title">每日 Top20</div><div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。資料日期：2026-05-22 &middot; <a href="history.html">歷史報告 &rarr;</a></div><div class="card"><div class="section-label">Market Overview</div><div class="market-text"></div></div>
 <div class="card">
   <div class="section-head">
     <div>
@@ -318,7 +331,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#1</td>
   <td>電子零組件業</td>
-  <td>263.4</td>
+  <td>100.0</td>
   <td>1332.5</td>
   <td class="pos">24.69%</td>
   <td>1.27x</td>
@@ -326,7 +339,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#2</td>
   <td>電子工業</td>
-  <td>226.8</td>
+  <td>100.0</td>
   <td>3520.8</td>
   <td class="pos">10.35%</td>
   <td>1.00x</td>
@@ -334,7 +347,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#3</td>
   <td>綠能環保</td>
-  <td>210.8</td>
+  <td>100.0</td>
   <td>27.7</td>
   <td class="pos">27.78%</td>
   <td>1.14x</td>
@@ -342,7 +355,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#4</td>
   <td>電子通路業</td>
-  <td>186.2</td>
+  <td>93.1</td>
   <td>85.2</td>
   <td class="pos">18.25%</td>
   <td>1.43x</td>
@@ -350,7 +363,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#5</td>
   <td>半導體業</td>
-  <td>178.2</td>
+  <td>89.1</td>
   <td>920.7</td>
   <td class="pos">2.66%</td>
   <td>0.94x</td>
@@ -358,7 +371,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#6</td>
   <td>電腦及週邊設備業</td>
-  <td>170.0</td>
+  <td>85.0</td>
   <td>520.4</td>
   <td class="pos">9.77%</td>
   <td>1.20x</td>
@@ -366,7 +379,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#7</td>
   <td>電器電纜</td>
-  <td>167.8</td>
+  <td>83.9</td>
   <td>1.9</td>
   <td class="pos">26.00%</td>
   <td>1.71x</td>
@@ -374,7 +387,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td>#8</td>
   <td>光電業</td>
-  <td>146.4</td>
+  <td>73.2</td>
   <td>83.4</td>
   <td class="pos">8.51%</td>
   <td>0.85x</td>
@@ -447,7 +460,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">106.1%</td>
   <td class="hide-mobile" style="color:#8b949e">2840 張</td>
   <td class="hide-mobile" style="color:#f85149">+625張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 33.20</div>
@@ -471,7 +487,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">63.4%</td>
   <td class="hide-mobile" style="color:#8b949e">492 張</td>
   <td class="hide-mobile" style="color:#f85149">+325張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 30.83</div>
@@ -495,7 +514,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">93.2%</td>
   <td class="hide-mobile" style="color:#8b949e">2040 張</td>
   <td class="hide-mobile" style="color:#f85149">+806張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 115.85</div>
@@ -519,7 +541,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">79%</td>
   <td class="hide-mobile" style="color:#8b949e">1672 張</td>
   <td class="hide-mobile" style="color:#f85149">+1,196張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 1213.75</div>
@@ -543,7 +568,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">64.3%</td>
   <td class="hide-mobile" style="color:#8b949e">4168 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,241張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 39.88</div>
@@ -567,7 +595,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">75.4%</td>
   <td class="hide-mobile" style="color:#8b949e">186279 張</td>
   <td class="hide-mobile" style="color:#3fb950">-35,146張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 106.57</div>
@@ -591,7 +622,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">76.8%</td>
   <td class="hide-mobile" style="color:#8b949e">7215 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,724張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 164.38</div>
@@ -615,7 +649,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">99.7%</td>
   <td class="hide-mobile" style="color:#8b949e">22503 張</td>
   <td class="hide-mobile" style="color:#f85149">+11,343張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 57.98</div>
@@ -639,7 +676,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">101.7%</td>
   <td class="hide-mobile" style="color:#8b949e">1154 張</td>
   <td class="hide-mobile" style="color:#3fb950">-212張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
   <td>
     <div class="price-entry">進 811.25</div>
@@ -663,7 +703,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">52.3%</td>
   <td class="hide-mobile" style="color:#8b949e">1105 張</td>
   <td class="hide-mobile" style="color:#3fb950">-829張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 90.40</div>
@@ -687,7 +730,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">1435 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,169張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 116.25</div>
@@ -711,7 +757,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">71.3%</td>
   <td class="hide-mobile" style="color:#8b949e">174 張</td>
   <td class="hide-mobile" style="color:#f85149">+36張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.0</span></td>
   <td>
     <div class="price-entry">進 74.98</div>
@@ -735,7 +784,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">79.7%</td>
   <td class="hide-mobile" style="color:#8b949e">7372 張</td>
   <td class="hide-mobile" style="color:#f85149">+62張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 73.82</div>
@@ -759,7 +811,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">30479 張</td>
   <td class="hide-mobile" style="color:#f85149">+6,199張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 41.99</div>
@@ -783,7 +838,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">112.7%</td>
   <td class="hide-mobile" style="color:#8b949e">22391 張</td>
   <td class="hide-mobile" style="color:#f85149">+6,677張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 47.73</div>
@@ -807,7 +865,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">90.6%</td>
   <td class="hide-mobile" style="color:#8b949e">8951 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,340張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 59.00</div>
@@ -831,7 +892,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">108.7%</td>
   <td class="hide-mobile" style="color:#8b949e">1145 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,420張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 653.50</div>
@@ -855,7 +919,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">82.2%</td>
   <td class="hide-mobile" style="color:#8b949e">233681 張</td>
   <td class="hide-mobile" style="color:#3fb950">-98,980張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 90.20</div>
@@ -879,7 +946,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">70.6%</td>
   <td class="hide-mobile" style="color:#8b949e">1015 張</td>
   <td class="hide-mobile" style="color:#3fb950">-261張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 217.88</div>
@@ -903,7 +973,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">61.6%</td>
   <td class="hide-mobile" style="color:#8b949e">3018 張</td>
   <td class="hide-mobile" style="color:#3fb950">-577張</td>
-<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>
+<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
+  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
+</details></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 529.62</div>
@@ -915,13 +988,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr></tbody>
 </table>
 </div></div></div></div>
-  <div class="tab-panel" id="sfz"><div class="container"><div class="page-title">SFZ 雙籃</div><div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：2026-05-22</div>
+  <div class="tab-panel" id="sfz-baskets"><div class="container"><div class="page-title">SFZ 雙籃</div><div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：2026-05-22</div>
 <div class="card">
   <div class="section-label">Daily Strategy Stream</div>
   <div class="grid grid-3">
-    <div class="metric"><div class="metric-num" style="color:#3fb950">17</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
-    <div class="metric"><div class="metric-num" style="color:#58a6ff">2</div><div class="metric-label">盤整籃：M大 ABC 先觀察，等量價轉強</div></div>
-    <div class="metric"><div class="metric-num" style="color:#f85149">1</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
+    <div class="metric"><div class="metric-num" style="color:#3fb950">15</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
+    <div class="metric"><div class="metric-num" style="color:#58a6ff">0</div><div class="metric-label">盤整籃：M大 ABC 先觀察，等量價轉強</div></div>
+    <div class="metric"><div class="metric-num" style="color:#f85149">5</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
   </div>
 </div>
 <div class="card">
@@ -960,9 +1033,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +0.30（+0.84%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 33.20 ｜ 目標 37.54 ｜ 初始停損 30.45 ｜ <span class="price-rr rr-mid">R:R 1:1.6</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 30.45 ｜ 符合條件：行進籃 / 長多偏強 / 量增價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 30.45 ｜ 符合條件：行進籃 / 評分&gt;=85 / 長多偏強 / 量增價漲 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 
 <div class="basket-card">
@@ -984,33 +1057,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +0.90（+2.91%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 30.83 ｜ 目標 35.19 ｜ 初始停損 28.86 ｜ <span class="price-rr rr-good">R:R 1:2.2</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 28.86 ｜ 符合條件：行進籃 / 長多偏強 / 量縮價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 28.86 ｜ 符合條件：行進籃 / 評分&gt;=85 / 長多偏強 / 量縮價漲 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>5</strong> 次 ｜ 首見 2026-05-11 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <a class="basket-title-link" href="stocks/6173.html" title="打開 6173 信昌電 個股資訊頁">
-        <span class="basket-code">6173</span>
-        <span class="basket-name">信昌電</span>
-      </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">206.53%</span> ｜ 分數 100.0</div>
-    </div>
-    <div class="basket-action tag-green">SFZ試單/續抱</div>
-  </div>
-  <div class="basket-price-row">
-    <div>
-      <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">192.50</div>
-    </div>
-    <div class="basket-change pos">單日 +17.50（+10.00%）</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 115.85 ｜ 目標 196.35 ｜ 初始停損 108.90 ｜ <span class="price-rr rr-good">R:R 1:11.6</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 108.90 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1主力未離開</div>
-  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 
 <div class="basket-card">
@@ -1032,9 +1081,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +130.00（+9.81%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 1213.75 ｜ 目標 1509.60 ｜ 初始停損 1140.92 ｜ <span class="price-rr rr-good">R:R 1:4.1</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 1140.92 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 1140.92 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>12</strong> 次 ｜ 首見 2026-04-30 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>12</strong> 次 ｜ 首見 2026-04-30 ｜ 最近 2026-05-22 ｜ 行進籃 / 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 
 <div class="basket-card">
@@ -1056,7 +1105,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +0.95（+2.35%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 39.88 ｜ 目標 47.63 ｜ 初始停損 37.48 ｜ <span class="price-rr rr-good">R:R 1:3.2</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 37.48 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1/B2籌碼偏弱</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 37.48 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1/B2籌碼偏弱</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-05-22 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1080,7 +1129,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +11.00（+9.65%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 106.57 ｜ 目標 139.23 ｜ 初始停損 100.18 ｜ <span class="price-rr rr-good">R:R 1:5.1</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 100.18 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 100.18 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-05-15 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1104,7 +1153,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change neg">單日 -5.50（-2.86%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 164.38 ｜ 目標 200.94 ｜ 初始停損 154.51 ｜ <span class="price-rr rr-good">R:R 1:3.7</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 154.51 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 154.51 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>10</strong> 次 ｜ 首見 2026-04-28 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1128,7 +1177,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +3.90（+6.21%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 57.98 ｜ 目標 70.07 ｜ 初始停損 54.50 ｜ <span class="price-rr rr-good">R:R 1:3.5</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 54.50 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量增價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 54.50 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量增價漲 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>4</strong> 次 ｜ 首見 2026-05-19 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1136,25 +1185,49 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="basket-card">
   <div class="basket-head">
     <div>
-      <a class="basket-title-link" href="stocks/7610.html" title="打開 7610 聯友金屬-創 個股資訊頁">
-        <span class="basket-code">7610</span>
-        <span class="basket-name">聯友金屬-創</span>
+      <a class="basket-title-link" href="stocks/8438.html" title="打開 8438 昶昕 個股資訊頁">
+        <span class="basket-code">8438</span>
+        <span class="basket-name">昶昕</span>
       </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">176.24%</span> ｜ 分數 70.0</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">13.92%</span> ｜ 分數 100.0</div>
     </div>
     <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
       <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">1250.00</div>
+      <div class="basket-price">92.50</div>
     </div>
-    <div class="basket-change pos">單日 +20.00（+1.63%）</div>
+    <div class="basket-change pos">單日 +4.40（+4.99%）</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 811.25 ｜ 目標 1336.20 ｜ 初始停損 762.57 ｜ <span class="price-rr rr-good">R:R 1:10.8</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 762.57 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量增價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#c9d1d9">買點 90.40 ｜ 目標 114.24 ｜ 初始停損 80.50 ｜ <span class="price-rr rr-good">R:R 1:2.4</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 80.50 ｜ 符合條件：行進籃 / 評分&gt;=85 / 長多偏強 / 量價未表態 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>5</strong> 次 ｜ 首見 2026-05-12 ｜ 最近 2026-05-22 ｜ 過熱/風險 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/3708.html" title="打開 3708 上緯投控 個股資訊頁">
+        <span class="basket-code">3708</span>
+        <span class="basket-name">上緯投控</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">10.53%</span> ｜ 分數 90.0</div>
+    </div>
+    <div class="basket-action tag-green">SFZ試單/續抱</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">126.00</div>
+    </div>
+    <div class="basket-change neg">單日 -0.50（-0.40%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 116.25 ｜ 目標 135.15 ｜ 初始停損 110.94 ｜ <span class="price-rr rr-good">R:R 1:3.6</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 110.94 ｜ 符合條件：行進籃 / 評分&gt;=85 / 均量上彎 / B1主力未離開</div>
+  <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 盤整籃 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 
 <div class="basket-card">
@@ -1176,7 +1249,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change neg">單日 -1.00（-1.20%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 73.82 ｜ 目標 90.07 ｜ 初始停損 69.40 ｜ <span class="price-rr rr-good">R:R 1:3.7</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 69.40 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價穩 / B1/B2籌碼偏弱</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 69.40 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價穩 / B1/B2籌碼偏弱</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1184,23 +1257,23 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="basket-card">
   <div class="basket-head">
     <div>
-      <a class="basket-title-link" href="stocks/3033.html" title="打開 3033 威健 個股資訊頁">
-        <span class="basket-code">3033</span>
-        <span class="basket-name">威健</span>
+      <a class="basket-title-link" href="stocks/3209.html" title="打開 3209 全科 個股資訊頁">
+        <span class="basket-code">3209</span>
+        <span class="basket-name">全科</span>
       </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">63.33%</span> ｜ 分數 90.0</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">77.47%</span> ｜ 分數 90.0</div>
     </div>
     <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
       <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">53.90</div>
+      <div class="basket-price">78.00</div>
     </div>
-    <div class="basket-change pos">單日 +1.40（+2.67%）</div>
+    <div class="basket-change neg">單日 -1.10（-1.39%）</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 41.99 ｜ 目標 56.41 ｜ 初始停損 39.47 ｜ <span class="price-rr rr-good">R:R 1:5.7</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 39.47 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 均量上彎 / B1主力未離開</div>
+  <div style="font-size:12px;color:#c9d1d9">買點 59.00 ｜ 目標 82.21 ｜ 初始停損 55.46 ｜ <span class="price-rr rr-good">R:R 1:6.6</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 55.46 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價穩 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1208,83 +1281,84 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="basket-card">
   <div class="basket-head">
     <div>
-      <a class="basket-title-link" href="stocks/3048.html" title="打開 3048 益登 個股資訊頁">
-        <span class="basket-code">3048</span>
-        <span class="basket-name">益登</span>
+      <a class="basket-title-link" href="stocks/4991.html" title="打開 4991 環宇-KY 個股資訊頁">
+        <span class="basket-code">4991</span>
+        <span class="basket-name">環宇-KY</span>
       </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">112.55%</span> ｜ 分數 90.0</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">56.24%</span> ｜ 分數 100.0</div>
     </div>
     <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
       <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">74.50</div>
+      <div class="basket-price">814.00</div>
     </div>
-    <div class="basket-change pos">單日 +6.70（+9.88%）</div>
+    <div class="basket-change pos">單日 +74.00（+10.00%）</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 47.73 ｜ 目標 75.99 ｜ 初始停損 44.86 ｜ <span class="price-rr rr-good">R:R 1:9.9</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 44.86 ｜ 符合條件：行進籃 / 近6週漲幅&gt;=18% / 長多偏強 / 量增價漲 / B1主力未離開</div>
+  <div style="font-size:12px;color:#c9d1d9">買點 653.50 ｜ 目標 830.28 ｜ 初始停損 614.29 ｜ <span class="price-rr rr-good">R:R 1:4.5</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 614.29 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1資料不足</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-05-18 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 </div>
 <div class="card">
   <div class="section-label" style="color:#58a6ff">盤整籃｜MABC 觀察</div>
   <div class="strategy-note" style="margin-bottom:12px">尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。</div>
-  
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <a class="basket-title-link" href="stocks/8438.html" title="打開 8438 昶昕 個股資訊頁">
-        <span class="basket-code">8438</span>
-        <span class="basket-name">昶昕</span>
-      </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">13.92%</span> ｜ 分數 100.0</div>
-    </div>
-    <div class="basket-action tag-blue">MABC量價觀察</div>
-  </div>
-  <div class="basket-price-row">
-    <div>
-      <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">92.50</div>
-    </div>
-    <div class="basket-change pos">單日 +4.40（+4.99%）</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 90.40 ｜ 目標 114.24 ｜ 初始停損 80.50 ｜ <span class="price-rr rr-good">R:R 1:2.4</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 80.50 ｜ 符合條件：未進入過熱區 / 長多偏強 / 量價未表態 / B1主力未離開 / B2賣壓疑似消失</div>
-  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
-  <div class="signal-foot">歷史訊號：<strong>5</strong> 次 ｜ 首見 2026-05-12 ｜ 最近 2026-05-22 ｜ 行進籃 / 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-</div>
-
-<div class="basket-card">
-  <div class="basket-head">
-    <div>
-      <a class="basket-title-link" href="stocks/3708.html" title="打開 3708 上緯投控 個股資訊頁">
-        <span class="basket-code">3708</span>
-        <span class="basket-name">上緯投控</span>
-      </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">10.53%</span> ｜ 分數 90.0</div>
-    </div>
-    <div class="basket-action tag-blue">MABC量價觀察</div>
-  </div>
-  <div class="basket-price-row">
-    <div>
-      <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">126.00</div>
-    </div>
-    <div class="basket-change neg">單日 -0.50（-0.40%）</div>
-  </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 116.25 ｜ 目標 135.15 ｜ 初始停損 110.94 ｜ <span class="price-rr rr-good">R:R 1:3.6</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 110.94 ｜ 符合條件：未進入過熱區 / 短線轉強 / 均量上彎 / B1主力未離開 / B2賣壓疑似消失</div>
-  <div class="tag-row"><span class="tag tag-blue">盤整籃</span><span class="tag tag">早買雷達</span><span class="tag tag">等轉強</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 盤整籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
-</div>
+  <div class="basket-card" style="color:#6e7681">今日沒有符合此籃條件的標的。</div>
 </div></div>
 <div class="card">
   <div class="section-label" style="color:#f85149">過熱/風險觀察</div>
   <div class="strategy-note" style="margin-bottom:12px">強勢但不適合追價，或已出現賣出警示；等回測、降溫或重新整理後再評估。</div>
   
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/6173.html" title="打開 6173 信昌電 個股資訊頁">
+        <span class="basket-code">6173</span>
+        <span class="basket-name">信昌電</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">206.53%</span> ｜ 分數 100.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">192.50</div>
+    </div>
+    <div class="basket-change pos">單日 +17.50（+10.00%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 115.85 ｜ 目標 196.35 ｜ 初始停損 108.90 ｜ <span class="price-rr rr-good">R:R 1:11.6</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 108.90 ｜ 符合條件：6W gain 206.5% &gt;= 100% / 漲幅偏大 / 量縮價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/7610.html" title="打開 7610 聯友金屬-創 個股資訊頁">
+        <span class="basket-code">7610</span>
+        <span class="basket-name">聯友金屬-創</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">176.24%</span> ｜ 分數 70.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">1250.00</div>
+    </div>
+    <div class="basket-change pos">單日 +20.00（+1.63%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 811.25 ｜ 目標 1336.20 ｜ 初始停損 762.57 ｜ <span class="price-rr rr-good">R:R 1:10.8</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 762.57 ｜ 符合條件：6W gain 176.2% &gt;= 100% / RSI(14) 88.9 &gt;= 85 / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
 <div class="basket-card">
   <div class="basket-head">
     <div>
@@ -1308,8 +1382,56 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-05-22 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/3033.html" title="打開 3033 威健 個股資訊頁">
+        <span class="basket-code">3033</span>
+        <span class="basket-name">威健</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">63.33%</span> ｜ 分數 90.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">53.90</div>
+    </div>
+    <div class="basket-change pos">單日 +1.40（+2.67%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 41.99 ｜ 目標 56.41 ｜ 初始停損 39.47 ｜ <span class="price-rr rr-good">R:R 1:5.7</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 39.47 ｜ 符合條件：RSI(14) 92.1 &gt;= 85 / 漲幅偏大 / 均量上彎 / B1主力未離開 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/3048.html" title="打開 3048 益登 個股資訊頁">
+        <span class="basket-code">3048</span>
+        <span class="basket-name">益登</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">112.55%</span> ｜ 分數 90.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">74.50</div>
+    </div>
+    <div class="basket-change pos">單日 +6.70（+9.88%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 47.73 ｜ 目標 75.99 ｜ 初始停損 44.86 ｜ <span class="price-rr rr-good">R:R 1:9.9</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 44.86 ｜ 符合條件：6W gain 112.5% &gt;= 100% / RSI(14) 95.8 &gt;= 85 / %B 112.7% &gt;= 110% / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
 </div></div></div>
-  <div class="tab-panel" id="tracking">
+  <div class="tab-panel" id="signal-ledger">
 <div class="container">
   <div class="page-title">入選追蹤</div>
   <div class="page-sub">這裡不是新選股，是台帳：記錄哪些股票曾經入選、出現幾次、現在還在不在榜上。最新資料：2026-05-22</div>
@@ -1320,19 +1442,28 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">今日仍在追蹤</div></div>
       <div class="metric"><div class="metric-num" style="font-size:16px"><span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span></div><div class="metric-label">推播覆蓋率</div></div>
     </div>
+    <details class="coming-soon placeholder-block" data-check="signal_push_log.csv">
+  <summary><span>signal_push_log coverage</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body"><div class="strategy-note">signal_push_log.csv is not available yet.</div></div>
+</details>
     <div class="strategy-note" style="margin-top:14px">
       這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
     </div>
   </div>
-  <div class="card">
+  <div class="card" data-ledger>
     <div class="section-label">歷史訊號摘要</div>
+    <div class="ledger-controls">
+      <input type="search" data-ledger-search placeholder="搜尋代號或名稱，例如 2342" aria-label="搜尋代號或名稱">
+      <label class="filter-chip"><input type="checkbox" data-ledger-current checked> 今日仍在榜</label>
+      <label class="filter-chip"><input type="checkbox" data-ledger-history> 歷史訊號</label>
+    </div>
     <div style="overflow-x:auto">
       <table class="stock-table signal-table">
         <thead>
-          <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買入區</th><th>推播</th><th>出現日期</th></tr>
+          <tr><th data-ledger-sort="code">個股</th><th data-ledger-sort="count">入選</th><th data-ledger-sort="latest">首次/最近</th><th data-ledger-sort="entry">最新買入區</th><th data-ledger-sort="push">推播</th><th>出現日期</th></tr>
         </thead>
         <tbody>
-<tr class="clickable-row" onclick="location.href='stocks/6274.html'">
+<tr class="clickable-row" data-ledger-row data-text="6274 台燿" data-code="6274" data-name="台燿" data-count="12" data-first="2026-04-30" data-latest="2026-05-22" data-entry="1178.25 ~ 1249.25" data-push="0" data-current="1" onclick="location.href='stocks/6274.html'">
   <td>
     <div><a class="stock-link" href="stocks/6274.html" onclick="event.stopPropagation()">6274 台燿</a></div>
     <div class="signal-dates"><a href="stocks/6274.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1344,7 +1475,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-13、2026-05-14、2026-05-15、2026-05-21、2026-05-22 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2351.html'">
+<tr class="clickable-row" data-ledger-row data-text="2351 順德" data-code="2351" data-name="順德" data-count="10" data-first="2026-04-28" data-latest="2026-05-22" data-entry="160.03 ~ 168.72" data-push="0" data-current="1" onclick="location.href='stocks/2351.html'">
   <td>
     <div><a class="stock-link" href="stocks/2351.html" onclick="event.stopPropagation()">2351 順德</a></div>
     <div class="signal-dates"><a href="stocks/2351.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1356,7 +1487,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15、2026-05-18、2026-05-19、2026-05-20、2026-05-21、2026-05-22 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2303.html'">
+<tr class="clickable-row" data-ledger-row data-text="2303 聯電" data-code="2303" data-name="聯電" data-count="9" data-first="2026-04-30" data-latest="2026-05-22" data-entry="86.16 ~ 94.24" data-push="0" data-current="1" onclick="location.href='stocks/2303.html'">
   <td>
     <div><a class="stock-link" href="stocks/2303.html" onclick="event.stopPropagation()">2303 聯電</a></div>
     <div class="signal-dates"><a href="stocks/2303.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1368,7 +1499,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15、2026-05-18、2026-05-19、2026-05-20、2026-05-21、2026-05-22 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6134.html'">
+<tr class="clickable-row" data-ledger-row data-text="6134 萬旭" data-code="6134" data-name="萬旭" data-count="5" data-first="2026-05-11" data-latest="2026-05-22" data-entry="30.34 ~ 31.32" data-push="0" data-current="1" onclick="location.href='stocks/6134.html'">
   <td>
     <div><a class="stock-link" href="stocks/6134.html" onclick="event.stopPropagation()">6134 萬旭</a></div>
     <div class="signal-dates"><a href="stocks/6134.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1380,11 +1511,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8438.html'">
+<tr class="clickable-row" data-ledger-row data-text="8438 昶昕" data-code="8438" data-name="昶昕" data-count="5" data-first="2026-05-12" data-latest="2026-05-22" data-entry="87.52 ~ 93.28" data-push="0" data-current="1" onclick="location.href='stocks/8438.html'">
   <td>
     <div><a class="stock-link" href="stocks/8438.html" onclick="event.stopPropagation()">8438 昶昕</a></div>
     <div class="signal-dates"><a href="stocks/8438.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">盤整籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>5</strong> 次</td>
   <td>2026-05-12<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1392,7 +1523,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-13、2026-05-14、2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2363.html'">
+<tr class="clickable-row" data-ledger-row data-text="2363 矽統" data-code="2363" data-name="矽統" data-count="4" data-first="2026-05-19" data-latest="2026-05-22" data-entry="56.55 ~ 59.41" data-push="0" data-current="1" onclick="location.href='stocks/2363.html'">
   <td>
     <div><a class="stock-link" href="stocks/2363.html" onclick="event.stopPropagation()">2363 矽統</a></div>
     <div class="signal-dates"><a href="stocks/2363.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1404,7 +1535,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-19、2026-05-20、2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2344.html'">
+<tr class="clickable-row" data-ledger-row data-text="2344 華邦電" data-code="2344" data-name="華邦電" data-count="3" data-first="2026-05-15" data-latest="2026-05-22" data-entry="102.58 ~ 110.56" data-push="0" data-current="1" onclick="location.href='stocks/2344.html'">
   <td>
     <div><a class="stock-link" href="stocks/2344.html" onclick="event.stopPropagation()">2344 華邦電</a></div>
     <div class="signal-dates"><a href="stocks/2344.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1416,7 +1547,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15、2026-05-18、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4991.html'">
+<tr class="clickable-row" data-ledger-row data-text="4991 環宇-KY" data-code="4991" data-name="環宇-KY" data-count="3" data-first="2026-05-18" data-latest="2026-05-22" data-entry="632.10 ~ 674.90" data-push="0" data-current="1" onclick="location.href='stocks/4991.html'">
   <td>
     <div><a class="stock-link" href="stocks/4991.html" onclick="event.stopPropagation()">4991 環宇-KY</a></div>
     <div class="signal-dates"><a href="stocks/4991.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1428,7 +1559,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18、2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6126.html'">
+<tr class="clickable-row" data-ledger-row data-text="6126 信音" data-code="6126" data-name="信音" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="32.72 ~ 33.68" data-push="0" data-current="1" onclick="location.href='stocks/6126.html'">
   <td>
     <div><a class="stock-link" href="stocks/6126.html" onclick="event.stopPropagation()">6126 信音</a></div>
     <div class="signal-dates"><a href="stocks/6126.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1440,11 +1571,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6173.html'">
+<tr class="clickable-row" data-ledger-row data-text="6173 信昌電" data-code="6173" data-name="信昌電" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="105.63 ~ 126.07" data-push="0" data-current="1" onclick="location.href='stocks/6173.html'">
   <td>
     <div><a class="stock-link" href="stocks/6173.html" onclick="event.stopPropagation()">6173 信昌電</a></div>
     <div class="signal-dates"><a href="stocks/6173.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-05-21<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1452,11 +1583,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/7610.html'">
+<tr class="clickable-row" data-ledger-row data-text="7610 聯友金屬-創" data-code="7610" data-name="聯友金屬-創" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="744.75 ~ 877.75" data-push="0" data-current="1" onclick="location.href='stocks/7610.html'">
   <td>
     <div><a class="stock-link" href="stocks/7610.html" onclick="event.stopPropagation()">7610 聯友金屬-創</a></div>
     <div class="signal-dates"><a href="stocks/7610.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-05-21<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1464,11 +1595,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3708.html'">
+<tr class="clickable-row" data-ledger-row data-text="3708 上緯投控" data-code="3708" data-name="上緯投控" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="114.35 ~ 118.15" data-push="0" data-current="1" onclick="location.href='stocks/3708.html'">
   <td>
     <div><a class="stock-link" href="stocks/3708.html" onclick="event.stopPropagation()">3708 上緯投控</a></div>
     <div class="signal-dates"><a href="stocks/3708.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">盤整籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-05-21<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1476,7 +1607,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3028.html'">
+<tr class="clickable-row" data-ledger-row data-text="3028 增你強" data-code="3028" data-name="增你強" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="71.89 ~ 75.75" data-push="0" data-current="1" onclick="location.href='stocks/3028.html'">
   <td>
     <div><a class="stock-link" href="stocks/3028.html" onclick="event.stopPropagation()">3028 增你強</a></div>
     <div class="signal-dates"><a href="stocks/3028.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1488,11 +1619,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3033.html'">
+<tr class="clickable-row" data-ledger-row data-text="3033 威健" data-code="3033" data-name="威健" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="40.21 ~ 43.76" data-push="0" data-current="1" onclick="location.href='stocks/3033.html'">
   <td>
     <div><a class="stock-link" href="stocks/3033.html" onclick="event.stopPropagation()">3033 威健</a></div>
     <div class="signal-dates"><a href="stocks/3033.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-05-21<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1500,11 +1631,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3048.html'">
+<tr class="clickable-row" data-ledger-row data-text="3048 益登" data-code="3048" data-name="益登" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="44.16 ~ 51.30" data-push="0" data-current="1" onclick="location.href='stocks/3048.html'">
   <td>
     <div><a class="stock-link" href="stocks/3048.html" onclick="event.stopPropagation()">3048 益登</a></div>
     <div class="signal-dates"><a href="stocks/3048.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-05-21<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1512,7 +1643,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3209.html'">
+<tr class="clickable-row" data-ledger-row data-text="3209 全科" data-code="3209" data-name="全科" data-count="2" data-first="2026-05-21" data-latest="2026-05-22" data-entry="56.12 ~ 61.88" data-push="0" data-current="1" onclick="location.href='stocks/3209.html'">
   <td>
     <div><a class="stock-link" href="stocks/3209.html" onclick="event.stopPropagation()">3209 全科</a></div>
     <div class="signal-dates"><a href="stocks/3209.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1524,7 +1655,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21、2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2342.html'">
+<tr class="clickable-row" data-ledger-row data-text="2342 茂矽" data-code="2342" data-name="茂矽" data-count="1" data-first="2026-05-22" data-latest="2026-05-22" data-entry="38.97 ~ 40.79" data-push="0" data-current="1" onclick="location.href='stocks/2342.html'">
   <td>
     <div><a class="stock-link" href="stocks/2342.html" onclick="event.stopPropagation()">2342 茂矽</a></div>
     <div class="signal-dates"><a href="stocks/2342.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1536,7 +1667,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8341.html'">
+<tr class="clickable-row" data-ledger-row data-text="8341 日友" data-code="8341" data-name="日友" data-count="1" data-first="2026-05-22" data-latest="2026-05-22" data-entry="74.59 ~ 75.37" data-push="0" data-current="1" onclick="location.href='stocks/8341.html'">
   <td>
     <div><a class="stock-link" href="stocks/8341.html" onclick="event.stopPropagation()">8341 日友</a></div>
     <div class="signal-dates"><a href="stocks/8341.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1548,7 +1679,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3532.html'">
+<tr class="clickable-row" data-ledger-row data-text="3532 台勝科" data-code="3532" data-name="台勝科" data-count="1" data-first="2026-05-22" data-latest="2026-05-22" data-entry="210.53 ~ 225.22" data-push="0" data-current="1" onclick="location.href='stocks/3532.html'">
   <td>
     <div><a class="stock-link" href="stocks/3532.html" onclick="event.stopPropagation()">3532 台勝科</a></div>
     <div class="signal-dates"><a href="stocks/3532.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1560,7 +1691,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3680.html'">
+<tr class="clickable-row" data-ledger-row data-text="3680 家登" data-code="3680" data-name="家登" data-count="1" data-first="2026-05-22" data-latest="2026-05-22" data-entry="517.17 ~ 542.08" data-push="0" data-current="1" onclick="location.href='stocks/3680.html'">
   <td>
     <div><a class="stock-link" href="stocks/3680.html" onclick="event.stopPropagation()">3680 家登</a></div>
     <div class="signal-dates"><a href="stocks/3680.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1572,11 +1703,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-22</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8042.html'">
+<tr class="clickable-row" data-ledger-row data-text="8042 金山電" data-code="8042" data-name="金山電" data-count="4" data-first="2026-05-06" data-latest="2026-05-21" data-entry="73.94 ~ 86.66" data-push="0" data-current="0" onclick="location.href='stocks/8042.html'">
   <td>
     <div><a class="stock-link" href="stocks/8042.html" onclick="event.stopPropagation()">8042 金山電</a></div>
     <div class="signal-dates"><a href="stocks/8042.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>4</strong> 次</td>
   <td>2026-05-06<br><span style="color:#8b949e">最近 2026-05-21</span></td>
@@ -1584,7 +1715,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-06、2026-05-14、2026-05-18、2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2379.html'">
+<tr class="clickable-row" data-ledger-row data-text="2379 瑞昱" data-code="2379" data-name="瑞昱" data-count="3" data-first="2026-05-19" data-latest="2026-05-21" data-entry="537.65 ~ 555.85" data-push="0" data-current="0" onclick="location.href='stocks/2379.html'">
   <td>
     <div><a class="stock-link" href="stocks/2379.html" onclick="event.stopPropagation()">2379 瑞昱</a></div>
     <div class="signal-dates"><a href="stocks/2379.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1596,11 +1727,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-19、2026-05-20、2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2401.html'">
+<tr class="clickable-row" data-ledger-row data-text="2401 凌陽" data-code="2401" data-name="凌陽" data-count="3" data-first="2026-05-19" data-latest="2026-05-21" data-entry="24.36 ~ 25.59" data-push="0" data-current="0" onclick="location.href='stocks/2401.html'">
   <td>
     <div><a class="stock-link" href="stocks/2401.html" onclick="event.stopPropagation()">2401 凌陽</a></div>
     <div class="signal-dates"><a href="stocks/2401.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-05-19<br><span style="color:#8b949e">最近 2026-05-21</span></td>
@@ -1608,7 +1739,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-19、2026-05-20、2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3707.html'">
+<tr class="clickable-row" data-ledger-row data-text="3707 漢磊" data-code="3707" data-name="漢磊" data-count="1" data-first="2026-05-21" data-latest="2026-05-21" data-entry="68.88 ~ 73.27" data-push="0" data-current="0" onclick="location.href='stocks/3707.html'">
   <td>
     <div><a class="stock-link" href="stocks/3707.html" onclick="event.stopPropagation()">3707 漢磊</a></div>
     <div class="signal-dates"><a href="stocks/3707.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1620,7 +1751,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4749.html'">
+<tr class="clickable-row" data-ledger-row data-text="4749 新應材" data-code="4749" data-name="新應材" data-count="1" data-first="2026-05-21" data-latest="2026-05-21" data-entry="991.55 ~ 1042.95" data-push="0" data-current="0" onclick="location.href='stocks/4749.html'">
   <td>
     <div><a class="stock-link" href="stocks/4749.html" onclick="event.stopPropagation()">4749 新應材</a></div>
     <div class="signal-dates"><a href="stocks/4749.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1632,7 +1763,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6944.html'">
+<tr class="clickable-row" data-ledger-row data-text="6944 兆聯實業" data-code="6944" data-name="兆聯實業" data-count="1" data-first="2026-05-21" data-latest="2026-05-21" data-entry="904.75 ~ 937.75" data-push="0" data-current="0" onclick="location.href='stocks/6944.html'">
   <td>
     <div><a class="stock-link" href="stocks/6944.html" onclick="event.stopPropagation()">6944 兆聯實業</a></div>
     <div class="signal-dates"><a href="stocks/6944.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1644,7 +1775,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-21</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2637.html'">
+<tr class="clickable-row" data-ledger-row data-text="2637 慧洋-KY" data-code="2637" data-name="慧洋-KY" data-count="13" data-first="2026-04-30" data-latest="2026-05-20" data-entry="71.48 ~ 72.92" data-push="0" data-current="0" onclick="location.href='stocks/2637.html'">
   <td>
     <div><a class="stock-link" href="stocks/2637.html" onclick="event.stopPropagation()">2637 慧洋-KY</a></div>
     <div class="signal-dates"><a href="stocks/2637.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1656,7 +1787,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-13、2026-05-14、2026-05-15、2026-05-18、2026-05-19、2026-05-20 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1773.html'">
+<tr class="clickable-row" data-ledger-row data-text="1773 勝一" data-code="1773" data-name="勝一" data-count="13" data-first="2026-04-30" data-latest="2026-05-20" data-entry="164.95 ~ 169.55" data-push="0" data-current="0" onclick="location.href='stocks/1773.html'">
   <td>
     <div><a class="stock-link" href="stocks/1773.html" onclick="event.stopPropagation()">1773 勝一</a></div>
     <div class="signal-dates"><a href="stocks/1773.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1668,7 +1799,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-13、2026-05-14、2026-05-15、2026-05-18、2026-05-19、2026-05-20 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2049.html'">
+<tr class="clickable-row" data-ledger-row data-text="2049 上銀" data-code="2049" data-name="上銀" data-count="11" data-first="2026-04-30" data-latest="2026-05-20" data-entry="321.65 ~ 339.85" data-push="0" data-current="0" onclick="location.href='stocks/2049.html'">
   <td>
     <div><a class="stock-link" href="stocks/2049.html" onclick="event.stopPropagation()">2049 上銀</a></div>
     <div class="signal-dates"><a href="stocks/2049.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1680,7 +1811,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-13、2026-05-14、2026-05-15、2026-05-18、2026-05-19、2026-05-20 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2606.html'">
+<tr class="clickable-row" data-ledger-row data-text="2606 裕民" data-code="2606" data-name="裕民" data-count="10" data-first="2026-05-06" data-latest="2026-05-20" data-entry="61.06 ~ 62.34" data-push="0" data-current="0" onclick="location.href='stocks/2606.html'">
   <td>
     <div><a class="stock-link" href="stocks/2606.html" onclick="event.stopPropagation()">2606 裕民</a></div>
     <div class="signal-dates"><a href="stocks/2606.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1692,7 +1823,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-13、2026-05-14、2026-05-18、2026-05-19、2026-05-20 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1809.html'">
+<tr class="clickable-row" data-ledger-row data-text="1809 中釉" data-code="1809" data-name="中釉" data-count="6" data-first="2026-05-11" data-latest="2026-05-20" data-entry="28.29 ~ 31.88" data-push="0" data-current="0" onclick="location.href='stocks/1809.html'">
   <td>
     <div><a class="stock-link" href="stocks/1809.html" onclick="event.stopPropagation()">1809 中釉</a></div>
     <div class="signal-dates"><a href="stocks/1809.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1704,7 +1835,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-15、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2316.html'">
+<tr class="clickable-row" data-ledger-row data-text="2316 楠梓電" data-code="2316" data-name="楠梓電" data-count="5" data-first="2026-04-30" data-latest="2026-05-20" data-entry="115.93 ~ 123.83" data-push="0" data-current="0" onclick="location.href='stocks/2316.html'">
   <td>
     <div><a class="stock-link" href="stocks/2316.html" onclick="event.stopPropagation()">2316 楠梓電</a></div>
     <div class="signal-dates"><a href="stocks/2316.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1716,11 +1847,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-08、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4764.html'">
+<tr class="clickable-row" data-ledger-row data-text="4764 雙鍵" data-code="4764" data-name="雙鍵" data-count="5" data-first="2026-05-11" data-latest="2026-05-20" data-entry="264.65 ~ 284.85" data-push="0" data-current="0" onclick="location.href='stocks/4764.html'">
   <td>
     <div><a class="stock-link" href="stocks/4764.html" onclick="event.stopPropagation()">4764 雙鍵</a></div>
     <div class="signal-dates"><a href="stocks/4764.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>5</strong> 次</td>
   <td>2026-05-11<br><span style="color:#8b949e">最近 2026-05-20</span></td>
@@ -1728,7 +1859,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2455.html'">
+<tr class="clickable-row" data-ledger-row data-text="2455 全新" data-code="2455" data-name="全新" data-count="4" data-first="2026-04-29" data-latest="2026-05-20" data-entry="334.95 ~ 353.55" data-push="0" data-current="0" onclick="location.href='stocks/2455.html'">
   <td>
     <div><a class="stock-link" href="stocks/2455.html" onclick="event.stopPropagation()">2455 全新</a></div>
     <div class="signal-dates"><a href="stocks/2455.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1740,7 +1871,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29、2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2355.html'">
+<tr class="clickable-row" data-ledger-row data-text="2355 敬鵬" data-code="2355" data-name="敬鵬" data-count="4" data-first="2026-05-15" data-latest="2026-05-20" data-entry="52.41 ~ 55.35" data-push="0" data-current="0" onclick="location.href='stocks/2355.html'">
   <td>
     <div><a class="stock-link" href="stocks/2355.html" onclick="event.stopPropagation()">2355 敬鵬</a></div>
     <div class="signal-dates"><a href="stocks/2355.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1752,7 +1883,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15、2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2356.html'">
+<tr class="clickable-row" data-ledger-row data-text="2356 英業達" data-code="2356" data-name="英業達" data-count="4" data-first="2026-05-15" data-latest="2026-05-20" data-entry="47.22 ~ 49.12" data-push="0" data-current="0" onclick="location.href='stocks/2356.html'">
   <td>
     <div><a class="stock-link" href="stocks/2356.html" onclick="event.stopPropagation()">2356 英業達</a></div>
     <div class="signal-dates"><a href="stocks/2356.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1764,7 +1895,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15、2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2476.html'">
+<tr class="clickable-row" data-ledger-row data-text="2476 鉅祥" data-code="2476" data-name="鉅祥" data-count="3" data-first="2026-04-28" data-latest="2026-05-20" data-entry="111.03 ~ 113.72" data-push="0" data-current="0" onclick="location.href='stocks/2476.html'">
   <td>
     <div><a class="stock-link" href="stocks/2476.html" onclick="event.stopPropagation()">2476 鉅祥</a></div>
     <div class="signal-dates"><a href="stocks/2476.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1776,7 +1907,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1423.html'">
+<tr class="clickable-row" data-ledger-row data-text="1423 利華" data-code="1423" data-name="利華" data-count="3" data-first="2026-05-18" data-latest="2026-05-20" data-entry="39.95 ~ 40.49" data-push="0" data-current="0" onclick="location.href='stocks/1423.html'">
   <td>
     <div><a class="stock-link" href="stocks/1423.html" onclick="event.stopPropagation()">1423 利華</a></div>
     <div class="signal-dates"><a href="stocks/1423.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1788,7 +1919,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2103.html'">
+<tr class="clickable-row" data-ledger-row data-text="2103 台橡" data-code="2103" data-name="台橡" data-count="3" data-first="2026-05-18" data-latest="2026-05-20" data-entry="19.52 ~ 20.21" data-push="0" data-current="0" onclick="location.href='stocks/2103.html'">
   <td>
     <div><a class="stock-link" href="stocks/2103.html" onclick="event.stopPropagation()">2103 台橡</a></div>
     <div class="signal-dates"><a href="stocks/2103.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1800,7 +1931,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2233.html'">
+<tr class="clickable-row" data-ledger-row data-text="2233 宇隆" data-code="2233" data-name="宇隆" data-count="3" data-first="2026-05-18" data-latest="2026-05-20" data-entry="282.40 ~ 297.60" data-push="0" data-current="0" onclick="location.href='stocks/2233.html'">
   <td>
     <div><a class="stock-link" href="stocks/2233.html" onclick="event.stopPropagation()">2233 宇隆</a></div>
     <div class="signal-dates"><a href="stocks/2233.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1812,7 +1943,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18、2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2464.html'">
+<tr class="clickable-row" data-ledger-row data-text="2464 盟立" data-code="2464" data-name="盟立" data-count="2" data-first="2026-05-19" data-latest="2026-05-20" data-entry="110.33 ~ 117.42" data-push="0" data-current="0" onclick="location.href='stocks/2464.html'">
   <td>
     <div><a class="stock-link" href="stocks/2464.html" onclick="event.stopPropagation()">2464 盟立</a></div>
     <div class="signal-dates"><a href="stocks/2464.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1824,11 +1955,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-19、2026-05-20</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1597.html'">
+<tr class="clickable-row" data-ledger-row data-text="1597 直得" data-code="1597" data-name="直得" data-count="7" data-first="2026-05-11" data-latest="2026-05-19" data-entry="132.28 ~ 147.97" data-push="0" data-current="0" onclick="location.href='stocks/1597.html'">
   <td>
     <div><a class="stock-link" href="stocks/1597.html" onclick="event.stopPropagation()">1597 直得</a></div>
     <div class="signal-dates"><a href="stocks/1597.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>7</strong> 次</td>
   <td>2026-05-11<br><span style="color:#8b949e">最近 2026-05-19</span></td>
@@ -1836,11 +1967,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-13、2026-05-14、2026-05-15、2026-05-18、2026-05-19 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2478.html'">
+<tr class="clickable-row" data-ledger-row data-text="2478 大毅" data-code="2478" data-name="大毅" data-count="1" data-first="2026-05-19" data-latest="2026-05-19" data-entry="71.20 ~ 77.60" data-push="0" data-current="0" onclick="location.href='stocks/2478.html'">
   <td>
     <div><a class="stock-link" href="stocks/2478.html" onclick="event.stopPropagation()">2478 大毅</a></div>
     <div class="signal-dates"><a href="stocks/2478.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-19<br><span style="color:#8b949e">最近 2026-05-19</span></td>
@@ -1848,11 +1979,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-19</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1595.html'">
+<tr class="clickable-row" data-ledger-row data-text="1595 川寶" data-code="1595" data-name="川寶" data-count="10" data-first="2026-04-30" data-latest="2026-05-18" data-entry="68.10 ~ 75.84" data-push="0" data-current="0" onclick="location.href='stocks/1595.html'">
   <td>
     <div><a class="stock-link" href="stocks/1595.html" onclick="event.stopPropagation()">1595 川寶</a></div>
     <div class="signal-dates"><a href="stocks/1595.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>10</strong> 次</td>
   <td>2026-04-30<br><span style="color:#8b949e">最近 2026-05-18</span></td>
@@ -1860,7 +1991,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-08、2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-18 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/5511.html'">
+<tr class="clickable-row" data-ledger-row data-text="5511 德昌" data-code="5511" data-name="德昌" data-count="1" data-first="2026-05-18" data-latest="2026-05-18" data-entry="70.14 ~ 70.86" data-push="0" data-current="0" onclick="location.href='stocks/5511.html'">
   <td>
     <div><a class="stock-link" href="stocks/5511.html" onclick="event.stopPropagation()">5511 德昌</a></div>
     <div class="signal-dates"><a href="stocks/5511.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1872,7 +2003,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8390.html'">
+<tr class="clickable-row" data-ledger-row data-text="8390 金益鼎" data-code="8390" data-name="金益鼎" data-count="1" data-first="2026-05-18" data-latest="2026-05-18" data-entry="91.16 ~ 99.24" data-push="0" data-current="0" onclick="location.href='stocks/8390.html'">
   <td>
     <div><a class="stock-link" href="stocks/8390.html" onclick="event.stopPropagation()">8390 金益鼎</a></div>
     <div class="signal-dates"><a href="stocks/8390.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1884,7 +2015,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2061.html'">
+<tr class="clickable-row" data-ledger-row data-text="2061 風青" data-code="2061" data-name="風青" data-count="1" data-first="2026-05-18" data-latest="2026-05-18" data-entry="19.26 ~ 20.20" data-push="0" data-current="0" onclick="location.href='stocks/2061.html'">
   <td>
     <div><a class="stock-link" href="stocks/2061.html" onclick="event.stopPropagation()">2061 風青</a></div>
     <div class="signal-dates"><a href="stocks/2061.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1896,7 +2027,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-18</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2347.html'">
+<tr class="clickable-row" data-ledger-row data-text="2347 聯強" data-code="2347" data-name="聯強" data-count="10" data-first="2026-04-30" data-latest="2026-05-15" data-entry="80.36 ~ 82.04" data-push="0" data-current="0" onclick="location.href='stocks/2347.html'">
   <td>
     <div><a class="stock-link" href="stocks/2347.html" onclick="event.stopPropagation()">2347 聯強</a></div>
     <div class="signal-dates"><a href="stocks/2347.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1908,7 +2039,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-08、2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-15 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1727.html'">
+<tr class="clickable-row" data-ledger-row data-text="1727 中華化" data-code="1727" data-name="中華化" data-count="9" data-first="2026-04-30" data-latest="2026-05-15" data-entry="69.21 ~ 73.49" data-push="0" data-current="0" onclick="location.href='stocks/1727.html'">
   <td>
     <div><a class="stock-link" href="stocks/1727.html" onclick="event.stopPropagation()">1727 中華化</a></div>
     <div class="signal-dates"><a href="stocks/1727.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1920,7 +2051,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-07、2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-15 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6691.html'">
+<tr class="clickable-row" data-ledger-row data-text="6691 洋基工程" data-code="6691" data-name="洋基工程" data-count="5" data-first="2026-05-11" data-latest="2026-05-15" data-entry="634.25 ~ 645.25" data-push="0" data-current="0" onclick="location.href='stocks/6691.html'">
   <td>
     <div><a class="stock-link" href="stocks/6691.html" onclick="event.stopPropagation()">6691 洋基工程</a></div>
     <div class="signal-dates"><a href="stocks/6691.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1932,7 +2063,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-12、2026-05-13、2026-05-14、2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8021.html'">
+<tr class="clickable-row" data-ledger-row data-text="8021 尖點" data-code="8021" data-name="尖點" data-count="4" data-first="2026-05-12" data-latest="2026-05-15" data-entry="395.85 ~ 419.65" data-push="0" data-current="0" onclick="location.href='stocks/8021.html'">
   <td>
     <div><a class="stock-link" href="stocks/8021.html" onclick="event.stopPropagation()">8021 尖點</a></div>
     <div class="signal-dates"><a href="stocks/8021.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1944,7 +2075,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-13、2026-05-14、2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/5515.html'">
+<tr class="clickable-row" data-ledger-row data-text="5515 建國" data-code="5515" data-name="建國" data-count="3" data-first="2026-05-13" data-latest="2026-05-15" data-entry="38.40 ~ 39.45" data-push="0" data-current="0" onclick="location.href='stocks/5515.html'">
   <td>
     <div><a class="stock-link" href="stocks/5515.html" onclick="event.stopPropagation()">5515 建國</a></div>
     <div class="signal-dates"><a href="stocks/5515.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1956,7 +2087,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-13、2026-05-14、2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2107.html'">
+<tr class="clickable-row" data-ledger-row data-text="2107 厚生" data-code="2107" data-name="厚生" data-count="2" data-first="2026-05-12" data-latest="2026-05-15" data-entry="25.32 ~ 25.61" data-push="0" data-current="0" onclick="location.href='stocks/2107.html'">
   <td>
     <div><a class="stock-link" href="stocks/2107.html" onclick="event.stopPropagation()">2107 厚生</a></div>
     <div class="signal-dates"><a href="stocks/2107.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1968,11 +2099,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12、2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4908.html'">
+<tr class="clickable-row" data-ledger-row data-text="4908 前鼎" data-code="4908" data-name="前鼎" data-count="1" data-first="2026-05-15" data-latest="2026-05-15" data-entry="175.48 ~ 198.77" data-push="0" data-current="0" onclick="location.href='stocks/4908.html'">
   <td>
     <div><a class="stock-link" href="stocks/4908.html" onclick="event.stopPropagation()">4908 前鼎</a></div>
     <div class="signal-dates"><a href="stocks/4908.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-15<br><span style="color:#8b949e">最近 2026-05-15</span></td>
@@ -1980,7 +2111,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2376.html'">
+<tr class="clickable-row" data-ledger-row data-text="2376 技嘉" data-code="2376" data-name="技嘉" data-count="1" data-first="2026-05-15" data-latest="2026-05-15" data-entry="279.88 ~ 292.38" data-push="0" data-current="0" onclick="location.href='stocks/2376.html'">
   <td>
     <div><a class="stock-link" href="stocks/2376.html" onclick="event.stopPropagation()">2376 技嘉</a></div>
     <div class="signal-dates"><a href="stocks/2376.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -1992,7 +2123,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2395.html'">
+<tr class="clickable-row" data-ledger-row data-text="2395 研華" data-code="2395" data-name="研華" data-count="1" data-first="2026-05-15" data-latest="2026-05-15" data-entry="378.02 ~ 406.73" data-push="0" data-current="0" onclick="location.href='stocks/2395.html'">
   <td>
     <div><a class="stock-link" href="stocks/2395.html" onclick="event.stopPropagation()">2395 研華</a></div>
     <div class="signal-dates"><a href="stocks/2395.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2004,7 +2135,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-15</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1721.html'">
+<tr class="clickable-row" data-ledger-row data-text="1721 三晃" data-code="1721" data-name="三晃" data-count="7" data-first="2026-05-06" data-latest="2026-05-14" data-entry="25.80 ~ 28.20" data-push="0" data-current="0" onclick="location.href='stocks/1721.html'">
   <td>
     <div><a class="stock-link" href="stocks/1721.html" onclick="event.stopPropagation()">1721 三晃</a></div>
     <div class="signal-dates"><a href="stocks/1721.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2016,7 +2147,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-07、2026-05-08、2026-05-11、2026-05-12、2026-05-13、2026-05-14 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2059.html'">
+<tr class="clickable-row" data-ledger-row data-text="2059 川湖" data-code="2059" data-name="川湖" data-count="3" data-first="2026-05-08" data-latest="2026-05-14" data-entry="3813.00 ~ 4237.00" data-push="0" data-current="0" onclick="location.href='stocks/2059.html'">
   <td>
     <div><a class="stock-link" href="stocks/2059.html" onclick="event.stopPropagation()">2059 川湖</a></div>
     <div class="signal-dates"><a href="stocks/2059.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2028,7 +2159,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-08、2026-05-12、2026-05-14</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1570.html'">
+<tr class="clickable-row" data-ledger-row data-text="1570 力肯" data-code="1570" data-name="力肯" data-count="3" data-first="2026-05-11" data-latest="2026-05-14" data-entry="36.88 ~ 37.85" data-push="0" data-current="0" onclick="location.href='stocks/1570.html'">
   <td>
     <div><a class="stock-link" href="stocks/1570.html" onclick="event.stopPropagation()">1570 力肯</a></div>
     <div class="signal-dates"><a href="stocks/1570.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2040,11 +2171,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-13、2026-05-14</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3443.html'">
+<tr class="clickable-row" data-ledger-row data-text="3443 創意" data-code="3443" data-name="創意" data-count="8" data-first="2026-04-30" data-latest="2026-05-13" data-entry="4041.75 ~ 4490.75" data-push="0" data-current="0" onclick="location.href='stocks/3443.html'">
   <td>
     <div><a class="stock-link" href="stocks/3443.html" onclick="event.stopPropagation()">3443 創意</a></div>
     <div class="signal-dates"><a href="stocks/3443.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>8</strong> 次</td>
   <td>2026-04-30<br><span style="color:#8b949e">最近 2026-05-13</span></td>
@@ -2052,7 +2183,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-06、2026-05-07、2026-05-08、2026-05-11、2026-05-12、2026-05-13 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2368.html'">
+<tr class="clickable-row" data-ledger-row data-text="2368 金像電" data-code="2368" data-name="金像電" data-count="2" data-first="2026-05-11" data-latest="2026-05-13" data-entry="1269.25 ~ 1328.25" data-push="0" data-current="0" onclick="location.href='stocks/2368.html'">
   <td>
     <div><a class="stock-link" href="stocks/2368.html" onclick="event.stopPropagation()">2368 金像電</a></div>
     <div class="signal-dates"><a href="stocks/2368.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2064,11 +2195,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11、2026-05-13</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2301.html'">
+<tr class="clickable-row" data-ledger-row data-text="2301 光寶科" data-code="2301" data-name="光寶科" data-count="1" data-first="2026-05-12" data-latest="2026-05-12" data-entry="173.32 ~ 190.43" data-push="0" data-current="0" onclick="location.href='stocks/2301.html'">
   <td>
     <div><a class="stock-link" href="stocks/2301.html" onclick="event.stopPropagation()">2301 光寶科</a></div>
     <div class="signal-dates"><a href="stocks/2301.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-12<br><span style="color:#8b949e">最近 2026-05-12</span></td>
@@ -2076,7 +2207,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-12</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1303.html'">
+<tr class="clickable-row" data-ledger-row data-text="1303 南亞" data-code="1303" data-name="南亞" data-count="5" data-first="2026-04-30" data-latest="2026-05-11" data-entry="85.44 ~ 89.22" data-push="0" data-current="0" onclick="location.href='stocks/1303.html'">
   <td>
     <div><a class="stock-link" href="stocks/1303.html" onclick="event.stopPropagation()">1303 南亞</a></div>
     <div class="signal-dates"><a href="stocks/1303.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2088,7 +2219,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-06、2026-05-07、2026-05-11</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4979.html'">
+<tr class="clickable-row" data-ledger-row data-text="4979 華星光" data-code="4979" data-name="華星光" data-count="4" data-first="2026-05-04" data-latest="2026-05-11" data-entry="548.65 ~ 598.85" data-push="0" data-current="0" onclick="location.href='stocks/4979.html'">
   <td>
     <div><a class="stock-link" href="stocks/4979.html" onclick="event.stopPropagation()">4979 華星光</a></div>
     <div class="signal-dates"><a href="stocks/4979.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2100,7 +2231,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-04、2026-05-06、2026-05-07、2026-05-11</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2406.html'">
+<tr class="clickable-row" data-ledger-row data-text="2406 國碩" data-code="2406" data-name="國碩" data-count="1" data-first="2026-05-11" data-latest="2026-05-11" data-entry="29.30 ~ 30.83" data-push="0" data-current="0" onclick="location.href='stocks/2406.html'">
   <td>
     <div><a class="stock-link" href="stocks/2406.html" onclick="event.stopPropagation()">2406 國碩</a></div>
     <div class="signal-dates"><a href="stocks/2406.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2112,7 +2243,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-11</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1785.html'">
+<tr class="clickable-row" data-ledger-row data-text="1785 光洋科" data-code="1785" data-name="光洋科" data-count="8" data-first="2026-04-24" data-latest="2026-05-08" data-entry="139.53 ~ 150.22" data-push="0" data-current="0" onclick="location.href='stocks/1785.html'">
   <td>
     <div><a class="stock-link" href="stocks/1785.html" onclick="event.stopPropagation()">1785 光洋科</a></div>
     <div class="signal-dates"><a href="stocks/1785.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2124,7 +2255,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29、2026-04-30、2026-05-04、2026-05-06、2026-05-07、2026-05-08 ...</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1560.html'">
+<tr class="clickable-row" data-ledger-row data-text="1560 中砂" data-code="1560" data-name="中砂" data-count="5" data-first="2026-04-30" data-latest="2026-05-08" data-entry="522.65 ~ 544.85" data-push="0" data-current="0" onclick="location.href='stocks/1560.html'">
   <td>
     <div><a class="stock-link" href="stocks/1560.html" onclick="event.stopPropagation()">1560 中砂</a></div>
     <div class="signal-dates"><a href="stocks/1560.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2136,7 +2267,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-06、2026-05-07、2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2236.html'">
+<tr class="clickable-row" data-ledger-row data-text="2236 百達-KY" data-code="2236" data-name="百達-KY" data-count="3" data-first="2026-04-30" data-latest="2026-05-08" data-entry="126.83 ~ 129.93" data-push="0" data-current="0" onclick="location.href='stocks/2236.html'">
   <td>
     <div><a class="stock-link" href="stocks/2236.html" onclick="event.stopPropagation()">2236 百達-KY</a></div>
     <div class="signal-dates"><a href="stocks/2236.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2148,7 +2279,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8047.html'">
+<tr class="clickable-row" data-ledger-row data-text="8047 星雲" data-code="8047" data-name="星雲" data-count="3" data-first="2026-05-06" data-latest="2026-05-08" data-entry="52.26 ~ 53.54" data-push="0" data-current="0" onclick="location.href='stocks/8047.html'">
   <td>
     <div><a class="stock-link" href="stocks/8047.html" onclick="event.stopPropagation()">8047 星雲</a></div>
     <div class="signal-dates"><a href="stocks/8047.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2160,7 +2291,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-06、2026-05-07、2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8112.html'">
+<tr class="clickable-row" data-ledger-row data-text="8112 至上" data-code="8112" data-name="至上" data-count="3" data-first="2026-05-06" data-latest="2026-05-08" data-entry="82.51 ~ 84.39" data-push="0" data-current="0" onclick="location.href='stocks/8112.html'">
   <td>
     <div><a class="stock-link" href="stocks/8112.html" onclick="event.stopPropagation()">8112 至上</a></div>
     <div class="signal-dates"><a href="stocks/8112.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2172,7 +2303,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-06、2026-05-07、2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8271.html'">
+<tr class="clickable-row" data-ledger-row data-text="8271 宇瞻" data-code="8271" data-name="宇瞻" data-count="3" data-first="2026-05-06" data-latest="2026-05-08" data-entry="202.70 ~ 216.30" data-push="0" data-current="0" onclick="location.href='stocks/8271.html'">
   <td>
     <div><a class="stock-link" href="stocks/8271.html" onclick="event.stopPropagation()">8271 宇瞻</a></div>
     <div class="signal-dates"><a href="stocks/8271.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2184,7 +2315,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-06、2026-05-07、2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3665.html'">
+<tr class="clickable-row" data-ledger-row data-text="3665 貿聯-KY" data-code="3665" data-name="貿聯-KY" data-count="1" data-first="2026-05-08" data-latest="2026-05-08" data-entry="2455.75 ~ 2576.75" data-push="0" data-current="0" onclick="location.href='stocks/3665.html'">
   <td>
     <div><a class="stock-link" href="stocks/3665.html" onclick="event.stopPropagation()">3665 貿聯-KY</a></div>
     <div class="signal-dates"><a href="stocks/3665.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2196,7 +2327,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1802.html'">
+<tr class="clickable-row" data-ledger-row data-text="1802 台玻" data-code="1802" data-name="台玻" data-count="1" data-first="2026-05-08" data-latest="2026-05-08" data-entry="63.98 ~ 67.02" data-push="0" data-current="0" onclick="location.href='stocks/1802.html'">
   <td>
     <div><a class="stock-link" href="stocks/1802.html" onclick="event.stopPropagation()">1802 台玻</a></div>
     <div class="signal-dates"><a href="stocks/1802.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2208,7 +2339,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-08</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1301.html'">
+<tr class="clickable-row" data-ledger-row data-text="1301 台塑" data-code="1301" data-name="台塑" data-count="4" data-first="2026-04-30" data-latest="2026-05-07" data-entry="50.27 ~ 51.69" data-push="0" data-current="0" onclick="location.href='stocks/1301.html'">
   <td>
     <div><a class="stock-link" href="stocks/1301.html" onclick="event.stopPropagation()">1301 台塑</a></div>
     <div class="signal-dates"><a href="stocks/1301.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2220,7 +2351,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-06、2026-05-07</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1326.html'">
+<tr class="clickable-row" data-ledger-row data-text="1326 台化" data-code="1326" data-name="台化" data-count="4" data-first="2026-04-30" data-latest="2026-05-07" data-entry="48.80 ~ 50.14" data-push="0" data-current="0" onclick="location.href='stocks/1326.html'">
   <td>
     <div><a class="stock-link" href="stocks/1326.html" onclick="event.stopPropagation()">1326 台化</a></div>
     <div class="signal-dates"><a href="stocks/1326.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2232,7 +2363,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-06、2026-05-07</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2740.html'">
+<tr class="clickable-row" data-ledger-row data-text="2740 華軒" data-code="2740" data-name="華軒" data-count="1" data-first="2026-05-07" data-latest="2026-05-07" data-entry="36.52 ~ 38.28" data-push="0" data-current="0" onclick="location.href='stocks/2740.html'">
   <td>
     <div><a class="stock-link" href="stocks/2740.html" onclick="event.stopPropagation()">2740 華軒</a></div>
     <div class="signal-dates"><a href="stocks/2740.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2244,7 +2375,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-07</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6217.html'">
+<tr class="clickable-row" data-ledger-row data-text="6217 中探針" data-code="6217" data-name="中探針" data-count="1" data-first="2026-05-07" data-latest="2026-05-07" data-entry="235.50 ~ 253.50" data-push="0" data-current="0" onclick="location.href='stocks/6217.html'">
   <td>
     <div><a class="stock-link" href="stocks/6217.html" onclick="event.stopPropagation()">6217 中探針</a></div>
     <div class="signal-dates"><a href="stocks/6217.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2256,11 +2387,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-07</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3167.html'">
+<tr class="clickable-row" data-ledger-row data-text="3167 大量" data-code="3167" data-name="大量" data-count="3" data-first="2026-04-30" data-latest="2026-05-06" data-entry="654.30 ~ 710.70" data-push="0" data-current="0" onclick="location.href='stocks/3167.html'">
   <td>
     <div><a class="stock-link" href="stocks/3167.html" onclick="event.stopPropagation()">3167 大量</a></div>
     <div class="signal-dates"><a href="stocks/3167.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-04-30<br><span style="color:#8b949e">最近 2026-05-06</span></td>
@@ -2268,7 +2399,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30、2026-05-04、2026-05-06</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2345.html'">
+<tr class="clickable-row" data-ledger-row data-text="2345 智邦" data-code="2345" data-name="智邦" data-count="1" data-first="2026-05-04" data-latest="2026-05-04" data-entry="1948.25 ~ 2079.25" data-push="0" data-current="0" onclick="location.href='stocks/2345.html'">
   <td>
     <div><a class="stock-link" href="stocks/2345.html" onclick="event.stopPropagation()">2345 智邦</a></div>
     <div class="signal-dates"><a href="stocks/2345.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2280,7 +2411,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-05-04</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3037.html'">
+<tr class="clickable-row" data-ledger-row data-text="3037 欣興" data-code="3037" data-name="欣興" data-count="1" data-first="2026-04-30" data-latest="2026-04-30" data-entry="636.10 ~ 694.90" data-push="0" data-current="0" onclick="location.href='stocks/3037.html'">
   <td>
     <div><a class="stock-link" href="stocks/3037.html" onclick="event.stopPropagation()">3037 欣興</a></div>
     <div class="signal-dates"><a href="stocks/3037.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2292,7 +2423,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2243.html'">
+<tr class="clickable-row" data-ledger-row data-text="2243 宏旭-KY" data-code="2243" data-name="宏旭-KY" data-count="1" data-first="2026-04-30" data-latest="2026-04-30" data-entry="22.93 ~ 24.31" data-push="0" data-current="0" onclick="location.href='stocks/2243.html'">
   <td>
     <div><a class="stock-link" href="stocks/2243.html" onclick="event.stopPropagation()">2243 宏旭-KY</a></div>
     <div class="signal-dates"><a href="stocks/2243.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2304,7 +2435,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-30</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3714.html'">
+<tr class="clickable-row" data-ledger-row data-text="3714 富采" data-code="3714" data-name="富采" data-count="3" data-first="2026-04-24" data-latest="2026-04-29" data-entry="54.58 ~ 60.67" data-push="0" data-current="0" onclick="location.href='stocks/3714.html'">
   <td>
     <div><a class="stock-link" href="stocks/3714.html" onclick="event.stopPropagation()">3714 富采</a></div>
     <div class="signal-dates"><a href="stocks/3714.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2312,11 +2443,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 54.58 ~ 60.67<br><span style="color:#8b949e">原始買點 68.18 ｜ 收盤 71.3 ｜ 原始分數 180.0</span></td>
+  <td>買入區 54.58 ~ 60.67<br><span style="color:#8b949e">原始買點 68.18 ｜ 收盤 71.3 ｜ 原始分數 90.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3673.html'">
+<tr class="clickable-row" data-ledger-row data-text="3673 TPK-KY" data-code="3673" data-name="TPK-KY" data-count="3" data-first="2026-04-24" data-latest="2026-04-29" data-entry="53.19 ~ 58.36" data-push="0" data-current="0" onclick="location.href='stocks/3673.html'">
   <td>
     <div><a class="stock-link" href="stocks/3673.html" onclick="event.stopPropagation()">3673 TPK-KY</a></div>
     <div class="signal-dates"><a href="stocks/3673.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2324,11 +2455,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 53.19 ~ 58.36<br><span style="color:#8b949e">原始買點 60.28 ｜ 收盤 60.1 ｜ 原始分數 150.0</span></td>
+  <td>買入區 53.19 ~ 58.36<br><span style="color:#8b949e">原始買點 60.28 ｜ 收盤 60.1 ｜ 原始分數 75.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6147.html'">
+<tr class="clickable-row" data-ledger-row data-text="6147 頎邦" data-code="6147" data-name="頎邦" data-count="3" data-first="2026-04-24" data-latest="2026-04-29" data-entry="110.40 ~ 121.60" data-push="0" data-current="0" onclick="location.href='stocks/6147.html'">
   <td>
     <div><a class="stock-link" href="stocks/6147.html" onclick="event.stopPropagation()">6147 頎邦</a></div>
     <div class="signal-dates"><a href="stocks/6147.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2340,7 +2471,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6672.html'">
+<tr class="clickable-row" data-ledger-row data-text="6672 騰輝電子-KY" data-code="6672" data-name="騰輝電子-KY" data-count="3" data-first="2026-04-24" data-latest="2026-04-29" data-entry="158.00 ~ 174.00" data-push="0" data-current="0" onclick="location.href='stocks/6672.html'">
   <td>
     <div><a class="stock-link" href="stocks/6672.html" onclick="event.stopPropagation()">6672 騰輝電子-KY</a></div>
     <div class="signal-dates"><a href="stocks/6672.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2352,7 +2483,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6213.html'">
+<tr class="clickable-row" data-ledger-row data-text="6213 聯茂" data-code="6213" data-name="聯茂" data-count="3" data-first="2026-04-24" data-latest="2026-04-29" data-entry="219.78 ~ 241.47" data-push="0" data-current="0" onclick="location.href='stocks/6213.html'">
   <td>
     <div><a class="stock-link" href="stocks/6213.html" onclick="event.stopPropagation()">6213 聯茂</a></div>
     <div class="signal-dates"><a href="stocks/6213.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2360,11 +2491,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 219.78 ~ 241.47<br><span style="color:#8b949e">原始買點 269.1 ｜ 收盤 253.5 ｜ 原始分數 190.0</span></td>
+  <td>買入區 219.78 ~ 241.47<br><span style="color:#8b949e">原始買點 269.1 ｜ 收盤 253.5 ｜ 原始分數 95.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8358.html'">
+<tr class="clickable-row" data-ledger-row data-text="8358 金居" data-code="8358" data-name="金居" data-count="2" data-first="2026-04-24" data-latest="2026-04-29" data-entry="289.35 ~ 319.15" data-push="0" data-current="0" onclick="location.href='stocks/8358.html'">
   <td>
     <div><a class="stock-link" href="stocks/8358.html" onclick="event.stopPropagation()">8358 金居</a></div>
     <div class="signal-dates"><a href="stocks/8358.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2372,11 +2503,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 289.35 ~ 319.15<br><span style="color:#8b949e">原始買點 358.64 ｜ 收盤 362.0 ｜ 原始分數 170.0</span></td>
+  <td>買入區 289.35 ~ 319.15<br><span style="color:#8b949e">原始買點 358.64 ｜ 收盤 362.0 ｜ 原始分數 85.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2402.html'">
+<tr class="clickable-row" data-ledger-row data-text="2402 毅嘉" data-code="2402" data-name="毅嘉" data-count="2" data-first="2026-04-24" data-latest="2026-04-29" data-entry="61.11 ~ 66.73" data-push="0" data-current="0" onclick="location.href='stocks/2402.html'">
   <td>
     <div><a class="stock-link" href="stocks/2402.html" onclick="event.stopPropagation()">2402 毅嘉</a></div>
     <div class="signal-dates"><a href="stocks/2402.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2384,11 +2515,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 61.11 ~ 66.73<br><span style="color:#8b949e">原始買點 70.53 ｜ 收盤 69.5 ｜ 原始分數 130.0</span></td>
+  <td>買入區 61.11 ~ 66.73<br><span style="color:#8b949e">原始買點 70.53 ｜ 收盤 69.5 ｜ 原始分數 65.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/5439.html'">
+<tr class="clickable-row" data-ledger-row data-text="5439 高技" data-code="5439" data-name="高技" data-count="2" data-first="2026-04-24" data-latest="2026-04-29" data-entry="348.32 ~ 375.43" data-push="0" data-current="0" onclick="location.href='stocks/5439.html'">
   <td>
     <div><a class="stock-link" href="stocks/5439.html" onclick="event.stopPropagation()">5439 高技</a></div>
     <div class="signal-dates"><a href="stocks/5439.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2396,11 +2527,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 348.32 ~ 375.43<br><span style="color:#8b949e">原始買點 381.29 ｜ 收盤 401.0 ｜ 原始分數 110.0</span></td>
+  <td>買入區 348.32 ~ 375.43<br><span style="color:#8b949e">原始買點 381.29 ｜ 收盤 401.0 ｜ 原始分數 55.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3105.html'">
+<tr class="clickable-row" data-ledger-row data-text="3105 穩懋" data-code="3105" data-name="穩懋" data-count="2" data-first="2026-04-28" data-latest="2026-04-29" data-entry="464.45 ~ 505.05" data-push="0" data-current="0" onclick="location.href='stocks/3105.html'">
   <td>
     <div><a class="stock-link" href="stocks/3105.html" onclick="event.stopPropagation()">3105 穩懋</a></div>
     <div class="signal-dates"><a href="stocks/3105.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2408,11 +2539,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 464.45 ~ 505.05<br><span style="color:#8b949e">原始買點 531.7 ｜ 收盤 499.5 ｜ 原始分數 160.0</span></td>
+  <td>買入區 464.45 ~ 505.05<br><span style="color:#8b949e">原始買點 531.7 ｜ 收盤 499.5 ｜ 原始分數 80.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6789.html'">
+<tr class="clickable-row" data-ledger-row data-text="6789 采鈺" data-code="6789" data-name="采鈺" data-count="2" data-first="2026-04-28" data-latest="2026-04-29" data-entry="371.58 ~ 423.67" data-push="0" data-current="0" onclick="location.href='stocks/6789.html'">
   <td>
     <div><a class="stock-link" href="stocks/6789.html" onclick="event.stopPropagation()">6789 采鈺</a></div>
     <div class="signal-dates"><a href="stocks/6789.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2424,7 +2555,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4960.html'">
+<tr class="clickable-row" data-ledger-row data-text="4960 誠美材" data-code="4960" data-name="誠美材" data-count="2" data-first="2026-04-28" data-latest="2026-04-29" data-entry="25.05 ~ 30.45" data-push="0" data-current="0" onclick="location.href='stocks/4960.html'">
   <td>
     <div><a class="stock-link" href="stocks/4960.html" onclick="event.stopPropagation()">4960 誠美材</a></div>
     <div class="signal-dates"><a href="stocks/4960.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2436,7 +2567,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28、2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6257.html'">
+<tr class="clickable-row" data-ledger-row data-text="6257 矽格" data-code="6257" data-name="矽格" data-count="1" data-first="2026-04-29" data-latest="2026-04-29" data-entry="174.88 ~ 179.38" data-push="0" data-current="0" onclick="location.href='stocks/6257.html'">
   <td>
     <div><a class="stock-link" href="stocks/6257.html" onclick="event.stopPropagation()">6257 矽格</a></div>
     <div class="signal-dates"><a href="stocks/6257.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2444,15 +2575,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-29</span></td>
-  <td>買入區 174.88 ~ 179.38<br><span style="color:#8b949e">原始買點 179.47 ｜ 收盤 180.5 ｜ 原始分數 120.0</span></td>
+  <td>買入區 174.88 ~ 179.38<br><span style="color:#8b949e">原始買點 179.47 ｜ 收盤 180.5 ｜ 原始分數 60.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3264.html'">
+<tr class="clickable-row" data-ledger-row data-text="3264 欣銓" data-code="3264" data-name="欣銓" data-count="1" data-first="2026-04-29" data-latest="2026-04-29" data-entry="179.00 ~ 189.00" data-push="0" data-current="0" onclick="location.href='stocks/3264.html'">
   <td>
     <div><a class="stock-link" href="stocks/3264.html" onclick="event.stopPropagation()">3264 欣銓</a></div>
     <div class="signal-dates"><a href="stocks/3264.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-29<br><span style="color:#8b949e">最近 2026-04-29</span></td>
@@ -2460,7 +2591,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8046.html'">
+<tr class="clickable-row" data-ledger-row data-text="8046 南電" data-code="8046" data-name="南電" data-count="1" data-first="2026-04-29" data-latest="2026-04-29" data-entry="686.30 ~ 754.70" data-push="0" data-current="0" onclick="location.href='stocks/8046.html'">
   <td>
     <div><a class="stock-link" href="stocks/8046.html" onclick="event.stopPropagation()">8046 南電</a></div>
     <div class="signal-dates"><a href="stocks/8046.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2472,7 +2603,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6234.html'">
+<tr class="clickable-row" data-ledger-row data-text="6234 高僑" data-code="6234" data-name="高僑" data-count="1" data-first="2026-04-29" data-latest="2026-04-29" data-entry="31.73 ~ 35.57" data-push="0" data-current="0" onclick="location.href='stocks/6234.html'">
   <td>
     <div><a class="stock-link" href="stocks/6234.html" onclick="event.stopPropagation()">6234 高僑</a></div>
     <div class="signal-dates"><a href="stocks/6234.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2484,7 +2615,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-29</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2484.html'">
+<tr class="clickable-row" data-ledger-row data-text="2484 希華" data-code="2484" data-name="希華" data-count="2" data-first="2026-04-24" data-latest="2026-04-28" data-entry="32.92 ~ 37.23" data-push="0" data-current="0" onclick="location.href='stocks/2484.html'">
   <td>
     <div><a class="stock-link" href="stocks/2484.html" onclick="event.stopPropagation()">2484 希華</a></div>
     <div class="signal-dates"><a href="stocks/2484.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2492,23 +2623,23 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-28</span></td>
-  <td>買入區 32.92 ~ 37.23<br><span style="color:#8b949e">原始買點 42.82（MA5×0.985回測） ｜ 收盤 37.2 ｜ 原始分數 150.0</span></td>
+  <td>買入區 32.92 ~ 37.23<br><span style="color:#8b949e">原始買點 42.82（MA5×0.985回測） ｜ 收盤 37.2 ｜ 原始分數 26.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24、2026-04-28</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/4958.html'">
+<tr class="clickable-row" data-ledger-row data-text="4958 臻鼎-KY" data-code="4958" data-name="臻鼎-KY" data-count="1" data-first="2026-04-28" data-latest="2026-04-28" data-entry="269.05 ~ 298.45" data-push="0" data-current="0" onclick="location.href='stocks/4958.html'">
   <td>
     <div><a class="stock-link" href="stocks/4958.html" onclick="event.stopPropagation()">4958 臻鼎-KY</a></div>
     <div class="signal-dates"><a href="stocks/4958.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
-  <td>買入區 269.05 ~ 298.45<br><span style="color:#8b949e">原始買點 327.22（MA5×0.985回測） ｜ 收盤 358.5 ｜ 原始分數 100.0</span></td>
+  <td>買入區 269.05 ~ 298.45<br><span style="color:#8b949e">原始買點 327.22（MA5×0.985回測） ｜ 收盤 358.5 ｜ 原始分數 24.8</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/8027.html'">
+<tr class="clickable-row" data-ledger-row data-text="8027 鈺太" data-code="8027" data-name="鈺太" data-count="1" data-first="2026-04-28" data-latest="2026-04-28" data-entry="134.60 ~ 143.40" data-push="0" data-current="0" onclick="location.href='stocks/8027.html'">
   <td>
     <div><a class="stock-link" href="stocks/8027.html" onclick="event.stopPropagation()">8027 鈺太</a></div>
     <div class="signal-dates"><a href="stocks/8027.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2516,11 +2647,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
-  <td>買入區 134.60 ~ 143.40<br><span style="color:#8b949e">原始買點 149.13（MA5×0.985回測） ｜ 收盤 159.0 ｜ 原始分數 40.0</span></td>
+  <td>買入區 134.60 ~ 143.40<br><span style="color:#8b949e">原始買點 149.13（MA5×0.985回測） ｜ 收盤 159.0 ｜ 原始分數 27.7</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3162.html'">
+<tr class="clickable-row" data-ledger-row data-text="3162 精確" data-code="3162" data-name="精確" data-count="1" data-first="2026-04-28" data-latest="2026-04-28" data-entry="64.47 ~ 69.08" data-push="0" data-current="0" onclick="location.href='stocks/3162.html'">
   <td>
     <div><a class="stock-link" href="stocks/3162.html" onclick="event.stopPropagation()">3162 精確</a></div>
     <div class="signal-dates"><a href="stocks/3162.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2528,23 +2659,23 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
-  <td>買入區 64.47 ~ 69.08<br><span style="color:#8b949e">原始買點 77.42（MA5×0.985回測） ｜ 收盤 81.6 ｜ 原始分數 30.0</span></td>
+  <td>買入區 64.47 ~ 69.08<br><span style="color:#8b949e">原始買點 77.42（MA5×0.985回測） ｜ 收盤 81.6 ｜ 原始分數 37.6</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6531.html'">
+<tr class="clickable-row" data-ledger-row data-text="6531 愛普" data-code="6531" data-name="愛普" data-count="1" data-first="2026-04-28" data-latest="2026-04-28" data-entry="534.40 ~ 613.60" data-push="0" data-current="0" onclick="location.href='stocks/6531.html'">
   <td>
     <div><a class="stock-link" href="stocks/6531.html" onclick="event.stopPropagation()">6531 愛普</a></div>
     <div class="signal-dates"><a href="stocks/6531.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-28<br><span style="color:#8b949e">最近 2026-04-28</span></td>
-  <td>買入區 534.40 ~ 613.60<br><span style="color:#8b949e">原始買點 756.09（MA5×0.985回測） ｜ 收盤 753.0 ｜ 原始分數 10.0</span></td>
+  <td>買入區 534.40 ~ 613.60<br><span style="color:#8b949e">原始買點 756.09（MA5×0.985回測） ｜ 收盤 753.0 ｜ 原始分數 25.8</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-28</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1711.html'">
+<tr class="clickable-row" data-ledger-row data-text="1711 永光（化學工業）" data-code="1711" data-name="永光（化學工業）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="37.19 ~ 43.56" data-push="0" data-current="0" onclick="location.href='stocks/1711.html'">
   <td>
     <div><a class="stock-link" href="stocks/1711.html" onclick="event.stopPropagation()">1711 永光（化學工業）</a></div>
     <div class="signal-dates"><a href="stocks/1711.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2552,11 +2683,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-24</span></td>
-  <td>買入區 37.19 ~ 43.56<br><span style="color:#8b949e">原始買點 53.96 (MA5×98.5%) ｜ 收盤 50.90 ｜ 原始分數 150.0</span></td>
+  <td>買入區 37.19 ~ 43.56<br><span style="color:#8b949e">原始買點 53.96 (MA5×98.5%) ｜ 收盤 50.90 ｜ 原始分數 75.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/3221.html'">
+<tr class="clickable-row" data-ledger-row data-text="3221 台嘉碩（通信網路）" data-code="3221" data-name="台嘉碩（通信網路）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="36.95 ~ 40.90" data-push="0" data-current="0" onclick="location.href='stocks/3221.html'">
   <td>
     <div><a class="stock-link" href="stocks/3221.html" onclick="event.stopPropagation()">3221 台嘉碩（通信網路）</a></div>
     <div class="signal-dates"><a href="stocks/3221.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2564,15 +2695,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-24</span></td>
-  <td>買入區 36.95 ~ 40.90<br><span style="color:#8b949e">原始買點 47.61 (MA5×98.5%) ｜ 收盤 43.50 ｜ 原始分數 140.0</span></td>
+  <td>買入區 36.95 ~ 40.90<br><span style="color:#8b949e">原始買點 47.61 (MA5×98.5%) ｜ 收盤 43.50 ｜ 原始分數 70.0</span></td>
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/1309.html'">
+<tr class="clickable-row" data-ledger-row data-text="1309 台達化（塑膠工業）" data-code="1309" data-name="台達化（塑膠工業）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="19.31 ~ 21.12" data-push="0" data-current="0" onclick="location.href='stocks/1309.html'">
   <td>
     <div><a class="stock-link" href="stocks/1309.html" onclick="event.stopPropagation()">1309 台達化（塑膠工業）</a></div>
     <div class="signal-dates"><a href="stocks/1309.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">盤整籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-24</span></td>
@@ -2580,7 +2711,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2340.html'">
+<tr class="clickable-row" data-ledger-row data-text="2340 台亞（半導體）" data-code="2340" data-name="台亞（半導體）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="29.03 ~ 33.00" data-push="0" data-current="0" onclick="location.href='stocks/2340.html'">
   <td>
     <div><a class="stock-link" href="stocks/2340.html" onclick="event.stopPropagation()">2340 台亞（半導體）</a></div>
     <div class="signal-dates"><a href="stocks/2340.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2592,7 +2723,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/2337.html'">
+<tr class="clickable-row" data-ledger-row data-text="2337 旺宏（半導體）" data-code="2337" data-name="旺宏（半導體）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="124.60 ~ 133.40" data-push="0" data-current="0" onclick="location.href='stocks/2337.html'">
   <td>
     <div><a class="stock-link" href="stocks/2337.html" onclick="event.stopPropagation()">2337 旺宏（半導體）</a></div>
     <div class="signal-dates"><a href="stocks/2337.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2604,7 +2735,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="push-wait">待串接</span></td>
   <td><div class="signal-dates">2026-04-24</div></td>
 </tr>
-<tr class="clickable-row" onclick="location.href='stocks/6127.html'">
+<tr class="clickable-row" data-ledger-row data-text="6127 九豪（電子零組件）" data-code="6127" data-name="九豪（電子零組件）" data-count="1" data-first="2026-04-24" data-latest="2026-04-24" data-entry="40.91 ~ 43.99" data-push="0" data-current="0" onclick="location.href='stocks/6127.html'">
   <td>
     <div><a class="stock-link" href="stocks/6127.html" onclick="event.stopPropagation()">6127 九豪（電子零組件）</a></div>
     <div class="signal-dates"><a href="stocks/6127.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
@@ -2618,28 +2749,25 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </tr></tbody>
       </table>
     </div>
+    <div class="pager"><button type="button" data-page-prev>前</button><span data-page-nums></span><span data-page-info></span><button type="button" data-page-next>後</button></div>
   </div>
 </div></div>
 </div>
 
 <script>
-function initTabs(containerId){
-  var c=document.getElementById(containerId);if(!c)return;
-  var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');
-  function activate(id){
-    btns.forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});
-    panels.forEach(function(p){p.classList.toggle('active',p.id===id)});
-  }
-  btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab);history.replaceState(null,'',location.pathname+'?tab='+b.dataset.tab)})});
-  var p=new URLSearchParams(location.search).get('tab');
-  if(p&&c.querySelector('#'+p)){activate(p)}
-}
+function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
+function initPlaceholders(){document.querySelectorAll('.placeholder-block[data-check]').forEach(function(el){var url=el.dataset.check;if(!url)return;fetch(url,{cache:'no-store'}).then(function(res){if(res.ok){el.open=true;el.classList.add('ready');var b=el.querySelector('.coming-soon-badge');if(b)b.textContent='Data Ready';}}).catch(function(){});});}
+function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
+function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
+function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
+function initDisclaimer(){var modal=document.querySelector('[data-disclaimer-modal]');if(!modal)return;if(localStorage.getItem('stockfromDisclaimerOk')==='1')return;modal.classList.add('show');var btn=modal.querySelector('button');if(btn)btn.addEventListener('click',function(){localStorage.setItem('stockfromDisclaimerOk','1');modal.classList.remove('show');});}
+document.addEventListener('DOMContentLoaded',function(){initPlaceholders();initResponsiveTables();initSignalLedger();initRadarFilters();initDisclaimer();});
 </script>
 
 <script>initTabs('selection-tabs')</script>
 
 <footer>
-  <p class="site-freshness">Site data date: 2026-05-22</p>
+  <p class="site-freshness">資料更新：2026-05-22 收盤後</p>
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
