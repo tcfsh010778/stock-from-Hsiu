@@ -675,3 +675,64 @@ Finish the PR4 UX items after the initial implementation: make `selection.html` 
 
 - `artifacts/` remains untracked and should not be committed unless the user explicitly wants screenshots stored in the repo.
 - If publishing, commit generated `docs/` together with the source generator so GitHub Pages sees the same HTML that was verified locally.
+
+## 2026-05-25 PR2 Placeholder Collapse Pass
+
+### Goal
+
+Fold pending / not-yet-connected UI blocks so first-time visitors do not see large empty gray sections.
+
+### Completed
+
+- Added generated shared assets:
+  - `docs/css/components.css`
+  - `docs/js/auto-expand-placeholder.js`
+- Converted home pending blocks to collapsed `<details class="placeholder-block">`:
+  - 大盤指數（接入中）
+  - 持倉狀態（永豐 API 串接中）
+- Hid the empty `CaryBot暫接` column in `selection.html` with `data-empty="true"` and added `CaryBot 訊號欄位接入中`.
+- Folded the missing `signal_push_log.csv` notice in the signal ledger.
+- Wrapped the full CaryBot validation layer in `timing.html` inside one placeholder details block with `data-source="data/carybot_signal_master_v50.csv"`.
+- Hid MDA `B1 股權` table columns when the holding-week source is not connected, and replaced visible `股權週次 ─` wording with `股權週次欄位接入中`.
+- Added auto-expand progressive enhancement: placeholder blocks with a published CSV/JSON source are opened and marked `data-ready`.
+
+### Changed Files
+
+- `generate_site.py`
+- `docs/css/components.css`
+- `docs/js/auto-expand-placeholder.js`
+- `data/stock_markets.json` cache timestamp only; retained the existing 1974-code market map so this PR did not pick up a partial external refresh
+- regenerated `docs/**/*.html`
+- `CODEX_HANDOFF.md`
+
+### Source Of Truth
+
+- Durable source: `generate_site.py`
+- Visible output: `docs/*.html`, `docs/css/components.css`, `docs/js/auto-expand-placeholder.js`
+
+### Rebuild / Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `PYTHONIOENCODING=utf-8 python -u generate_site.py`; rebuilt 800 files under `docs/`.
+- Kept the market cache at 1974 listed/OTC codes; an attempted stale-cache refresh only returned listed codes, so it was not used for this PR.
+- Ran the PR2 HTML check; it passed:
+  - shared CSS/JS exist and are linked from generated pages
+  - homepage placeholders have the requested summaries and `data-source`
+  - selection CaryBot column has `data-empty="true"` and signal log is folded
+  - timing CaryBot validation has one full-section placeholder wrapper
+  - MDA no longer renders `股權週次 ─` in the visible summary and hides the B1 column
+- Ran `python tools\verify_daily_update_artifacts.py`; latest report date verified as `2026-05-22`.
+- Browser / Playwright checks:
+  - `index.html` pending blocks are closed by default.
+  - `timing.html` at 375px has no horizontal overflow and the buy radar remains usable.
+  - `timing.html#carybot` CaryBot placeholder is closed by default.
+  - manually creating `docs/data/carybot_signal_master_v50.csv` makes the CaryBot placeholder open with `data-ready`.
+- Screenshots saved under untracked `artifacts/`:
+  - `artifacts/pr2-index-placeholder.png`
+  - `artifacts/pr2-timing-radar-mobile.png`
+  - `artifacts/pr2-timing-carybot-folded-mobile.png`
+
+### Next Notes
+
+- `artifacts/` remains untracked and should stay out of commits unless screenshots are intentionally archived.
+- The placeholder work is display-only; it does not change strategy, universe, signal, or exit logic.

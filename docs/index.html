@@ -292,6 +292,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .tab-btn{padding:6px 10px;font-size:12px}
 }
 </style>
+<link rel="stylesheet" href="css/components.css">
+<script defer src="js/auto-expand-placeholder.js"></script>
 </head>
 <body>
 
@@ -321,9 +323,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div style="font-size:16px;font-weight:800;color:#e6edf3">挑個股，不追高</div>
       <div class="strategy-note" style="margin-top:4px">大盤指數資料尚未接入時，先用候選池結構與可執行買點做風控前提；缺資料會明確顯示。</div>
       <div class="check-grid" style="margin-top:10px"><div class="check-item"><div class="k">候選風險</div><div class="v neg">偏熱</div></div><div class="check-item"><div class="k">可執行買點</div><div class="v pos">4 檔落在買點±3%</div></div></div>
-      <details class="coming-soon placeholder-block" data-check="data/taiex.csv">
-  <summary><span>TAIEX cache</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="strategy-note">TAIEX cache is not connected yet. When data/taiex.csv exists this block opens automatically.</div></div>
+      <details class="coming-soon placeholder-block" data-source="data/taiex.csv">
+  <summary>大盤指數（接入中）</summary>
+  <div class="placeholder-body"><div class="strategy-note">TAIEX快取尚未接入。未來 data/taiex.csv 發布後，這個區塊會自動展開。</div></div>
 </details>
     </div>
   </div>
@@ -381,9 +383,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="section-label">持倉狀態</div>
     <span class="section-date">資料日期：2026-05-22</span>
   </div>
-  <details class="coming-soon placeholder-block" data-check="data/sinopac_positions.csv">
-  <summary><span>Sinopac positions</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="strategy-note">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div></div>
+  <details class="coming-soon placeholder-block" data-source="data/sinopac_positions.csv">
+  <summary>持倉狀態（永豐 API 串接中）</summary>
+  <div class="placeholder-body"><div class="strategy-note">永豐庫存尚未接入。目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div></div>
 </details>
 </div>
   

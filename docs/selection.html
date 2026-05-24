@@ -292,6 +292,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .tab-btn{padding:6px 10px;font-size:12px}
 }
 </style>
+<link rel="stylesheet" href="css/components.css">
+<script defer src="js/auto-expand-placeholder.js"></script>
 </head>
 <body>
 
@@ -437,12 +439,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
   </div>
   <div class="score-rule">目前公式來源：`mda_universe_scan.py`。滿分 100 分，不含外資買賣超；外資欄位是另外給你判讀短線籌碼，不是這個 Score 的加分項。</div>
-</div><div class="card daily-top20-card"><div class="section-label">Top 20 &mdash; 2026-05-22</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div style="overflow-x:auto">
+</div><div class="card daily-top20-card"><div class="section-label">Top 20 &mdash; 2026-05-22</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div class="table-placeholder-note">CaryBot 訊號欄位接入中</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
   <th>#</th><th>代號/名稱</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
-  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile">CaryBot暫接</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile carybot-col" data-empty="true">CaryBot暫接</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
@@ -460,10 +462,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">106.1%</td>
   <td class="hide-mobile" style="color:#8b949e">2840 張</td>
   <td class="hide-mobile" style="color:#f85149">+625張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 33.20</div>
@@ -487,10 +486,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">63.4%</td>
   <td class="hide-mobile" style="color:#8b949e">492 張</td>
   <td class="hide-mobile" style="color:#f85149">+325張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 30.83</div>
@@ -514,10 +510,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">93.2%</td>
   <td class="hide-mobile" style="color:#8b949e">2040 張</td>
   <td class="hide-mobile" style="color:#f85149">+806張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 115.85</div>
@@ -541,10 +534,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">79%</td>
   <td class="hide-mobile" style="color:#8b949e">1672 張</td>
   <td class="hide-mobile" style="color:#f85149">+1,196張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 1213.75</div>
@@ -568,10 +558,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">64.3%</td>
   <td class="hide-mobile" style="color:#8b949e">4168 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,241張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 39.88</div>
@@ -595,10 +582,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">75.4%</td>
   <td class="hide-mobile" style="color:#8b949e">186279 張</td>
   <td class="hide-mobile" style="color:#3fb950">-35,146張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 106.57</div>
@@ -622,10 +606,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">76.8%</td>
   <td class="hide-mobile" style="color:#8b949e">7215 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,724張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 164.38</div>
@@ -649,10 +630,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">99.7%</td>
   <td class="hide-mobile" style="color:#8b949e">22503 張</td>
   <td class="hide-mobile" style="color:#f85149">+11,343張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 57.98</div>
@@ -676,10 +654,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">101.7%</td>
   <td class="hide-mobile" style="color:#8b949e">1154 張</td>
   <td class="hide-mobile" style="color:#3fb950">-212張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
   <td>
     <div class="price-entry">進 811.25</div>
@@ -703,10 +678,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">52.3%</td>
   <td class="hide-mobile" style="color:#8b949e">1105 張</td>
   <td class="hide-mobile" style="color:#3fb950">-829張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 90.40</div>
@@ -730,10 +702,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">1435 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,169張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 116.25</div>
@@ -757,10 +726,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">71.3%</td>
   <td class="hide-mobile" style="color:#8b949e">174 張</td>
   <td class="hide-mobile" style="color:#f85149">+36張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.0</span></td>
   <td>
     <div class="price-entry">進 74.98</div>
@@ -784,10 +750,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">79.7%</td>
   <td class="hide-mobile" style="color:#8b949e">7372 張</td>
   <td class="hide-mobile" style="color:#f85149">+62張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 73.82</div>
@@ -811,10 +774,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">30479 張</td>
   <td class="hide-mobile" style="color:#f85149">+6,199張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 41.99</div>
@@ -838,10 +798,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">112.7%</td>
   <td class="hide-mobile" style="color:#8b949e">22391 張</td>
   <td class="hide-mobile" style="color:#f85149">+6,677張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 47.73</div>
@@ -865,10 +822,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">90.6%</td>
   <td class="hide-mobile" style="color:#8b949e">8951 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,340張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 59.00</div>
@@ -892,10 +846,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">108.7%</td>
   <td class="hide-mobile" style="color:#8b949e">1145 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,420張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 653.50</div>
@@ -919,10 +870,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">82.2%</td>
   <td class="hide-mobile" style="color:#8b949e">233681 張</td>
   <td class="hide-mobile" style="color:#3fb950">-98,980張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 90.20</div>
@@ -946,10 +894,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">70.6%</td>
   <td class="hide-mobile" style="color:#8b949e">1015 張</td>
   <td class="hide-mobile" style="color:#3fb950">-261張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 217.88</div>
@@ -973,10 +918,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">61.6%</td>
   <td class="hide-mobile" style="color:#8b949e">3018 張</td>
   <td class="hide-mobile" style="color:#3fb950">-577張</td>
-<td class="hide-mobile carybot-cell"><details class="coming-soon placeholder-block inline-placeholder" data-check="data/carybot_signal_master_v50.csv">
-  <summary><span>CaryBot pending</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="carybot-missing">No CaryBot marker yet.</div></div>
-</details></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 529.62</div>
@@ -1442,9 +1384,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <div class="metric"><div class="metric-num" style="color:#3fb950">20</div><div class="metric-label">今日仍在追蹤</div></div>
       <div class="metric"><div class="metric-num" style="font-size:16px"><span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span></div><div class="metric-label">推播覆蓋率</div></div>
     </div>
-    <details class="coming-soon placeholder-block" data-check="signal_push_log.csv">
-  <summary><span>signal_push_log coverage</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
-  <div class="placeholder-body"><div class="strategy-note">signal_push_log.csv is not available yet.</div></div>
+    <details class="coming-soon placeholder-block" data-source="signal_push_log.csv">
+  <summary>入選追蹤推播紀錄（signal_push_log.csv 接入中）</summary>
+  <div class="placeholder-body"><div class="strategy-note">尚未找到 signal_push_log.csv，先顯示入選歷史。</div></div>
 </details>
     <div class="strategy-note" style="margin-top:14px">
       這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
@@ -2756,7 +2698,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
 <script>
 function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
-function initPlaceholders(){document.querySelectorAll('.placeholder-block[data-check]').forEach(function(el){var url=el.dataset.check;if(!url)return;fetch(url,{cache:'no-store'}).then(function(res){if(res.ok){el.open=true;el.classList.add('ready');var b=el.querySelector('.coming-soon-badge');if(b)b.textContent='Data Ready';}}).catch(function(){});});}
+function initPlaceholders(){}
 function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
 function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
 function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}

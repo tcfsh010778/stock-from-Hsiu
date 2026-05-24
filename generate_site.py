@@ -803,6 +803,78 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 }
 """
 
+COMPONENTS_CSS = """
+.placeholder-block {
+    border: 1px dashed #c9c9c9;
+    background: #fafafa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    color: #555;
+}
+.placeholder-block > summary {
+    cursor: pointer;
+    color: #888;
+    font-size: 0.9rem;
+    list-style: none;
+    font-weight: 600;
+}
+.placeholder-block > summary::-webkit-details-marker {
+    display: none;
+}
+.placeholder-block > summary::before {
+    content: "🚧 開發中 · ";
+    color: #c79a4a;
+    font-weight: 600;
+}
+.placeholder-block[open] {
+    background: #fff;
+    border-style: solid;
+}
+.placeholder-block.data-ready > summary::before {
+    content: "✅ 資料已接入 · ";
+    color: #2e7d32;
+}
+.placeholder-body {
+    padding-top: 0.75rem;
+    color: #555;
+}
+.placeholder-body .strategy-note {
+    color: #555;
+}
+.inline-placeholder {
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+}
+.table-placeholder-note {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0.75rem;
+}
+.stock-table th[data-empty="true"],
+.stock-table td[data-empty="true"] {
+    display: none;
+}
+"""
+
+AUTO_EXPAND_PLACEHOLDER_JS = """
+document.addEventListener('DOMContentLoaded', async () => {
+    const blocks = document.querySelectorAll('.placeholder-block[data-source]');
+    for (const block of blocks) {
+        const src = block.dataset.source;
+        try {
+            const res = await fetch(src, { method: 'HEAD', cache: 'no-store' });
+            if (res.ok) {
+                block.open = true;
+                block.classList.add('data-ready');
+            }
+        } catch (e) {
+            // Keep collapsed when the future data file is not published yet.
+        }
+    }
+});
+"""
+
 def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",      "index.html",     "首頁"),
@@ -978,10 +1050,11 @@ def latest_carybot_markers_by_stock() -> dict[str, dict]:
     return latest
 
 
-def carybot_marker_cell(stock_id: str) -> str:
+def carybot_marker_cell(stock_id: str, hide_empty_col: bool = False) -> str:
     marker = latest_carybot_markers_by_stock().get(str(stock_id))
     if not marker:
-        return '<td class="hide-mobile carybot-cell">' + coming_soon_block('CaryBot pending', '<div class="carybot-missing">No CaryBot marker yet.</div>', 'data/carybot_signal_master_v50.csv', False, inline=True) + '</td>'
+        empty_attr = ' data-empty="true"' if hide_empty_col else ""
+        return f'<td class="hide-mobile carybot-cell carybot-pending-cell"{empty_attr}><span class="carybot-missing">尚無藍點資料</span></td>'
 
     marker_type = marker.get("signal_type") or marker.get("marker_type", "")
     tag_cls = "tag-green" if marker_type == "AI_Buy" else "tag-blue"
@@ -999,6 +1072,8 @@ def carybot_marker_cell(stock_id: str) -> str:
 
 
 def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
+    component_href = f"{nav_prefix}css/components.css"
+    placeholder_js = f"{nav_prefix}js/auto-expand-placeholder.js"
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -1008,6 +1083,8 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
 <link rel="icon" href="data:,">
 <style>{CSS}</style>
+<link rel="stylesheet" href="{component_href}">
+<script defer src="{placeholder_js}"></script>
 </head>
 <body>
 {nav_html(nav_key, nav_prefix)}
@@ -1021,7 +1098,7 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 TAB_JS = """
 <script>
 function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
-function initPlaceholders(){document.querySelectorAll('.placeholder-block[data-check]').forEach(function(el){var url=el.dataset.check;if(!url)return;fetch(url,{cache:'no-store'}).then(function(res){if(res.ok){el.open=true;el.classList.add('ready');var b=el.querySelector('.coming-soon-badge');if(b)b.textContent='Data Ready';}}).catch(function(){});});}
+function initPlaceholders(){}
 function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
 function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
 function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
@@ -1050,6 +1127,15 @@ def redirect_page(target_url: str, title: str = "Redirecting") -> str:
 </html>"""
 
 
+def write_static_assets() -> None:
+    css_dir = OUTPUT_DIR / "css"
+    js_dir = OUTPUT_DIR / "js"
+    css_dir.mkdir(parents=True, exist_ok=True)
+    js_dir.mkdir(parents=True, exist_ok=True)
+    (css_dir / "components.css").write_text(COMPONENTS_CSS.strip() + "\n", encoding="utf-8")
+    (js_dir / "auto-expand-placeholder.js").write_text(AUTO_EXPAND_PLACEHOLDER_JS.strip() + "\n", encoding="utf-8")
+
+
 # ──────────────────────────────────────────────
 #  各頁面生成
 # ──────────────────────────────────────────────
@@ -1065,6 +1151,9 @@ def build_stock_table(
 ) -> str:
     """生成股票表格 HTML"""
     rows = ""
+    carybot_empty_col = bool(
+        show_carybot and not any(str(row.get("id", "")) in latest_carybot_markers_by_stock() for row in stocks)
+    )
     for i, s in enumerate(stocks, 1):
         s = enrich_stock_fields(s)
         _, tech, decision = stock_trade_context(s)
@@ -1074,7 +1163,7 @@ def build_stock_table(
         badge_line = f'<div style="margin-top:3px">{badge}</div>' if show_basket else ""
         basket_cell = f"<td>{badge}</td>" if show_status else ""
         foreign_color = "#f85149" if s["foreign_5d"].startswith("+") else "#3fb950" if s["foreign_5d"].startswith("-") else "#8b949e"
-        carybot_cell = carybot_marker_cell(s["id"]) if show_carybot else ""
+        carybot_cell = carybot_marker_cell(s["id"], carybot_empty_col) if show_carybot else ""
 
         if compact:
             rows += f"""
@@ -1128,7 +1217,8 @@ def build_stock_table(
 </tr>"""
     else:
         status_header = "<th>狀態</th>" if show_status else ""
-        carybot_header = '<th class="hide-mobile">CaryBot暫接</th>' if show_carybot else ""
+        empty_attr = ' data-empty="true"' if show_carybot and carybot_empty_col else ""
+        carybot_header = f'<th class="hide-mobile carybot-col"{empty_attr}>CaryBot暫接</th>' if show_carybot else ""
         header = f"""<tr>
   <th>#</th><th>代號/名稱</th>{status_header}<th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
@@ -1136,7 +1226,8 @@ def build_stock_table(
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr>"""
 
-    return f"""<div style="overflow-x:auto">
+    carybot_notice = '<div class="table-placeholder-note">CaryBot 訊號欄位接入中</div>' if show_carybot and carybot_empty_col else ""
+    return f"""{carybot_notice}<div style="overflow-x:auto">
 <table class="{table_class}">
 <thead>{header}</thead>
 <tbody>{rows}</tbody>
@@ -1266,12 +1357,12 @@ def overheat_reasons(s: dict) -> list[str]:
 
 
 def coming_soon_block(title: str, body: str, data_check: str = "", ready: bool = False, inline: bool = False) -> str:
-    data_attr = f' data-check="{esc(data_check)}"' if data_check else ""
+    data_attr = f' data-source="{esc(data_check)}"' if data_check else ""
     open_attr = " open" if ready else ""
-    ready_cls = " ready" if ready else ""
+    ready_cls = " data-ready" if ready else ""
     inline_cls = " inline-placeholder" if inline else ""
     return f'''<details class="coming-soon placeholder-block{ready_cls}{inline_cls}"{data_attr}{open_attr}>
-  <summary><span>{esc(title)}</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <summary>{esc(title)}</summary>
   <div class="placeholder-body">{body}</div>
 </details>'''
 
@@ -4447,7 +4538,7 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
         f'<div class="check-item"><div class="k">{esc(k)}</div><div class="v {cls}">{esc(v)}</div></div>'
         for k, v, cls in checks
     )
-    taiex_html = coming_soon_block("TAIEX cache", '<div class="strategy-note">TAIEX cache is not connected yet. When data/taiex.csv exists this block opens automatically.</div>', "data/taiex.csv", False)
+    taiex_html = coming_soon_block("大盤指數（接入中）", '<div class="strategy-note">TAIEX快取尚未接入。未來 data/taiex.csv 發布後，這個區塊會自動展開。</div>', "data/taiex.csv", False)
     overview = latest.get("market_overview", "").strip()
     overview_html = f'<div class="market-text" style="margin-top:12px">{overview.replace(chr(10), "<br>")}</div>' if overview else ""
     return f"""
@@ -4476,7 +4567,7 @@ def build_holding_status_card(date_str: str) -> str:
     <div class="section-label">持倉狀態</div>
     {report_date_badge(date_str)}
   </div>
-  {coming_soon_block("Sinopac positions", '<div class="strategy-note">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>', "data/sinopac_positions.csv", False)}
+  {coming_soon_block("持倉狀態（永豐 API 串接中）", '<div class="strategy-note">永豐庫存尚未接入。目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>', "data/sinopac_positions.csv", False)}
 </div>"""
 
 
@@ -4887,11 +4978,15 @@ def build_mda_universe_section() -> str:
     holding_dates = (summary.get("holding") or {}).get("query_dates")
     price_months = summary.get("price_months")
     core_launched = sum(1 for r in rows if mda_is_core_launched(r))
+    holding_empty = not holding_dates or _to_float(holding_dates, 0) <= 0
+    holding_note = "" if holding_empty else f"股權週次 {fmt_num(holding_dates, 0)}，"
+    holding_column_attr = ' data-empty="true"' if holding_empty else ""
+    holding_column_notice = '<div class="table-placeholder-note">股權週次欄位接入中</div>' if holding_empty else ""
     return f"""
   <div class="card">
     <div class="section-label">全市場 M大主篩</div>
     <div class="strategy-note" style="margin-bottom:12px">
-      全市場掃描結果已拆到獨立籃子頁：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。股權週次 {fmt_num(holding_dates, 0)}，日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
+      全市場掃描結果已拆到獨立籃子頁：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。{holding_note}日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
     </div>
     <div class="grid grid-3" style="margin-bottom:14px">
       <div class="metric"><div class="metric-num" style="color:#3fb950">{counts["已發動籃"]}</div><div class="metric-label">已發動籃｜核心 {core_launched}</div></div>
@@ -4941,7 +5036,7 @@ def build_mda_universe_section() -> str:
   <td><div class="m-score">{fmt_num(r.get("score"), 0)}</div></td>
   <td>{info_html}</td>
   <td><div class="m-checks">MA120 {fmt_num(r.get("ma120_slope_pct"), 2)}%｜MA240 {fmt_num(r.get("ma240_slope_pct"), 2)}%</div><div class="signal-dates">240扣抵 {fmt_num(r.get("deduct240_gap_pct"), 1)}%</div></td>
-  <td><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
+  <td{holding_column_attr}><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
   <td><div class="signal-dates">{esc(r.get("reason", ""))}</div></td>
 </tr>""")
         extra = ""
@@ -4950,9 +5045,10 @@ def build_mda_universe_section() -> str:
         blocks.append(f"""
 <div style="margin-top:18px">
   <div class="section-label">{esc(group)}｜{len(group_rows)} 檔</div>
+  {holding_column_notice}
   <div style="overflow-x:auto">
     <table class="stock-table">
-      <thead><tr><th>股票</th><th>分數</th><th>個股資訊</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
+      <thead><tr><th>股票</th><th>分數</th><th>個股資訊</th><th>A 長均線</th><th{holding_column_attr}>B1 股權</th><th>判讀摘要</th></tr></thead>
       <tbody>{''.join(trs)}</tbody>
     </table>
   </div>
@@ -4962,7 +5058,7 @@ def build_mda_universe_section() -> str:
   <div class="card">
     <div class="section-label">全市場 M大主篩</div>
     <div class="strategy-note" style="margin-bottom:12px">
-      這裡已合併全市場掃描結果：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。股權週次 {fmt_num(holding_dates, 0)}，日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
+      這裡已合併全市場掃描結果：上市櫃普通股 {fmt_num(universe_count, 0)} 檔，先用股權分散找出大戶累積候選 {fmt_num(candidate_count, 0)} 檔，再用日線判斷 MA120 / MA240 / 扣抵 / 量縮。{holding_note}日線約 {fmt_num(price_months, 0)} 個月，最新股價日 {esc(latest_date)}。
     </div>
     <div class="grid grid-3" style="margin-bottom:10px">
       <div class="metric"><div class="metric-num" style="color:#3fb950">{counts["已發動籃"]}</div><div class="metric-label">已發動籃</div></div>
@@ -5180,8 +5276,21 @@ def mda_is_core_launched(row: dict) -> bool:
     )
 
 
+def mda_holding_placeholder_active() -> bool:
+    summary_path = LOCAL_DATA_DIR / "mda_full_market_refresh_summary.json"
+    try:
+        summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
+    except Exception:
+        summary = {}
+    holding_dates = (summary.get("holding") or {}).get("query_dates")
+    return not holding_dates or _to_float(holding_dates, 0) <= 0
+
+
 def mda_candidate_table(rows: list[dict], limit: int | None = None, prefix: str = "") -> str:
     shown = rows[:limit] if limit else rows
+    holding_empty = mda_holding_placeholder_active()
+    holding_column_attr = ' data-empty="true"' if holding_empty else ""
+    holding_column_notice = '<div class="table-placeholder-note">股權週次欄位接入中</div>' if holding_empty else ""
     body = []
     for r in shown:
         sid = str(r.get("stock_id") or "")
@@ -5193,7 +5302,7 @@ def mda_candidate_table(rows: list[dict], limit: int | None = None, prefix: str 
   <td><div class="m-score">{fmt_num(r.get("score"), 0)}</div><span class="tag tag-blue"><a href="{href}">個股資訊</a></span></td>
   <td><div class="price-main">{fmt_num(r.get("close"), 2)}</div><div class="signal-dates">距高 {fmt_num(r.get("one_year_high_gap_pct"), 1)}%｜量 {fmt_num(r.get("volume20_vs_120_pct"), 1)}%</div></td>
   <td><div class="m-checks">MA120 {fmt_num(r.get("ma120_slope_pct"), 2)}%｜MA240 {fmt_num(r.get("ma240_slope_pct"), 2)}%</div><div class="signal-dates">MA120 {fmt_num(r.get("ma120"), 2)}｜MA240 {fmt_num(r.get("ma240"), 2)}</div></td>
-  <td><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
+  <td{holding_column_attr}><div class="m-checks">大戶4週 {fmt_num(r.get("major_4w_pctpt"), 2)}pt｜8週 {fmt_num(r.get("major_8w_pctpt"), 2)}pt</div><div class="signal-dates">散戶4週 {fmt_num(r.get("retail_4w_pctpt"), 2)}pt｜股東4週 {fmt_num(r.get("people_4w"), 0)}</div></td>
   <td><div class="signal-dates">{esc(r.get("reason", ""))}</div></td>
 </tr>""")
     if not body:
@@ -5202,9 +5311,10 @@ def mda_candidate_table(rows: list[dict], limit: int | None = None, prefix: str 
     if limit and len(rows) > limit:
         extra = f'<div class="strategy-note" style="margin-top:8px">此區共 {len(rows)} 檔，先顯示前 {limit} 檔。</div>'
     return f"""
+{holding_column_notice}
 <div style="overflow-x:auto">
   <table class="stock-table">
-    <thead><tr><th>股票</th><th>分數</th><th>位置/量能</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
+    <thead><tr><th>股票</th><th>分數</th><th>位置/量能</th><th>A 長均線</th><th{holding_column_attr}>B1 股權</th><th>判讀摘要</th></tr></thead>
     <tbody>{''.join(body)}</tbody>
   </table>
 </div>
@@ -6474,7 +6584,7 @@ def build_signals_page(reports, section_only=False):
       <div class="metric"><div class="metric-num" style="color:#3fb950">{active_count}</div><div class="metric-label">今日仍在追蹤</div></div>
       <div class="metric"><div class="metric-num" style="font-size:16px">{push_note}</div><div class="metric-label">推播覆蓋率</div></div>
     </div>
-    {"" if PUSH_LOG_PATH.exists() else coming_soon_block("signal_push_log coverage", '<div class="strategy-note">signal_push_log.csv is not available yet.</div>', "signal_push_log.csv", False)}
+    {"" if PUSH_LOG_PATH.exists() else coming_soon_block("入選追蹤推播紀錄（signal_push_log.csv 接入中）", '<div class="strategy-note">尚未找到 signal_push_log.csv，先顯示入選歷史。</div>', "signal_push_log.csv", False)}
     <div class="strategy-note" style="margin-top:14px">
       這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
     </div>
@@ -7565,6 +7675,9 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
   <div class="page-title">CaryBot 驗證</div>
   <div class="page-sub">這頁把 CaryBot 標點當成 timing / confirmation layer，不取代 SFZ 趨勢選股與 M大觀察池；重點是分辨健康買點、過熱追價與賣點風險警示。</div>
 
+  <details class="placeholder-block" data-source="data/carybot_signal_master_v50.csv">
+    <summary>CaryBot 訊號驗證層（v50 / v51 開發中，預計接入後展開）</summary>
+    <div class="placeholder-body">
   <div class="card">
     <div class="section-label">目前定位</div>
     <div class="grid grid-4">
@@ -7577,7 +7690,7 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
     {stale_note}
   </div>
 
-  {coming_soon_block("CaryBot v51", daily_ai_buy_v51_section(), "data/carybot_daily_ai_buy_v51.csv", bool(daily_ai_buy_rows))}
+  {daily_ai_buy_v51_section().strip()}
 
   <div class="card">
     <div class="section-label">v50 買賣點勝敗速覽</div>
@@ -7653,6 +7766,8 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
     <div class="section-label">下一步：紅色 CaryBot 箭頭</div>
     <div class="strategy-note">紅色 CaryBot 箭頭這版仍未納入，因為它與紅 K 棒太像，需要獨立形狀分類器；目前 v50 先以 PreBuy / AI_Buy / PreSell / AI_Sell 建立乾淨母表。</div>
   </div>
+    </div>
+  </details>
 </div>"""
     if section_only:
         return body
@@ -8900,6 +9015,8 @@ def main():
     print(f"   Output:  {OUTPUT_DIR}", flush=True)
 
     (OUTPUT_DIR / "daily").mkdir(parents=True, exist_ok=True)
+    write_static_assets()
+    print("   [OK] css/components.css, js/auto-expand-placeholder.js", flush=True)
     reports = load_reports()
 
     if not reports:

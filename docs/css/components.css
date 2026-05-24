@@ -1,0 +1,51 @@
+.placeholder-block {
+    border: 1px dashed #c9c9c9;
+    background: #fafafa;
+    padding: 1rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    color: #555;
+}
+.placeholder-block > summary {
+    cursor: pointer;
+    color: #888;
+    font-size: 0.9rem;
+    list-style: none;
+    font-weight: 600;
+}
+.placeholder-block > summary::-webkit-details-marker {
+    display: none;
+}
+.placeholder-block > summary::before {
+    content: "🚧 開發中 · ";
+    color: #c79a4a;
+    font-weight: 600;
+}
+.placeholder-block[open] {
+    background: #fff;
+    border-style: solid;
+}
+.placeholder-block.data-ready > summary::before {
+    content: "✅ 資料已接入 · ";
+    color: #2e7d32;
+}
+.placeholder-body {
+    padding-top: 0.75rem;
+    color: #555;
+}
+.placeholder-body .strategy-note {
+    color: #555;
+}
+.inline-placeholder {
+    padding: 0.5rem 0.75rem;
+    margin: 0;
+}
+.table-placeholder-note {
+    color: #888;
+    font-size: 0.9rem;
+    margin: 0.5rem 0 0.75rem;
+}
+.stock-table th[data-empty="true"],
+.stock-table td[data-empty="true"] {
+    display: none;
+}
