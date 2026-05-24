@@ -248,6 +248,15 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -264,6 +273,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -325,7 +338,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
         <thead><tr><th>個股</th><th>觀察等級</th><th>收盤</th><th>值得觀察的跡象</th><th>主要風險</th><th>ABC拆分</th></tr></thead>
         <tbody>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/6126.html">6126 信音</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/6126.html">6126 信音</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">36.00</div><div class="pos">+0.30（+0.84%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +205 張（小增但價格不破，列為觀察）</div></td>
@@ -333,7 +346,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/6173.html">6173 信昌電</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">192.50</div><div class="pos">+17.50（+10.00%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -5,991 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -341,7 +354,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/2344.html">2344 華邦電</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/2344.html">2344 華邦電</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">125.00</div><div class="pos">+11.00（+9.65%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +6,409 張</div></td>
@@ -349,7 +362,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/2363.html">2363 矽統</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/2363.html">2363 矽統</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">66.70</div><div class="pos">+3.90（+6.21%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -371 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -357,7 +370,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3033.html">3033 威健</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3033.html">3033 威健</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">53.90</div><div class="pos">+1.40（+2.67%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +2,677 張</div></td>
@@ -365,7 +378,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3048.html">3048 益登</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3048.html">3048 益登</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">74.50</div><div class="pos">+6.70（+9.88%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +5,089 張</div></td>
@@ -373,7 +386,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3209.html">3209 全科</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3209.html">3209 全科</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">78.00</div><div class="neg">-1.10（-1.39%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +1,854 張</div></td>
@@ -381,7 +394,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/4991.html">4991 環宇-KY</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/4991.html">4991 環宇-KY</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">814.00</div><div class="pos">+74.00（+10.00%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -1,610 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -389,7 +402,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/6134.html">6134 萬旭</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/6134.html">6134 萬旭</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">96</div></td>
   <td><div class="price-main">31.85</div><div class="pos">+0.90（+2.91%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=是｜外資拉回不逃=是｜融資10日 +92 張（小增但價格不破，列為觀察）</div></td>
@@ -397,7 +410,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/6274.html">6274 台燿</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">96</div></td>
   <td><div class="price-main">1455.00</div><div class="pos">+130.00（+9.81%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -1,077 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -405,7 +418,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3708.html">3708 上緯投控</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3708.html">3708 上緯投控</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">96</div></td>
   <td><div class="price-main">126.00</div><div class="neg">-0.50（-0.40%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -255 張</div></td>
@@ -413,7 +426,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3680.html">3680 家登</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3680.html">3680 家登</a><div class="signal-dates">上櫃｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">96</div></td>
   <td><div class="price-main">568.00</div><div class="pos">+24.00（+4.41%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +358 張（小增但價格不破，列為觀察）</div></td>
@@ -421,7 +434,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/7610.html">7610 聯友金屬-創</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/7610.html">7610 聯友金屬-創</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">94</div></td>
   <td><div class="price-main">1250.00</div><div class="pos">+20.00（+1.63%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資資料不足</div></td>
@@ -429,7 +442,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 38｜B2 8</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/2342.html">2342 茂矽</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/2342.html">2342 茂矽</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">93</div></td>
   <td><div class="price-main">41.40</div><div class="pos">+0.95（+2.35%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=是｜外資拉回不逃=是｜融資10日 -864 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -437,7 +450,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/2303.html">2303 聯電</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">91</div></td>
   <td><div class="price-main">114.00</div><div class="neg">-2.00（-1.72%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 +30,477 張</div></td>
@@ -445,7 +458,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3532.html">3532 台勝科</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3532.html">3532 台勝科</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">91</div></td>
   <td><div class="price-main">248.50</div><div class="pos">+22.50（+9.96%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 -827 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -453,7 +466,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/2351.html">2351 順德</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/2351.html">2351 順德</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">87</div></td>
   <td><div class="price-main">186.50</div><div class="neg">-5.50（-2.86%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +4,383 張</div></td>
@@ -461,7 +474,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/8438.html">8438 昶昕</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/8438.html">8438 昶昕</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">84</div></td>
   <td><div class="price-main">92.50</div><div class="pos">+4.40（+4.99%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=是｜外資拉回不逃=否｜融資10日 +927 張（小增但價格不破，列為觀察）</div></td>
@@ -469,7 +482,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/3028.html">3028 增你強</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/3028.html">3028 增你強</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">84</div></td>
   <td><div class="price-main">82.30</div><div class="neg">-1.00（-1.20%）</div></td>
   <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 +401 張（小增但價格不破，列為觀察）</div></td>
@@ -477,7 +490,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="mda_stocks/8341.html">8341 日友</a><div class="signal-dates">上市｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/8341.html">8341 日友</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag">暫緩觀察</span><div class="m-score">54</div></td>
   <td><div class="price-main">76.20</div><div class="neg">-0.50（-0.65%）</div></td>
   <td><div class="m-checks"><span class="m-check bad">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check bad">MA120上彎</span> <span class="m-check bad">MA240上彎</span> <span class="m-check warn">接近/突破120日</span> <span class="m-check bad">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=否｜價不破低=是｜同區間小量=是｜外資拉回不逃=是｜融資10日 -19 張（融資退場但價格不破，賣壓被吸收）</div></td>
@@ -2989,23 +3002,19 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </div>
 
 <script>
-function initTabs(containerId){
-  var c=document.getElementById(containerId);if(!c)return;
-  var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');
-  function activate(id){
-    btns.forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});
-    panels.forEach(function(p){p.classList.toggle('active',p.id===id)});
-  }
-  btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab);history.replaceState(null,'',location.pathname+'?tab='+b.dataset.tab)})});
-  var p=new URLSearchParams(location.search).get('tab');
-  if(p&&c.querySelector('#'+p)){activate(p)}
-}
+function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
+function initPlaceholders(){document.querySelectorAll('.placeholder-block[data-check]').forEach(function(el){var url=el.dataset.check;if(!url)return;fetch(url,{cache:'no-store'}).then(function(res){if(res.ok){el.open=true;el.classList.add('ready');var b=el.querySelector('.coming-soon-badge');if(b)b.textContent='Data Ready';}}).catch(function(){});});}
+function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
+function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
+function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
+function initDisclaimer(){var modal=document.querySelector('[data-disclaimer-modal]');if(!modal)return;if(localStorage.getItem('stockfromDisclaimerOk')==='1')return;modal.classList.add('show');var btn=modal.querySelector('button');if(btn)btn.addEventListener('click',function(){localStorage.setItem('stockfromDisclaimerOk','1');modal.classList.remove('show');});}
+document.addEventListener('DOMContentLoaded',function(){initPlaceholders();initResponsiveTables();initSignalLedger();initRadarFilters();initDisclaimer();});
 </script>
 
 <script>initTabs('mda-tabs')</script>
 
 <footer>
-  <p class="site-freshness">Site data date: 2026-05-22</p>
+  <p class="site-freshness">資料更新：2026-05-22 收盤後</p>
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>

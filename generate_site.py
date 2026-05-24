@@ -79,7 +79,7 @@ def _clean_cell(s: str) -> str:
 def _parse_format_v1(text: str, result: dict) -> dict:
     """
     新格式（v44 最新）：
-    ### 1. 🟢 6213 聯茂 ｜健康整理 ｜ Score: 200.9
+    ### 1. 🟢 6213 聯茂 ｜健康整理 ｜ Score: 100.0
     | 收盤價 | **253.5 元** |
     """
     stock_pattern = re.compile(
@@ -110,7 +110,7 @@ def _parse_format_v1(text: str, result: dict) -> dict:
             "id":            stock_id,
             "name":          stock_name,
             "status":        m.group(4).strip(),
-            "score":         score,
+            "score":         normalize_score_value(score, stock_name, m.group(4).strip()),
             "price":         ext("收盤價"),
             "gain_6w":       ext("近6週漲幅"),
             "rsi":           ext("RSI\\(14\\)"),
@@ -174,7 +174,7 @@ def _parse_format_v3(text: str, result: dict) -> dict:
             "id": stock_id,
             "name": stock_name,
             "status": status,
-            "score": score if score > 0 else round((21 - stock_no) * 10.0, 1),
+            "score": normalize_score_value(score, stock_name, status) if score > 0 else rank_fallback_score(stock_no),
             "price": ext("收盤價") if ext("收盤價") != "─" else f"{price} 元",
             "gain_6w": ext_any(["近6週均漲幅", "近6週漲幅"]),
             "rsi": ext("RSI(14)"),
@@ -264,7 +264,7 @@ def _parse_format_v2(text: str, result: dict) -> dict:
                 "id":            stock_id,
                 "name":          stock_name,
                 "status":        {"🟢": "健康整理", "🟡": "強勢追漲", "🔴": "超買"}.get(current_icon, ""),
-                "score":         round((21 - stock_no) * 10.0, 1),
+                "score":         rank_fallback_score(stock_no),
                 "price":         ext2("收盤價"),
                 "gain_6w":       gain,
                 "rsi":           ext2("RSI(14)") if ext2("RSI(14)") != "─" else ext2("RSI\\(14\\)"),
@@ -278,7 +278,7 @@ def _parse_format_v2(text: str, result: dict) -> dict:
                 "entry":         entry_p,
                 "target":        target,
                 "stop":          stop,
-                "score_source":   "排名換算（第1名200，每名-10）",
+                "score_source":   "0-100 rank fallback",
             })
             stock_no += 1
 
@@ -495,14 +495,14 @@ def load_reports() -> list[dict]:
                     reports.sort(key=lambda r: r.get("date", ""), reverse=True)
                 except Exception:
                     pass
-            reports = attach_report_dates(reports)
+            reports = normalize_report_scores(attach_report_dates(reports))
             LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
             REPORTS_CACHE_PATH.write_text(json.dumps(reports, ensure_ascii=False, indent=2), encoding="utf-8")
             return filter_listed_otc_reports(reports)
 
     if REPORTS_CACHE_PATH.exists():
         print(f"\n[Read] No MD reports found; using cache {REPORTS_CACHE_PATH}", flush=True)
-        return filter_listed_otc_reports(attach_report_dates(json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8"))))
+        return filter_listed_otc_reports(normalize_report_scores(attach_report_dates(json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8")))))
 
     return []
 
@@ -758,6 +758,15 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -774,6 +783,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -821,7 +834,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
 def footer_html() -> str:
     freshness = ""
     if SITE_LATEST_REPORT_DATE:
-        freshness = f'<p class="site-freshness">Site data date: {esc(SITE_LATEST_REPORT_DATE)}</p>'
+        freshness = f'<p class="site-freshness">資料更新：{esc(SITE_LATEST_REPORT_DATE)} 收盤後</p>'
     return f"""
 <footer>
   {freshness}
@@ -968,7 +981,7 @@ def latest_carybot_markers_by_stock() -> dict[str, dict]:
 def carybot_marker_cell(stock_id: str) -> str:
     marker = latest_carybot_markers_by_stock().get(str(stock_id))
     if not marker:
-        return '<td class="hide-mobile carybot-cell"><div class="carybot-missing">尚無藍點資料</div></td>'
+        return '<td class="hide-mobile carybot-cell">' + coming_soon_block('CaryBot pending', '<div class="carybot-missing">No CaryBot marker yet.</div>', 'data/carybot_signal_master_v50.csv', False, inline=True) + '</td>'
 
     marker_type = marker.get("signal_type") or marker.get("marker_type", "")
     tag_cls = "tag-green" if marker_type == "AI_Buy" else "tag-blue"
@@ -1007,34 +1020,32 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 
 TAB_JS = """
 <script>
-function initTabs(containerId){
-  var c=document.getElementById(containerId);if(!c)return;
-  var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');
-  function activate(id){
-    btns.forEach(function(b){b.classList.toggle('active',b.dataset.tab===id)});
-    panels.forEach(function(p){p.classList.toggle('active',p.id===id)});
-  }
-  btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab);history.replaceState(null,'',location.pathname+'?tab='+b.dataset.tab)})});
-  var p=new URLSearchParams(location.search).get('tab');
-  if(p&&c.querySelector('#'+p)){activate(p)}
-}
+function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
+function initPlaceholders(){document.querySelectorAll('.placeholder-block[data-check]').forEach(function(el){var url=el.dataset.check;if(!url)return;fetch(url,{cache:'no-store'}).then(function(res){if(res.ok){el.open=true;el.classList.add('ready');var b=el.querySelector('.coming-soon-badge');if(b)b.textContent='Data Ready';}}).catch(function(){});});}
+function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
+function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
+function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
+function initDisclaimer(){var modal=document.querySelector('[data-disclaimer-modal]');if(!modal)return;if(localStorage.getItem('stockfromDisclaimerOk')==='1')return;modal.classList.add('show');var btn=modal.querySelector('button');if(btn)btn.addEventListener('click',function(){localStorage.setItem('stockfromDisclaimerOk','1');modal.classList.remove('show');});}
+document.addEventListener('DOMContentLoaded',function(){initPlaceholders();initResponsiveTables();initSignalLedger();initRadarFilters();initDisclaimer();});
 </script>
 """
 
 
 def redirect_page(target_url: str, title: str = "Redirecting") -> str:
     """Generate a lightweight redirect HTML page."""
-    freshness = f"<p>Site data date: {esc(SITE_LATEST_REPORT_DATE)}</p>" if SITE_LATEST_REPORT_DATE else ""
+    freshness = f"<p>\u8cc7\u6599\u66f4\u65b0\uff1a{esc(SITE_LATEST_REPORT_DATE)} \u6536\u76e4\u5f8c</p>" if SITE_LATEST_REPORT_DATE else ""
+    canonical = target_url.replace("../", "")
     return f"""<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="refresh" content="0;url={target_url}">
-<title>{title}</title>
+<meta http-equiv="refresh" content="0;url={esc(target_url)}">
+<link rel="canonical" href="{esc(canonical)}">
+<title>{esc(title)}</title>
 </head>
 <body>
 {freshness}
-<p>頁面已移動，正在跳轉到 <a href="{target_url}">{target_url}</a>…</p>
+<p>Page moved: <a href="{esc(target_url)}">{esc(target_url)}</a></p>
 </body>
 </html>"""
 
@@ -1191,15 +1202,181 @@ def _to_float(value: str, default: float = 0.0) -> float:
     except Exception:
         return default
 
+def rank_fallback_score(stock_no: int) -> float:
+    return max(0.0, min(100.0, round((21 - stock_no) * 5.0, 1)))
+
+
+def _legacy_score_from_text(*values) -> float | None:
+    joined = " ".join(str(v or "") for v in values)
+    for token in ("綜合評分", "評分"):
+        idx = joined.find(token)
+        if idx >= 0:
+            m = re.search(r"([0-9]+(?:\.[0-9]+)?)", joined[idx: idx + 48])
+            if m:
+                val = _to_float(m.group(1), None)
+                return None if val is None else max(0.0, min(100.0, round(val, 1)))
+    m = re.search(r"\bscore\s*[:：]\s*([0-9]+(?:\.[0-9]+)?)", joined, re.I)
+    if m:
+        val = _to_float(m.group(1), None)
+        return None if val is None else max(0.0, min(100.0, round(val, 1)))
+    return None
+
+def normalize_score_value(value, *context) -> float:
+    raw = _to_float(value, 0.0)
+    embedded = _legacy_score_from_text(*context)
+    if embedded is not None:
+        return embedded
+    if raw > 100:
+        return max(0.0, min(100.0, round(raw / 2.0, 1)))
+    return max(0.0, min(100.0, round(raw, 1)))
+
+
+def normalize_report_scores(reports: list[dict]) -> list[dict]:
+    for report in reports:
+        for stock in report.get("stocks", []):
+            old_score = stock.get("score")
+            source = str(stock.get("score_source") or "")
+            normalized = normalize_score_value(old_score, stock.get("name", ""), stock.get("status", ""))
+            if _to_float(old_score, 0) != normalized:
+                stock["score"] = normalized
+                stock["score_source"] = "0-100 normalized Score"
+            if "?" in str(stock.get("name", "")) and _legacy_score_from_text(stock.get("name", "")):
+                stock["name"] = str(stock.get("name", "")).split("?", 1)[0].strip()
+            if "rank fallback" in source.lower() and _to_float(old_score, 0) <= 100:
+                stock["score_source"] = "0-100 rank fallback"
+    return reports
+
+
+def is_overheated_stock(s: dict) -> bool:
+    return (_to_float(s.get("gain_6w"), 0) >= 100 or _to_float(s.get("rsi"), 0) >= 85 or _to_float(s.get("bband_pct"), 0) >= 110)
+
+
+def overheat_reasons(s: dict) -> list[str]:
+    reasons = []
+    gain = _to_float(s.get("gain_6w"), 0)
+    rsi = _to_float(s.get("rsi"), 0)
+    bband = _to_float(s.get("bband_pct"), 0)
+    if gain >= 100:
+        reasons.append(f"6W gain {gain:.1f}% >= 100%")
+    if rsi >= 85:
+        reasons.append(f"RSI(14) {rsi:.1f} >= 85")
+    if bband >= 110:
+        reasons.append(f"%B {bband:.1f}% >= 110%")
+    return reasons
+
+
+def coming_soon_block(title: str, body: str, data_check: str = "", ready: bool = False, inline: bool = False) -> str:
+    data_attr = f' data-check="{esc(data_check)}"' if data_check else ""
+    open_attr = " open" if ready else ""
+    ready_cls = " ready" if ready else ""
+    inline_cls = " inline-placeholder" if inline else ""
+    return f'''<details class="coming-soon placeholder-block{ready_cls}{inline_cls}"{data_attr}{open_attr}>
+  <summary><span>{esc(title)}</span><span class="coming-soon-badge">Coming Soon · 開發中</span></summary>
+  <div class="placeholder-body">{body}</div>
+</details>'''
+
+
+def rr_warning_bar(decision: dict) -> str:
+    rr = decision.get("rr")
+    return '<div class="warning-bar">R:R 過低，不建議建倉</div>' if rr is not None and rr < 1.5 else ""
+
+
+def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, daily: list[dict], chip_series: list[dict]) -> str:
+    indicator = indicator_snapshot(daily)
+    volume_price = str(tech.get("volume_price") or "")
+    rr = decision.get("rr")
+    wr = indicator.get("wr")
+    k = indicator.get("k")
+    macd_state = str(indicator.get("macd_state") or "")
+    kd_state = str(indicator.get("kd_state") or "")
+    trend = str(tech.get("trend") or "")
+    basket = basket_label(classify_basket(s))
+    trend_bull = bool(
+        "多" in trend or "轉強" in trend or (
+            tech.get("ma20") and tech.get("ma60") and tech.get("close") and tech["close"] > tech["ma20"] > tech["ma60"]
+        )
+    )
+    trend_bear = bool("空" in trend or "轉弱" in trend or (tech.get("ma20") and tech.get("close") and tech["close"] < tech["ma20"]))
+    volume_ok = volume_price in {"量增價漲", "量縮價漲", "均量上彎"}
+    wr_buy = wr is not None and -85 <= wr <= -65
+    chip_total = _sum_recent(chip_series, "total", 5)
+    chip_ok = bool(chip_total is None or chip_total >= 0)
+    rr_low = rr is not None and round(float(rr), 1) <= 1.5
+    overheat = basket == "過熱/風險" or is_overheated_stock(s)
+    hard_momentum_break = "賣出" in macd_state and k is not None and k < 20 and not trend_bull
+    no_go = trend_bear or overheat or rr_low or hard_momentum_break
+    green_checks = [
+        trend_bull,
+        volume_ok,
+        rr is not None and rr >= 2.0,
+        wr_buy,
+    ]
+    go = (not no_go) and sum(1 for x in green_checks if x) >= 4 and chip_ok
+    if no_go:
+        level, cls, icon, label = "NO-GO · 暫不建倉", "nogo", "&#128308;", "紅燈"
+    elif go:
+        level, cls, icon, label = "GO · 可建倉", "go", "&#128994;", "綠燈"
+    else:
+        level, cls, icon, label = "WATCH · 等確認", "watch", "&#128993;", "黃燈"
+    if overheat:
+        hot = overheat_reasons(s)
+        reason = f"過熱排除（{' / '.join(hot[:2]) or basket}）→ 等待回測 MA20 後重新評估"
+    elif rr_low:
+        reason = f"R:R {decision.get('rr_text', '─')} 邊際不足 → 等改善至 1:2 以上再評估"
+    elif trend_bear:
+        reason = f"趨勢偏空（{trend or '跌破均線'}）→ 暫不建倉，先等站回 MA20"
+    elif hard_momentum_break:
+        reason = f"MACD 賣出區 + KD {fmt_num(k, 1)} 偏弱 → 先等動能止跌"
+    elif go:
+        reason = f"趨勢多方 + {volume_price} + R:R {decision.get('rr_text', '─')} + Williams 在買進區"
+    elif "賣出" in macd_state or "弱" in kd_state:
+        parts = []
+        if trend_bull:
+            parts.append("趨勢多方")
+        if "弱" in kd_state:
+            parts.append("KD 偏弱")
+        if "賣出" in macd_state:
+            parts.append("MACD 仍在賣出區")
+        reason = " + ".join(parts[:3]) + " → 建議小部位試單或等 MACD 翻紅"
+    else:
+        factors = []
+        if trend_bull:
+            factors.append("趨勢偏多")
+        if volume_ok:
+            factors.append(volume_price)
+        if rr is not None:
+            factors.append(f"R:R {decision.get('rr_text', '─')}")
+        if wr is not None:
+            factors.append(f"Williams {fmt_num(wr, 1)}")
+        reason = " + ".join(factors[:3]) + " → 條件未完全同向，先觀察或等回測"
+    return f'''<div class="traffic-light {cls}"><div class="signal"><span>{icon}</span><span>{level}</span><span class="signal-label">{label}</span></div><div class="reason">{esc(reason)}</div></div>'''
+
+def build_stock_mda_abc_block(stock_id: str, s: dict, daily: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> str:
+    if not daily:
+        return ""
+    scored = mda_score_stock(s, True)
+    abc = mda_abc_checks(s, daily, tech, chip_series, holding)
+    pressure = pressure_absorption_analysis(stock_id, daily, chip_series, read_margin_series(stock_id), tech)
+    checks = "".join(_m_check(label, cls) for label, cls in abc.get("items", []))
+    reason_html = scored.get("reason", "")
+    risk_html = scored.get("risk_reason", "")
+    pressure_summary = esc(pressure.get("summary", ""))
+    return f'''<div class="card"><div class="section-label">M大 ABC 拆分</div><div class="grid grid-3"><div class="metric"><div class="metric-num">{fmt_num(scored.get("score"), 0)}</div><div class="metric-label">M大分數</div></div><div class="metric"><div class="metric-num">{fmt_num(abc.get("a_score"), 0)}</div><div class="metric-label">A 趨勢</div></div><div class="metric"><div class="metric-num">{fmt_num(abc.get("b1_score"), 0)} / {fmt_num(abc.get("b2_score"), 0)}</div><div class="metric-label">B1 籌碼 / B2 壓力</div></div></div><div class="m-checks" style="margin-top:10px">{checks}</div><div class="strategy-note" style="margin-top:10px">{reason_html}<br>{risk_html}<br>{pressure_summary}</div></div>'''
+
+def disclaimer_modal_html() -> str:
+    return '''<div class="disclaimer-modal" data-disclaimer-modal><div class="disclaimer-box"><h2>免責聲明</h2><p>本站內容僅供研究與交易紀律檢核，不構成投資建議；下單前請自行確認風險。</p><button type="button">已了解，不再顯示</button></div></div>'''
+
 
 def classify_basket(s: dict) -> str:
     gain = _to_float(s.get("gain_6w", "0"))
     score = _to_float(s.get("score", "0"))
     icon = s.get("icon", "")
     status = s.get("status", "")
+    if is_overheated_stock(s):
+        return "risk"
     if icon == "🔴" or "超買" in status:
         return "risk"
-    if icon == "🟡" or gain >= 18 or score >= 170:
+    if icon == "🟡" or gain >= 18 or score >= 85:
         return "marching"
     return "consolidation"
 
@@ -1300,8 +1477,8 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
 
     if basket == "marching":
         checks.append("行進籃")
-        if score >= 170:
-            checks.append("評分>=170")
+        if score >= 85:
+            checks.append("評分>=85")
         if gain >= 18:
             checks.append("近6週漲幅>=18%")
         if trend and "多" in str(trend):
@@ -1317,6 +1494,8 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
         if pressure.get("level"):
             checks.append(str(pressure.get("level")))
     else:
+        for reason in overheat_reasons(s):
+            checks.append(reason)
         if icon == "🔴" or "超買" in status:
             checks.append("原報告風險/超買")
         if gain >= 18:
@@ -1394,6 +1573,7 @@ def build_signal_ledger(reports: list[dict]) -> dict[str, dict]:
             item = ledger.setdefault(stock_id, {
                 "id": stock_id,
                 "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
                 "events": [],
                 "push_count": 0,
             })
@@ -4153,6 +4333,7 @@ def build_sell_alert_rows(stocks: list[dict], limit: int = 5, only_actionable: b
         alerts.append({
             "id": s.get("id", ""),
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "close": tech.get("close") if tech else None,
             "signal": signal,
             "severity": severity,
@@ -4196,6 +4377,7 @@ def build_today_action_card(stocks: list[dict], date_str: str) -> str:
         items.append({
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "basket": basket_label(classify_basket(s)),
             "reason": reason_text,
             "gap": gap,
@@ -4203,7 +4385,7 @@ def build_today_action_card(stocks: list[dict], date_str: str) -> str:
             "score": _to_float(s.get("score", "0")),
             "plan": decision,
         })
-    executable = [x for x in items if -3 <= x["gap"] <= 3]
+    executable = [x for x in items if -3 <= x["gap"] <= 3 and (x["plan"].get("rr") or 0) >= 1.5]
     executable.sort(key=lambda x: (0 if (x["plan"].get("rr") or 0) >= 1.5 else 1, abs(x["gap"]), -x["score"]))
 
     return f"""
@@ -4252,7 +4434,6 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
         checks.append(("候選結構", f"盤整籃較多，行進籃 {len(marching)}", "neu"))
 
     checks.append(("可執行買點", f"{len(action_items)} 檔落在買點±3%", "pos" if action_items else "neu"))
-    checks.append(("大盤指數", "TAIEX快取尚未接入", "neu"))
 
     score = sum(1 for _, _, cls in checks if cls == "pos") - sum(1 for _, _, cls in checks if cls == "neg")
     if score >= 2:
@@ -4266,6 +4447,7 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
         f'<div class="check-item"><div class="k">{esc(k)}</div><div class="v {cls}">{esc(v)}</div></div>'
         for k, v, cls in checks
     )
+    taiex_html = coming_soon_block("TAIEX cache", '<div class="strategy-note">TAIEX cache is not connected yet. When data/taiex.csv exists this block opens automatically.</div>', "data/taiex.csv", False)
     overview = latest.get("market_overview", "").strip()
     overview_html = f'<div class="market-text" style="margin-top:12px">{overview.replace(chr(10), "<br>")}</div>' if overview else ""
     return f"""
@@ -4280,6 +4462,7 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
       <div style="font-size:16px;font-weight:800;color:#e6edf3">{title}</div>
       <div class="strategy-note" style="margin-top:4px">大盤指數資料尚未接入時，先用候選池結構與可執行買點做風控前提；缺資料會明確顯示。</div>
       <div class="check-grid" style="margin-top:10px">{check_html}</div>
+      {taiex_html}
     </div>
   </div>
   {overview_html}
@@ -4293,10 +4476,7 @@ def build_holding_status_card(date_str: str) -> str:
     <div class="section-label">持倉狀態</div>
     {report_date_badge(date_str)}
   </div>
-  <div class="pending-box">
-    <div style="font-size:16px;font-weight:900;color:#e6edf3">永豐庫存尚未接入</div>
-    <div class="strategy-note" style="margin-top:6px">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>
-  </div>
+  {coming_soon_block("Sinopac positions", '<div class="strategy-note">目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>', "data/sinopac_positions.csv", False)}
 </div>"""
 
 
@@ -4364,6 +4544,24 @@ def build_top5_card(stocks: list[dict]) -> str:
   </div>"""
 
 
+def build_sector_heat_widget(stocks: list[dict], top_n: int = 8) -> str:
+    buckets: dict[str, dict] = {}
+    for s in stocks:
+        sid = str(s.get("id") or "")
+        sector = stock_sector(sid) or "Unknown"
+        item = buckets.setdefault(sector, {"count": 0, "score": 0.0})
+        item["count"] += 1
+        item["score"] += _to_float(s.get("score"), 0)
+    if not buckets:
+        return ""
+    ranked = sorted(buckets.items(), key=lambda kv: (-kv[1]["count"], -kv[1]["score"]))[:top_n]
+    pills = ""
+    for sector, row in ranked:
+        avg = row["score"] / max(1, row["count"])
+        pills += f'<div class="heat-pill"><div class="k">{esc(sector)} · {row["count"]}檔</div><div class="v">{fmt_num(avg,1)}</div></div>'
+    return f'<div class="card"><div class="section-label">Sector Heat</div><div class="heat-strip">{pills}</div></div>'
+
+
 def build_index_page(reports: list[dict]) -> str:
     latest = latest_stock_report(reports)
     latest_stocks = with_report_date(latest.get("stocks", []), latest.get("date", ""))
@@ -4374,10 +4572,12 @@ def build_index_page(reports: list[dict]) -> str:
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
   {build_market_light_card(latest, latest_stocks, date_str)}
+  {build_sector_heat_widget(latest_stocks)}
   {build_today_action_card(latest_stocks, date_str)}
   {build_holding_status_card(date_str)}
   {build_top5_card(latest_stocks)}
-</div>"""
+</div>
+{disclaimer_modal_html()}"""
 
     return html_page("首頁", "home", body)
 
@@ -4721,7 +4921,7 @@ def build_mda_universe_section() -> str:
                 info_href = f"stocks/{esc(sid)}.html"
                 stock_link_label = "個股資訊"
             elif mda_stock_page.exists():
-                info_href = f"mda_stocks/{esc(sid)}.html"
+                info_href = f"stocks/{esc(sid)}.html"
                 stock_link_label = "M大解析"
             else:
                 info_href = f"mda_candidates/{esc(sid)}.html"
@@ -4790,7 +4990,7 @@ def build_mda_page(reports: list[dict]) -> str:
         change_text, change_cls = x["change"]
         rows_html += f"""
 <tr>
-  <td><a class="stock-link" href="mda_stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}｜M大解析頁</div></td>
+  <td><a class="stock-link" href="stocks/{esc(x['id'])}.html">{esc(x['id'])} {esc(x['name'])}</a><div class="signal-dates">{esc(x['market'])}｜M大解析頁</div></td>
   <td><span class="tag {x['tag_cls']}">{esc(x['action'])}</span><div class="m-score">{fmt_num(x['score'], 0)}</div></td>
   <td><div class="price-main">{esc(x['close'])}</div><div class="{change_cls}">{esc(change_text)}</div></td>
   <td><div class="m-checks">{x['reason']}</div><div class="signal-dates" style="margin-top:6px">{esc(x['volume_line'])}</div></td>
@@ -4959,8 +5159,8 @@ def mda_candidate_href(row: dict, prefix: str = "") -> str:
         return "#"
     if (OUTPUT_DIR / "stocks" / f"{sid}.html").exists():
         return f"{prefix}stocks/{esc(sid)}.html"
-    if (OUTPUT_DIR / "mda_stocks" / f"{sid}.html").exists():
-        return f"{prefix}mda_stocks/{esc(sid)}.html"
+    if sid:
+        return f"{prefix}stocks/{esc(sid)}.html"
     return f"{prefix}mda_candidates/{esc(sid)}.html"
 
 
@@ -5903,16 +6103,11 @@ def build_mda_stock_pages(reports: list[dict]) -> int:
     latest = latest_stock_report(reports)
     out_dir = OUTPUT_DIR / "mda_stocks"
     out_dir.mkdir(parents=True, exist_ok=True)
-    valid = {f"{s.get('id')}.html" for s in latest.get("stocks", []) if s.get("id")}
-    for old_file in out_dir.glob("*.html"):
-        if old_file.name not in valid:
-            old_file.unlink()
+    ids = {p.stem for p in out_dir.glob("*.html") if re.fullmatch(r"\d{4,6}", p.stem)}
+    ids.update(str(s.get("id", "")).strip() for s in latest.get("stocks", []) if s.get("id"))
     count = 0
-    for s in latest.get("stocks", []):
-        sid = s.get("id", "")
-        if not sid:
-            continue
-        (out_dir / f"{sid}.html").write_text(build_mda_stock_detail_page(sid, s), encoding="utf-8")
+    for sid in sorted(x for x in ids if x):
+        (out_dir / f"{sid}.html").write_text(redirect_page(f"../stocks/{sid}.html", f"{sid} stock detail"), encoding="utf-8")
         count += 1
     return count
 
@@ -6058,7 +6253,7 @@ def build_sector_focus_section(stocks: list[dict], top_n: int = 8) -> str:
 <tr>
   <td>#{fmt_num(row.get('rank'), 0)}</td>
   <td>{esc(row.get('sector'))}</td>
-  <td>{fmt_num(row.get('score'), 1)}</td>
+  <td>{fmt_num(normalize_score_value(row.get('score')), 1)}</td>
   <td>{fmt_num(row.get('turnover_billion'), 1)}</td>
   <td class="{gain_color(avg_ret5_text)}">{avg_ret5_text}</td>
   <td>{fmt_num(row.get('avg_vol_ratio'), 2)}x</td>
@@ -6202,6 +6397,32 @@ def build_signals_page(reports, section_only=False):
         else '<span class="push-wait">尚未找到 signal_push_log.csv，先顯示入選歷史</span>'
     )
 
+    query_map = build_stock_query_map(reports)
+    for required_sid in ("2342", "8341"):
+        if required_sid in ledger or required_sid not in query_map:
+            continue
+        qs = enrich_stock_fields(query_map[required_sid])
+        _, _, qdecision = stock_trade_context(qs)
+        price_date = qs.get("price_date") or latest_date
+        ledger[required_sid] = {
+            "id": required_sid,
+            "name": qs.get("name", ""),
+            "sector": qs.get("industry") or qs.get("sector") or "未分類",
+            "query_only": True,
+            "events": [{
+                "date": price_date,
+                "basket": classify_basket(qs),
+                "entry": qdecision.get("entry_range") or qdecision.get("entry_text") or qs.get("entry", "─"),
+                "raw_entry": qs.get("entry", "─"),
+                "price": qs.get("price", "─"),
+                "score": qs.get("score", "─"),
+                "score_source": qs.get("score_source", "快取個股"),
+                "pushed": False,
+                "log_count": 0,
+            }],
+            "push_count": 0,
+        }
+
     rows = ""
     sorted_items = sorted(
         ledger.values(),
@@ -6224,15 +6445,19 @@ def build_signals_page(reports, section_only=False):
             else '<span class="push-wait">待串接</span>'
         )
         href = f"stocks/{esc(item['id'])}.html"
+        count_value = 0 if item.get("query_only") else len(events)
+        count_label = "查詢股" if item.get("query_only") else f"<strong>{len(events)}</strong> 次"
+        first_date = events[0]["date"]
+        latest_date_row = latest_event["date"]
         rows += f"""
-<tr class="clickable-row" onclick="location.href='{href}'">
+<tr class="clickable-row" data-ledger-row data-text="{esc(item['id'] + ' ' + item['name'])}" data-code="{esc(item['id'])}" data-name="{esc(item['name'])}" data-count="{count_value}" data-first="{esc(first_date)}" data-latest="{esc(latest_date_row)}" data-entry="{esc(str(latest_event['entry']))}" data-push="{item['push_count']}" data-current="{'1' if item['id'] in latest_ids else '0'}" onclick="location.href='{href}'">
   <td>
     <div><a class="stock-link" href="{href}" onclick="event.stopPropagation()">{esc(item['id'])} {esc(item['name'])}</a></div>
     <div class="signal-dates"><a href="{href}" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
     <div class="tag-row">{latest_mark}<span class="tag">{basket}</span></div>
   </td>
-  <td><strong>{len(events)}</strong> 次</td>
-  <td>{events[0]['date']}<br><span style="color:#8b949e">最近 {latest_event['date']}</span></td>
+  <td>{count_label}</td>
+  <td>{first_date}<br><span style="color:#8b949e">最近 {latest_date_row}</span></td>
   <td>買入區 {latest_event['entry']}<br><span style="color:#8b949e">原始買點 {latest_event.get('raw_entry','─')} ｜ 收盤 {latest_event['price']} ｜ 原始分數 {latest_event['score']}</span></td>
   <td>{push_status}</td>
   <td><div class="signal-dates">{dates}</div></td>
@@ -6249,20 +6474,27 @@ def build_signals_page(reports, section_only=False):
       <div class="metric"><div class="metric-num" style="color:#3fb950">{active_count}</div><div class="metric-label">今日仍在追蹤</div></div>
       <div class="metric"><div class="metric-num" style="font-size:16px">{push_note}</div><div class="metric-label">推播覆蓋率</div></div>
     </div>
+    {"" if PUSH_LOG_PATH.exists() else coming_soon_block("signal_push_log coverage", '<div class="strategy-note">signal_push_log.csv is not available yet.</div>', "signal_push_log.csv", False)}
     <div class="strategy-note" style="margin-top:14px">
       這頁先用每日報告建立「入選台帳」。等推播流程把成功紀錄寫入 <strong>signal_push_log.csv</strong> 後，這裡就會變成查漏清單：任何 0/N 或未滿 N/N 的個股，都代表有買點需要補查。
     </div>
   </div>
-  <div class="card">
+  <div class="card" data-ledger>
     <div class="section-label">歷史訊號摘要</div>
+    <div class="ledger-controls">
+      <input type="search" data-ledger-search placeholder="搜尋代號或名稱，例如 2342" aria-label="搜尋代號或名稱">
+      <label class="filter-chip"><input type="checkbox" data-ledger-current checked> 今日仍在榜</label>
+      <label class="filter-chip"><input type="checkbox" data-ledger-history> 歷史訊號</label>
+    </div>
     <div style="overflow-x:auto">
       <table class="stock-table signal-table">
         <thead>
-          <tr><th>個股</th><th>入選</th><th>首次/最近</th><th>最新買入區</th><th>推播</th><th>出現日期</th></tr>
+          <tr><th data-ledger-sort="code">個股</th><th data-ledger-sort="count">入選</th><th data-ledger-sort="latest">首次/最近</th><th data-ledger-sort="entry">最新買入區</th><th data-ledger-sort="push">推播</th><th>出現日期</th></tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
     </div>
+    <div class="pager"><button type="button" data-page-prev>前</button><span data-page-nums></span><span data-page-info></span><button type="button" data-page-next>後</button></div>
   </div>
 </div>"""
     if section_only:
@@ -6685,13 +6917,18 @@ initChipFlowHover_{stock_id}();
 initMainForceHover_{stock_id}();
 </script>"""
     telegram_card = build_telegram_info_card(stock_id, s_view, tech, chip, holding, decision, item, sell_signal)
+    traffic_light = stock_traffic_light(stock_id, s_view, tech, decision, daily, chip_series)
+    rr_warning = rr_warning_bar(decision)
+    mda_abc_card = build_stock_mda_abc_block(stock_id, s_view, daily, tech, chip_series, holding)
     body = f"""
 <div class="container">
-  <div style="margin-bottom:8px"><a href="../baskets.html" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
+  <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
   <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}</div>
   <div class="page-sub">v44 個股研究頁 · 報告日期 {esc(s.get('report_date','─'))}</div>
+  {rr_warning}
   <div class="detail-hero">
     <div class="card">
+      {traffic_light}
       <div class="section-label">資訊卡</div>
       {telegram_card}
     </div>
@@ -6706,6 +6943,8 @@ initMainForceHover_{stock_id}();
       </div>
     </div>
   </div>
+
+  {mda_abc_card}
 
   <div class="card">
     <div class="section-label">v44 技術 / 買點雷達</div>
@@ -6744,7 +6983,7 @@ initMainForceHover_{stock_id}();
     <div style="overflow-x:auto">
       <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>{event_rows}</tbody></table>
     </div>
-    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用排名換算（第1名200，每名-10）。</div>
+    <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用 0-100 的排名遞減補值。</div>
   </div>
 </div>
 {chart_script}"""
@@ -6766,6 +7005,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
         item = {
             "id": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "basket": "未入籃" if s.get("query_only") else basket_label(classify_basket(s)),
             "price": fmt_num(price),
             "price_date": date,
@@ -6774,6 +7014,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
             "stop": decision.get("initial_stop_text", "─"),
             "support": decision.get("reference_support_text", "─"),
             "rr": decision.get("rr_text", "─"),
+            "rr_num": decision.get("rr") if decision.get("rr") is not None else 0,
             "rr_class": decision.get("rr_class", ""),
             "score": s.get("score", "─"),
             "events": len(ledger.get(sid, {}).get("events", [])),
@@ -6843,6 +7084,18 @@ def radar_bucket(gap) -> tuple[str, str, str]:
     return "跌破買點", "tag", "等重新站回或出現轉強"
 
 
+def radar_filter_key(gap) -> str:
+    if gap is None:
+        return "far"
+    if -3 <= gap <= 3:
+        return "near"
+    if 3 < gap <= 8:
+        return "pullback"
+    if gap < -3:
+        return "broken"
+    return "far"
+
+
 def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str:
     stock_map = find_latest_stock_map(reports)
     rows = []
@@ -6855,8 +7108,10 @@ def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str
         rows.append({
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "basket": basket_label(classify_basket(s)),
             "bucket": bucket,
+            "status_key": radar_filter_key(gap),
             "cls": cls,
             "note": note,
             "gap": gap,
@@ -6866,6 +7121,7 @@ def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str
             "stop": decision.get("initial_stop_text", "─"),
             "support": decision.get("reference_support_text", "─"),
             "rr": decision.get("rr_text", "─"),
+            "rr_num": decision.get("rr") if decision.get("rr") is not None else 0,
             "rr_class": decision.get("rr_class", ""),
             "trend": tech.get("trend", "─") if tech else "─",
             "score": _to_float(s.get("score", "0")),
@@ -6875,11 +7131,30 @@ def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str
     pullback = sum(1 for x in rows if x["bucket"] == "稍高等回測")
     extended = sum(1 for x in rows if x["bucket"] == "離買點過遠")
 
+    baskets = sorted({x["basket"] for x in rows if x.get("basket")})
+    sectors = sorted({x["sector"] for x in rows if x.get("sector")})
+    basket_options = '<option value="all">全部</option>' + ''.join(f'<option value="{esc(x)}">{esc(x)}</option>' for x in baskets)
+    sector_options = '<option value="all">全部</option>' + ''.join(f'<option value="{esc(x)}">{esc(x)}</option>' for x in sectors)
+    filter_bar = f"""
+    <div class="radar-filter-bar sticky-top">
+      <fieldset>
+        <legend>狀態</legend>
+        <label class="filter-chip"><input type="checkbox" data-radar-status value="near" checked> 接近買點</label>
+        <label class="filter-chip"><input type="checkbox" data-radar-status value="pullback" checked> 稍高等回測</label>
+        <label class="filter-chip"><input type="checkbox" data-radar-status value="broken"> 跌破買點</label>
+        <label class="filter-chip"><input type="checkbox" data-radar-status value="far"> 離買點過遠</label>
+      </fieldset>
+      <label class="filter-chip">籃別 <select data-radar-basket>{basket_options}</select></label>
+      <label class="filter-chip">最低 R:R <input type="number" data-radar-min-rr value="2.0" step="0.1" min="0"></label>
+      <label class="filter-chip">產業 <select data-radar-sector>{sector_options}</select></label>
+      <button type="button" class="filter-reset" data-radar-reset>重置</button>
+      <span class="filter-count" data-radar-count></span>
+    </div>"""
     table = ""
     for x in rows:
         gap_txt = "─" if x["gap"] is None else f'{x["gap"]:+.1f}%'
         table += f"""
-<tr>
+<tr data-radar-row data-status="{x['status_key']}" data-basket="{esc(x['basket'])}" data-sector="{esc(x['sector'])}" data-rr="{x['rr_num']}">
   <td><a class="stock-link" href="stocks/{x['sid']}.html">{x['sid']} {esc(x['name'])}</a><div class="signal-dates">{esc(x['basket'])} ｜ {esc(x['trend'])}</div></td>
   <td><span class="tag {x['cls']}">{esc(x['bucket'])}</span><div class="signal-dates">{esc(x['note'])}</div></td>
   <td class="price-main">{fmt_num(x['close'])}</td>
@@ -6900,8 +7175,9 @@ def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str
     </div>
     <div class="strategy-note" style="margin-top:14px">這頁以 Williams -65~-85 反推價格帶，並搭配 MA20 濾網建立網站版雷達。後續可再把 MABC A/B/C、量價共振分數接進同一張表。</div>
   </div>
-  <div class="card">
+  <div class="card" data-radar>
     <div class="section-label">候選排序</div>
+    {filter_bar}
     <div style="overflow-x:auto">
       <table class="stock-table">
         <thead><tr><th>個股</th><th>狀態</th><th>收盤</th><th>距買點</th><th>買點/目標/初停/R:R</th></tr></thead>
@@ -7236,6 +7512,7 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
         sample_rows.append({
             "stock": stock_id,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "marker_side": marker_side(r),
             "marker_type": signal_type(r),
             "marker_date": r.get("date") or r.get("marker_date", ""),
@@ -7300,7 +7577,7 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
     {stale_note}
   </div>
 
-  {daily_ai_buy_v51_section()}
+  {coming_soon_block("CaryBot v51", daily_ai_buy_v51_section(), "data/carybot_daily_ai_buy_v51.csv", bool(daily_ai_buy_rows))}
 
   <div class="card">
     <div class="section-label">v50 買賣點勝敗速覽</div>
@@ -7533,6 +7810,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
             "method": method,
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "status": "濾網排除",
             "entry_range": "MA20濾網排除",
@@ -7547,6 +7825,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
             "method": method,
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "status": "濾網排除",
             "entry_range": "量價濾網排除",
@@ -7563,6 +7842,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
                 "method": method,
                 "sid": sid,
                 "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
                 "report_date": report_date,
                 "status": "濾網排除",
                 "entry_range": "B1濾網排除",
@@ -7580,6 +7860,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
             "method": method,
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "status": "無買區",
             "entry_range": zone.get("label", "資料不足"),
@@ -7607,6 +7888,7 @@ def backtest_entry_variant(report_date: str, s: dict, method: str, max_wait_bars
             "method": method,
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "status": "未成交",
             "entry_range": zone.get("label", "資料不足"),
@@ -7807,6 +8089,7 @@ def backtest_one_signal(report_date: str, s: dict) -> dict | None:
         return {
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "basket": basket_label(classify_basket(s)),
             "status": "濾網排除",
@@ -7846,6 +8129,7 @@ def backtest_one_signal(report_date: str, s: dict) -> dict | None:
         return {
             "sid": sid,
             "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
             "report_date": report_date,
             "basket": basket_label(classify_basket(s)),
             "status": "未成交",
@@ -8058,6 +8342,7 @@ def _run_backtest_scan(reports: list[dict], start_date: str = "2024-01-01", meth
             trades.append({
                 "sid": sid,
                 "name": s.get("name", ""),
+            "sector": s.get("industry") or s.get("sector") or "未分類",
                 "signal_date": signal_date,
                 "entry_title": signal.get("title", "買點"),
                 "entry_rule": signal.get("rule", ""),
@@ -8492,14 +8777,12 @@ def build_backtest_page(reports: list[dict], section_only: bool = False) -> str:
 
 
 def build_stock_pages(reports: list[dict]) -> int:
-    stock_map = build_stock_query_map(reports)
+    all_stocks = build_stock_query_map(reports)
+    required_ids = {"2342", "8341"}
+    stock_map = {sid: s for sid, s in all_stocks.items() if (not s.get("query_only")) or sid in required_ids}
     ledger = build_signal_ledger(reports)
     out_dir = OUTPUT_DIR / "stocks"
     out_dir.mkdir(parents=True, exist_ok=True)
-    valid_files = {f"{stock_id}.html" for stock_id in stock_map}
-    for old_file in out_dir.glob("*.html"):
-        if old_file.name not in valid_files:
-            old_file.unlink()
     count = 0
     for stock_id, s in sorted(stock_map.items()):
         (out_dir / f"{stock_id}.html").write_text(build_stock_detail_page(stock_id, s, ledger), encoding="utf-8")
@@ -8529,7 +8812,7 @@ def build_history_page(reports, section_only=False):
     body = (
         '<div class="container">'
         + f'<div class="page-title">History ({len(reports)} reports)</div>'
-        + '<div class="page-sub"><a href="backtest.html">查看歷史回測 →</a></div>'
+        + '<div class="page-sub"><a href="history.html#backtest">查看歷史回測 →</a></div>'
         + '<div class="card">' + items + '</div>'
         + '</div>'
     )
@@ -8542,7 +8825,10 @@ def build_history_page(reports, section_only=False):
 
 def build_history_combined_page(reports: list[dict]) -> str:
     """歷史分析 — 2 tabs: backtest / reports"""
-    tab1 = build_backtest_page(reports, section_only=True)
+    if os.environ.get("SITE_FULL_BACKTEST") == "1":
+        tab1 = build_backtest_page(reports, section_only=True)
+    else:
+        tab1 = '<div class="card"><div class="section-label">Backtest</div><div class="strategy-note">Full backtest rebuild is opt-in. Run with SITE_FULL_BACKTEST=1 when needed. Old backtest.html redirects here.</div></div>'
     tab2 = build_history_page(reports, section_only=True)
 
     body = f"""
@@ -8572,13 +8858,13 @@ def build_selection_page(reports: list[dict]) -> str:
   <div class="page-title">選股池</div>
   <div class="page-sub">從每日 Top20 出發，拆成 SFZ 雙籃，追蹤歷史入選紀錄。</div>
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="top20">🏆 每日 Top20</button>
-    <button class="tab-btn" data-tab="sfz">🧺 SFZ 雙籃</button>
-    <button class="tab-btn" data-tab="tracking">📡 入選追蹤</button>
+    <button class="tab-btn active" data-tab="daily-top20">🏆 每日 Top20</button>
+    <button class="tab-btn" data-tab="sfz-baskets">🧺 SFZ 雙籃</button>
+    <button class="tab-btn" data-tab="signal-ledger">📡 入選追蹤</button>
   </div>
-  <div class="tab-panel active" id="top20">{tab1}</div>
-  <div class="tab-panel" id="sfz">{tab2}</div>
-  <div class="tab-panel" id="tracking">{tab3}</div>
+  <div class="tab-panel active" id="daily-top20">{tab1}</div>
+  <div class="tab-panel" id="sfz-baskets">{tab2}</div>
+  <div class="tab-panel" id="signal-ledger">{tab3}</div>
 </div>
 {TAB_JS}
 <script>initTabs('selection-tabs')</script>"""
@@ -8595,10 +8881,10 @@ def build_timing_page(reports: list[dict]) -> str:
   <div class="page-title">買賣時機</div>
   <div class="page-sub">選完股後，用買點雷達看離買入區多遠，用 CaryBot 驗證買賣信號強度。</div>
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="radar">🎯 買點雷達</button>
+    <button class="tab-btn active" data-tab="buy-radar">🎯 買點雷達</button>
     <button class="tab-btn" data-tab="carybot">🤖 CaryBot 驗證</button>
   </div>
-  <div class="tab-panel active" id="radar">{tab1}</div>
+  <div class="tab-panel active" id="buy-radar">{tab1}</div>
   <div class="tab-panel" id="carybot">{tab2}</div>
 </div>
 {TAB_JS}
@@ -8626,27 +8912,27 @@ def main():
     print("   [OK] index.html", flush=True)
     (OUTPUT_DIR / "selection.html").write_text(build_selection_page(reports), encoding="utf-8")
     print("   [OK] selection.html", flush=True)
-    (OUTPUT_DIR / "daily.html").write_text(redirect_page("selection.html?tab=top20", "每日Top20"), encoding="utf-8")
+    (OUTPUT_DIR / "daily.html").write_text(redirect_page("selection.html#daily-top20", "每日Top20"), encoding="utf-8")
     print("   [OK] daily.html (redirect)", flush=True)
     (OUTPUT_DIR / "mda.html").write_text(build_mda_page(reports), encoding="utf-8")
     print("   [OK] mda.html", flush=True)
-    (OUTPUT_DIR / "mda_launched.html").write_text(redirect_page("mda.html?tab=launched", "M大已發動"), encoding="utf-8")
+    (OUTPUT_DIR / "mda_launched.html").write_text(redirect_page("mda.html#launched", "M大已發動"), encoding="utf-8")
     print("   [OK] mda_launched.html (redirect)", flush=True)
-    (OUTPUT_DIR / "mda_consolidation.html").write_text(redirect_page("mda.html?tab=consolidation", "M大盤整"), encoding="utf-8")
+    (OUTPUT_DIR / "mda_consolidation.html").write_text(redirect_page("mda.html#consolidation", "M大盤整"), encoding="utf-8")
     print("   [OK] mda_consolidation.html (redirect)", flush=True)
-    (OUTPUT_DIR / "baskets.html").write_text(redirect_page("selection.html?tab=sfz", "SFZ雙籃"), encoding="utf-8")
+    (OUTPUT_DIR / "baskets.html").write_text(redirect_page("selection.html#sfz-baskets", "SFZ雙籃"), encoding="utf-8")
     print("   [OK] baskets.html (redirect)", flush=True)
-    (OUTPUT_DIR / "signals.html").write_text(redirect_page("selection.html?tab=tracking", "入選追蹤"), encoding="utf-8")
+    (OUTPUT_DIR / "signals.html").write_text(redirect_page("selection.html#signal-ledger", "入選追蹤"), encoding="utf-8")
     print("   [OK] signals.html (redirect)", flush=True)
     (OUTPUT_DIR / "stocks.html").write_text(build_stocks_index_page(reports), encoding="utf-8")
     print("   [OK] stocks.html", flush=True)
     (OUTPUT_DIR / "timing.html").write_text(build_timing_page(reports), encoding="utf-8")
     print("   [OK] timing.html", flush=True)
-    (OUTPUT_DIR / "radar.html").write_text(redirect_page("timing.html?tab=radar", "買點雷達"), encoding="utf-8")
+    (OUTPUT_DIR / "radar.html").write_text(redirect_page("timing.html#buy-radar", "買點雷達"), encoding="utf-8")
     print("   [OK] radar.html (redirect)", flush=True)
-    (OUTPUT_DIR / "carybot.html").write_text(redirect_page("timing.html?tab=carybot", "CaryBot驗證"), encoding="utf-8")
+    (OUTPUT_DIR / "carybot.html").write_text(redirect_page("timing.html#carybot", "CaryBot驗證"), encoding="utf-8")
     print("   [OK] carybot.html (redirect)", flush=True)
-    (OUTPUT_DIR / "backtest.html").write_text(redirect_page("history.html?tab=backtest", "歷史回測"), encoding="utf-8")
+    (OUTPUT_DIR / "backtest.html").write_text(redirect_page("history.html", "歷史回測"), encoding="utf-8")
     print("   [OK] backtest.html (redirect)", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_combined_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
@@ -8662,6 +8948,15 @@ def main():
         out = OUTPUT_DIR / "daily" / f"{r['date']}.html"
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
+
+    sitemap_urls = ["index.html", "selection.html", "mda.html", "timing.html", "stocks.html", "history.html"]
+    sitemap_urls += [f"stocks/{p.name}" for p in sorted((OUTPUT_DIR / "stocks").glob("*.html"))]
+    sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
+        f"  <url><loc>https://tcfsh010778.github.io/stock-from-Hsiu/{u}</loc></url>\n" for u in sitemap_urls
+    ) + '</urlset>\n'
+    (OUTPUT_DIR / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+    (OUTPUT_DIR / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: https://tcfsh010778.github.io/stock-from-Hsiu/sitemap.xml\n", encoding="utf-8")
+    print("   [OK] sitemap.xml / robots.txt", flush=True)
 
     print(f"\n[Done] {len(reports)+9+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)

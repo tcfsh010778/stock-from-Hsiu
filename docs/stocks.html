@@ -248,6 +248,15 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
 .subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
 .pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
+.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
 /* Tabs */
 .tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
@@ -264,6 +273,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 /* Responsive */
 @media(max-width:768px){
   .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -620,9 +633,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1309 台達化（塑膠工業） 盤整籃 個股查詢">
+<tr data-search="1309 台達化（塑膠工業） 行進籃 個股查詢">
   <td><a class="stock-link" href="stocks/1309.html">1309 台達化（塑膠工業）</a><div class="signal-dates">2026-05-12</div></td>
-  <td><span class="tag-green">盤整籃</span></td>
+  <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">16.65</td>
   <td><div class="price-entry">進 18.09</div><div class="price-target">目 27.03</div><div class="price-stop">初停 17.00</div><div class="price-support">支撐 11.39</div><div class="price-rr rr-good">R:R 1:8.2</div></td>
   <td>100.0</td>
@@ -1524,17 +1537,17 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1595 川寶 行進籃 個股查詢">
+<tr data-search="1595 川寶 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">98.10</td>
   <td><div class="price-entry">進 81.78</div><div class="price-target">目 103.02</div><div class="price-stop">初停 76.87</div><div class="price-support">支撐 49.75</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
   <td>90.0</td>
   <td>10 次</td>
 </tr>
-<tr data-search="1597 直得 行進籃 個股查詢">
+<tr data-search="1597 直得 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">183.00</td>
   <td><div class="price-entry">進 170.88</div><div class="price-target">目 202.98</div><div class="price-stop">初停 164.18</div><div class="price-support">支撐 101.99</div><div class="price-rr rr-good">R:R 1:4.8</div></td>
   <td>90.0</td>
@@ -1713,7 +1726,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">53.90</td>
   <td><div class="price-entry">進 46.79</div><div class="price-target">目 60.79</div><div class="price-stop">初停 43.98</div><div class="price-support">支撐 20.25</div><div class="price-rr rr-good">R:R 1:5.0</div></td>
-  <td>150.0</td>
+  <td>75.0</td>
   <td>1 次</td>
 </tr>
 <tr data-search="1712 興農 未入籃 個股查詢 未入籃">
@@ -2708,9 +2721,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2301 光寶科 行進籃 個股查詢">
+<tr data-search="2301 光寶科 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">207.00</td>
   <td><div class="price-entry">進 187.88</div><div class="price-target">目 250.92</div><div class="price-stop">初停 176.60</div><div class="price-support">支撐 152.23</div><div class="price-rr rr-good">R:R 1:5.6</div></td>
   <td>90.0</td>
@@ -3212,9 +3225,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2401 凌陽 行進籃 個股查詢">
+<tr data-search="2401 凌陽 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/2401.html">2401 凌陽</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">30.75</td>
   <td><div class="price-entry">進 25.52</div><div class="price-target">目 30.14</div><div class="price-stop">初停 23.99</div><div class="price-support">支撐 22.44</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
   <td>90.0</td>
@@ -3225,7 +3238,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">65.90</td>
   <td><div class="price-entry">進 64.33</div><div class="price-target">目 86.70</div><div class="price-stop">初停 60.47</div><div class="price-support">支撐 48.61</div><div class="price-rr rr-good">R:R 1:5.8</div></td>
-  <td>130.0</td>
+  <td>65.0</td>
   <td>2 次</td>
 </tr>
 <tr data-search="2404 漢唐 未入籃 個股查詢 未入籃">
@@ -3660,9 +3673,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2478 大毅 行進籃 個股查詢">
+<tr data-search="2478 大毅 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/2478.html">2478 大毅</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">127.50</td>
   <td><div class="price-entry">進 85.20</div><div class="price-target">目 100.37</div><div class="price-stop">初停 80.09</div><div class="price-support">支撐 62.69</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
   <td>90.0</td>
@@ -3705,7 +3718,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">49.30</td>
   <td><div class="price-entry">進 39.59</div><div class="price-target">目 50.24</div><div class="price-stop">初停 37.21</div><div class="price-support">支撐 27.96</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-  <td>150.0</td>
+  <td>26.0</td>
   <td>2 次</td>
 </tr>
 <tr data-search="2485 兆赫 未入籃 個股查詢 未入籃">
@@ -4256,7 +4269,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2702.html">2702 華園</a><div class="signal-dates">2026-05-22</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">13.05</td>
-  <td><div class="price-entry">進 13.65</div><div class="price-target">目 18.46</div><div class="price-stop">初停 13.19</div><div class="price-support">支撐 10.90</div><div class="price-rr rr-good">R:R 1:10.3</div></td>
+  <td><div class="price-entry">進 13.65</div><div class="price-target">目 18.46</div><div class="price-stop">初停 13.18</div><div class="price-support">支撐 10.90</div><div class="price-rr rr-good">R:R 1:10.3</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5116,9 +5129,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3033 威健 行進籃 個股查詢">
+<tr data-search="3033 威健 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/3033.html">3033 威健</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">53.90</td>
   <td><div class="price-entry">進 41.99</div><div class="price-target">目 56.41</div><div class="price-stop">初停 39.47</div><div class="price-support">支撐 33.83</div><div class="price-rr rr-good">R:R 1:5.7</div></td>
   <td>90.0</td>
@@ -5228,9 +5241,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3048 益登 行進籃 個股查詢">
+<tr data-search="3048 益登 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/3048.html">3048 益登</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">74.50</td>
   <td><div class="price-entry">進 47.73</div><div class="price-target">目 75.99</div><div class="price-stop">初停 44.86</div><div class="price-support">支撐 36.22</div><div class="price-rr rr-good">R:R 1:9.9</div></td>
   <td>90.0</td>
@@ -5465,7 +5478,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">512.00</td>
   <td><div class="price-entry">進 487.00</div><div class="price-target">目 649.74</div><div class="price-stop">初停 457.78</div><div class="price-support">支撐 338.30</div><div class="price-rr rr-good">R:R 1:5.6</div></td>
-  <td>160.0</td>
+  <td>80.0</td>
   <td>2 次</td>
 </tr>
 <tr data-search="3114 好德 未入籃 個股查詢 未入籃">
@@ -5593,7 +5606,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">87.60</td>
   <td><div class="price-entry">進 80.47</div><div class="price-target">目 85.58</div><div class="price-stop">初停 75.65</div><div class="price-support">支撐 55.32</div><div class="price-rr rr-bad">R:R 1:1.1</div></td>
-  <td>30.0</td>
+  <td>37.6</td>
   <td>1 次</td>
 </tr>
 <tr data-search="3163 波若威 未入籃 個股查詢 未入籃">
@@ -5612,9 +5625,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3167 大量 行進籃 個股查詢">
+<tr data-search="3167 大量 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">2026-05-12</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">760.00</td>
   <td><div class="price-entry">進 682.50</div><div class="price-target">目 911.88</div><div class="price-stop">初停 641.55</div><div class="price-support">支撐 477.60</div><div class="price-rr rr-good">R:R 1:5.6</div></td>
   <td>100.0</td>
@@ -5761,7 +5774,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">43.80</td>
   <td><div class="price-entry">進 41.62</div><div class="price-target">目 54.67</div><div class="price-stop">初停 39.13</div><div class="price-support">支撐 25.37</div><div class="price-rr rr-good">R:R 1:5.2</div></td>
-  <td>140.0</td>
+  <td>70.0</td>
   <td>1 次</td>
 </tr>
 <tr data-search="3224 三顧 未入籃 個股查詢 未入籃">
@@ -5876,9 +5889,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3264 欣銓 盤整籃 個股查詢">
+<tr data-search="3264 欣銓 行進籃 個股查詢">
   <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">2026-05-15</div></td>
-  <td><span class="tag-green">盤整籃</span></td>
+  <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">226.00</td>
   <td><div class="price-entry">進 204.75</div><div class="price-target">目 225.93</div><div class="price-stop">初停 192.46</div><div class="price-support">支撐 145.27</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
   <td>100.0</td>
@@ -6364,9 +6377,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3443 創意 行進籃 個股查詢">
+<tr data-search="3443 創意 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/3443.html">3443 創意</a><div class="signal-dates">2026-05-15</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">4845.00</td>
   <td><div class="price-entry">進 4266.25</div><div class="price-target">目 6069.00</div><div class="price-stop">初停 4010.27</div><div class="price-support">支撐 2830.78</div><div class="price-rr rr-good">R:R 1:7.0</div></td>
   <td>100.0</td>
@@ -7153,7 +7166,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">77.00</td>
   <td><div class="price-entry">進 63.98</div><div class="price-target">目 76.70</div><div class="price-stop">初停 60.14</div><div class="price-support">支撐 42.98</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
-  <td>150.0</td>
+  <td>75.0</td>
   <td>3 次</td>
 </tr>
 <tr data-search="3675 德微 未入籃 個股查詢 未入籃">
@@ -7300,9 +7313,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>1 次</td>
 </tr>
-<tr data-search="3708 上緯投控 盤整籃 個股查詢">
+<tr data-search="3708 上緯投控 行進籃 個股查詢">
   <td><a class="stock-link" href="stocks/3708.html">3708 上緯投控</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">盤整籃</span></td>
+  <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">126.00</td>
   <td><div class="price-entry">進 116.25</div><div class="price-target">目 135.15</div><div class="price-stop">初停 110.94</div><div class="price-support">支撐 110.94</div><div class="price-rr rr-good">R:R 1:3.6</div></td>
   <td>90.0</td>
@@ -7353,7 +7366,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">73.70</td>
   <td><div class="price-entry">進 67.70</div><div class="price-target">目 82.11</div><div class="price-stop">初停 63.64</div><div class="price-support">支撐 45.22</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
-  <td>180.0</td>
+  <td>90.0</td>
   <td>3 次</td>
 </tr>
 <tr data-search="3715 定穎投控 未入籃 個股查詢 未入籃">
@@ -8612,9 +8625,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4764 雙鍵 行進籃 個股查詢">
+<tr data-search="4764 雙鍵 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/4764.html">4764 雙鍵</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">320.00</td>
   <td><div class="price-entry">進 297.00</div><div class="price-target">目 357.51</div><div class="price-stop">初停 279.18</div><div class="price-support">支撐 178.60</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
   <td>100.0</td>
@@ -8724,9 +8737,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4908 前鼎 行進籃 個股查詢">
+<tr data-search="4908 前鼎 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/4908.html">4908 前鼎</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">267.00</td>
   <td><div class="price-entry">進 233.62</div><div class="price-target">目 279.99</div><div class="price-stop">初停 219.61</div><div class="price-support">支撐 146.26</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
   <td>100.0</td>
@@ -8932,12 +8945,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4958 臻鼎-ky 行進籃 個股查詢">
+<tr data-search="4958 臻鼎-ky 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a><div class="signal-dates">2026-05-12</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">407.00</td>
   <td><div class="price-entry">進 293.75</div><div class="price-target">目 365.67</div><div class="price-stop">初停 276.12</div><div class="price-support">支撐 205.47</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
-  <td>100.0</td>
+  <td>24.8</td>
   <td>1 次</td>
 </tr>
 <tr data-search="4960 誠美材 行進籃 個股查詢">
@@ -9745,7 +9758,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">387.50</td>
   <td><div class="price-entry">進 374.88</div><div class="price-target">目 472.77</div><div class="price-stop">初停 352.38</div><div class="price-support">支撐 266.66</div><div class="price-rr rr-good">R:R 1:4.4</div></td>
-  <td>110.0</td>
+  <td>55.0</td>
   <td>2 次</td>
 </tr>
 <tr data-search="5443 均豪 未入籃 個股查詢 未入籃">
@@ -10804,9 +10817,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6173 信昌電 行進籃 個股查詢">
+<tr data-search="6173 信昌電 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">192.50</td>
   <td><div class="price-entry">進 115.85</div><div class="price-target">目 196.35</div><div class="price-stop">初停 108.90</div><div class="price-support">支撐 73.33</div><div class="price-rr rr-good">R:R 1:11.6</div></td>
   <td>100.0</td>
@@ -11089,7 +11102,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">285.50</td>
   <td><div class="price-entry">進 238.75</div><div class="price-target">目 318.24</div><div class="price-stop">初停 224.42</div><div class="price-support">支撐 139.80</div><div class="price-rr rr-good">R:R 1:5.5</div></td>
-  <td>190.0</td>
+  <td>95.0</td>
   <td>3 次</td>
 </tr>
 <tr data-search="6214 精誠 未入籃 個股查詢 未入籃">
@@ -11353,7 +11366,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">盤整籃</span></td>
   <td class="price-main">210.00</td>
   <td><div class="price-entry">進 182.88</div><div class="price-target">目 197.88</div><div class="price-stop">初停 167.00</div><div class="price-support">支撐 136.81</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
-  <td>120.0</td>
+  <td>60.0</td>
   <td>1 次</td>
 </tr>
 <tr data-search="6259 百徽 未入籃 個股查詢 未入籃">
@@ -12036,12 +12049,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6531 愛普 行進籃 個股查詢">
+<tr data-search="6531 愛普 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/6531.html">6531 愛普</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">963.00</td>
   <td><div class="price-entry">進 912.25</div><div class="price-target">目 807.84</div><div class="price-stop">初停 876.00</div><div class="price-support">支撐 437.80</div><div class="price-rr ">R:R ─</div></td>
-  <td>10.0</td>
+  <td>25.8</td>
   <td>1 次</td>
 </tr>
 <tr data-search="6532 瑞耘 未入籃 個股查詢 未入籃">
@@ -13852,9 +13865,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="7610 聯友金屬-創 行進籃 個股查詢">
+<tr data-search="7610 聯友金屬-創 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/7610.html">7610 聯友金屬-創</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">1250.00</td>
   <td><div class="price-entry">進 811.25</div><div class="price-target">目 1336.20</div><div class="price-stop">初停 762.57</div><div class="price-support">支撐 526.36</div><div class="price-rr rr-good">R:R 1:10.8</div></td>
   <td>70.0</td>
@@ -14385,7 +14398,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">247.00</td>
   <td><div class="price-entry">進 181.00</div><div class="price-target">目 162.18</div><div class="price-stop">初停 170.14</div><div class="price-support">支撐 130.34</div><div class="price-rr ">R:R ─</div></td>
-  <td>40.0</td>
+  <td>27.7</td>
   <td>1 次</td>
 </tr>
 <tr data-search="8028 昇陽半導體 未入籃 個股查詢 未入籃">
@@ -14444,9 +14457,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8042 金山電 行進籃 個股查詢">
+<tr data-search="8042 金山電 過熱/風險 個股查詢">
   <td><a class="stock-link" href="stocks/8042.html">8042 金山電</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">行進籃</span></td>
+  <td><span class="tag-green">過熱/風險</span></td>
   <td class="price-main">123.00</td>
   <td><div class="price-entry">進 85.10</div><div class="price-target">目 130.56</div><div class="price-stop">初停 79.99</div><div class="price-support">支撐 53.13</div><div class="price-rr rr-good">R:R 1:8.9</div></td>
   <td>100.0</td>
@@ -15105,7 +15118,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">522.00</td>
   <td><div class="price-entry">進 408.00</div><div class="price-target">目 424.32</div><div class="price-stop">初停 385.00</div><div class="price-support">支撐 222.88</div><div class="price-rr rr-bad">R:R 1:0.7</div></td>
-  <td>170.0</td>
+  <td>85.0</td>
   <td>2 次</td>
 </tr>
 <tr data-search="8367 建新國際 未入籃 個股查詢 未入籃">
@@ -15300,9 +15313,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8438 昶昕 盤整籃 個股查詢">
+<tr data-search="8438 昶昕 行進籃 個股查詢">
   <td><a class="stock-link" href="stocks/8438.html">8438 昶昕</a><div class="signal-dates">2026-05-22</div></td>
-  <td><span class="tag-green">盤整籃</span></td>
+  <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">92.50</td>
   <td><div class="price-entry">進 90.40</div><div class="price-target">目 114.24</div><div class="price-stop">初停 80.50</div><div class="price-support">支撐 80.50</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
   <td>100.0</td>
@@ -16083,7 +16096,7 @@ function filterStocks(){
 </script>
 
 <footer>
-  <p class="site-freshness">Site data date: 2026-05-22</p>
+  <p class="site-freshness">資料更新：2026-05-22 收盤後</p>
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
