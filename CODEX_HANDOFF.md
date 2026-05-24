@@ -598,3 +598,80 @@ The visible Top20 starts with `6126 信音`, `6173 信昌電`, `6274 台燿`, `8
 - If the user says "every page is stale" again, run `python tools\verify_daily_update_artifacts.py` first; it now checks the full rendered site rather than just the homepage.
 - The sector ranking is a report-layer selection improvement. It does not change SFZ / M-ABC universe, signal, or exit semantics.
 - The full site rebuild is slow in OneDrive; use `python -u generate_site.py` and allow a long timeout.
+
+## 2026-05-24 Navigation / Placeholder / Basket Fix Pass
+
+### Completed
+
+- Reworked `generate_site.py` as the source of truth for the 6-tab navigation, legacy redirect pages, stock-page back links, and `mda_stocks/*` redirects into `stocks/*`.
+- Added collapsible Coming Soon placeholder handling and data-check hooks for empty TAIEX/Sinopac/CaryBot/push-log blocks.
+- Added overheat exclusion for SFZ baskets: 6W gain >= 100%, RSI(14) >= 85, or %B >= 110% forces `過熱/風險`.
+- Normalized visible Score-style values to 0-100, including legacy rank fallback and market-sector heat scores.
+- Added selection tabs, signal-ledger search/filter/pagination, timing radar filters, stock traffic lights, R:R warning bar, and M大 ABC split blocks on stock pages.
+- Added sitemap.xml and robots.txt generation.
+
+### Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `python generate_site.py`; rebuilt 789 files under `docs/`.
+- Verified redirect pages: `daily.html`, `baskets.html`, `signals.html`, `radar.html`, `backtest.html`, and sample `mda_stocks/6173.html`.
+- Verified stale old-route links no longer appear in key pages/stocks output.
+- Captured selection screenshots:
+  - `artifacts/selection-mobile-375.png`
+  - `artifacts/selection-desktop-1440.png`
+
+## 2026-05-24 PR4 UX Completion Pass
+
+### Goal
+
+Finish the PR4 UX items after the initial implementation: make `selection.html` tabs/bookmarks reliable, make the signal ledger usable on mobile, add stock traffic-light decision summaries, and make `timing.html` radar filtering practical.
+
+### Completed
+
+- Fixed `selection.html` tab activation so `#daily-top20`, `#sfz-baskets`, and `#signal-ledger` sync with the URL hash and hide inactive panels.
+- Finished signal-ledger controls: incremental code/name search, current/history toggles, 30-row pagination, page-number buttons, and sortable headers.
+- Added query-only ledger rows for important stock-detail pages such as `2342`/`8341`, so search can jump to stock cards even when the stock is not in today's active ledger.
+- Finished the `timing.html` buy-radar sticky filter bar with status, basket, minimum R:R, industry, live count, and reset behavior.
+- Refined stock traffic lights from the generated data:
+  - `2342` renders WATCH/yellow because KD is weak and MACD is still in sell zone while other conditions remain usable.
+  - `6173` renders NO-GO/red semantic because it is overheat/risk.
+  - `8341` renders NO-GO/red semantic because displayed R:R is too low.
+- Kept Taiwan market color convention in CSS: GO uses red styling, WATCH yellow, NO-GO green styling.
+
+### Changed Files
+
+- `generate_site.py`
+- regenerated `docs/selection.html`
+- regenerated `docs/timing.html`
+- regenerated `docs/stocks/*.html`
+- regenerated `docs/mda_candidates/*.html`
+- regenerated `docs/sitemap.xml`
+- regenerated `docs/robots.txt`
+- `CODEX_HANDOFF.md`
+
+### Source Of Truth
+
+- Durable source: `generate_site.py`
+- Visible outputs checked: `docs/selection.html`, `docs/timing.html`, `docs/stocks/2342.html`, `docs/stocks/6173.html`, `docs/stocks/8341.html`
+
+### Rebuild / Verification
+
+- Ran `python -m py_compile generate_site.py`.
+- Ran `python -u generate_site.py`; rebuilt 790 files under `docs/`.
+- Ran the PR4 UX HTML check; it passed:
+  - selection tabs present
+  - ledger search/sort present
+  - `2342` searchable in the ledger
+  - radar filter controls present
+  - `2342=watch`, `6173=nogo`, `8341=nogo`
+- Browser-verified local preview at `http://127.0.0.1:8765/`:
+  - `selection.html#signal-ledger` reloads with only the ledger tab visible.
+  - ledger search for `2342` filters to `2342 茂矽`; sorting the stock-code header applies `sort-asc`.
+  - `selection.html#sfz-baskets` reloads with the SFZ tab active and other panels hidden.
+  - `timing.html` at 375px viewport keeps the sticky radar filter usable with no control overflow; default count was `42 / 103`, minimum R:R 3.0 changed it to `33 / 103`, reset returned to `42 / 103`.
+  - Traffic-light distribution in generated stock pages is not all yellow: `go=2`, `watch=498`, `nogo=343`.
+
+### Next Notes
+
+- `artifacts/` remains untracked and should not be committed unless the user explicitly wants screenshots stored in the repo.
+- If publishing, commit generated `docs/` together with the source generator so GitHub Pages sees the same HTML that was verified locally.
