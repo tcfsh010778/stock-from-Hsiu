@@ -72,6 +72,59 @@ def pct_change(now: float | None, prev: float | None) -> float | None:
     return (now / prev - 1.0) * 100.0
 
 
+def calc_rsi(values: list[float], window: int = 14) -> float | None:
+    if len(values) <= window:
+        return None
+    gains = []
+    losses = []
+    for idx in range(len(values) - window, len(values)):
+        diff = values[idx] - values[idx - 1]
+        gains.append(max(diff, 0.0))
+        losses.append(max(-diff, 0.0))
+    avg_gain = sum(gains) / window
+    avg_loss = sum(losses) / window
+    if avg_loss == 0:
+        return 100.0
+    rs = avg_gain / avg_loss
+    return 100 - (100 / (1 + rs))
+
+
+def percent_b(values: list[float], window: int = 20) -> float | None:
+    if len(values) < window:
+        return None
+    recent = values[-window:]
+    mid = sum(recent) / window
+    var = sum((x - mid) ** 2 for x in recent) / window
+    std = math.sqrt(var)
+    upper = mid + 2 * std
+    lower = mid - 2 * std
+    if upper <= lower:
+        return None
+    return (values[-1] - lower) / (upper - lower) * 100
+
+
+def is_overheated(gain_6w: float | None, rsi_14: float | None, bband_pct: float | None, gain_3d: float | None) -> bool:
+    return (
+        (gain_6w is not None and gain_6w >= 100)
+        or (rsi_14 is not None and rsi_14 >= 85)
+        or (bband_pct is not None and bband_pct >= 110)
+        or (gain_3d is not None and gain_3d >= 20)
+    )
+
+
+def overheat_reason_text(gain_6w: float | None, rsi_14: float | None, bband_pct: float | None, gain_3d: float | None) -> str:
+    reasons: list[str] = []
+    if gain_6w is not None and gain_6w >= 100:
+        reasons.append(f"近6週 {gain_6w:+.2f}% (門檻 100%)")
+    if rsi_14 is not None and (rsi_14 >= 85 or ((gain_6w or 0) >= 100 and rsi_14 >= 80)):
+        reasons.append(f"RSI {rsi_14:.1f} (門檻 85)")
+    if bband_pct is not None and bband_pct >= 110:
+        reasons.append(f"%B {bband_pct:.1f}% (門檻 110%)")
+    if gain_3d is not None and gain_3d >= 20:
+        reasons.append(f"近3日 {gain_3d:+.2f}% (門檻 20%)")
+    return "強制過熱排除：" + " + ".join(reasons) if reasons else ""
+
+
 def holding_group(level: str) -> str:
     text = str(level or "")
     if text == "total" or "差異" in text:
@@ -207,6 +260,10 @@ def scan_stock(stock_id: str, name: str) -> dict | None:
 
     high_240 = max(highs[-240:]) if len(highs) >= 240 else max(highs)
     one_year_high_gap = pct_change(close, high_240)
+    gain_6w = pct_change(close, closes[-31]) if len(closes) >= 31 else None
+    gain_3d = pct_change(close, closes[-4]) if len(closes) >= 4 else None
+    rsi_14 = calc_rsi(closes)
+    bband_pct = percent_b(closes)
     deduct240_gap = pct_change(close, closes[-241]) if len(closes) >= 241 else None
     low20 = min(lows[-20:])
     low60 = min(lows[-60:]) if len(lows) >= 60 else min(lows)
@@ -221,6 +278,7 @@ def scan_stock(stock_id: str, name: str) -> dict | None:
     near_high = one_year_high_gap is not None and one_year_high_gap >= -12.0
     deduct_favorable = deduct240_gap is not None and deduct240_gap >= 3.0
 
+    original_basket = ""
     if base_mda_watch and price_above_ma240 and ma240_up and near_high:
         basket = "已發動籃"
     elif base_mda_watch and no_new_low and (deduct_favorable or price_above_ma240 or (one_year_high_gap is not None and one_year_high_gap >= -28.0)):
@@ -229,6 +287,9 @@ def scan_stock(stock_id: str, name: str) -> dict | None:
         basket = "未發動觀察籃"
     else:
         basket = "未入籃"
+    if is_overheated(gain_6w, rsi_14, bband_pct, gain_3d):
+        original_basket = basket
+        basket = "過熱/風險"
 
     score = 0
     score += 30 if base_mda_watch else 0
@@ -251,14 +312,23 @@ def scan_stock(stock_id: str, name: str) -> dict | None:
         reasons.append("20日量低於120日均量")
     if deduct_favorable:
         reasons.append("240扣抵偏有利")
+    overheat_reason = overheat_reason_text(gain_6w, rsi_14, bband_pct, gain_3d)
+    if overheat_reason:
+        reasons.insert(0, overheat_reason)
+    score = min(100, max(0, score))
 
     return {
         "stock_id": stock_id,
         "name": name,
         "basket": basket,
+        "original_basket": original_basket,
         "score": score,
         "date": prices[-1]["date"],
         "close": close,
+        "gain_6w": gain_6w,
+        "gain_3d": gain_3d,
+        "rsi_14": rsi_14,
+        "percent_b": bband_pct,
         "ma120": ma120_now,
         "ma240": ma240_now,
         "ma120_slope_pct": ma120_slope,
@@ -303,7 +373,7 @@ def build_html(rows: list[dict]) -> str:
         refresh_summary = json.loads(FULL_REFRESH_SUMMARY_PATH.read_text(encoding="utf-8"))
     except Exception:
         refresh_summary = {}
-    groups = ["已發動籃", "空轉多觀察籃", "未發動觀察籃", "未入籃"]
+    groups = ["已發動籃", "空轉多觀察籃", "未發動觀察籃", "過熱/風險", "未入籃"]
     counts = {g: sum(1 for r in rows if r["basket"] == g) for g in groups}
     latest_date = max((r["date"] for r in rows), default="-")
     universe_count = refresh_summary.get("universe_count")
@@ -396,6 +466,7 @@ def build_html(rows: list[dict]) -> str:
       <span class="pill">已發動：{counts['已發動籃']}</span>
       <span class="pill">空轉多：{counts['空轉多觀察籃']}</span>
       <span class="pill">未發動：{counts['未發動觀察籃']}</span>
+      <span class="pill">過熱/風險：{counts['過熱/風險']}</span>
     </div>
     <div class="note">這頁使用全市場上市櫃普通股清單，先以股權分散資料找出千張大戶 4 週增加 0.5pt 或 8 週增加 1.0pt 的候選，再補日線判讀 MA120、MA240、扣抵與量縮結構。股權週次：{fmt(holding_dates, 0) if holding_dates is not None else '-'}；日線月數：{fmt(price_months, 0) if price_months is not None else '-'}。散戶下降與總股東人數下降作為支撐判讀，不再使用平均每人持股。</div>
   </header>
@@ -411,14 +482,15 @@ def main() -> None:
     names = load_names()
     ids = sorted({p.stem for p in PRICE_DIR.glob("*.csv")} & {p.stem for p in HOLDING_DIR.glob("*.csv")})
     rows = [r for sid in ids if (r := scan_stock(sid, names.get(sid, "")))]
-    rows.sort(key=lambda r: ({"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "未入籃": 3}[r["basket"]], -r["score"], r["stock_id"]))
+    order = {"已發動籃": 0, "空轉多觀察籃": 1, "未發動觀察籃": 2, "過熱/風險": 3, "未入籃": 4}
+    rows.sort(key=lambda r: (order.get(r["basket"], 9), -r["score"], r["stock_id"]))
 
     DATA_DIR.mkdir(exist_ok=True)
     DOCS_DIR.mkdir(exist_ok=True)
     JSON_OUT.write_text(json.dumps(rows, ensure_ascii=False, indent=2), encoding="utf-8")
     if rows:
         with CSV_OUT.open("w", encoding="utf-8-sig", newline="") as fh:
-            writer = csv.DictWriter(fh, fieldnames=list(rows[0].keys()))
+            writer = csv.DictWriter(fh, fieldnames=list(rows[0].keys()), lineterminator="\n")
             writer.writeheader()
             writer.writerows(rows)
     HTML_OUT.write_text(build_html(rows), encoding="utf-8")
@@ -426,7 +498,7 @@ def main() -> None:
     counts = defaultdict(int)
     for row in rows:
         counts[row["basket"]] += 1
-    safe_print(f"scanned={len(rows)} launched={counts['已發動籃']} turning={counts['空轉多觀察籃']} dormant={counts['未發動觀察籃']} not_in={counts['未入籃']}")
+    safe_print(f"scanned={len(rows)} launched={counts['已發動籃']} turning={counts['空轉多觀察籃']} dormant={counts['未發動觀察籃']} overheated={counts['過熱/風險']} not_in={counts['未入籃']}")
     for row in rows[:20]:
         safe_print(f"{row['basket']} {row['stock_id']} {row.get('name','')} score={row['score']} close={row['close']} reason={row['reason']}")
 

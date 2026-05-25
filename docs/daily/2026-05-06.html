@@ -252,7 +252,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
 .placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
-.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
+.warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
 .traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
 .ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
@@ -310,7 +311,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="container"><div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div><div class="page-title">2026-05-06</div><div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。</div>
 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#3fb950">16</div>
+    <div style="font-size:24px;font-weight:800;color:#3fb950">14</div>
     <div style="font-size:11px;color:#6e7681">行進籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
@@ -318,7 +319,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div style="font-size:11px;color:#6e7681">盤整籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#f85149">4</div>
+    <div style="font-size:24px;font-weight:800;color:#f85149">6</div>
     <div style="font-size:11px;color:#6e7681">過熱/風險</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
@@ -394,7 +395,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">84.5</td>
   <td class="pos" style="font-weight:600">9.31%</td>
-  <td style="color:#8b949e">49.5</td>
+  <td style="color:#8b949e">57.4</td>
   <td style="color:#8b949e">87.9%</td>
   <td class="hide-mobile" style="color:#8b949e">3816 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,711張</td>
@@ -418,7 +419,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">64.2</td>
   <td class="pos" style="font-weight:600">8.81%</td>
-  <td style="color:#8b949e">65.6</td>
+  <td style="color:#8b949e">54.5</td>
   <td style="color:#8b949e">89.1%</td>
   <td class="hide-mobile" style="color:#8b949e">3498 張</td>
   <td class="hide-mobile" style="color:#f85149">+9,272張</td>
@@ -442,7 +443,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">76</td>
   <td class="pos" style="font-weight:600">8.11%</td>
-  <td style="color:#8b949e">43.8</td>
+  <td style="color:#8b949e">59.7</td>
   <td style="color:#8b949e">93.5%</td>
   <td class="hide-mobile" style="color:#8b949e">2329 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,589張</td>
@@ -466,7 +467,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">795</td>
   <td class="pos" style="font-weight:600">130.43%</td>
-  <td style="color:#8b949e">56.3</td>
+  <td style="color:#8b949e">57.9</td>
   <td style="color:#8b949e">79.2%</td>
   <td class="hide-mobile" style="color:#8b949e">4041 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,276張</td>
@@ -490,7 +491,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">4955</td>
   <td class="pos" style="font-weight:600">87.33%</td>
-  <td style="color:#8b949e">62.1</td>
+  <td style="color:#8b949e">87.9</td>
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">2466 張</td>
   <td class="hide-mobile" style="color:#f85149">+692張</td>
@@ -514,7 +515,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">703</td>
   <td class="pos" style="font-weight:600">73.79%</td>
-  <td style="color:#8b949e">45.3</td>
+  <td style="color:#8b949e">64.2</td>
   <td style="color:#8b949e">84.8%</td>
   <td class="hide-mobile" style="color:#8b949e">5255 張</td>
   <td class="hide-mobile" style="color:#3fb950">-3,405張</td>
@@ -538,7 +539,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">1315</td>
   <td class="pos" style="font-weight:600">137.36%</td>
-  <td style="color:#8b949e">67.3</td>
+  <td style="color:#8b949e">80.7</td>
   <td style="color:#8b949e">114.5%</td>
   <td class="hide-mobile" style="color:#8b949e">8812 張</td>
   <td class="hide-mobile" style="color:#f85149">+1,196張</td>
@@ -562,7 +563,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">77.3</td>
   <td class="pos" style="font-weight:600">37.06%</td>
-  <td style="color:#8b949e">84.0</td>
+  <td style="color:#8b949e">68</td>
   <td style="color:#8b949e">117.2%</td>
   <td class="hide-mobile" style="color:#8b949e">6266 張</td>
   <td class="hide-mobile" style="color:#f85149">+329張</td>
@@ -586,7 +587,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">56.1</td>
   <td class="pos" style="font-weight:600">6.25%</td>
-  <td style="color:#8b949e">51.3</td>
+  <td style="color:#8b949e">47.2</td>
   <td style="color:#8b949e">62.7%</td>
   <td class="hide-mobile" style="color:#8b949e">132 張</td>
   <td class="hide-mobile" style="color:#f85149">+44張</td>
@@ -610,7 +611,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">86.8</td>
   <td class="neg" style="font-weight:600">-1.7%</td>
-  <td style="color:#8b949e">45.0</td>
+  <td style="color:#8b949e">55.2</td>
   <td style="color:#8b949e">75.4%</td>
   <td class="hide-mobile" style="color:#8b949e">15600 張</td>
   <td class="hide-mobile" style="color:#f85149">+13,129張</td>
@@ -634,7 +635,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">243</td>
   <td class="pos" style="font-weight:600">29.26%</td>
-  <td style="color:#8b949e">65.8</td>
+  <td style="color:#8b949e">74.1</td>
   <td style="color:#8b949e">87.2%</td>
   <td class="hide-mobile" style="color:#8b949e">1025 張</td>
   <td class="hide-mobile" style="color:#f85149">+327張</td>
@@ -658,7 +659,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">50.7</td>
   <td class="pos" style="font-weight:600">6.51%</td>
-  <td style="color:#8b949e">26.8</td>
+  <td style="color:#8b949e">42</td>
   <td style="color:#8b949e">45.2%</td>
   <td class="hide-mobile" style="color:#8b949e">18304 張</td>
   <td class="hide-mobile" style="color:#f85149">+6,950張</td>
@@ -682,7 +683,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">93.8</td>
   <td class="pos" style="font-weight:600">19.64%</td>
-  <td style="color:#8b949e">49.0</td>
+  <td style="color:#8b949e">58.8</td>
   <td style="color:#8b949e">97.6%</td>
   <td class="hide-mobile" style="color:#8b949e">105603 張</td>
   <td class="hide-mobile" style="color:#f85149">+5,354張</td>
@@ -706,7 +707,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">51</td>
   <td class="pos" style="font-weight:600">11.23%</td>
-  <td style="color:#8b949e">29.1</td>
+  <td style="color:#8b949e">52.7</td>
   <td style="color:#8b949e">58.1%</td>
   <td class="hide-mobile" style="color:#8b949e">28714 張</td>
   <td class="hide-mobile" style="color:#f85149">+19,661張</td>
@@ -730,7 +731,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">576</td>
   <td class="pos" style="font-weight:600">21.52%</td>
-  <td style="color:#8b949e">77.6</td>
+  <td style="color:#8b949e">66.3</td>
   <td style="color:#8b949e">106.7%</td>
   <td class="hide-mobile" style="color:#8b949e">2950 張</td>
   <td class="hide-mobile" style="color:#3fb950">-392張</td>
@@ -754,7 +755,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">93.1</td>
   <td class="pos" style="font-weight:600">113.53%</td>
-  <td style="color:#8b949e">68.2</td>
+  <td style="color:#8b949e">91.7</td>
   <td style="color:#8b949e">110.8%</td>
   <td class="hide-mobile" style="color:#8b949e">5691 張</td>
   <td class="hide-mobile" style="color:#3fb950">-67張</td>
@@ -778,7 +779,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">28.4</td>
   <td class="pos" style="font-weight:600">49.47%</td>
-  <td style="color:#8b949e">60.2</td>
+  <td style="color:#8b949e">68.3</td>
   <td style="color:#8b949e">84.1%</td>
   <td class="hide-mobile" style="color:#8b949e">3774 張</td>
   <td class="hide-mobile" style="color:#3fb950">-3,990張</td>
@@ -802,7 +803,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">78.1</td>
   <td class="pos" style="font-weight:600">46.25%</td>
-  <td style="color:#8b949e">71.0</td>
+  <td style="color:#8b949e">77.5</td>
   <td style="color:#8b949e">78.4%</td>
   <td class="hide-mobile" style="color:#8b949e">15917 張</td>
   <td class="hide-mobile" style="color:#3fb950">-2,561張</td>
@@ -826,7 +827,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">175.5</td>
   <td class="pos" style="font-weight:600">17%</td>
-  <td style="color:#8b949e">59.8</td>
+  <td style="color:#8b949e">66.7</td>
   <td style="color:#8b949e">79.1%</td>
   <td class="hide-mobile" style="color:#8b949e">1762 張</td>
   <td class="hide-mobile" style="color:#f85149">+563張</td>
@@ -850,7 +851,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">168.5</td>
   <td class="pos" style="font-weight:600">76.26%</td>
-  <td style="color:#8b949e">53.0</td>
+  <td style="color:#8b949e">65.1</td>
   <td style="color:#8b949e">76.5%</td>
   <td class="hide-mobile" style="color:#8b949e">39735 張</td>
   <td class="hide-mobile" style="color:#3fb950">-31,746張</td>

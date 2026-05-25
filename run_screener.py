@@ -43,6 +43,14 @@ def fmt_num(value, digits=2, unit=""):
     return f"{text}{unit}"
 
 
+def _fmt_signed_pct(value, digits: int = 2) -> str:
+    value = to_float(value, None)
+    if value is None or not math.isfinite(value):
+        return "-"
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value:.{digits}f}%"
+
+
 def read_csv_rows(path: Path) -> list[dict]:
     if not path.exists():
         return []
@@ -113,6 +121,40 @@ def pct_change(now, before):
     if now is None or before in (None, 0):
         return None
     return (now / before - 1) * 100
+
+
+def is_overheated(stock: dict) -> bool:
+    """PR3 guard: any condition forces the stock into 過熱/風險."""
+    return (
+        to_float(stock.get("gain_6w"), 0) >= 100
+        or to_float(stock.get("rsi") or stock.get("rsi_14"), 0) >= 85
+        or to_float(stock.get("bb_pct") or stock.get("percent_b"), 0) >= 110
+        or to_float(stock.get("gain_3d"), 0) >= 20
+    )
+
+
+def overheat_reasons(stock: dict) -> list[str]:
+    gain_6w = to_float(stock.get("gain_6w"), 0)
+    gain_3d = to_float(stock.get("gain_3d"), 0)
+    rsi14 = to_float(stock.get("rsi") or stock.get("rsi_14"), 0)
+    percent_b = to_float(stock.get("bb_pct") or stock.get("percent_b"), 0)
+    reasons: list[str] = []
+    if gain_6w >= 100:
+        reasons.append(f"近6週 {_fmt_signed_pct(gain_6w)} (門檻 100%)")
+    if rsi14 >= 85 or (gain_6w >= 100 and rsi14 >= 80):
+        reasons.append(f"RSI {rsi14:.1f} (門檻 85)")
+    if percent_b >= 110:
+        reasons.append(f"%B {percent_b:.1f}% (門檻 110%)")
+    if gain_3d >= 20:
+        reasons.append(f"近3日 {_fmt_signed_pct(gain_3d)} (門檻 20%)")
+    return reasons
+
+
+def overheat_reason_text(stock: dict) -> str:
+    reasons = overheat_reasons(stock)
+    if not reasons:
+        return ""
+    return "強制過熱排除：" + " + ".join(reasons)
 
 
 def load_scan_rows() -> list[dict]:
@@ -254,6 +296,8 @@ def market_sector_flow(industry_map: dict[str, dict]) -> dict[str, dict]:
 
 
 def stock_status(row: dict) -> tuple[str, str]:
+    if is_overheated(row):
+        return "🔴", "過熱/風險"
     basket = row.get("basket", "")
     if basket == "已發動籃":
         return "🟡", "強勢追蹤"
@@ -273,21 +317,21 @@ def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
     ma5 = sma(closes, 5)
     ma34 = sma(closes, 34)
     gain_6w = pct_change(close, closes[-31]) if close and len(closes) >= 31 else None
+    gain_3d = pct_change(close, closes[-4]) if close and len(closes) >= 4 else None
     vol5 = (sum(r["volume"] for r in rows[-5:]) / 5 / 1000) if len(rows) >= 5 else None
     entry = ma5 * 0.985 if ma5 else close
     target = high21 * 1.02 if high21 else (close * 1.12 if close else None)
     stop = low21 * 0.995 if low21 else (close * 0.9 if close else None)
-    icon, status = stock_status(row)
-    return {
+    enriched = {
         **row,
+        "rank_basket": row.get("rank_basket") or row.get("original_basket") or row.get("basket"),
         "stock_id": sid,
         "name": row.get("name") or sid,
         "sector": row.get("sector") or row.get("industry_category") or sector_for_stock(sid, industry_map or {}),
         "date": latest.get("date") or row.get("date") or "",
         "close": close,
-        "icon": icon,
-        "status": status,
         "gain_6w": gain_6w,
+        "gain_3d": gain_3d,
         "rsi": rsi(closes),
         "bb_pct": bb_pct(closes),
         "ma5": ma5,
@@ -299,10 +343,26 @@ def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
         "target": target,
         "stop": stop,
     }
+    icon, status = stock_status(enriched)
+    enriched["icon"] = icon
+    enriched["status"] = status
+    if is_overheated(enriched):
+        original_basket = enriched.get("basket")
+        if original_basket and original_basket != "過熱/風險":
+            enriched["original_basket"] = original_basket
+        enriched["basket"] = "過熱/風險"
+        hot_reason = overheat_reason_text(enriched)
+        original_reason = str(row.get("reason") or "").strip()
+        if hot_reason:
+            if original_reason.startswith("強制過熱排除"):
+                enriched["reason"] = original_reason
+            else:
+                enriched["reason"] = hot_reason + (f"；原判讀：{original_reason}" if original_reason else "")
+    return enriched
 
 
 def _basket_rank(row: dict) -> int:
-    basket = str(row.get("basket") or "")
+    basket = str(row.get("rank_basket") or row.get("basket") or "")
     if basket == "已發動籃" or "已發動" in basket:
         return 0
     if "空轉多" in basket:
@@ -460,9 +520,10 @@ def report_markdown(rows: list[dict], report_date: str, sector_scores: dict[str,
             "|------|------|",
             f"| 收盤價 | **{fmt_num(r.get('close'), 2)} 元** |",
             f"| 近6週漲幅 | **{fmt_num(r.get('gain_6w'), 2, '%')}** |",
+            f"| 近3日漲幅 | **{fmt_num(r.get('gain_3d'), 2, '%')}** |",
             f"| 產業族群 | {r.get('sector') or '未分類'} |",
             f"| 族群資金排名 | #{fmt_num(r.get('sector_rank'), 0)}（分數 {fmt_num(r.get('sector_flow_score'), 1)}） |",
-            f"| RSI\\(14\\) | {fmt_num(r.get('rsi'), 1)} |",
+            f"| RSI(14) | {fmt_num(r.get('rsi'), 1)} |",
             f"| 布林 %B | {fmt_num(r.get('bb_pct'), 1, '%')} |",
             f"| 近5日量 | {fmt_num(r.get('vol5_lot'), 0)} 張 |",
             f"| 近21日壓力 | {fmt_num(r.get('high21'), 2)} |",

@@ -252,7 +252,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
 .placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
-.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
+.warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
 .traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
 .ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
@@ -315,7 +316,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
   <div class="detail-hero">
     <div class="card">
-      <div class="traffic-light watch"><div class="signal"><span>&#128993;</span><span>WATCH · 等確認</span><span class="signal-label">黃燈</span></div><div class="reason">趨勢偏多 + 量增價漲 + R:R 1:1.8 → 條件未完全同向，先觀察或等回測</div></div>
+      <div class="traffic-light nogo"><div class="signal"><span>&#128308;</span><span>NO-GO · 暫不建倉</span><span class="signal-label">紅燈</span></div><div class="reason">強制過熱排除：近3日 +22.81% (門檻 20%) → 等待回測 MA20 後重新評估</div></div>
       <div class="section-label">資訊卡</div>
       
 <div class="telegram-report-card">
@@ -327,7 +328,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="telegram-rating ">觀望</div>
   </div>
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">26.65</div></div><div class="change pos">單日 +2.15（+8.78%）</div></div>
-  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">行進籃｜Score 90.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量增價漲 / B1主力未離開</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 1 次，最近 2026-05-18</div></div></div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">過熱/風險｜Score 90.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜距買進區間偏遠，不追價</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">近3日 +22.81% (門檻 20%) / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 1 次，最近 2026-05-18</div></div></div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">短中多頭排列</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">量增價漲</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 8.78% / 量比 3.71x / 紅K / 5日均量較前5日 +111.3%</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">常態上漲，多頭順勢；若爆大量要注意高點。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 80.1 / D 69.9，偏多</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">買進區</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-4.1，偏熱</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v pos">外資5日 +336張；三大法人當日 376 張；大戶 37.88% / 散戶 8.65%</div></div><div class="telegram-line"><div class="k">籌碼數字</div><div class="v">外資10日 238 張；主力10日 295 張</div></div></div>
   <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
 </div>
@@ -335,16 +336,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div>
       <div class="card">
         <div class="section-label">操作規劃</div>
-        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 23.25｜近支撐 20.15</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">20.70 ~ 22.17</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">23.71</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">20.15（買點-6%，-6.0%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-mid">1:1.8</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜距MA20 +26.7%</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。</div></div></div>
+        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 23.25｜近支撐 20.15</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">20.70 ~ 22.17</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">23.71</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">20.15（買點-6%，-6.0%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-mid">1:1.8</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v">續抱觀察｜距MA20 +26.7%</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">偏熱或風險區：不追高，等降溫、回測支撐不破，再重新評估。</div></div></div>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="section-label">Quick 分析</div>
-        <div class="mini-report">分類：行進籃
+        <div class="mini-report">分類：過熱/風險
 操作評價：觀望｜買進區間：20.70 ~ 22.17｜關鍵防守：24.10（近期大量K低點）
-現況：收盤 26.65，RSI 83.4，%B 76.4%。
+現況：收盤 26.65，RSI 72.3，%B 76.4%。
 理由：距買進區間偏遠，不追價
 台帳：歷史入選 1 次，最近 2026-05-18。
-操作：偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。</div>
+操作：偏熱或風險區：不追高，等降溫、回測支撐不破，或重新整理後再評估。</div>
       </div>
     </div>
   </div>
@@ -1032,7 +1033,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div style="overflow-x:auto">
       <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>
 <tr>
-  <td>2026-05-18</td><td>行進籃</td><td>19.26 ~ 20.20<div class="signal-dates">原始 21.27</div></td><td>21.75</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+  <td>2026-05-18</td><td>過熱/風險</td><td>19.26 ~ 20.20<div class="signal-dates">原始 21.27</div></td><td>21.75</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
 </tr></tbody></table>
     </div>
     <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用 0-100 的排名遞減補值。</div>

@@ -94,8 +94,15 @@ def _parse_format_v1(text: str, result: dict) -> dict:
         block       = m.group(6)
 
         def ext(label, blk=block):
-            p = re.search(rf"\| {label} \| \*?\*?(.*?)\*?\*? \|", blk)
+            p = re.search(rf"\| {re.escape(label)} \| \*?\*?(.*?)\*?\*? \|", blk)
             return _clean_cell(p.group(1)) if p else "─"
+
+        def ext_any(labels):
+            for label in labels:
+                value = ext(label)
+                if value != "─":
+                    return value
+            return "─"
 
         # 外資月累計（不同月份標籤）
         fi_month = "─"
@@ -113,7 +120,8 @@ def _parse_format_v1(text: str, result: dict) -> dict:
             "score":         normalize_score_value(score, stock_name, m.group(4).strip()),
             "price":         ext("收盤價"),
             "gain_6w":       ext("近6週漲幅"),
-            "rsi":           ext("RSI\\(14\\)"),
+            "gain_3d":       ext("近3日漲幅"),
+            "rsi":           ext_any(["RSI(14)", "RSI\\(14\\)"]),
             "bband_pct":     ext("布林 %B"),
             "vol_5d":        ext("近5日量"),
             "foreign_month": fi_month,
@@ -177,6 +185,7 @@ def _parse_format_v3(text: str, result: dict) -> dict:
             "score": normalize_score_value(score, stock_name, status) if score > 0 else rank_fallback_score(stock_no),
             "price": ext("收盤價") if ext("收盤價") != "─" else f"{price} 元",
             "gain_6w": ext_any(["近6週均漲幅", "近6週漲幅"]),
+            "gain_3d": ext("近3日漲幅"),
             "rsi": ext("RSI(14)"),
             "bband_pct": ext_any(["布林%B", "布林 %B"]),
             "vol_5d": ext("5日成交量"),
@@ -762,7 +771,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
 .placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
-.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
+.warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
 .traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
 .ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
@@ -1339,7 +1349,12 @@ def normalize_report_scores(reports: list[dict]) -> list[dict]:
 
 
 def is_overheated_stock(s: dict) -> bool:
-    return (_to_float(s.get("gain_6w"), 0) >= 100 or _to_float(s.get("rsi"), 0) >= 85 or _to_float(s.get("bband_pct"), 0) >= 110)
+    return (
+        _to_float(s.get("gain_6w"), 0) >= 100
+        or _to_float(s.get("rsi"), 0) >= 85
+        or _to_float(s.get("bband_pct"), 0) >= 110
+        or _to_float(s.get("gain_3d"), 0) >= 20
+    )
 
 
 def overheat_reasons(s: dict) -> list[str]:
@@ -1347,12 +1362,15 @@ def overheat_reasons(s: dict) -> list[str]:
     gain = _to_float(s.get("gain_6w"), 0)
     rsi = _to_float(s.get("rsi"), 0)
     bband = _to_float(s.get("bband_pct"), 0)
+    gain_3d = _to_float(s.get("gain_3d"), 0)
     if gain >= 100:
-        reasons.append(f"6W gain {gain:.1f}% >= 100%")
-    if rsi >= 85:
-        reasons.append(f"RSI(14) {rsi:.1f} >= 85")
+        reasons.append(f"近6週 {gain:+.2f}% (門檻 100%)")
+    if rsi >= 85 or (gain >= 100 and rsi >= 80):
+        reasons.append(f"RSI {rsi:.1f} (門檻 85)")
     if bband >= 110:
-        reasons.append(f"%B {bband:.1f}% >= 110%")
+        reasons.append(f"%B {bband:.1f}% (門檻 110%)")
+    if gain_3d >= 20:
+        reasons.append(f"近3日 {gain_3d:+.2f}% (門檻 20%)")
     return reasons
 
 
@@ -1369,7 +1387,8 @@ def coming_soon_block(title: str, body: str, data_check: str = "", ready: bool =
 
 def rr_warning_bar(decision: dict) -> str:
     rr = decision.get("rr")
-    return '<div class="warning-bar">R:R 過低，不建議建倉</div>' if rr is not None and rr < 1.5 else ""
+    rr_text = decision.get("rr_text") or (f"1:{float(rr):.1f}" if rr is not None else "1:─")
+    return f'<div class="warning-banner">⚠ R:R = {esc(rr_text)} 低於建議門檻 1.5，不建議建倉</div>' if rr is not None and rr < 1.5 else ""
 
 
 def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, daily: list[dict], chip_series: list[dict]) -> str:
@@ -1392,10 +1411,11 @@ def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, dail
     wr_buy = wr is not None and -85 <= wr <= -65
     chip_total = _sum_recent(chip_series, "total", 5)
     chip_ok = bool(chip_total is None or chip_total >= 0)
-    rr_low = rr is not None and round(float(rr), 1) <= 1.5
-    overheat = basket == "過熱/風險" or is_overheated_stock(s)
+    rr_low = rr is not None and float(rr) < 1.5
+    forced_overheat = is_overheated_stock(s)
+    basket_risk = basket == "過熱/風險"
     hard_momentum_break = "賣出" in macd_state and k is not None and k < 20 and not trend_bull
-    no_go = trend_bear or overheat or rr_low or hard_momentum_break
+    no_go = trend_bear or forced_overheat or basket_risk or rr_low or hard_momentum_break
     green_checks = [
         trend_bull,
         volume_ok,
@@ -1409,11 +1429,13 @@ def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, dail
         level, cls, icon, label = "GO · 可建倉", "go", "&#128994;", "綠燈"
     else:
         level, cls, icon, label = "WATCH · 等確認", "watch", "&#128993;", "黃燈"
-    if overheat:
+    if forced_overheat:
         hot = overheat_reasons(s)
-        reason = f"過熱排除（{' / '.join(hot[:2]) or basket}）→ 等待回測 MA20 後重新評估"
+        reason = f"強制過熱排除：{' + '.join(hot[:3]) or basket} → 等待回測 MA20 後重新評估"
     elif rr_low:
         reason = f"R:R {decision.get('rr_text', '─')} 邊際不足 → 等改善至 1:2 以上再評估"
+    elif basket_risk:
+        reason = f"風險籃（{basket}）→ 暫不追價，等待回測或訊號轉強"
     elif trend_bear:
         reason = f"趨勢偏空（{trend or '跌破均線'}）→ 暫不建倉，先等站回 MA20"
     elif hard_momentum_break:
@@ -4195,6 +4217,10 @@ def enrich_stock_fields(s: dict) -> dict:
             base = daily[-31]["close"]
             if base:
                 out["gain_6w"] = f"{(close / base - 1) * 100:+.2f}%"
+        if is_blank(out.get("gain_3d")) and len(daily) >= 4:
+            base = daily[-4]["close"]
+            if base:
+                out["gain_3d"] = f"{(close / base - 1) * 100:+.2f}%"
         if is_blank(out.get("rsi")):
             rsi = calc_rsi(closes)
             out["rsi"] = fmt_num(rsi, 1)
@@ -4325,6 +4351,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
             ("不追高", "tag"),
         ]
     tag_html = "".join(f'<span class="tag {cls}">{label}</span>' for label, cls in tags)
+    rr_warning = '<span class="rr-warning">⚠ R:R 過低</span>' if plan.get("rr") is not None and plan.get("rr") < 1.5 else ""
     return f"""
 <div class="basket-card">
   <div class="basket-head">
@@ -4344,7 +4371,7 @@ def basket_card(s: dict, basket: str, ledger: dict[str, dict] | None = None) -> 
     </div>
     <div class="basket-change {change_cls}">單日 {change_text}</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 {plan['entry_text']} ｜ 目標 {plan['target_text']} ｜ 初始停損 {plan['initial_stop_text']} ｜ <span class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</span></div>
+  <div style="font-size:12px;color:#c9d1d9">買點 {plan['entry_text']} ｜ 目標 {plan['target_text']} ｜ 初始停損 {plan['initial_stop_text']} ｜ <span class="price-rr {plan['rr_class']}">R:R {plan['rr_text']}</span>{rr_warning}</div>
   <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 {plan['initial_stop_text']} ｜ 符合條件：{esc(reason)}</div>
   <div class="tag-row">{tag_html}</div>
   {signal_summary_html(s.get('id',''), ledger or {})}

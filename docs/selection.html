@@ -252,7 +252,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
 .placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
-.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
+.warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
 .traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
 .ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
@@ -698,7 +699,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 
   <td class="price-main">126</td>
   <td class="pos" style="font-weight:600">10.53%</td>
-  <td style="color:#8b949e">57.0</td>
+  <td style="color:#8b949e">57</td>
   <td style="color:#8b949e">94.9%</td>
   <td class="hide-mobile" style="color:#8b949e">1435 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,169張</td>
@@ -934,9 +935,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="card">
   <div class="section-label">Daily Strategy Stream</div>
   <div class="grid grid-3">
-    <div class="metric"><div class="metric-num" style="color:#3fb950">15</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
+    <div class="metric"><div class="metric-num" style="color:#3fb950">13</div><div class="metric-label">行進籃：SFZ 訊號日先試單，TA3 作確認/加碼</div></div>
     <div class="metric"><div class="metric-num" style="color:#58a6ff">0</div><div class="metric-label">盤整籃：M大 ABC 先觀察，等量價轉強</div></div>
-    <div class="metric"><div class="metric-num" style="color:#f85149">5</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
+    <div class="metric"><div class="metric-num" style="color:#f85149">7</div><div class="metric-label">過熱/風險：不追高，等 MA5/MA10/箱頂回測</div></div>
   </div>
 </div>
 <div class="card">
@@ -1217,31 +1218,31 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div style="font-size:12px;color:#c9d1d9">買點 59.00 ｜ 目標 82.21 ｜ 初始停損 55.46 ｜ <span class="price-rr rr-good">R:R 1:6.6</span></div>
   <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 55.46 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價穩 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 / 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 
 <div class="basket-card">
   <div class="basket-head">
     <div>
-      <a class="basket-title-link" href="stocks/4991.html" title="打開 4991 環宇-KY 個股資訊頁">
-        <span class="basket-code">4991</span>
-        <span class="basket-name">環宇-KY</span>
+      <a class="basket-title-link" href="stocks/2303.html" title="打開 2303 聯電 個股資訊頁">
+        <span class="basket-code">2303</span>
+        <span class="basket-name">聯電</span>
       </a>
-      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">56.24%</span> ｜ 分數 100.0</div>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">90%</span> ｜ 分數 90.0</div>
     </div>
     <div class="basket-action tag-green">SFZ試單/續抱</div>
   </div>
   <div class="basket-price-row">
     <div>
       <div style="font-size:11px;color:#6e7681">收盤價</div>
-      <div class="basket-price">814.00</div>
+      <div class="basket-price">114.00</div>
     </div>
-    <div class="basket-change pos">單日 +74.00（+10.00%）</div>
+    <div class="basket-change neg">單日 -2.00（-1.72%）</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 653.50 ｜ 目標 830.28 ｜ 初始停損 614.29 ｜ <span class="price-rr rr-good">R:R 1:4.5</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 614.29 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量縮價漲 / B1資料不足</div>
+  <div style="font-size:12px;color:#c9d1d9">買點 90.20 ｜ 目標 122.91 ｜ 初始停損 84.79 ｜ <span class="price-rr rr-good">R:R 1:6.0</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 84.79 ｜ 符合條件：行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 長多偏強 / 量價未表態 / B1主力未離開</div>
   <div class="tag-row"><span class="tag tag-green">行進籃</span><span class="tag tag-yellow">TA3加碼觀察</span><span class="tag tag">MA20主線</span></div>
-  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-05-18 ｜ 最近 2026-05-22 ｜ 行進籃 ｜ <span class="push-wait">推播台帳待串接</span></div>
+  <div class="signal-foot">歷史訊號：<strong>9</strong> 次 ｜ 首見 2026-04-30 ｜ 最近 2026-05-22 ｜ 行進籃 / 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 </div>
 <div class="card">
@@ -1272,7 +1273,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +17.50（+10.00%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 115.85 ｜ 目標 196.35 ｜ 初始停損 108.90 ｜ <span class="price-rr rr-good">R:R 1:11.6</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 108.90 ｜ 符合條件：6W gain 206.5% &gt;= 100% / 漲幅偏大 / 量縮價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 108.90 ｜ 符合條件：近6週 +206.53% (門檻 100%) / RSI 84.3 (門檻 85) / 原報告風險/超買 / 漲幅偏大 / 量縮價漲 / B1主力未離開 / 不追高，等回測</div>
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1296,7 +1297,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +20.00（+1.63%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 811.25 ｜ 目標 1336.20 ｜ 初始停損 762.57 ｜ <span class="price-rr rr-good">R:R 1:10.8</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 762.57 ｜ 符合條件：6W gain 176.2% &gt;= 100% / RSI(14) 88.9 &gt;= 85 / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 762.57 ｜ 符合條件：近6週 +176.24% (門檻 100%) / RSI 88.9 (門檻 85) / 近3日 +22.55% (門檻 20%) / 原報告風險/超買 / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1319,7 +1320,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
     <div class="basket-change neg">單日 -0.50（-0.65%）</div>
   </div>
-  <div style="font-size:12px;color:#c9d1d9">買點 74.98 ｜ 目標 79.46 ｜ 初始停損 70.48 ｜ <span class="price-rr rr-bad">R:R 1:1.0</span></div>
+  <div style="font-size:12px;color:#c9d1d9">買點 74.98 ｜ 目標 79.46 ｜ 初始停損 70.48 ｜ <span class="price-rr rr-bad">R:R 1:1.0</span><span class="rr-warning">⚠ R:R 過低</span></div>
   <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 70.48 ｜ 符合條件：原報告風險/超買 / 量縮價穩 / B1主力未離開 / 不追高，等回測</div>
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-05-22 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
@@ -1344,7 +1345,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +1.40（+2.67%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 41.99 ｜ 目標 56.41 ｜ 初始停損 39.47 ｜ <span class="price-rr rr-good">R:R 1:5.7</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 39.47 ｜ 符合條件：RSI(14) 92.1 &gt;= 85 / 漲幅偏大 / 均量上彎 / B1主力未離開 / 不追高，等回測</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 39.47 ｜ 符合條件：RSI 92.1 (門檻 85) / 原報告風險/超買 / 漲幅偏大 / 均量上彎 / B1主力未離開 / 不追高，等回測</div>
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
@@ -1368,9 +1369,57 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="basket-change pos">單日 +6.70（+9.88%）</div>
   </div>
   <div style="font-size:12px;color:#c9d1d9">買點 47.73 ｜ 目標 75.99 ｜ 初始停損 44.86 ｜ <span class="price-rr rr-good">R:R 1:9.9</span></div>
-  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 44.86 ｜ 符合條件：6W gain 112.5% &gt;= 100% / RSI(14) 95.8 &gt;= 85 / %B 112.7% &gt;= 110% / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 44.86 ｜ 符合條件：近6週 +112.55% (門檻 100%) / RSI 95.8 (門檻 85) / %B 112.7% (門檻 110%) / 近3日 +32.80% (門檻 20%) / 原報告風險/超買 / 漲幅偏大 / 量增價漲 / B1主力未離開 / 不追高，等回測</div>
   <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
   <div class="signal-foot">歷史訊號：<strong>2</strong> 次 ｜ 首見 2026-05-21 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/4991.html" title="打開 4991 環宇-KY 個股資訊頁">
+        <span class="basket-code">4991</span>
+        <span class="basket-name">環宇-KY</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">56.24%</span> ｜ 分數 100.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">814.00</div>
+    </div>
+    <div class="basket-change pos">單日 +74.00（+10.00%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 653.50 ｜ 目標 830.28 ｜ 初始停損 614.29 ｜ <span class="price-rr rr-good">R:R 1:4.5</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 614.29 ｜ 符合條件：近3日 +22.04% (門檻 20%) / 原報告風險/超買 / 漲幅偏大 / 量縮價漲 / B1資料不足 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>3</strong> 次 ｜ 首見 2026-05-18 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
+</div>
+
+<div class="basket-card">
+  <div class="basket-head">
+    <div>
+      <a class="basket-title-link" href="stocks/3532.html" title="打開 3532 台勝科 個股資訊頁">
+        <span class="basket-code">3532</span>
+        <span class="basket-name">台勝科</span>
+      </a>
+      <div style="font-size:12px;color:#8b949e;margin-top:4px">近6週 <span class="pos">65.12%</span> ｜ 分數 90.0</div>
+    </div>
+    <div class="basket-action tag-red">過熱不追</div>
+  </div>
+  <div class="basket-price-row">
+    <div>
+      <div style="font-size:11px;color:#6e7681">收盤價</div>
+      <div class="basket-price">248.50</div>
+    </div>
+    <div class="basket-change pos">單日 +22.50（+9.96%）</div>
+  </div>
+  <div style="font-size:12px;color:#c9d1d9">買點 217.88 ｜ 目標 278.46 ｜ 初始停損 204.80 ｜ <span class="price-rr rr-good">R:R 1:4.6</span></div>
+  <div style="font-size:12px;color:#8b949e;margin-top:4px">近支撐 204.80 ｜ 符合條件：近3日 +23.02% (門檻 20%) / 原報告風險/超買 / 漲幅偏大 / 量縮價漲 / B1主力未離開 / 不追高，等回測</div>
+  <div class="tag-row"><span class="tag tag-red">風險區</span><span class="tag tag">等回測</span><span class="tag tag">不追高</span></div>
+  <div class="signal-foot">歷史訊號：<strong>1</strong> 次 ｜ 首見 2026-05-22 ｜ 最近 2026-05-22 ｜ 過熱/風險 ｜ <span class="push-wait">推播台帳待串接</span></div>
 </div>
 </div></div></div>
   <div class="tab-panel" id="signal-ledger">
@@ -1493,7 +1542,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/4991.html" onclick="event.stopPropagation()">4991 環宇-KY</a></div>
     <div class="signal-dates"><a href="stocks/4991.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>3</strong> 次</td>
   <td>2026-05-18<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1625,7 +1674,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/3532.html" onclick="event.stopPropagation()">3532 台勝科</a></div>
     <div class="signal-dates"><a href="stocks/3532.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag tag-green">今日仍在榜</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-22<br><span style="color:#8b949e">最近 2026-05-22</span></td>
@@ -1949,7 +1998,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/8390.html" onclick="event.stopPropagation()">8390 金益鼎</a></div>
     <div class="signal-dates"><a href="stocks/8390.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-18<br><span style="color:#8b949e">最近 2026-05-18</span></td>
@@ -1961,7 +2010,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/2061.html" onclick="event.stopPropagation()">2061 風青</a></div>
     <div class="signal-dates"><a href="stocks/2061.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>1</strong> 次</td>
   <td>2026-05-18<br><span style="color:#8b949e">最近 2026-05-18</span></td>
@@ -2165,7 +2214,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/4979.html" onclick="event.stopPropagation()">4979 華星光</a></div>
     <div class="signal-dates"><a href="stocks/4979.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>4</strong> 次</td>
   <td>2026-05-04<br><span style="color:#8b949e">最近 2026-05-11</span></td>
@@ -2441,7 +2490,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/8358.html" onclick="event.stopPropagation()">8358 金居</a></div>
     <div class="signal-dates"><a href="stocks/8358.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-29</span></td>
@@ -2561,7 +2610,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>
     <div><a class="stock-link" href="stocks/2484.html" onclick="event.stopPropagation()">2484 希華</a></div>
     <div class="signal-dates"><a href="stocks/2484.html" onclick="event.stopPropagation()">打開個股資訊卡 →</a></div>
-    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">行進籃</span></div>
+    <div class="tag-row"><span class="tag">歷史訊號</span><span class="tag">過熱/風險</span></div>
   </td>
   <td><strong>2</strong> 次</td>
   <td>2026-04-24<br><span style="color:#8b949e">最近 2026-04-28</span></td>
