@@ -93,6 +93,13 @@ Browser preview:
 
 ## Remaining
 
-- `gh` CLI is unavailable locally, so workflow dispatch must be done through
-  GitHub UI or another authenticated Actions-write path.
+- Pushed repair/data/site commit `a126ee802` to `origin/main`.
+- GitHub Pages build/deploy run `26467436166` completed successfully for
+  `a126ee802`.
+- Live GitHub Pages checks passed after propagation:
+  `index.html`, `daily/2026-05-26.html`, and `stocks/2330.html` all contain
+  2026-05-26.
+- `gh` CLI is unavailable locally, and no `GH_TOKEN` / `GITHUB_TOKEN` /
+  `GITHUB_PAT` is available, so workflow dispatch must be done through GitHub
+  UI, `gh`, or another authenticated Actions-write path.
 - Phase 4-B thin-shell/JSON refactor was intentionally not started.

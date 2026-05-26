@@ -86,6 +86,14 @@ All sampled CSV caches and generated stock pages exist with latest price date
 ### Next Notes
 
 - `artifacts/` remains intentionally untracked.
+- Commit pushed to `origin/main`: `a126ee802`.
+- GitHub Pages build/deploy run `26467436166` completed successfully for
+  `a126ee802`; live checks for `index.html`, `daily/2026-05-26.html`, and
+  `stocks/2330.html` all contain 2026-05-26.
+- Daily Stock Site Update workflow dispatch was not triggered from this
+  machine because `gh` is not installed and no `GH_TOKEN` / `GITHUB_TOKEN` /
+  `GITHUB_PAT` is available. The next scheduled run will use the repaired
+  workflow.
 - `gh` CLI is not installed in this environment; workflow dispatch needs either
   GitHub UI, `gh`, or a token/app capability that can call workflow_dispatch.
 - Phase 4-B thin-shell refactor has not started.
