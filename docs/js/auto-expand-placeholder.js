@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch(src, { method: 'HEAD', cache: 'no-store' });
             if (res.ok) {
                 block.open = true;
-                block.classList.add('data-ready');
+                block.classList.add('data-ready', 'ready');
             }
         } catch (e) {
             // Keep collapsed when the future data file is not published yet.

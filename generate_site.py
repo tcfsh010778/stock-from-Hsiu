@@ -1377,7 +1377,7 @@ def overheat_reasons(s: dict) -> list[str]:
 def coming_soon_block(title: str, body: str, data_check: str = "", ready: bool = False, inline: bool = False) -> str:
     data_attr = f' data-source="{esc(data_check)}"' if data_check else ""
     open_attr = " open" if ready else ""
-    ready_cls = " data-ready" if ready else ""
+    ready_cls = " data-ready ready" if ready else ""
     inline_cls = " inline-placeholder" if inline else ""
     return f'''<details class="coming-soon placeholder-block{ready_cls}{inline_cls}"{data_attr}{open_attr}>
   <summary>{esc(title)}</summary>
