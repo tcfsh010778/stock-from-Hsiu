@@ -254,8 +254,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
 .rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
 .warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
-.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
-.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.traffic-light,.signal-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal,.signal-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label,.signal-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason,.signal-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go,.signal-light.light-green{background:#ffebee;border-color:#c62828}.traffic-light.watch,.signal-light.light-yellow{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo,.signal-light.light-red{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar,.radar-filter{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select,.radar-filter input,.radar-filter select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset,.radar-filter fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend,.radar-filter legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
 .disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
@@ -376,12 +376,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
   </div>
   <div class="score-rule">目前公式來源：`mda_universe_scan.py`。滿分 100 分，不含外資買賣超；外資欄位是另外給你判讀短線籌碼，不是這個 Score 的加分項。</div>
-</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div style="overflow-x:auto">
+</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div class="table-placeholder-note">CaryBot 訊號欄位接入中</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
   <th>#</th><th>代號/名稱</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
-  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile carybot-col">CaryBot暫接</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile carybot-col" data-empty="true">CaryBot暫接</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
@@ -399,7 +399,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">58.2%</td>
   <td class="hide-mobile" style="color:#8b949e">75076 張</td>
   <td class="hide-mobile" style="color:#f85149">+42張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">28.7</span></td>
   <td>
     <div class="price-entry">進 67.70</div>
@@ -423,7 +423,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">56.6%</td>
   <td class="hide-mobile" style="color:#8b949e">214951 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,160張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">28.5</span></td>
   <td>
     <div class="price-entry">進 487.00</div>
@@ -447,7 +447,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">56.5%</td>
   <td class="hide-mobile" style="color:#8b949e">83663 張</td>
   <td class="hide-mobile" style="color:#3fb950">-7,035張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">26.9</span></td>
   <td>
     <div class="price-entry">進 63.98</div>
@@ -471,7 +471,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">53.8%</td>
   <td class="hide-mobile" style="color:#8b949e">67672 張</td>
   <td class="hide-mobile" style="color:#f85149">+353張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">26.0</span></td>
   <td>
     <div class="price-entry">進 39.59</div>
@@ -495,7 +495,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">74.8%</td>
   <td class="hide-mobile" style="color:#8b949e">87922 張</td>
   <td class="hide-mobile" style="color:#3fb950">-14,927張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">48.0</span></td>
   <td>
     <div class="price-entry">進 182.88</div>
@@ -519,7 +519,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">70.9%</td>
   <td class="hide-mobile" style="color:#8b949e">129772 張</td>
   <td class="hide-mobile" style="color:#f85149">+5,198張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">45.7</span></td>
   <td>
     <div class="price-entry">進 238.75</div>
@@ -543,7 +543,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">99.4%</td>
   <td class="hide-mobile" style="color:#8b949e">431742 張</td>
   <td class="hide-mobile" style="color:#3fb950">-13,313張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">24.8</span></td>
   <td>
     <div class="price-entry">進 293.75</div>
@@ -567,7 +567,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">90.7%</td>
   <td class="hide-mobile" style="color:#8b949e">67488 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,375張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">31.9</span></td>
   <td>
     <div class="price-entry">進 167.75</div>
@@ -591,13 +591,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">94.5%</td>
   <td class="hide-mobile" style="color:#8b949e">85799 張</td>
   <td class="hide-mobile" style="color:#3fb950">-3,120張</td>
-<td class="hide-mobile carybot-cell">
-  <span class="tag tag-blue">PreBuy</span>
-  <div class="signal-dates">2026-04-07</div>
-  <div class="carybot-line">QZ <strong class="pos">2.53</strong>｜QTYR <strong>4.82</strong></div>
-  <div class="carybot-line">VAM20 43.56｜VAM60 39.87</div>
-  <div class="carybot-line">green_watch</div>
-</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">31.3</span></td>
   <td>
     <div class="price-entry">進 431.25</div>
@@ -621,7 +615,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">73.4%</td>
   <td class="hide-mobile" style="color:#8b949e">50618 張</td>
   <td class="hide-mobile" style="color:#3fb950">-31,746張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">31.0</span></td>
   <td>
     <div class="price-entry">進 152.00</div>
@@ -645,7 +639,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">74.7%</td>
   <td class="hide-mobile" style="color:#8b949e">59607 張</td>
   <td class="hide-mobile" style="color:#f85149">+251張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">40.6</span></td>
   <td>
     <div class="price-entry">進 34.34</div>
@@ -669,7 +663,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">76.6%</td>
   <td class="hide-mobile" style="color:#8b949e">90152 張</td>
   <td class="hide-mobile" style="color:#3fb950">-1,724張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">39.9</span></td>
   <td>
     <div class="price-entry">進 164.38</div>
@@ -693,7 +687,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">89.6%</td>
   <td class="hide-mobile" style="color:#8b949e">76622 張</td>
   <td class="hide-mobile" style="color:#3fb950">-197張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">27.7</span></td>
   <td>
     <div class="price-entry">進 181.00</div>
@@ -717,7 +711,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">93.4%</td>
   <td class="hide-mobile" style="color:#8b949e">56204 張</td>
   <td class="hide-mobile" style="color:#3fb950">-6,302張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">37.6</span></td>
   <td>
     <div class="price-entry">進 80.47</div>
@@ -741,7 +735,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">78.3%</td>
   <td class="hide-mobile" style="color:#8b949e">49054 張</td>
   <td class="hide-mobile" style="color:#f85149">+518張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">21.0</span></td>
   <td>
     <div class="price-entry">進 112.88</div>
@@ -765,7 +759,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">82.7%</td>
   <td class="hide-mobile" style="color:#8b949e">60258 張</td>
   <td class="hide-mobile" style="color:#f85149">+411張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">25.8</span></td>
   <td>
     <div class="price-entry">進 912.25</div>
