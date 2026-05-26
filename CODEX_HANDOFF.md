@@ -2,6 +2,28 @@
 
 Last updated: 2026-05-25
 
+## 2026-05-25 PR4 UX Selector Compatibility Pass
+
+### Goal
+
+Confirm the PR4 UX work after PR3 and add non-breaking selector aliases that match the requested spec examples.
+
+### Completed
+
+- Kept the existing working PR4 behavior for `selection.html` tabs, signal-ledger search/sort/pagination, stock traffic lights, and `timing.html` radar filters.
+- Added compatibility classes in `generate_site.py`:
+  - stock lights now include both `traffic-light ...` and `signal-light light-*`.
+  - radar filter now includes both `radar-filter-bar` and `radar-filter`.
+  - radar controls now include `data-filter` aliases and reset button id `reset-filter`.
+  - selection tab buttons now also carry `tab-link`.
+
+### Verification
+
+- Browser-verified `selection.html#signal-ledger` hash persistence after reload.
+- Browser-verified ledger search for `2342`, code-column asc/desc sorting, and pager count.
+- Browser-verified `stocks/2342.html` is yellow/WATCH, `stocks/6173.html` is red/NO-GO from forced overheat, and `stocks/8341.html` is red/NO-GO from low R:R.
+- Browser-verified `timing.html#buy-radar` at 375px has no horizontal overflow, sticky filter stays usable, minimum R:R filtering changes the count, and reset restores defaults.
+
 ## Startup Reminder
 
 Every future Codex session for this website project must first review:

@@ -773,8 +773,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
 .rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
 .warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
-.traffic-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go{background:#ffebee;border-color:#c62828}.traffic-light.watch{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo{background:#e8f5e9;border-color:#2e7d32}
-.ledger-controls,.radar-filter-bar{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.traffic-light,.signal-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal,.signal-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label,.signal-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason,.signal-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go,.signal-light.light-green{background:#ffebee;border-color:#c62828}.traffic-light.watch,.signal-light.light-yellow{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo,.signal-light.light-red{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar,.radar-filter{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select,.radar-filter input,.radar-filter select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset,.radar-filter fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend,.radar-filter legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
 .heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
 .disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
 
@@ -1462,7 +1462,8 @@ def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, dail
         if wr is not None:
             factors.append(f"Williams {fmt_num(wr, 1)}")
         reason = " + ".join(factors[:3]) + " → 條件未完全同向，先觀察或等回測"
-    return f'''<div class="traffic-light {cls}"><div class="signal"><span>{icon}</span><span>{level}</span><span class="signal-label">{label}</span></div><div class="reason">{esc(reason)}</div></div>'''
+    light_cls = {"go": "light-green", "watch": "light-yellow", "nogo": "light-red"}.get(cls, "light-yellow")
+    return f'''<div class="traffic-light {cls} signal-light {light_cls}"><div class="signal"><span>{icon}</span><span>{level}</span><span class="signal-label">{label}</span></div><div class="reason">{esc(reason)}</div></div>'''
 
 def build_stock_mda_abc_block(stock_id: str, s: dict, daily: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> str:
     if not daily:
@@ -7273,18 +7274,18 @@ def build_buy_radar_page(reports: list[dict], section_only: bool = False) -> str
     basket_options = '<option value="all">全部</option>' + ''.join(f'<option value="{esc(x)}">{esc(x)}</option>' for x in baskets)
     sector_options = '<option value="all">全部</option>' + ''.join(f'<option value="{esc(x)}">{esc(x)}</option>' for x in sectors)
     filter_bar = f"""
-    <div class="radar-filter-bar sticky-top">
+    <div class="radar-filter-bar radar-filter sticky-top">
       <fieldset>
         <legend>狀態</legend>
-        <label class="filter-chip"><input type="checkbox" data-radar-status value="near" checked> 接近買點</label>
-        <label class="filter-chip"><input type="checkbox" data-radar-status value="pullback" checked> 稍高等回測</label>
-        <label class="filter-chip"><input type="checkbox" data-radar-status value="broken"> 跌破買點</label>
-        <label class="filter-chip"><input type="checkbox" data-radar-status value="far"> 離買點過遠</label>
+        <label class="filter-chip"><input type="checkbox" data-filter="status" data-radar-status value="near" checked> 接近買點</label>
+        <label class="filter-chip"><input type="checkbox" data-filter="status" data-radar-status value="pullback" checked> 稍高等回測</label>
+        <label class="filter-chip"><input type="checkbox" data-filter="status" data-radar-status value="broken"> 跌破買點</label>
+        <label class="filter-chip"><input type="checkbox" data-filter="status" data-radar-status value="far"> 離買點過遠</label>
       </fieldset>
-      <label class="filter-chip">籃別 <select data-radar-basket>{basket_options}</select></label>
-      <label class="filter-chip">最低 R:R <input type="number" data-radar-min-rr value="2.0" step="0.1" min="0"></label>
-      <label class="filter-chip">產業 <select data-radar-sector>{sector_options}</select></label>
-      <button type="button" class="filter-reset" data-radar-reset>重置</button>
+      <label class="filter-chip">籃別 <select data-filter="basket" data-radar-basket>{basket_options}</select></label>
+      <label class="filter-chip">最低 R:R <input type="number" data-filter="min-rr" data-radar-min-rr value="2.0" step="0.1" min="0"></label>
+      <label class="filter-chip">產業 <select data-filter="industry" data-radar-sector>{sector_options}</select></label>
+      <button type="button" id="reset-filter" class="filter-reset" data-radar-reset>重置</button>
       <span class="filter-count" data-radar-count></span>
     </div>"""
     table = ""
@@ -9000,9 +9001,9 @@ def build_selection_page(reports: list[dict]) -> str:
   <div class="page-title">選股池</div>
   <div class="page-sub">從每日 Top20 出發，拆成 SFZ 雙籃，追蹤歷史入選紀錄。</div>
   <div class="tab-bar">
-    <button class="tab-btn active" data-tab="daily-top20">🏆 每日 Top20</button>
-    <button class="tab-btn" data-tab="sfz-baskets">🧺 SFZ 雙籃</button>
-    <button class="tab-btn" data-tab="signal-ledger">📡 入選追蹤</button>
+    <button class="tab-btn tab-link active" data-tab="daily-top20">🏆 每日 Top20</button>
+    <button class="tab-btn tab-link" data-tab="sfz-baskets">🧺 SFZ 雙籃</button>
+    <button class="tab-btn tab-link" data-tab="signal-ledger">📡 入選追蹤</button>
   </div>
   <div class="tab-panel active" id="daily-top20">{tab1}</div>
   <div class="tab-panel" id="sfz-baskets">{tab2}</div>
