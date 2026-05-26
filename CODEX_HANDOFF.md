@@ -1,6 +1,77 @@
 # Codex Handoff
 
-Last updated: 2026-05-25
+Last updated: 2026-05-27
+
+## 2026-05-27 Audit + placeholder CSS class fix
+
+### Goal
+
+Full audit of all P0-P2 items from the website task spec; fix the one genuine
+remaining bug found; commit the 2026-05-22 site rebuild.
+
+### Completed
+
+- Audited all P0-1, P0-2, P0-3, P1-1, P1-2, P1-3, and P2 items:
+  all were already implemented by the PR2/PR3/PR4 Codex sessions.
+- Found and fixed: `auto-expand-placeholder.js` added only `data-ready` class,
+  but inline CSS uses `.placeholder-block.ready` for green border; `components.css`
+  uses `.data-ready` for the `::before` content change.
+  Fix: both `data-ready` and `ready` are now added simultaneously.
+- Same fix applied to `generate_site.py` `coming_soon_block()` helper.
+- Committed 767 modified tracked files from the 2026-05-22 site rebuild.
+
+### Changed Files
+
+- `docs/js/auto-expand-placeholder.js` (classList.add now emits both classes)
+- `generate_site.py` (coming_soon_block ready_cls now "data-ready ready")
+- `docs/*.html`, `docs/stocks/*.html`, `docs/daily/*.html`, `docs/mda_candidates/*.html`,
+  `data/site_reports.json` (2026-05-22 site rebuild)
+
+### Source Of Truth
+
+- Site generator: `generate_site.py`
+- Full-market M大 scan: `mda_universe_scan.py`
+- Placeholder auto-expand: `docs/js/auto-expand-placeholder.js`
+- Placeholder CSS (dark theme): inline `<style>` in each page uses `.ready`
+- Placeholder CSS (legacy light): `docs/css/components.css` uses `.data-ready`
+
+### Rebuild / Verification
+
+- `python -m py_compile generate_site.py` → OK
+- Confirmed commits: `[fix]` (2 files) and `[site]` (767 files).
+- `git log --oneline -3` should show both commits above `[PR4] UX 改善`.
+
+### Status of Each Priority
+
+| Priority | Item | Status |
+|---|---|---|
+| P0-1 | 6-tab nav unified | ✅ Done (PR4) |
+| P0-1 | Old URL redirects (daily/baskets/signals/radar/backtest) | ✅ Done |
+| P0-1 | mda_stocks/*.html → stocks/*.html redirect | ✅ Done |
+| P0-1 | ← 回雙籃儀表板 → selection.html#sfz-baskets | ✅ Done |
+| P0-2 | placeholder-block + auto-expand JS | ✅ Done (PR2) |
+| P0-2 | TAIEX cache, 永豐庫存 wrapped | ✅ Done |
+| P0-2 | CaryBot v50/v51 wrapped | ✅ Done |
+| P0-2 | signal_push_log wrapped | ✅ Done |
+| P0-2 | mda.html 股權週次 column hidden via data-empty | ✅ Done |
+| P0-3 | Overheat guard (gain_6w/RSI/B%) | ✅ Done (PR3) |
+| P0-3 | R:R<1.5 hidden from 買入建議 | ✅ Done |
+| P0-3 | R:R<1.5 warning-bar on stock pages | ✅ Done |
+| P0-3 | Score capped at 100, no legacy rank-score | ✅ Done |
+| P1-1 | selection.html 3 tabs + pagination + search | ✅ Done (PR4) |
+| P1-2 | traffic-light GO/WATCH/NO-GO in stocks/* | ✅ Done (PR4) |
+| P1-3 | timing.html sticky radar-filter-bar | ✅ Done (PR4) |
+| P2 | Heat-strip widget, disclaimer modal, footer timestamp | ✅ Done (PR4) |
+| P2 | sitemap.xml + robots.txt | ✅ Already existed |
+| CSS bug | data-ready vs ready class mismatch | ✅ Fixed this session |
+
+### Next Notes
+
+- `artifacts/` is still untracked — keep it out of commits.
+- No data source CSV files (taiex.csv, sinopac_positions.csv) exist yet, so
+  all placeholder blocks remain collapsed by default. The JS auto-expand will
+  work correctly (green border + "✅ 資料已接入" prefix) once those files land.
+- Next site rebuild: run `python generate_site.py` then git-add docs/ + commit.
 
 ## 2026-05-25 PR4 UX Selector Compatibility Pass
 
