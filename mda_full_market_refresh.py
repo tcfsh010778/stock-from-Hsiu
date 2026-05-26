@@ -6,6 +6,7 @@ import json
 import os
 import re
 import sys
+import time
 from collections import defaultdict
 from datetime import date, datetime, timedelta
 from pathlib import Path
@@ -22,6 +23,9 @@ PRICE_DIR = DATA_DIR / "prices"
 HOLDING_DIR = DATA_DIR / "holding_shares"
 MARKETS_PATH = DATA_DIR / "stock_markets.json"
 SUMMARY_PATH = DATA_DIR / "mda_full_market_refresh_summary.json"
+LOG_DIR = ROOT / "logs"
+
+_sleep = time.sleep
 
 
 try:
@@ -49,17 +53,119 @@ def load_stock_universe(include_etf: bool = False, limit: int | None = None) -> 
     return out
 
 
-def fetch_finmind_bulk(dataset: str, start_date: str) -> list[dict]:
+class FinMindDatasetError(RuntimeError):
+    """Recoverable FinMind dataset failure that can fall back to local cache."""
+
+
+class FinMindFatalError(RuntimeError):
+    """Fatal FinMind auth/config failure; the workflow should stop."""
+
+
+def _is_token_failure(status_code: int | None, msg: str) -> bool:
+    text = msg.lower()
+    if status_code == 401:
+        return True
+    token_words = ("token", "authorization", "auth", "bearer")
+    fatal_words = ("invalid", "expired", "wrong", "not found", "missing", "unauthorized")
+    return any(word in text for word in token_words) and any(word in text for word in fatal_words)
+
+
+def _latest_csv_date(out_dir: Path) -> str:
+    latest = ""
+    for path in out_dir.glob("*.csv"):
+        try:
+            with path.open("r", encoding="utf-8-sig", newline="") as fh:
+                reader = csv.DictReader(fh)
+                for row in reader:
+                    value = str(row.get("date") or row.get("Date") or "")
+                    if value > latest:
+                        latest = value
+        except Exception:
+            continue
+    return latest
+
+
+def _append_finmind_failure(
+    *,
+    dataset: str,
+    start_date: str,
+    error: Exception,
+    fallback_date: str = "",
+    data_id: str = "",
+) -> None:
+    LOG_DIR.mkdir(parents=True, exist_ok=True)
+    out = LOG_DIR / f"finmind_failures_{date.today().isoformat()}.json"
+    try:
+        failures = json.loads(out.read_text(encoding="utf-8")) if out.exists() else []
+        if not isinstance(failures, list):
+            failures = []
+    except Exception:
+        failures = []
+    failures.append(
+        {
+            "timestamp": datetime.now().isoformat(timespec="seconds"),
+            "dataset": dataset,
+            "data_id": data_id,
+            "start_date": start_date,
+            "error": str(error)[:500],
+            "fallback_date": fallback_date,
+        }
+    )
+    out.write_text(json.dumps(failures, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def _fallback_summary(out_dir: Path, dataset: str, start_date: str, error: Exception) -> dict:
+    fallback_date = _latest_csv_date(out_dir)
+    _append_finmind_failure(dataset=dataset, start_date=start_date, error=error, fallback_date=fallback_date)
+    cached_files = len(list(out_dir.glob("*.csv"))) if out_dir.exists() else 0
+    fallback_label = fallback_date or "existing local cache"
+    print(f"⚠ FINMIND FALLBACK: {dataset} → using cache from {fallback_label}", flush=True)
+    return {
+        "dataset_rows": 0,
+        "matched_stocks": 0,
+        "written_files": 0,
+        "fallback": True,
+        "cache_date": fallback_date,
+        "cached_files": cached_files,
+        "error": str(error)[:200],
+    }
+
+
+def fetch_finmind_bulk(dataset: str, start_date: str, data_id: str = "") -> list[dict]:
     token = load_finmind_token()
     if not token:
-        raise RuntimeError("FINMIND_TOKEN not found. Put it in env or v44 .env before full-market refresh.")
+        raise FinMindFatalError("FINMIND_TOKEN not found. Put it in env or v44 .env before full-market refresh.")
     params = {"dataset": dataset, "start_date": start_date, "token": token}
-    resp = requests.get("https://api.finmindtrade.com/api/v4/data", params=params, timeout=180)
-    resp.raise_for_status()
-    payload = resp.json()
-    if str(payload.get("status")) != "200":
-        raise RuntimeError(f"{dataset} failed: {payload.get('status')} {payload.get('msg')}")
-    return payload.get("data") or []
+    if data_id:
+        params["data_id"] = data_id
+    last_error: Exception | None = None
+    for attempt in range(4):
+        try:
+            resp = requests.get("https://api.finmindtrade.com/api/v4/data", params=params, timeout=180)
+            try:
+                payload = resp.json()
+            except Exception:
+                payload = {}
+            msg = str(payload.get("msg") or "")
+            if _is_token_failure(resp.status_code, msg):
+                raise FinMindFatalError(f"{dataset} auth failed: {resp.status_code} {msg}")
+            if resp.status_code >= 400:
+                raise FinMindDatasetError(f"{dataset} HTTP {resp.status_code}: {msg or resp.text[:200]}")
+            if str(payload.get("status")) != "200":
+                if _is_token_failure(None, msg):
+                    raise FinMindFatalError(f"{dataset} auth failed: {payload.get('status')} {msg}")
+                raise FinMindDatasetError(f"{dataset} failed: {payload.get('status')} {msg}")
+            return payload.get("data") or []
+        except FinMindFatalError:
+            raise
+        except Exception as exc:
+            last_error = exc
+            if attempt >= 3:
+                break
+            wait = [1, 4, 16][attempt]
+            print(f"  {dataset} retry {attempt + 1}/3 after {wait}s: {exc}", flush=True)
+            _sleep(wait)
+    raise FinMindDatasetError(str(last_error or f"{dataset} failed"))
 
 
 def _merge_key(row: dict, fields: list[str]) -> tuple[str, ...]:
@@ -95,7 +201,13 @@ def write_grouped_csv(rows_by_stock: dict[str, list[dict]], out_dir: Path, field
 
 
 def refresh_one_day_prices(universe: dict[str, dict], start_date: str) -> dict:
-    rows = fetch_finmind_bulk("TaiwanStockPrice", start_date)
+    dataset = "TaiwanStockPrice"
+    try:
+        rows = fetch_finmind_bulk(dataset, start_date)
+    except FinMindFatalError:
+        raise
+    except Exception as exc:
+        return _fallback_summary(PRICE_DIR, dataset, start_date, exc)
     wanted = set(universe)
     grouped: dict[str, list[dict]] = defaultdict(list)
     for row in rows:
@@ -116,11 +228,17 @@ def refresh_one_day_prices(universe: dict[str, dict], start_date: str) -> dict:
     for sid in grouped:
         grouped[sid].sort(key=lambda x: x["date"])
     written = write_grouped_csv(grouped, PRICE_DIR, ["date", "open", "high", "low", "close", "volume"], merge_existing=True)
-    return {"dataset_rows": len(rows), "matched_stocks": len(grouped), "written_files": written}
+    return {"dataset_rows": len(rows), "matched_stocks": len(grouped), "written_files": written, "fallback": False}
 
 
 def refresh_holdings(universe: dict[str, dict], start_date: str) -> dict:
-    rows = fetch_finmind_bulk("TaiwanStockHoldingSharesPer", start_date)
+    dataset = "TaiwanStockHoldingSharesPer"
+    try:
+        rows = fetch_finmind_bulk(dataset, start_date)
+    except FinMindFatalError:
+        raise
+    except Exception as exc:
+        return _fallback_summary(HOLDING_DIR, dataset, start_date, exc)
     wanted = set(universe)
     grouped: dict[str, list[dict]] = defaultdict(list)
     fields = ["date", "stock_id", "HoldingSharesLevel", "people", "percent", "unit"]
@@ -132,7 +250,7 @@ def refresh_holdings(universe: dict[str, dict], start_date: str) -> dict:
     for sid in grouped:
         grouped[sid].sort(key=lambda x: (x.get("date", ""), x.get("HoldingSharesLevel", "")))
     written = write_grouped_csv(grouped, HOLDING_DIR, fields, merge_existing=True)
-    return {"dataset_rows": len(rows), "matched_stocks": len(grouped), "written_files": written}
+    return {"dataset_rows": len(rows), "matched_stocks": len(grouped), "written_files": written, "fallback": False}
 
 
 def friday_dates(start_date: str, end: date | None = None) -> list[str]:
@@ -147,15 +265,37 @@ def friday_dates(start_date: str, end: date | None = None) -> list[str]:
     return out
 
 
+def resolve_price_start(one_day_price: bool, explicit_price_start: str | None) -> str:
+    if explicit_price_start:
+        return explicit_price_start
+    if one_day_price:
+        return date.today().isoformat()
+    return (date.today() - timedelta(days=430)).strftime("%Y-%m-%d")
+
+
 def refresh_weekly_holdings(universe: dict[str, dict], start_date: str) -> dict:
+    dataset = "TaiwanStockHoldingSharesPer"
     wanted = set(universe)
     fields = ["date", "stock_id", "HoldingSharesLevel", "people", "percent", "unit"]
     grouped: dict[str, dict[tuple[str, str], dict]] = defaultdict(dict)
     dataset_rows = 0
+    fallback_count = 0
+    fallback_dates: list[str] = []
     query_dates = friday_dates(start_date)
     for idx, query_date in enumerate(query_dates, 1):
         print(f"  holding [{idx:02d}/{len(query_dates)}] {query_date}", flush=True)
-        rows = fetch_finmind_bulk("TaiwanStockHoldingSharesPer", query_date)
+        try:
+            rows = fetch_finmind_bulk(dataset, query_date)
+        except FinMindFatalError:
+            raise
+        except Exception as exc:
+            fallback_count += 1
+            fallback_dates.append(query_date)
+            fallback_date = _latest_csv_date(HOLDING_DIR)
+            _append_finmind_failure(dataset=dataset, start_date=query_date, error=exc, fallback_date=fallback_date)
+            fallback_label = fallback_date or "existing local cache"
+            print(f"⚠ FINMIND FALLBACK: {dataset} → using cache from {fallback_label}", flush=True)
+            continue
         dataset_rows += len(rows)
         for row in rows:
             sid = str(row.get("stock_id") or "").strip()
@@ -165,7 +305,14 @@ def refresh_weekly_holdings(universe: dict[str, dict], start_date: str) -> dict:
             grouped[sid][key] = {field: row.get(field, "") for field in fields}
     ready = {sid: sorted(items.values(), key=lambda x: (x.get("date", ""), x.get("HoldingSharesLevel", ""))) for sid, items in grouped.items()}
     written = write_grouped_csv(ready, HOLDING_DIR, fields, merge_existing=True)
-    return {"query_dates": len(query_dates), "dataset_rows": dataset_rows, "matched_stocks": len(ready), "written_files": written}
+    return {
+        "query_dates": len(query_dates),
+        "dataset_rows": dataset_rows,
+        "matched_stocks": len(ready),
+        "written_files": written,
+        "fallback_count": fallback_count,
+        "fallback_dates": fallback_dates,
+    }
 
 
 def major_accumulation_candidates(universe: dict[str, dict]) -> list[str]:
@@ -194,9 +341,25 @@ def refresh_candidate_prices(stock_ids: list[str], months: int) -> dict:
     return {"candidate_stocks": len(stock_ids), "written_files": ok, "failed": failed, "months": months}
 
 
+def write_summary(summary: dict) -> None:
+    if SUMMARY_PATH.exists():
+        try:
+            previous = json.loads(SUMMARY_PATH.read_text(encoding="utf-8"))
+        except Exception:
+            previous = {}
+        if isinstance(previous, dict) and previous.get("date") == summary.get("date"):
+            merged = dict(previous)
+            merged.update(summary)
+            for key in ["holding", "price", "candidate_count"]:
+                if summary.get(key) is None and previous.get(key) is not None:
+                    merged[key] = previous[key]
+            summary = merged
+    SUMMARY_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Refresh full-market price and holder data for the MDA scan.")
-    parser.add_argument("--price-start", default=(date.today() - timedelta(days=430)).strftime("%Y-%m-%d"))
+    parser.add_argument("--price-start", default=None)
     parser.add_argument("--holding-start", default=(date.today() - timedelta(days=140)).strftime("%Y-%m-%d"))
     parser.add_argument("--price-months", type=int, default=15)
     parser.add_argument("--include-etf", action="store_true")
@@ -205,6 +368,7 @@ def main() -> None:
     parser.add_argument("--skip-holding", action="store_true")
     parser.add_argument("--one-day-price", action="store_true", help="Debug only: fetch one full-market price snapshot instead of candidate histories.")
     args = parser.parse_args()
+    args.price_start = resolve_price_start(args.one_day_price, args.price_start)
 
     universe = load_stock_universe(include_etf=args.include_etf, limit=args.limit)
     print(f"[mda_full_market_refresh] universe={len(universe)} price_start={args.price_start} holding_start={args.holding_start}")
@@ -234,7 +398,7 @@ def main() -> None:
             summary["price"] = refresh_candidate_prices(candidates, args.price_months)
         print(f"[mda_full_market_refresh] prices {summary['price']}")
 
-    SUMMARY_PATH.write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+    write_summary(summary)
     print(f"[mda_full_market_refresh] summary -> {SUMMARY_PATH}")
 
 

@@ -2,6 +2,94 @@
 
 Last updated: 2026-05-27
 
+## 2026-05-27 Phase 4-A daily pipeline repair
+
+### Goal
+
+Restore the daily GitHub Pages update path after FinMind 400 failures and fix
+stale non-report stock pages such as 2330 / 1101.
+
+### Completed
+
+- Diagnosed the failed request path in `mda_full_market_refresh.py`:
+  `TaiwanStockHoldingSharesPer` uses weekly full-market snapshots starting from
+  `date.today() - 140 days`, so the first query on 2026-05-27 is 2026-01-09.
+- Verified current FinMind token/user_info is valid and the exact failed
+  `TaiwanStockHoldingSharesPer&start_date=2026-01-09` request now returns
+  HTTP 200 with 66,385 rows; root cause is treated as transient FinMind/API
+  failure plus missing pipeline isolation.
+- Added FinMind retry/fallback handling:
+  3 retries with 1s / 4s / 16s backoff, recoverable dataset errors logged to
+  `logs/finmind_failures_{date}.json`, and cached CSV fallback without stopping
+  the workflow. Missing/invalid token remains fatal.
+- Fixed `--one-day-price` default date so it uses today's date instead of the
+  430-day historical default.
+- Made `mda_full_market_refresh_summary.json` merge later partial runs instead
+  of letting the one-day price step erase holding/candidate diagnostics.
+- Removed the `required_ids = {"2342", "8341"}` stock-page hardcode; all cached
+  query-only stocks now get generated pages.
+- Changed the daily workflow to Python 3.12 and `V44_REFRESH_SCOPE=all`.
+  `refresh_prices.py` now uses full-market bulk price snapshots for all cached
+  stocks while keeping expensive auxiliary chip/holding/margin refreshes scoped
+  to the latest Top20.
+- Rebuilt data and static pages through the existing live pipeline. Latest
+  available local trading date is 2026-05-26.
+
+### Changed Files
+
+- Source/workflow:
+  `.github/workflows/daily_update.yml`, `mda_full_market_refresh.py`,
+  `refresh_prices.py`, `generate_site.py`
+- Tests:
+  `tools/test_phase4a_pipeline.py`
+- Generated data/output:
+  `data/prices/`, `data/holding_shares/`, latest auxiliary data in
+  `data/chips/`, `data/foreign_shareholding/`, `data/margin/`,
+  `data/mda_universe_scan.*`, `data/site_reports.json`, `reports/`,
+  `docs/`
+
+### Source Of Truth
+
+- Daily workflow: `.github/workflows/daily_update.yml`
+- Full-market holding / candidate refresh: `mda_full_market_refresh.py`
+- Full-market price cache refresh: `refresh_prices.py`
+- Static site generator: `generate_site.py`
+
+### Rebuild / Verification
+
+- `python -m py_compile mda_full_market_refresh.py refresh_prices.py generate_site.py` OK
+- `python -m unittest tools.test_phase4a_pipeline tools.test_pr3_logic tools.test_verify_daily_update_artifacts tools.test_refresh_industry_cache tools.test_run_screener_sector_filter` OK, 18 tests
+- `python mda_full_market_refresh.py --price-months 24` OK:
+  holdings query_dates=20, fallback_count=0; candidate prices written=531
+- Follow-up summary-preserving reruns OK:
+  holdings written=1967, candidate prices written=532
+- `V44_REFRESH_SCOPE=all V44_BULK_PRICE_DAYS=21 V44_REFRESH_AUX_SCOPE=latest python refresh_prices.py` OK:
+  14 trading dates with data, latest 2026-05-26
+- `python mda_universe_scan.py` OK: scanned=674, launched=124, turning=77,
+  dormant=65, overheated=103, not_in=305
+- `python run_screener.py` wrote `reports/每日選股報告_2026-05-26.md`
+- `python generate_site.py` OK: `docs/stocks/*.html (1980)`,
+  `docs/mda_candidates/*.html (674)`
+- `python tools/verify_daily_update_artifacts.py` OK:
+  latest report date 2026-05-26, report date count 16
+- Browser preview checked `stocks/2330.html`: no console errors. Home page only
+  has expected placeholder 404s for missing `taiex.csv` and
+  `sinopac_positions.csv`.
+
+### Sample Freshness
+
+All sampled CSV caches and generated stock pages exist with latest price date
+2026-05-26:
+
+- 2330, 1101, 9955, 2317, 2454, 2342, 6126, 8341, 0050, 2301
+
+### Next Notes
+
+- `artifacts/` remains intentionally untracked.
+- `gh` CLI is not installed in this environment; workflow dispatch needs either
+  GitHub UI, `gh`, or a token/app capability that can call workflow_dispatch.
+- Phase 4-B thin-shell refactor has not started.
+
 ## 2026-05-27 Audit + placeholder CSS class fix
 
 ### Goal

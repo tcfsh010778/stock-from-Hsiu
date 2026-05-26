@@ -28,7 +28,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       - name: Install dependencies
         run: python -m pip install --upgrade pip requests
@@ -54,11 +54,13 @@ jobs:
       - name: Generate daily Top20 report
         run: python run_screener.py
 
-      - name: Refresh latest Top20 stock data
+      - name: Refresh all-market stock prices
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
           V44_FETCH_MONTHS: "24"
-          V44_REFRESH_SCOPE: "latest"
+          V44_REFRESH_SCOPE: "all"
+          V44_BULK_PRICE_DAYS: "21"
+          V44_REFRESH_AUX_SCOPE: "latest"
         run: python refresh_prices.py
 
       - name: Generate static site

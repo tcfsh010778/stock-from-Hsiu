@@ -8920,9 +8920,7 @@ def build_backtest_page(reports: list[dict], section_only: bool = False) -> str:
 
 
 def build_stock_pages(reports: list[dict]) -> int:
-    all_stocks = build_stock_query_map(reports)
-    required_ids = {"2342", "8341"}
-    stock_map = {sid: s for sid, s in all_stocks.items() if (not s.get("query_only")) or sid in required_ids}
+    stock_map = build_stock_query_map(reports)
     ledger = build_signal_ledger(reports)
     out_dir = OUTPUT_DIR / "stocks"
     out_dir.mkdir(parents=True, exist_ok=True)
