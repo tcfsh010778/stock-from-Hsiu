@@ -2,6 +2,174 @@
 
 Last updated: 2026-05-27
 
+## 2026-05-27 Stock Detail Chart Text Cleanup
+
+### Goal
+
+Keep stock detail charts in their original TradingView-style display, opening
+on the latest month while preserving older data for dragging, and remove
+visible explanatory chart text.
+
+### Completed
+
+- Updated `generate_site.py` stock detail chart panels:
+  - removed visible helper notes such as "default latest month / drag back".
+  - removed the placeholder text shown when legal-person chip-flow chart data is
+    unavailable.
+  - kept TradingView/lightweight-chart behavior and the initial latest-month
+    range via `setVisibleLogicalRange(defaultLogicalRange())`.
+- Regenerated the static site output under `docs/`.
+
+### Verification
+
+- `python -m py_compile generate_site.py mda_universe_scan.py` OK.
+- `python -u generate_site.py` OK:
+  regenerated 2717 files, including `docs/stocks/*.html (1980)`.
+- `python -m unittest tools.test_pr3_logic` OK, 4 tests.
+- File-level QA:
+  - `docs/stocks.html` has 1980 stock rows and 1980 chip-status cells.
+  - all 1980 `docs/stocks/*.html` pages contain the chip status panel.
+  - 0 stock pages contain the old `v44` / empty report-date wording.
+  - 0 stock pages contain the removed visible chart-helper text.
+  - all 1980 stock pages keep the latest-month default range code.
+- Browser local preview verified `stocks/2330.html`:
+  - chip status panel is visible.
+  - latest-month default range code is present.
+  - removed chart-helper text is absent.
+
+## 2026-05-27 Stock Query Chip Display Pass
+
+### Goal
+
+Make chip/holding information visible and explicit across the stock query
+surface, even when a stock does not yet have cached legal-person chip data.
+Remove the empty report-date wording `v44 個股研究頁 · 報告日期 ─`.
+
+### Completed
+
+- Updated `generate_site.py` stock detail pages:
+  - Page subtitle now shows `個股查詢頁 · 最新收盤 {date}` when there is no
+    report date, instead of `v44 個股研究頁 · 報告日期 ─`.
+  - Telegram-style stock info card now shows `收盤日期 ...｜個股查詢頁` when
+    report date is absent.
+  - Chip line no longer prints misleading `─ 張` values for missing chip data;
+    it says `法人買賣超尚無快取` and/or `股權分散尚無快取`.
+  - `build_chip_panel()` always renders a chip/holding status panel. Missing
+    values render as `尚無快取`, while available holding data still shows major
+    holder percentage, middle-holder people, retail percentage, and total
+    holders.
+- Updated `stocks.html` stock query table:
+  - added a `籌碼狀態` column for all 1980 rows.
+  - each row shows legal-person status and holding status, for example
+    `法人尚無快取｜股權 2026-05-22｜大戶 ...｜中實戶 ...`.
+
+### Verification
+
+- `python -m py_compile generate_site.py mda_universe_scan.py` OK.
+- `python -u generate_site.py` OK:
+  regenerated 2717 files, including `docs/stocks/*.html (1980)`.
+- `python -m unittest tools.test_pr3_logic` OK, 4 tests.
+- File-level QA:
+  - `docs/stocks.html` has 1980 stock rows and 1980 `籌碼狀態` cells.
+  - all 1980 `docs/stocks/*.html` pages contain `籌碼資料狀態`.
+  - 0 stock pages contain `v44 個股研究頁` or `報告日期 ─`.
+- Browser local preview verified:
+  - `stocks.html` header includes `籌碼狀態`, rows=1980, old wording absent.
+  - `stocks/0050.html` shows `個股查詢頁 · 最新收盤 2026-05-26`,
+    `收盤日期 2026-05-26｜個股查詢頁`, and a chip status panel with
+    `法人尚無快取｜股權尚無快取`.
+
+### Changed Files
+
+- `generate_site.py`
+- regenerated `docs/stocks.html`
+- regenerated `docs/stocks/*.html`
+- `CODEX_HANDOFF.md`
+
+## 2026-05-27 Holding definition + chart default range
+
+### Goal
+
+Add stock-page holding logic for middle holders and update chart defaults:
+middle holders are 200-400 lots, major holders are 400+ lots, and stock-page
+charts should open on the latest month while preserving older data for dragging.
+
+### Completed
+
+- Updated `mda_universe_scan.py` holding grouping:
+  - `major` now aggregates holding-share levels above 400,000 shares
+    (400+ lots in FinMind bins).
+  - `middle` now represents the 200,001-400,000 share bin.
+  - scan output keeps existing MDA score/formula logic, but the `major_*`
+    deltas now use the 400+ lot definition.
+- Updated `generate_site.py` stock-page holding readers:
+  - added `middle`, `major_people`, `middle_people`, and `retail_people`.
+  - stock info cards now show `中實戶持股人數（200-400張）`.
+  - large-holder labels now read `大戶（400張以上）` / `大戶(400張以上)`.
+- Updated stock-page charts and tooltips:
+  - added a `中實戶持股人數（200-400張）` TradingView panel.
+  - holding tooltips include major people, middle-holder people, middle-holder
+    percentage, retail percentage, and total holders.
+  - TradingView K/chip panels now call `setVisibleLogicalRange(defaultLogicalRange())`
+    so they initially show the latest 31 calendar days; users can drag back to
+    older data.
+- Regenerated `data/mda_universe_scan.*` and `docs/` with the new definitions.
+
+### Verification
+
+- `python -m py_compile generate_site.py mda_universe_scan.py` OK.
+- `python -m unittest tools.test_pr3_logic` OK, 4 tests.
+- Attempted `python -m unittest tools.test_pr3_logic tools.test_phase4a_pipeline`;
+  `tools.test_phase4a_pipeline` did not start because importing
+  `mda_full_market_refresh.py` raised `OSError: [Errno 22] Invalid argument`
+  in this Windows/bundled-Python session.
+- Inline grouping check OK:
+  - `1-999 -> retail`
+  - `200,001-400,000 -> middle`
+  - `400,001-600,000 -> major`
+  - `more than 1,000,001 -> major`
+  - `100,001-200,000 -> other`
+- `generate_site.read_holding_summary("2330")` latest 2026-05-22:
+  - major percentage `88.1`
+  - major people `2622`
+  - middle-holder people `1324`
+  - middle percentage `1.42`
+- `python mda_universe_scan.py` OK:
+  `scanned=674 launched=124 turning=79 dormant=53 overheated=103 not_in=315`.
+- `python -u generate_site.py` OK:
+  regenerated 2717 files, including `docs/stocks/*.html (1980)` and
+  `docs/mda_candidates/*.html (674)`.
+- HTML grep verified `docs/stocks/2330.html`, `2342.html`, and `6173.html`
+  contain:
+  - `大戶(400張以上)`
+  - `中實戶持股人數(200-400張)`
+  - `預設顯示近 1 個月`
+  - no `千張大戶`
+- Browser local preview verified `stocks/2330.html`:
+  - stock title rendered.
+  - holding cells show `大戶比例（400張以上）88.10%`,
+    `大戶人數（400張以上）2622`,
+    `中實戶持股人數（200-400張）1324`,
+    `中實戶比例（200-400張）1.42%`.
+  - chart panels include `中實戶持股人數（200-400張）`.
+  - chart note says default is the latest month and older data can be dragged
+    into view.
+
+### Changed Files
+
+- `generate_site.py`
+- `mda_universe_scan.py`
+- `data/mda_universe_scan.csv`
+- `data/mda_universe_scan.json`
+- `data/mda_universe_scan_preview.html`
+- regenerated `docs/`
+- `CODEX_HANDOFF.md`
+
+### Next Notes
+
+- A local preview server was started only for QA in the browser session.
+- Commit has not been attempted in this session.
+
 ## 2026-05-27 Phase 4-A daily pipeline repair
 
 ### Goal

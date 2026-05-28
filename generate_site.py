@@ -31,6 +31,7 @@ PUSH_LOG_PATH = Path(__file__).parent / "signal_push_log.csv"
 V44_ROOT = Path(os.environ.get("V44_ROOT", r"C:\Users\USER\OneDrive\桌面\股票\自動交易程式"))
 LOCAL_DATA_DIR = Path(__file__).parent / "data"
 CHART_LOOKBACK_BARS = 520
+CHART_DEFAULT_VISIBLE_DAYS = 31
 MDA_MIN_CLOSE = 20.0
 LOCAL_PRICE_DIR = LOCAL_DATA_DIR / "prices"
 LOCAL_CHIP_DIR = LOCAL_DATA_DIR / "chips"
@@ -2036,17 +2037,19 @@ def price_change_pct_by_date(price_rows: list[dict]) -> dict[str, float | None]:
 
 
 def _holding_group(level: str) -> str:
-    text = str(level)
-    if text in {"total", "差異數調整（說明4）"}:
+    text = str(level or "").strip()
+    if text in {"total", "差異數調整（說明4）"} or "差異" in text:
         return "other"
     nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", text)]
-    if "more than" in text or (nums and max(nums) >= 1000001):
+    lower = nums[0] if nums else None
+    upper = nums[-1] if nums else None
+    if "more than" in text or (lower is not None and lower > 400_000):
         return "major"
-    if nums and max(nums) >= 400001:
-        return "large"
-    if nums and max(nums) <= 10000:
+    if lower is not None and upper is not None and lower > 200_000 and upper <= 400_000:
+        return "middle"
+    if upper is not None and upper <= 10_000:
         return "retail"
-    return "middle"
+    return "other"
 
 
 def read_holding_summary(stock_id: str) -> dict:
@@ -2061,7 +2064,16 @@ def read_holding_summary(stock_id: str) -> dict:
         return {}
 
     def summarize(date: str) -> dict:
-        result = {"major": 0.0, "large": 0.0, "retail": 0.0, "middle": 0.0, "total_people": None}
+        result = {
+            "major": 0.0,
+            "large": 0.0,
+            "middle": 0.0,
+            "retail": 0.0,
+            "total_people": None,
+            "major_people": 0,
+            "middle_people": 0,
+            "retail_people": 0,
+        }
         for r in by_date.get(date, []):
             level = r.get("HoldingSharesLevel", "")
             try:
@@ -2075,6 +2087,12 @@ def read_holding_summary(stock_id: str) -> dict:
             group = _holding_group(level)
             if group in result:
                 result[group] += pct
+            if group == "major":
+                result["major_people"] += people
+            elif group == "middle":
+                result["middle_people"] += people
+            elif group == "retail":
+                result["retail_people"] += people
         return result
 
     latest_date = dates[-1]
@@ -2092,7 +2110,17 @@ def read_holding_series(stock_id: str) -> list[dict]:
         by_date.setdefault(r.get("date", ""), []).append(r)
     series = []
     for date in sorted(d for d in by_date if d):
-        item = {"date": date, "major": 0.0, "large": 0.0, "retail": 0.0, "total_people": None}
+        item = {
+            "date": date,
+            "major": 0.0,
+            "large": 0.0,
+            "middle": 0.0,
+            "retail": 0.0,
+            "total_people": None,
+            "major_people": 0,
+            "middle_people": 0,
+            "retail_people": 0,
+        }
         for r in by_date.get(date, []):
             level = r.get("HoldingSharesLevel", "")
             try:
@@ -2104,8 +2132,14 @@ def read_holding_series(stock_id: str) -> list[dict]:
                 item["total_people"] = people
                 continue
             group = _holding_group(level)
-            if group in {"major", "large", "retail"}:
+            if group in {"major", "middle", "retail"}:
                 item[group] += pct
+            if group == "major":
+                item["major_people"] += people
+            elif group == "middle":
+                item["middle_people"] += people
+            elif group == "retail":
+                item["retail_people"] += people
         series.append(item)
     return series
 
@@ -2400,9 +2434,12 @@ def holding_payload(series: list[dict]) -> list[dict]:
         {
             "date": item.get("date", ""),
             "major": item.get("major"),
-            "large": item.get("large"),
+            "middle": item.get("middle"),
             "retail": item.get("retail"),
             "totalPeople": item.get("total_people"),
+            "majorPeople": item.get("major_people"),
+            "middlePeople": item.get("middle_people"),
+            "retailPeople": item.get("retail_people"),
         }
         for item in series[-80:]
     ]
@@ -2431,8 +2468,12 @@ def aligned_chip_payload(series: list[dict]) -> list[dict]:
         out.append({
             "date": item.get("date", ""),
             "major": item.get("major"),
+            "middle": item.get("middle"),
             "retail": item.get("retail"),
             "totalPeople": item.get("total_people"),
+            "majorPeople": item.get("major_people"),
+            "middlePeople": item.get("middle_people"),
+            "retailPeople": item.get("retail_people"),
             "holdingDate": item.get("holding_date", ""),
             "foreign": foreign,
             "foreignCum": foreign_cum,
@@ -2458,8 +2499,12 @@ def align_chip_to_price_dates(price_rows: list[dict], holding_series: list[dict]
         out.append({
             "date": date,
             "major": latest_h.get("major") if latest_h else None,
+            "middle": latest_h.get("middle") if latest_h else None,
             "retail": latest_h.get("retail") if latest_h else None,
             "total_people": latest_h.get("total_people") if latest_h else None,
+            "major_people": latest_h.get("major_people") if latest_h else None,
+            "middle_people": latest_h.get("middle_people") if latest_h else None,
+            "retail_people": latest_h.get("retail_people") if latest_h else None,
             "holding_date": latest_h.get("date") if latest_h else "",
             "foreign": chip.get("foreign"),
         })
@@ -2905,7 +2950,7 @@ def holding_line_svg(series: list[dict], title: str = "股權分配趨勢") -> s
         return '<div class="strategy-note">股權分配資料不足，暫時無法形成趨勢折線圖。</div>'
     w, h = 900, 240
     pad_l, pad_r, pad_t, pad_b = 50, 18, 18, 32
-    keys = [("major", "大戶>1000張", "#f85149"), ("large", "400~1000張", "#d2a520"), ("retail", "散戶<1萬股", "#3fb950")]
+    keys = [("major", "大戶(400張以上)", "#f85149"), ("middle", "中實戶(200-400張)", "#d2a520"), ("retail", "散戶<1萬股", "#3fb950")]
     values = [float(x.get(k, 0) or 0) for x in series for k, _, _ in keys]
     people_values = [float(x.get("total_people", 0) or 0) for x in series if x.get("total_people") is not None]
     lo, hi = min(values), max(values)
@@ -3140,7 +3185,7 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
         })
     rows = [r for r in rows if r.get("date")]
     if len(rows) < 2:
-        return '<div class="strategy-note">籌碼資料不足，暫時無法形成 TradingView 籌碼圖。</div>'
+        return ""
     data = json.dumps(rows, ensure_ascii=False)
     panel_id = f"chip-tv-{stock_id}"
     script = f"""
@@ -3191,8 +3236,22 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
   function lineData(key){{
     return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key])}}));
   }}
+  function defaultLogicalRange(){{
+    if(maxLogical <= 0) return {{from:0,to:maxLogical}};
+    const lastTime=Date.parse(rows[rows.length-1]?.date || '');
+    let from=Math.max(0, rows.length - 22);
+    if(!Number.isNaN(lastTime)){{
+      const cutoff=lastTime - {CHART_DEFAULT_VISIBLE_DAYS}*24*60*60*1000;
+      from=0;
+      for(let i=rows.length-1;i>=0;i--){{
+        const t=Date.parse(rows[i]?.date || '');
+        if(!Number.isNaN(t) && t < cutoff){{ from=Math.min(maxLogical, i+1); break; }}
+      }}
+    }}
+    return {{from:Math.max(0,from),to:maxLogical}};
+  }}
   function wireRange(chart){{
-    chart.timeScale().fitContent();
+    chart.timeScale().setVisibleLogicalRange(defaultLogicalRange());
     chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{{
       if(syncing || !range) return;
       const next=clampRange(range);
@@ -3260,13 +3319,11 @@ def chip_lightweight_flow_panel(stock_id: str, chip_series: list[dict], price_ro
 <div id="{panel_id}" class="tv-chip-grid">
   <div class="tv-chart-panel">
     <div class="tv-chart-title">籌碼動向｜外資 / 投信 / 自營商 / 合計</div>
-    <div class="chip-line">柱狀圖為三大法人合計；折線分別為外資、投信、自營商。可縮放、拖曳，並限制在資料範圍內。</div>
     <div id="{panel_id}-flow" class="tv-chip-chart"></div>
     <div class="tv-tooltip"></div>
   </div>
   <div class="tv-chart-panel">
     <div class="tv-chart-title">主力增減張數與收盤價關係</div>
-    <div class="chip-line">左軸為主力合計張數，右軸為收盤價；滑鼠移到圖上可看當日漲幅，觀察少量買賣是否就能推動價格。</div>
     <div id="{panel_id}-force" class="tv-chip-chart"></div>
     <div class="tv-tooltip"></div>
   </div>
@@ -3348,6 +3405,10 @@ def build_telegram_info_card(
     repeat_note = f"歷史入選 {len(events)} 次，最近 {events[-1]['date']}" if events else "首次或尚未建立歷史台帳"
     close = _value_or_dash(s.get("price"))
     price_date = _value_or_dash(s.get("price_date"))
+    report_date = _value_or_dash(s.get("report_date"))
+    meta_parts = [f"收盤日期 {price_date}"]
+    meta_parts.append(f"報告日期 {report_date}" if not is_blank(report_date) else "個股查詢頁")
+    telegram_meta = "｜".join(meta_parts)
     daily_rows = aggregate_ohlcv(merge_report_close(read_price_history(stock_id), s), "daily")
     price_change_text, price_change_cls = daily_change_text(daily_rows)
     score = _value_or_dash(s.get("score"))
@@ -3372,11 +3433,21 @@ def build_telegram_info_card(
     foreign5 = s.get("foreign_5d")
     if chip_sum5.get("foreign") is not None:
         foreign5 = f"{chip_sum5.get('foreign'):+,.0f}張"
-    force_line = (
-        f"外資5日 {_value_or_dash(foreign5)}；"
-        f"三大法人當日 {fmt_num(chip_latest.get('total'), 0)} 張；"
-        f"大戶 {fmt_num(h_latest.get('major'))}% / 散戶 {fmt_num(h_latest.get('retail'))}%"
-    )
+    force_parts = []
+    if chip:
+        force_parts.append(f"外資5日 {_value_or_dash(foreign5)}")
+        force_parts.append(f"三大法人當日 {fmt_num(chip_latest.get('total'), 0)} 張")
+    else:
+        force_parts.append("法人買賣超尚無快取")
+    if holding:
+        force_parts.append(
+            f"大戶(400張以上) {fmt_num(h_latest.get('major'))}% / "
+            f"中實戶人數(200-400張) {fmt_num(h_latest.get('middle_people'), 0)} 人 / "
+            f"散戶 {fmt_num(h_latest.get('retail'))}%"
+        )
+    else:
+        force_parts.append("股權分散尚無快取")
+    force_line = "；".join(force_parts)
     chip_metrics_line = ""
     if chip:
         sum10 = chip.get("sum10", {})
@@ -3410,7 +3481,7 @@ def build_telegram_info_card(
   <div class="telegram-head">
     <div>
       <div class="telegram-title">{esc(stock_id)} {esc(s.get('name',''))} 個股資訊卡</div>
-      <div class="telegram-meta">收盤日期 {esc(price_date)}｜報告日期 {esc(s.get('report_date','─'))}</div>
+      <div class="telegram-meta">{esc(telegram_meta)}</div>
     </div>
     <div class="telegram-rating {decision.get('rating_class','')}">{esc(decision['rating'])}</div>
   </div>
@@ -4027,14 +4098,15 @@ def compact_axis_label(value: float) -> str:
 
 
 def holding_compact_svg(series: list[dict], title: str = "股權分析") -> str:
-    rows = [x for x in series[-CHART_LOOKBACK_BARS:] if x.get("major") is not None or x.get("retail") is not None or x.get("total_people") is not None]
+    rows = [x for x in series[-CHART_LOOKBACK_BARS:] if x.get("major") is not None or x.get("middle") is not None or x.get("retail") is not None or x.get("total_people") is not None]
     if len(rows) < 2:
         return '<div class="strategy-note">股權分配資料不足。</div>'
     w, h = 900, 150
     pad_l, pad_r, pad_t, pad_b = 50, 56, 22, 24
     plot_h = h - pad_t - pad_b
     pct_series = [
-        ("major", "大戶", "#f85149"),
+        ("major", "大戶(400張以上)", "#f85149"),
+        ("middle", "中實戶(200-400張)", "#d2a520"),
         ("retail", "散戶", "#3fb950"),
     ]
     pct_vals = [float(x.get(k)) for x in rows for k, _, _ in pct_series if x.get(k) is not None]
@@ -4086,7 +4158,7 @@ def holding_compact_svg(series: list[dict], title: str = "股權分析") -> str:
         people_pts.append(f"{x_pos(i):.1f},{y_people(float(item.get('total_people'))):.1f}")
     if people_pts:
         lines += f'<polyline fill="none" stroke="#58a6ff" stroke-width="1.8" stroke-dasharray="5 4" points="{" ".join(people_pts)}"/>'
-    legend = f'<text x="{w-218}" y="14" fill="#f85149" font-size="10">大戶</text><text x="{w-158}" y="14" fill="#3fb950" font-size="10">散戶</text><text x="{w-98}" y="14" fill="#58a6ff" font-size="10">股東數</text>'
+    legend = f'<text x="{w-300}" y="14" fill="#f85149" font-size="10">大戶</text><text x="{w-248}" y="14" fill="#d2a520" font-size="10">中實戶</text><text x="{w-180}" y="14" fill="#3fb950" font-size="10">散戶</text><text x="{w-120}" y="14" fill="#58a6ff" font-size="10">股東數</text>'
     return f"""
 <svg viewBox="0 0 {w} {h}" width="100%" role="img" aria-label="{esc(title)}">
   <rect x="0" y="0" width="{w}" height="{h}" fill="#0d1117"/>
@@ -4288,33 +4360,57 @@ def build_tech_panel(tech: dict) -> str:
 
 
 def build_chip_panel(chip: dict, holding: dict) -> str:
-    if not chip and not holding:
-        return '<div class="strategy-note">尚未找到籌碼/股權分配快取；刷新 FinMind 後會顯示法人買賣超與大戶比例。</div>'
     chip_latest = chip.get("latest", {})
     chip_sum5 = chip.get("sum5", {})
     chip_sum10 = chip.get("sum10", {})
     h_latest = holding.get("latest", {}) if holding else {}
     h_prev = holding.get("prev", {}) if holding else {}
     major_delta = h_latest.get("major", 0) - h_prev.get("major", 0) if h_latest and h_prev else None
+    middle_people_delta = h_latest.get("middle_people", 0) - h_prev.get("middle_people", 0) if h_latest and h_prev else None
     retail_delta = h_latest.get("retail", 0) - h_prev.get("retail", 0) if h_latest and h_prev else None
-    chip_note = (
-        f"外資10日 {fmt_num(chip_sum10.get('foreign'),0)} 張｜"
-        f"主力10日 {fmt_num(chip_sum10.get('total'),0)} 張｜"
-        f"大戶週變化 {fmt_num(major_delta)}%｜散戶週變化 {fmt_num(retail_delta)}%"
-    )
+    def chip_cell(value, suffix: str = "張", digits: int = 0) -> str:
+        return f"{fmt_num(value, digits)}{suffix}" if value is not None else "尚無快取"
+
+    def holding_cell(value, suffix: str = "", digits: int = 2) -> str:
+        return f"{fmt_num(value, digits)}{suffix}" if value is not None else "尚無快取"
+
+    def value_class(value) -> str:
+        if value is None:
+            return ""
+        return "pos" if float(value or 0) >= 0 else "neg"
+
+    chip_status = f"法人 {chip.get('date')}" if chip else "法人尚無快取"
+    holding_status = f"股權 {holding.get('date')}" if holding else "股權尚無快取"
+    chip_note_parts = []
+    if chip:
+        chip_note_parts.append(f"外資10日 {fmt_num(chip_sum10.get('foreign'),0)} 張")
+        chip_note_parts.append(f"主力10日 {fmt_num(chip_sum10.get('total'),0)} 張")
+    else:
+        chip_note_parts.append("法人買賣超尚無快取")
+    if holding:
+        chip_note_parts.append(f"大戶週變化 {fmt_num(major_delta)}%")
+        chip_note_parts.append(f"中實戶週變化 {fmt_num(middle_people_delta, 0)} 人")
+        chip_note_parts.append(f"散戶週變化 {fmt_num(retail_delta)}%")
+    else:
+        chip_note_parts.append("股權分散尚無快取")
+    chip_note = "｜".join(chip_note_parts)
     return f"""<div class="info-grid">
-  <div class="info-cell"><div class="k">外資買賣超</div><div class="v {('pos' if chip_latest.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('foreign'),0)}張</div></div>
-  <div class="info-cell"><div class="k">投信買賣超</div><div class="v {('pos' if chip_latest.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('trust'),0)}張</div></div>
-  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v {('pos' if chip_latest.get('dealer',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('dealer'),0)}張</div></div>
-  <div class="info-cell"><div class="k">主力當日合計</div><div class="v {('pos' if chip_latest.get('total',0)>=0 else 'neg')}">{fmt_num(chip_latest.get('total'),0)}張</div></div>
-  <div class="info-cell"><div class="k">外資5日</div><div class="v {('pos' if chip_sum5.get('foreign',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('foreign'),0)}張</div></div>
-  <div class="info-cell"><div class="k">投信5日</div><div class="v {('pos' if chip_sum5.get('trust',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('trust'),0)}張</div></div>
-  <div class="info-cell"><div class="k">主力5日合計</div><div class="v {('pos' if chip_sum5.get('total',0)>=0 else 'neg')}">{fmt_num(chip_sum5.get('total'),0)}張</div></div>
+  <div class="info-cell"><div class="k">籌碼資料狀態</div><div class="v">{esc(chip_status)}｜{esc(holding_status)}</div></div>
+  <div class="info-cell"><div class="k">外資買賣超</div><div class="v {value_class(chip_latest.get('foreign'))}">{chip_cell(chip_latest.get('foreign'))}</div></div>
+  <div class="info-cell"><div class="k">投信買賣超</div><div class="v {value_class(chip_latest.get('trust'))}">{chip_cell(chip_latest.get('trust'))}</div></div>
+  <div class="info-cell"><div class="k">自營商買賣超</div><div class="v {value_class(chip_latest.get('dealer'))}">{chip_cell(chip_latest.get('dealer'))}</div></div>
+  <div class="info-cell"><div class="k">主力當日合計</div><div class="v {value_class(chip_latest.get('total'))}">{chip_cell(chip_latest.get('total'))}</div></div>
+  <div class="info-cell"><div class="k">外資5日</div><div class="v {value_class(chip_sum5.get('foreign'))}">{chip_cell(chip_sum5.get('foreign'))}</div></div>
+  <div class="info-cell"><div class="k">投信5日</div><div class="v {value_class(chip_sum5.get('trust'))}">{chip_cell(chip_sum5.get('trust'))}</div></div>
+  <div class="info-cell"><div class="k">主力5日合計</div><div class="v {value_class(chip_sum5.get('total'))}">{chip_cell(chip_sum5.get('total'))}</div></div>
 </div>
 <div class="holding-info-grid">
-  <div class="info-cell"><div class="k">大戶比例</div><div class="v">{fmt_num(h_latest.get('major'))}%</div></div>
-  <div class="info-cell"><div class="k">散戶比例</div><div class="v">{fmt_num(h_latest.get('retail'))}%</div></div>
-  <div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get('total_people'),0)}</div></div>
+  <div class="info-cell"><div class="k">大戶比例（400張以上）</div><div class="v">{holding_cell(h_latest.get('major'), '%')}</div></div>
+  <div class="info-cell"><div class="k">大戶人數（400張以上）</div><div class="v">{holding_cell(h_latest.get('major_people'), '', 0)}</div></div>
+  <div class="info-cell"><div class="k">中實戶持股人數（200-400張）</div><div class="v">{holding_cell(h_latest.get('middle_people'), '', 0)}</div></div>
+  <div class="info-cell"><div class="k">中實戶比例（200-400張）</div><div class="v">{holding_cell(h_latest.get('middle'), '%')}</div></div>
+  <div class="info-cell"><div class="k">散戶比例</div><div class="v">{holding_cell(h_latest.get('retail'), '%')}</div></div>
+  <div class="info-cell"><div class="k">總股東人數</div><div class="v">{holding_cell(h_latest.get('total_people'), '', 0)}</div></div>
 </div>
 <div class="chip-line">{esc(chip_note)}</div>"""
 
@@ -5599,8 +5695,12 @@ def mda_chart_rows(stock_id: str, daily: list[dict], holding_series: list[dict],
             "marginBalance": m.get("margin_balance"),
             "shortBalance": m.get("short_balance"),
             "major": a.get("major"),
+            "middle": a.get("middle"),
             "retail": a.get("retail"),
             "totalPeople": a.get("total_people"),
+            "majorPeople": a.get("major_people"),
+            "middlePeople": a.get("middle_people"),
+            "retailPeople": a.get("retail_people"),
             "holdingDate": a.get("holding_date", ""),
         })
         if close is not None:
@@ -5702,7 +5802,8 @@ def mda_synced_chart_panel(stock_id: str, daily: list[dict], holding_series: lis
         panel("foreignShares", mda_metric_svg(rows, "外資持股張數", "foreignShares", "#7ee787", "line", "張")),
         panel("foreign", mda_metric_svg(rows, "外資買賣超（張）", "foreign", "#f85149", "bar-zero", "張")),
         panel("marginBalance", mda_metric_svg(rows, "融資餘額", "marginBalance", "#a78bfa", "line", "張")),
-        panel("major", mda_metric_svg(rows, "千張大戶持股比例", "major", "#f85149", "line", "%")),
+        panel("major", mda_metric_svg(rows, "大戶持股比例（400張以上）", "major", "#f85149", "line", "%")),
+        panel("middlePeople", mda_metric_svg(rows, "中實戶持股人數（200-400張）", "middlePeople", "#d2a520", "line", "人")),
         panel("retail", mda_metric_svg(rows, "散戶持股比例", "retail", "#3fb950", "line", "%")),
         panel("totalPeople", mda_metric_svg(rows, "總股東人數", "totalPeople", "#58a6ff", "line", "人")),
     ]
@@ -5722,7 +5823,8 @@ const mdaData_{stock_id} = {data};
     if(kind==='foreignShares') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資持股張數</span><span>${{fmtInt(x.foreignShares)}} 張</span><span>外資持股比例</span><span>${{pct(x.foreignRatio)}}</span></div>`;
     if(kind==='foreign') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
     if(kind==='marginBalance') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>融資餘額</span><span>${{fmtInt(x.marginBalance)}} 張</span><span>融券餘額</span><span>${{fmtInt(x.shortBalance)}} 張</span></div>`;
-    if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>千張大戶</span><span>${{pct(x.major)}}</span></div>`;
+    if(kind==='major') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶比例(400張以上)</span><span>${{pct(x.major)}}</span><span>大戶人數</span><span>${{fmtInt(x.majorPeople)}} 人</span></div>`;
+    if(kind==='middlePeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>中實戶人數(200-400張)</span><span>${{fmtInt(x.middlePeople)}} 人</span><span>中實戶比例</span><span>${{pct(x.middle)}}</span></div>`;
     if(kind==='retail') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>散戶持股</span><span>${{pct(x.retail)}}</span></div>`;
     if(kind==='totalPeople') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
     return `<div class="t-date">${{x.date || '-'}}</div>`;
@@ -5784,7 +5886,8 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
         ("foreignShares", "外資持股張數", ""),
         ("foreign", "外資買賣超（張）", ""),
         ("marginBalance", "融資餘額", ""),
-        ("major", "千張大戶持股比例", ""),
+        ("major", "大戶持股比例（400張以上）", ""),
+        ("middlePeople", "中實戶持股人數（200-400張）", ""),
         ("retail", "散戶持股比例", ""),
         ("totalPeople", "總股東人數", ""),
     ]
@@ -5840,6 +5943,20 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
   let mainDrawApi=null;
   function lineData(key){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key])}})); }}
   function histData(key, colorFn){{ return rows.filter(x=>x[key]!=null).map(x=>({{time:x.date,value:Number(x[key]),color:colorFn ? colorFn(x) : '#58a6ff'}})); }}
+  function defaultLogicalRange(){{
+    if(maxLogical <= 0) return {{from:0,to:maxLogical}};
+    const lastTime=Date.parse(rows[rows.length-1]?.date || '');
+    let from=Math.max(0, rows.length - 22);
+    if(!Number.isNaN(lastTime)){{
+      const cutoff=lastTime - {CHART_DEFAULT_VISIBLE_DAYS}*24*60*60*1000;
+      from=0;
+      for(let i=rows.length-1;i>=0;i--){{
+        const t=Date.parse(rows[i]?.date || '');
+        if(!Number.isNaN(t) && t < cutoff){{ from=Math.min(maxLogical, i+1); break; }}
+      }}
+    }}
+    return {{from:Math.max(0,from),to:maxLogical}};
+  }}
   function clampLogicalRange(range){{
     if(!range) return range;
     let from=Number(range.from);
@@ -5861,7 +5978,8 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     if(kind==='foreignShares') return `<b>${{x.date}}</b><br>外資持股 ${{fmtInt(x.foreignShares)}} 張<br>比例 ${{pct(x.foreignRatio)}}`;
     if(kind==='foreign') return `<b>${{x.date}}</b><br>外資買賣超 ${{fmtInt(x.foreign)}} 張<br>區間累積 ${{fmtInt(x.foreignCum)}} 張`;
     if(kind==='marginBalance') return `<b>${{x.date}}</b><br>融資餘額 ${{fmtInt(x.marginBalance)}} 張<br>融券餘額 ${{fmtInt(x.shortBalance)}} 張`;
-    if(kind==='major') return `<b>${{x.date}}</b><br>千張大戶 ${{pct(x.major)}}`;
+    if(kind==='major') return `<b>${{x.date}}</b><br>大戶(400張以上) ${{pct(x.major)}}<br>大戶人數 ${{fmtInt(x.majorPeople)}} 人`;
+    if(kind==='middlePeople') return `<b>${{x.date}}</b><br>中實戶人數(200-400張) ${{fmtInt(x.middlePeople)}} 人<br>中實戶比例 ${{pct(x.middle)}}`;
     if(kind==='retail') return `<b>${{x.date}}</b><br>散戶持股 ${{pct(x.retail)}}`;
     if(kind==='totalPeople') return `<b>${{x.date}}</b><br>總股東人數 ${{fmtInt(x.totalPeople)}} 人`;
     return `<b>${{x.date}}</b>`;
@@ -5875,6 +5993,7 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
       foreign:x.foreign,
       marginBalance:x.marginBalance,
       major:x.major,
+      middlePeople:x.middlePeople,
       retail:x.retail,
       totalPeople:x.totalPeople,
     }};
@@ -6031,12 +6150,12 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
       series=chart.addSeries(L.HistogramSeries,{{priceFormat:{{type:'volume'}},priceLineVisible:false,lastValueVisible:false}});
       series.setData(histData('foreign',x=>Number(x.foreign)>=0?'#f85149':'#3fb950'));
     }} else {{
-      const key={{foreignShares:'foreignShares',marginBalance:'marginBalance',major:'major',retail:'retail',totalPeople:'totalPeople'}}[kind];
-      const color={{foreignShares:'#7ee787',marginBalance:'#a78bfa',major:'#f85149',retail:'#3fb950',totalPeople:'#58a6ff'}}[kind] || '#58a6ff';
+      const key={{foreignShares:'foreignShares',marginBalance:'marginBalance',major:'major',middlePeople:'middlePeople',retail:'retail',totalPeople:'totalPeople'}}[kind];
+      const color={{foreignShares:'#7ee787',marginBalance:'#a78bfa',major:'#f85149',middlePeople:'#d2a520',retail:'#3fb950',totalPeople:'#58a6ff'}}[kind] || '#58a6ff';
       series=chart.addSeries(L.LineSeries,{{color,lineWidth:2,priceLineVisible:false}});
       series.setData(lineData(key));
     }}
-    chart.timeScale().fitContent();
+    chart.timeScale().setVisibleLogicalRange(defaultLogicalRange());
     chart.timeScale().subscribeVisibleLogicalRangeChange(range=>{{
       if(syncing || !range) return;
       const next=clampLogicalRange(range);
@@ -6070,7 +6189,8 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
   addPanel('foreignShares','外資持股張數',150);
   addPanel('foreign','外資買賣超',150);
   addPanel('marginBalance','融資餘額',150);
-  addPanel('major','千張大戶持股比例',150);
+  addPanel('major','大戶持股比例(400張以上)',150);
+  addPanel('middlePeople','中實戶持股人數(200-400張)',150);
   addPanel('retail','散戶持股比例',150);
   addPanel('totalPeople','總股東人數',150);
   window.addEventListener('resize',()=>chartApis.forEach(item=>item.chart.applyOptions({{width:item.el.clientWidth}})));
@@ -6079,7 +6199,6 @@ def mda_lightweight_chart_panel(stock_id: str, daily: list[dict], holding_series
     return f"""
 <div id="{panel_id}" class="tv-chart-grid">
   {panels}
-  <div class="tv-chart-note">圖表使用 TradingView Lightweight Charts；K 線與台股籌碼資料仍由本站 FinMind 快取提供。</div>
 </div>
 {script}"""
 
@@ -6676,7 +6795,8 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     h_latest = holding.get("latest", {}) if holding else {}
     holding_stat_html = (
         '<div class="holding-stats">'
-        f'<div class="info-cell"><div class="k">大戶持股比例</div><div class="v">{fmt_num(h_latest.get("major"))}%</div></div>'
+        f'<div class="info-cell"><div class="k">大戶持股比例（400張以上）</div><div class="v">{fmt_num(h_latest.get("major"))}%</div></div>'
+        f'<div class="info-cell"><div class="k">中實戶持股人數（200-400張）</div><div class="v">{fmt_num(h_latest.get("middle_people"),0)}人</div></div>'
         f'<div class="info-cell"><div class="k">散戶持股比例</div><div class="v">{fmt_num(h_latest.get("retail"))}%</div></div>'
         f'<div class="info-cell"><div class="k">總股東人數</div><div class="v">{fmt_num(h_latest.get("total_people"),0)}人</div></div>'
         '</div>'
@@ -6700,7 +6820,7 @@ def build_stock_detail_page(stock_id: str, s: dict, ledger: dict[str, dict]) -> 
     }, ensure_ascii=False)
     main_force_data = json.dumps(main_force_payload(chip_series, daily), ensure_ascii=False)
     operation_card = build_operation_plan_card(s_view, tech, decision, sell_signal)
-    chip_dates = f"法人 {chip.get('date','─')}｜股權 {holding.get('date','─') if holding else '─'}"
+    chip_dates = f"法人 {chip.get('date') if chip else '尚無快取'}｜股權 {holding.get('date') if holding else '尚無快取'}"
     lightweight_charts = mda_lightweight_chart_panel(stock_id, daily, holding_series, chip_series)
     chip_tv_panel = chip_lightweight_flow_panel(stock_id, chip_series, daily)
     chart_script = f"""
@@ -6824,8 +6944,10 @@ function holdingHtml_{stock_id}(x){{
   return `
     <div class="t-date">${{x.date || '-'}}</div>
     <div class="t-grid">
-      <span>大戶&gt;1000張</span><span>${{fmtPct(x.major)}}</span>
-      <span>400~1000張</span><span>${{fmtPct(x.large)}}</span>
+      <span>大戶(400張以上)</span><span>${{fmtPct(x.major)}}</span>
+      <span>大戶人數</span><span>${{fmtInt(x.majorPeople)}}</span>
+      <span>中實戶人數(200-400張)</span><span>${{fmtInt(x.middlePeople)}}</span>
+      <span>中實戶比例</span><span>${{fmtPct(x.middle)}}</span>
       <span>散戶&lt;1萬股</span><span>${{fmtPct(x.retail)}}</span>
       <span>總股東數</span><span>${{fmtInt(x.totalPeople)}}</span>
     </div>`;
@@ -6867,7 +6989,7 @@ function indicatorHtml_{stock_id}(chart, x){{
   if(kind==='wr') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>Williams %R</span><span>${{fmt(x.wr,1)}}</span><span>區間</span><span>${{wrState(x.wr)}}</span></div>`;
   if(kind==='kd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>K</span><span>${{fmt(x.k,1)}}</span><span>D</span><span>${{fmt(x.d,1)}}</span><span>區間</span><span>${{kdState(x.k,x.d)}}</span></div>`;
   if(kind==='macd') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>MACD</span><span>${{macdState(x)}}</span></div>`;
-  if(kind==='holdingPack') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶持股比例</span><span>${{pct(x.major)}}</span><span>散戶持股比例</span><span>${{pct(x.retail)}}</span><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
+  if(kind==='holdingPack') return `<div class="t-date">${{x.date || '-'}}${{x.holdingDate ? '｜股權 '+x.holdingDate : ''}}</div><div class="t-grid"><span>大戶比例(400張以上)</span><span>${{pct(x.major)}}</span><span>中實戶人數(200-400張)</span><span>${{fmtInt(x.middlePeople)}} 人</span><span>中實戶比例</span><span>${{pct(x.middle)}}</span><span>散戶持股比例</span><span>${{pct(x.retail)}}</span><span>總股東人數</span><span>${{fmtInt(x.totalPeople)}} 人</span></div>`;
   if(kind==='foreignFlow') return `<div class="t-date">${{x.date || '-'}}</div><div class="t-grid"><span>外資買賣超</span><span>${{fmtInt(x.foreign)}} 張</span><span>區間累積</span><span>${{fmtInt(x.foreignCum)}} 張</span></div>`;
   return `<div class="t-date">${{x.date || '-'}}</div>`;
 }}
@@ -7058,11 +7180,19 @@ initMainForceHover_{stock_id}();
     traffic_light = stock_traffic_light(stock_id, s_view, tech, decision, daily, chip_series)
     rr_warning = rr_warning_bar(decision)
     mda_abc_card = build_stock_mda_abc_block(stock_id, s_view, daily, tech, chip_series, holding)
+    report_date = str(s.get("report_date") or "").strip()
+    price_date = str(s_view.get("price_date") or latest.get("date") or "").strip()
+    if not is_blank(report_date):
+        page_sub_html = f'<div class="page-sub">個股研究頁 · 報告日期 {esc(report_date)}</div>'
+    elif not is_blank(price_date):
+        page_sub_html = f'<div class="page-sub">個股查詢頁 · 最新收盤 {esc(price_date)}</div>'
+    else:
+        page_sub_html = '<div class="page-sub">個股查詢頁</div>'
     body = f"""
 <div class="container">
   <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
   <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}</div>
-  <div class="page-sub">v44 個股研究頁 · 報告日期 {esc(s.get('report_date','─'))}</div>
+  {page_sub_html}
   {rr_warning}
   <div class="detail-hero">
     <div class="card">
@@ -7132,12 +7262,38 @@ def build_stocks_index_page(reports: list[dict]) -> str:
     stock_map = build_stock_query_map(reports)
     ledger = build_signal_ledger(reports)
     items = []
+    def signed_lots(value) -> str:
+        try:
+            if value is None:
+                return "─"
+            return f"{float(value):+,.0f}張"
+        except Exception:
+            return "─"
+
     for sid, s in sorted(stock_map.items()):
         rows = merge_report_close(read_price_history(sid), s)
         latest = rows[-1] if rows else {}
         daily = aggregate_ohlcv(merge_report_close(read_price_history(sid), s), "daily")
         tech = technical_snapshot(daily, s)
         decision = build_trade_decision(tech, s)
+        chip = read_chip_summary(sid)
+        holding = read_holding_summary(sid)
+        h_latest = (holding.get("latest") or {}) if holding else {}
+        chip_parts = []
+        if chip:
+            sum5 = chip.get("sum5", {})
+            chip_parts.append(f"法人 {chip.get('date')}")
+            chip_parts.append(f"外資5日 {signed_lots(sum5.get('foreign'))}")
+            chip_parts.append(f"主力5日 {signed_lots(sum5.get('total'))}")
+        else:
+            chip_parts.append("法人尚無快取")
+        if holding:
+            chip_parts.append(f"股權 {holding.get('date')}")
+            chip_parts.append(f"大戶 {fmt_num(h_latest.get('major'))}%")
+            chip_parts.append(f"中實戶 {fmt_num(h_latest.get('middle_people'), 0)}人")
+        else:
+            chip_parts.append("股權尚無快取")
+        chip_text = "｜".join(chip_parts)
         price = latest.get("close")
         date = latest.get("date", "")
         item = {
@@ -7157,6 +7313,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
             "score": s.get("score", "─"),
             "events": len(ledger.get(sid, {}).get("events", [])),
             "query_only": bool(s.get("query_only")),
+            "chip_text": chip_text,
         }
         items.append(item)
     basket_count = sum(1 for x in items if not x["query_only"])
@@ -7165,7 +7322,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
     rows_html = ""
     for x in items:
         search_extra = "個股查詢 未入籃" if x["query_only"] else "個股查詢"
-        search = f"{x['id']} {x['name']} {x['basket']} {search_extra}".lower()
+        search = f"{x['id']} {x['name']} {x['basket']} {x['chip_text']} {search_extra}".lower()
         tag_cls = "tag" if x["query_only"] else "tag-green"
         rows_html += f"""
 <tr data-search="{esc(search)}">
@@ -7173,6 +7330,7 @@ def build_stocks_index_page(reports: list[dict]) -> str:
   <td><span class="{tag_cls}">{esc(x['basket'])}</span></td>
   <td class="price-main">{esc(x['price'])}</td>
   <td><div class="price-entry">進 {esc(x['entry'])}</div><div class="price-target">目 {esc(x['target'])}</div><div class="price-stop">初停 {esc(x['stop'])}</div><div class="price-support">支撐 {esc(x['support'])}</div><div class="price-rr {x['rr_class']}">R:R {esc(x['rr'])}</div></td>
+  <td><div class="chip-line">{esc(x['chip_text'])}</div></td>
   <td>{esc(x['score'])}</td>
   <td>{x['events']} 次</td>
 </tr>"""
@@ -7189,7 +7347,7 @@ function filterStocks(){
     body = f"""
 <div class="container">
   <div class="page-title">個股查詢</div>
-  <div class="page-sub">只收錄價格快取已更新到近期的個股；舊版 v44 停在 2025 的快取會先排除，避免 K 線誤判。</div>
+  <div class="page-sub">只收錄價格快取已更新到近期的個股；每列都顯示法人與股權籌碼狀態，尚無快取會直接標示。</div>
   <div class="card">
     <div class="section-label">Stock Query</div>
     <div class="grid grid-3" style="margin-bottom:14px">
@@ -7200,7 +7358,7 @@ function filterStocks(){
     <input id="stockSearch" class="searchbar" placeholder="搜尋股票代號、名稱、未入籃、行進籃、盤整籃..." oninput="filterStocks()">
     <div style="overflow-x:auto">
       <table class="stock-table">
-        <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/初停/R:R</th><th>分數</th><th>訊號</th></tr></thead>
+        <thead><tr><th>個股</th><th>分類</th><th>FinMind收盤</th><th>買點/目標/初停/R:R</th><th>籌碼狀態</th><th>分數</th><th>訊號</th></tr></thead>
         <tbody id="stockRows">{rows_html}</tbody>
       </table>
     </div>

@@ -130,11 +130,13 @@ def holding_group(level: str) -> str:
     if text == "total" or "差異" in text:
         return "other"
     nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", text)]
-    if "more than" in text or (nums and max(nums) >= 1_000_001):
+    if "more than" in text or (nums and max(nums) >= 400_001):
         return "major"
+    if len(nums) >= 2 and nums[0] >= 200_001 and nums[1] <= 400_000:
+        return "middle"
     if nums and max(nums) <= 10_000:
         return "retail"
-    return "middle"
+    return "other"
 
 
 def read_holding_series(stock_id: str) -> list[dict]:
@@ -147,7 +149,7 @@ def read_holding_series(stock_id: str) -> list[dict]:
 
     series = []
     for date in sorted(by_date):
-        item = {"date": date, "major": 0.0, "retail": 0.0, "total_people": None}
+        item = {"date": date, "major": 0.0, "middle": 0.0, "retail": 0.0, "total_people": None, "major_people": 0, "middle_people": 0}
         for row in by_date[date]:
             level = str(row.get("HoldingSharesLevel") or "").strip()
             pct = to_float(row.get("percent"), 0.0)
@@ -156,8 +158,12 @@ def read_holding_series(stock_id: str) -> list[dict]:
                 item["total_people"] = people
                 continue
             group = holding_group(level)
-            if group in {"major", "retail"}:
+            if group in {"major", "middle", "retail"}:
                 item[group] += pct or 0.0
+            if group == "major" and people is not None:
+                item["major_people"] += people
+            elif group == "middle" and people is not None:
+                item["middle_people"] += people
         series.append(item)
     return series
 
@@ -468,7 +474,7 @@ def build_html(rows: list[dict]) -> str:
       <span class="pill">未發動：{counts['未發動觀察籃']}</span>
       <span class="pill">過熱/風險：{counts['過熱/風險']}</span>
     </div>
-    <div class="note">這頁使用全市場上市櫃普通股清單，先以股權分散資料找出千張大戶 4 週增加 0.5pt 或 8 週增加 1.0pt 的候選，再補日線判讀 MA120、MA240、扣抵與量縮結構。股權週次：{fmt(holding_dates, 0) if holding_dates is not None else '-'}；日線月數：{fmt(price_months, 0) if price_months is not None else '-'}。散戶下降與總股東人數下降作為支撐判讀，不再使用平均每人持股。</div>
+    <div class="note">這頁使用全市場上市櫃普通股清單，先以股權分散資料找出 400 張以上大戶 4 週增加 0.5pt 或 8 週增加 1.0pt 的候選，再補日線判讀 MA120、MA240、扣抵與量縮結構。股權週次：{fmt(holding_dates, 0) if holding_dates is not None else '-'}；日線月數：{fmt(price_months, 0) if price_months is not None else '-'}。散戶下降與總股東人數下降作為支撐判讀，不再使用平均每人持股。</div>
   </header>
   <main>
     {''.join(body)}
