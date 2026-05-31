@@ -60,6 +60,9 @@ jobs:
       - name: Generate CaryBot signal bridge
         run: python carybot_signals.py
 
+      - name: Generate backtest dashboard data
+        run: python backtest_dashboard.py
+
       - name: Refresh all-market stock prices
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

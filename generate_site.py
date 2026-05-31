@@ -42,12 +42,14 @@ REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 SFZ_ALL_PATH = LOCAL_DATA_DIR / "sfz_all.json"
 MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
 CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
+BACKTEST_DASHBOARD_PATH = LOCAL_DATA_DIR / "backtest_results.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 PUBLIC_DATA_FILES = [
     SFZ_ALL_PATH,
     MARKET_SENTIMENT_PATH,
     CARYBOT_SIGNALS_PATH,
+    BACKTEST_DASHBOARD_PATH,
 ]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
@@ -716,6 +718,26 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
 
+/* Backtest dashboard */
+.backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
+.backtest-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 12px}
+.backtest-toolbar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:8px 10px;min-width:260px}
+.backtest-table-wrap{overflow:auto;max-height:520px;margin-top:12px}
+.backtest-chart-box{min-height:330px}
+.backtest-chart-box canvas{width:100%;min-height:300px}
+.backtest-heatmap{display:grid;grid-template-columns:repeat(12,minmax(38px,1fr));gap:6px;margin-top:10px}
+.heat-cell{border:1px solid #30363d;border-radius:6px;background:#161b22;min-height:42px;padding:6px;font-size:11px;color:#8b949e}
+.heat-cell .m{font-weight:800;color:#e6edf3}
+.heat-cell .r{font-size:12px;font-weight:900;margin-top:3px}
+.heat-pos{border-color:rgba(248,81,73,.32);background:rgba(248,81,73,.08)}
+.heat-neg{border-color:rgba(63,185,80,.32);background:rgba(63,185,80,.08)}
+.heat-flat{border-color:rgba(139,148,158,.28)}
+.strategy-params{white-space:pre-wrap;font-size:12px;color:#c9d1d9;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px;max-height:280px;overflow:auto}
+.stock-table th[data-sort-key]{cursor:pointer}
+.stock-table th[data-sort-key]::after{content:" ⇅";font-size:10px;color:#6e7681}
+.stock-table th[data-sort-key].sort-asc::after{content:" ↑";color:#58a6ff}
+.stock-table th[data-sort-key].sort-desc::after{content:" ↓";color:#58a6ff}
+
 /* Filter steps */
 .filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
 .filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
@@ -838,6 +860,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -935,6 +958,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
         ("stocks",    "stocks.html",    "個股查詢"),
+        ("backtest",  "backtest_dashboard.html", "回測"),
         ("history",   "history.html",   "歷史分析"),
     ]
     # legacy nav keys map to new pages
@@ -942,7 +966,6 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         "daily": "selection", "basket": "selection", "signals": "selection",
         "mda_launched": "mda", "mda_consolidation": "mda",
         "radar": "timing", "carybot": "timing",
-        "backtest": "history",
     }
     active = _NAV_ALIASES.get(active, active)
     items = ""
@@ -9499,6 +9522,223 @@ def _num_from_row(row: dict, key: str) -> str:
         return esc(str(row.get(key)))
 
 
+def load_backtest_dashboard_payload(path: Path = BACKTEST_DASHBOARD_PATH) -> dict:
+    if not path.exists():
+        return {
+            "schema_version": 1,
+            "updated_at": "",
+            "cost_model": {"round_trip_rate": 0.0044},
+            "strategies": [],
+            "notes": ["data/backtest_results.json is not generated yet."],
+        }
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {
+            "schema_version": 1,
+            "updated_at": "",
+            "cost_model": {"round_trip_rate": 0.0044},
+            "strategies": [],
+            "notes": ["data/backtest_results.json could not be parsed."],
+        }
+    if not isinstance(payload, dict):
+        payload = {}
+    payload.setdefault("schema_version", 1)
+    payload.setdefault("cost_model", {"round_trip_rate": 0.0044})
+    payload.setdefault("strategies", [])
+    payload.setdefault("notes", [])
+    return payload
+
+
+def _dash_pct(value, digits: int = 1) -> str:
+    try:
+        if value is None:
+            return "N/A"
+        return f"{float(value) * 100:.{digits}f}%"
+    except Exception:
+        return "N/A"
+
+
+def _dash_num(value, digits: int = 2) -> str:
+    try:
+        if value is None:
+            return "N/A"
+        return f"{float(value):.{digits}f}"
+    except Exception:
+        return "N/A"
+
+
+def build_backtest_dashboard_page(payload: dict | None = None, section_only: bool = False) -> str:
+    payload = payload or load_backtest_dashboard_payload()
+    strategies = payload.get("strategies") if isinstance(payload.get("strategies"), list) else []
+    cost = payload.get("cost_model") if isinstance(payload.get("cost_model"), dict) else {}
+    round_trip = cost.get("round_trip_rate", 0.0044)
+    updated_at = payload.get("updated_at") or payload.get("date") or "N/A"
+    period = payload.get("period") if isinstance(payload.get("period"), dict) else {}
+    period_text = f"{period.get('start') or 'N/A'} ~ {period.get('end') or 'N/A'}"
+    top = strategies[0] if strategies else {}
+    top_metrics = top.get("metrics") if isinstance(top.get("metrics"), dict) else {}
+    best_sharpe = max(
+        (s.get("metrics", {}).get("sharpe_ratio") for s in strategies if isinstance(s.get("metrics"), dict) and s.get("metrics", {}).get("sharpe_ratio") is not None),
+        default=None,
+    )
+    row_html = ""
+    for idx, strategy in enumerate(strategies):
+        metrics = strategy.get("metrics") if isinstance(strategy.get("metrics"), dict) else {}
+        period_row = strategy.get("period") if isinstance(strategy.get("period"), dict) else {}
+        name = strategy.get("strategy_name", f"Strategy {idx + 1}")
+        annual = metrics.get("annual_return")
+        sharpe = metrics.get("sharpe_ratio")
+        drawdown = metrics.get("max_drawdown")
+        win_rate = metrics.get("win_rate")
+        trades = metrics.get("total_trades")
+        pf = metrics.get("profit_factor")
+        row_html += f"""
+<tr data-strategy-row data-index="{idx}">
+  <td><strong>{esc(name)}</strong><div class="signal-dates">{esc(strategy.get('category', ''))} · {esc(period_row.get('start', ''))} ~ {esc(period_row.get('end', ''))}</div></td>
+  <td data-value="{'' if sharpe is None else sharpe}">{_dash_num(sharpe, 2)}</td>
+  <td data-value="{'' if annual is None else annual}" class="{('pos' if (annual or 0) >= 0 else 'neg') if annual is not None else ''}">{_dash_pct(annual, 1)}</td>
+  <td data-value="{'' if drawdown is None else drawdown}" class="neg">{_dash_pct(drawdown, 1)}</td>
+  <td data-value="{'' if win_rate is None else win_rate}">{_dash_pct(win_rate, 1)}</td>
+  <td data-value="{'' if trades is None else trades}">{esc(str(trades if trades is not None else 'N/A'))}</td>
+  <td data-value="{'' if pf is None else pf}">{_dash_num(pf, 2)}</td>
+</tr>"""
+    if not row_html:
+        row_html = '<tr><td colspan="7" style="color:#8b949e">No standardized backtest strategies are available yet.</td></tr>'
+
+    notes = payload.get("notes") if isinstance(payload.get("notes"), list) else []
+    notes_html = "".join(f"<div class=\"chip-line\">{esc(str(note))}</div>" for note in notes[:4])
+    data_json = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
+    first_name = top.get("strategy_name", "N/A")
+    body = f"""
+<div class="container" data-backtest-dashboard>
+  <div class="page-title">回測 Dashboard</div>
+  <div class="page-sub">標準化比較 SFZ、TA3、CaryBot timing sidecar 與既有分散回測輸出。資料更新：{esc(str(updated_at))}</div>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-num">{len(strategies)}</div><div class="metric-label">策略數</div></div>
+    <div class="metric"><div class="metric-num">{_dash_pct(round_trip, 2)}</div><div class="metric-label">台股單趟交易成本</div></div>
+    <div class="metric"><div class="metric-num">{_dash_num(best_sharpe, 2)}</div><div class="metric-label">最佳 Sharpe</div></div>
+    <div class="metric"><div class="metric-num">{_dash_pct(top_metrics.get('annual_return'), 1)}</div><div class="metric-label">預設策略年化</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">策略比較表</div>
+    <div class="chip-line">期間：{esc(period_text)} · 成本：買方手續費 0.6‰ + 賣方手續費 0.6‰ + 賣方證交稅 3‰ + slippage 0.2‰ = {_dash_pct(round_trip, 2)}</div>
+    <div class="backtest-table-wrap">
+      <table class="stock-table" data-strategy-table>
+        <thead><tr><th>策略</th><th data-sort-key="sharpe_ratio">Sharpe</th><th data-sort-key="annual_return">年化報酬</th><th data-sort-key="max_drawdown">最大回撤</th><th data-sort-key="win_rate">勝率</th><th data-sort-key="total_trades">交易數</th><th data-sort-key="profit_factor">Profit Factor</th></tr></thead>
+        <tbody data-strategy-body>{row_html}</tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backtest-layout">
+    <div class="card">
+      <div class="section-label">Equity Curve</div>
+      <div class="backtest-toolbar">
+        <select data-strategy-select aria-label="Strategy selector"></select>
+        <span class="tag tag-blue" data-lib="Chart.js">Chart.js</span>
+      </div>
+      <div class="chart-box backtest-chart-box"><canvas id="equityCurveChart" height="130"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="section-label">策略參數</div>
+      <div class="chip-line" data-selected-strategy>{esc(str(first_name))}</div>
+      <pre class="strategy-params" data-strategy-params>{{}}</pre>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">月報酬 Heatmap</div>
+    <div class="backtest-heatmap" data-monthly-heatmap></div>
+  </div>
+  <div class="card">
+    <div class="section-label">資料備註</div>
+    {notes_html}
+    <div class="chip-line">Public JSON: <code>data/backtest_results.json</code></div>
+  </div>
+</div>
+<script id="backtestDashboardData" type="application/json">{data_json}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script>
+(function(){{
+  const dataNode=document.getElementById('backtestDashboardData');
+  if(!dataNode) return;
+  const payload=JSON.parse(dataNode.textContent||'{{}}');
+  const strategies=payload.strategies||[];
+  const select=document.querySelector('[data-strategy-select]');
+  const label=document.querySelector('[data-selected-strategy]');
+  const params=document.querySelector('[data-strategy-params]');
+  const heat=document.querySelector('[data-monthly-heatmap]');
+  const tbody=document.querySelector('[data-strategy-body]');
+  let chart=null;
+  function pct(v){{ if(v===null||v===undefined||v==='') return 'N/A'; return (Number(v)*100).toFixed(1)+'%'; }}
+  function choose(index){{
+    const s=strategies[index]||strategies[0];
+    if(!s) return;
+    const selectedIndex=strategies.indexOf(s);
+    if(label) label.textContent=s.strategy_name||'Strategy';
+    if(params) params.textContent=JSON.stringify(s.parameters||{{}}, null, 2);
+    if(select) select.value=String(selectedIndex);
+    document.querySelectorAll('[data-strategy-row]').forEach(row=>row.classList.toggle('active', row.dataset.index===String(selectedIndex)));
+    renderHeatmap(s);
+    renderChart(s);
+  }}
+  function renderChart(s){{
+    const canvas=document.getElementById('equityCurveChart');
+    if(!canvas || !window.Chart) return;
+    const curve=s.equity_curve||[];
+    const labels=curve.map(p=>p[0]);
+    const values=curve.map(p=>p[1]);
+    if(chart) chart.destroy();
+    chart=new Chart(canvas, {{
+      type:'line',
+      data:{{labels:labels,datasets:[{{label:s.strategy_name||'Equity',data:values,borderColor:'#58a6ff',backgroundColor:'rgba(88,166,255,.14)',borderWidth:2,tension:.18,pointRadius:0,fill:true}}]}},
+      options:{{responsive:true,maintainAspectRatio:false,plugins:{{legend:{{display:false}},tooltip:{{callbacks:{{label:function(ctx){{return 'Equity '+Number(ctx.parsed.y).toFixed(3);}}}}}}}},scales:{{x:{{ticks:{{color:'#8b949e',maxTicksLimit:8}},grid:{{color:'rgba(48,54,61,.35)'}}}},y:{{ticks:{{color:'#8b949e'}},grid:{{color:'rgba(48,54,61,.35)'}}}}}}}}
+    }});
+  }}
+  function renderHeatmap(s){{
+    if(!heat) return;
+    const monthly=s.monthly_returns||{{}};
+    const months=Object.keys(monthly).sort();
+    heat.innerHTML='';
+    months.forEach(month=>{{
+      const value=Number(monthly[month]);
+      const cell=document.createElement('div');
+      cell.className='heat-cell '+(value>0?'heat-pos':value<0?'heat-neg':'heat-flat');
+      cell.innerHTML='<div class="m">'+month+'</div><div class="r">'+pct(value)+'</div>';
+      heat.appendChild(cell);
+    }});
+    if(!months.length) heat.innerHTML='<div class="chip-line">No monthly returns.</div>';
+  }}
+  if(select){{
+    strategies.forEach((s,i)=>{{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=s.strategy_name||('Strategy '+(i+1)); select.appendChild(opt); }});
+    select.addEventListener('change',()=>choose(Number(select.value||0)));
+  }}
+  document.querySelectorAll('[data-strategy-row]').forEach(row=>row.addEventListener('click',()=>choose(Number(row.dataset.index||0))));
+  document.querySelectorAll('[data-sort-key]').forEach(th=>{{
+    th.addEventListener('click',()=>{{
+      const key=th.dataset.sortKey;
+      const asc=!th.classList.contains('sort-asc');
+      document.querySelectorAll('[data-sort-key]').forEach(x=>x.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(asc?'sort-asc':'sort-desc');
+      const metricKeys=['sharpe_ratio','annual_return','max_drawdown','win_rate','total_trades','profit_factor'];
+      const rows=Array.from(document.querySelectorAll('[data-strategy-row]'));
+      rows.sort((a,b)=>{{
+        const sa=strategies[Number(a.dataset.index)]||{{}};
+        const sb=strategies[Number(b.dataset.index)]||{{}};
+        const av=metricKeys.includes(key)?Number((sa.metrics||{{}})[key] ?? -999999):0;
+        const bv=metricKeys.includes(key)?Number((sb.metrics||{{}})[key] ?? -999999):0;
+        return asc ? av-bv : bv-av;
+      }});
+      rows.forEach(row=>tbody&&tbody.appendChild(row));
+    }});
+  }});
+  choose(0);
+}})();
+</script>"""
+    if section_only:
+        return body
+    return html_page("回測 Dashboard", "backtest", body)
+
+
 def build_original_sfz_backtest_reference_html() -> str:
     ma_path = V44_BACKTEST_OUTPUT_DIR / "sfz_ma_trailing_after_activation_summary.csv"
     wait_path = V44_BACKTEST_OUTPUT_DIR / "sfz_signal_wait_ta3_entry_summary.csv"
@@ -9715,7 +9955,9 @@ def build_history_combined_page(reports: list[dict]) -> str:
     if os.environ.get("SITE_FULL_BACKTEST") == "1":
         tab1 = build_backtest_page(reports, section_only=True)
     else:
-        tab1 = '<div class="card"><div class="section-label">Backtest</div><div class="strategy-note">Full backtest rebuild is opt-in. Run with SITE_FULL_BACKTEST=1 when needed. Old backtest.html redirects here.</div></div>'
+        payload = load_backtest_dashboard_payload()
+        strategy_count = len(payload.get("strategies") or [])
+        tab1 = f'<div class="card"><div class="section-label">Backtest Dashboard</div><div class="strategy-note">統一回測比較頁已移到 <a href="backtest_dashboard.html">backtest_dashboard.html</a>，目前標準 JSON 內有 {strategy_count} 個策略。Full legacy scan 仍可用 SITE_FULL_BACKTEST=1 重新打開。</div></div>'
     tab2 = build_history_page(reports, section_only=True)
 
     body = f"""
@@ -9824,7 +10066,9 @@ def main():
     print("   [OK] radar.html (redirect)", flush=True)
     (OUTPUT_DIR / "carybot.html").write_text(redirect_page("timing.html#carybot", "CaryBot驗證"), encoding="utf-8")
     print("   [OK] carybot.html (redirect)", flush=True)
-    (OUTPUT_DIR / "backtest.html").write_text(redirect_page("history.html", "歷史回測"), encoding="utf-8")
+    (OUTPUT_DIR / "backtest_dashboard.html").write_text(build_backtest_dashboard_page(), encoding="utf-8")
+    print("   [OK] backtest_dashboard.html", flush=True)
+    (OUTPUT_DIR / "backtest.html").write_text(redirect_page("backtest_dashboard.html", "歷史回測"), encoding="utf-8")
     print("   [OK] backtest.html (redirect)", flush=True)
     (OUTPUT_DIR / "history.html").write_text(build_history_combined_page(reports), encoding="utf-8")
     print("   [OK] history.html", flush=True)
@@ -9841,7 +10085,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    sitemap_urls = ["index.html", "selection.html", "mda.html", "timing.html", "stocks.html", "history.html"]
+    sitemap_urls = ["index.html", "selection.html", "mda.html", "timing.html", "stocks.html", "backtest_dashboard.html", "history.html"]
     sitemap_urls += [f"stocks/{p.name}" for p in sorted((OUTPUT_DIR / "stocks").glob("*.html"))]
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
         f"  <url><loc>https://tcfsh010778.github.io/stock-from-Hsiu/{u}</loc></url>\n" for u in sitemap_urls
@@ -9850,7 +10094,7 @@ def main():
     (OUTPUT_DIR / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: https://tcfsh010778.github.io/stock-from-Hsiu/sitemap.xml\n", encoding="utf-8")
     print("   [OK] sitemap.xml / robots.txt", flush=True)
 
-    print(f"\n[Done] {len(reports)+9+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
+    print(f"\n[Done] {len(reports)+10+stock_page_count+mda_stock_page_count+mda_candidate_page_count} files -> {OUTPUT_DIR}", flush=True)
     print("[Next] git init && git add . && git commit && push to GitHub Pages", flush=True)
 
 

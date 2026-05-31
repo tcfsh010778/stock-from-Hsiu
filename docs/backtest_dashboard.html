@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回測 Dashboard — Stockfrom脩 選股站</title>
+<meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
+<link rel="icon" href="data:,">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0d1117;color:#e6edf3;font-family:-apple-system,'Segoe UI','PingFang TC','Microsoft JhengHei',sans-serif;line-height:1.6;min-height:100vh}
+a{color:#58a6ff;text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Nav */
+nav{background:#0a0a16;border-bottom:1px solid #30363d;padding:6px 12px;display:flex;flex-wrap:wrap;align-items:center;gap:6px;position:sticky;top:0;z-index:999}
+.nav-brand{font-weight:800;color:#e6edf3;font-size:14px;margin-right:8px}
+nav a.tab{padding:4px 12px;border-radius:16px;font-size:12px;font-weight:600;white-space:nowrap;color:#8b949e;background:#1a1a2e;transition:all .2s}
+nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Layout */
+.container{max-width:1100px;margin:0 auto;padding:24px 16px}
+.page-title{font-size:clamp(20px,3vw,28px);font-weight:800;margin-bottom:4px}
+.page-sub{color:#6e7681;font-size:13px;margin-bottom:24px}
+
+/* Cards */
+.card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:20px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:700;color:#8b949e;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.grid{display:grid;gap:16px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.metric{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px}
+.metric-num{font-size:26px;font-weight:800;color:#e6edf3}
+.metric-label{font-size:12px;color:#6e7681;margin-top:2px}
+.action-list{display:grid;gap:10px;margin-top:12px}
+.action-row{display:grid;grid-template-columns:1.2fr repeat(5,minmax(76px,1fr));gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px}
+.action-row .label{font-size:11px;color:#6e7681}
+.action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
+.action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
+.market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
+.market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.market-badge.neu{border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09);color:#d2a520}
+.market-badge.neg{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.09)}
+.check-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.check-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px}
+.check-item .k{font-size:11px;color:#6e7681}
+.check-item .v{font-size:13px;color:#e6edf3;font-weight:800;margin-top:3px;line-height:1.45}
+.alert-row{display:grid;grid-template-columns:1fr 92px 92px 1.7fr;gap:10px;align-items:center;background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:10px;margin-top:8px}
+.alert-level{font-size:12px;font-weight:800;border-radius:999px;padding:4px 8px;text-align:center;background:#161b22;color:#8b949e;border:1px solid #30363d}
+.alert-level.watch{color:#d2a520;border-color:rgba(210,153,34,.45);background:rgba(210,153,34,.09)}
+.alert-level.exit{color:#f85149;border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
+.chip-line{font-size:12px;color:#8b949e;margin-top:6px;line-height:1.6}
+.rr-good{color:#3fb950!important}
+.rr-mid{color:#d2a520!important}
+.rr-bad{color:#f85149!important}
+.basket-card{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-bottom:10px}
+.basket-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.basket-code{font-size:17px;font-weight:800;color:#e6edf3}
+.basket-name{font-size:12px;color:#8b949e;margin-top:2px}
+.basket-title-link{display:inline-flex;align-items:baseline;gap:6px;color:#e6edf3;text-decoration:none;border-bottom:1px solid transparent}
+.basket-title-link:hover{color:#58a6ff;border-bottom-color:#58a6ff}
+.basket-title-link:hover .basket-name{color:#58a6ff}
+.basket-action{font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#1a1a2e;color:#58a6ff;white-space:nowrap}
+.basket-price-row{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.basket-price{font-size:24px;font-weight:900;color:#e6edf3;line-height:1}
+.basket-change{font-size:13px;font-weight:800}
+.tag-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{font-size:11px;color:#8b949e;background:#161b22;border:1px solid #30363d;border-radius:999px;padding:3px 7px}
+.tag-green{color:#3fb950;border-color:rgba(63,185,80,.35);background:rgba(63,185,80,.08)}
+.tag-blue{color:#58a6ff;border-color:rgba(88,166,255,.35);background:rgba(88,166,255,.08)}
+.tag-yellow{color:#d2a520;border-color:rgba(210,153,34,.35);background:rgba(210,153,34,.08)}
+.tag-red{color:#f85149;border-color:rgba(248,81,73,.35);background:rgba(248,81,73,.08)}
+.strategy-note{font-size:13px;color:#c9d1d9;line-height:1.75}
+.signal-foot{font-size:12px;color:#8b949e;margin-top:8px;border-top:1px solid #21262d;padding-top:8px}
+.signal-foot strong{color:#e6edf3}
+.signal-table td{vertical-align:top}
+.signal-table tr.clickable-row{cursor:pointer}
+.signal-table tr.clickable-row:hover .stock-link{color:#58a6ff;text-decoration:none}
+.signal-dates{font-size:12px;color:#8b949e;line-height:1.7}
+.push-ok{color:#3fb950;font-weight:700}
+.push-wait{color:#d2a520;font-weight:700}
+.push-miss{color:#f85149;font-weight:700}
+.stock-link{color:#e6edf3;font-weight:800}
+.stock-link:hover{color:#58a6ff;text-decoration:none}
+.detail-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.info-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.info-cell{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.info-cell .k{font-size:11px;color:#6e7681}
+.info-cell .v{font-size:16px;color:#e6edf3;font-weight:800;margin-top:2px}
+.telegram-report-card{display:grid;gap:14px}
+.telegram-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start;border-bottom:1px solid #30363d;padding-bottom:12px}
+.telegram-title{font-size:18px;font-weight:800;color:#e6edf3}
+.telegram-meta{font-size:12px;color:#8b949e;margin-top:4px;line-height:1.55}
+.telegram-rating{font-size:18px;font-weight:900;text-align:right;white-space:nowrap}
+.telegram-phase{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.telegram-phase h3{font-size:14px;color:#e6edf3;margin:0 0 8px}
+.telegram-line{display:grid;grid-template-columns:104px 1fr;gap:10px;font-size:13px;line-height:1.6;border-top:1px solid rgba(48,54,61,.55);padding-top:7px;margin-top:7px}
+.telegram-line:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.telegram-line .k{color:#8b949e}
+.telegram-line .v{color:#c9d1d9}
+.telegram-price-line{display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:10px 12px;margin-bottom:8px}
+.telegram-price-line .k{font-size:11px;color:#8b949e}
+.telegram-price-line .price{font-size:28px;font-weight:900;color:#e6edf3;line-height:1}
+.telegram-price-line .change{font-size:13px;font-weight:800}
+.telegram-note{font-size:12px;line-height:1.65;color:#8b949e;background:#161b22;border-left:3px solid #58a6ff;padding:8px 10px;border-radius:6px}
+.diagnosis-head{display:grid;grid-template-columns:1.3fr .9fr;gap:14px;margin-bottom:14px}
+.diagnosis-verdict{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:14px}
+.diagnosis-verdict .label{font-size:11px;color:#8b949e;text-transform:uppercase;letter-spacing:1px}
+.diagnosis-verdict .main{font-size:20px;font-weight:900;color:#e6edf3;margin-top:4px;line-height:1.35}
+.diagnosis-verdict .sub{font-size:13px;color:#c9d1d9;margin-top:8px;line-height:1.65}
+.diagnosis-score{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.diagnosis-score .box{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px}
+.diagnosis-score .num{font-size:20px;font-weight:900;color:#e6edf3}
+.diagnosis-score .k{font-size:11px;color:#8b949e;margin-top:2px}
+.diagnosis-list{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.diagnosis-list .panel{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:12px}
+.diagnosis-list h3{font-size:13px;color:#e6edf3;margin:0 0 8px}
+.diagnosis-list ul{margin:0;padding-left:18px;color:#c9d1d9;font-size:13px;line-height:1.75}
+.diagnosis-prompt{white-space:pre-wrap;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px;color:#c9d1d9;font-size:13px;line-height:1.7;margin-top:12px}
+.chart-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:12px;margin-top:10px}
+.chart-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chart-tabs button{background:#161b22;color:#c9d1d9;border:1px solid #30363d;border-radius:8px;padding:6px 10px;cursor:pointer}
+.chart-tabs button.active{background:#1a6bc4;color:#fff;border-color:#1a6bc4}
+.hover-chart,.indicator-hover{position:relative}
+.chart-crosshair{position:absolute;top:0;bottom:0;width:1px;background:rgba(88,166,255,.85);display:none;pointer-events:none}
+.chart-tooltip{position:absolute;z-index:5;display:none;min-width:190px;max-width:240px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:9px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;box-shadow:0 10px 28px rgba(0,0,0,.35);pointer-events:none}
+.chart-tooltip .t-date{color:#e6edf3;font-weight:800;margin-bottom:4px}
+.chart-tooltip .t-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px 10px}
+.chart-tooltip .t-ma{margin-top:5px;padding-top:5px;border-top:1px solid #30363d;color:#8b949e}
+.chart-stack{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chart-grid{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+.tv-chart-panel{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:10px;position:relative}
+.tv-chart-title{font-size:12px;font-weight:800;color:#e6edf3;margin:0 0 6px}
+.tv-chart{height:150px;min-height:150px;position:relative}
+.tv-chart.main{height:360px;min-height:360px}
+.tv-chart-note{font-size:11px;color:#6e7681;margin-top:8px;line-height:1.5}
+.tv-tooltip{position:absolute;z-index:8;display:none;top:34px;left:14px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:8px 10px;color:#c9d1d9;font-size:12px;line-height:1.55;pointer-events:none;box-shadow:0 10px 28px rgba(0,0,0,.35)}
+.tv-draw-toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:-2px 0 8px}
+.tv-draw-btn{border:1px solid #30363d;background:#161b22;color:#8b949e;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:800;cursor:pointer}
+.tv-draw-btn:hover,.tv-draw-btn.active{border-color:#58a6ff;color:#58a6ff;background:#0d2142}
+.tv-draw-layer{position:absolute;inset:0;z-index:7;pointer-events:none}
+.tv-draw-layer.active{pointer-events:auto;cursor:crosshair}
+.tv-draw-layer line{vector-effect:non-scaling-stroke}
+.tv-draw-layer .draft{stroke-dasharray:5 4;opacity:.9}
+.tv-chip-grid{display:grid;grid-template-columns:1fr;gap:12px;margin-top:12px}
+.tv-chip-chart{height:280px;min-height:280px}
+.tv-chip-chart.compact{height:240px;min-height:240px}
+.holding-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:8px}
+.holding-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.tech-panel{display:grid;grid-template-columns:280px 1fr;gap:14px;align-items:start}
+.tech-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}
+.indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:10px}
+.chip-indicator-stack{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px}
+.indicator-box{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:8px}
+.mini-report{white-space:pre-wrap;font-size:13px;color:#c9d1d9;line-height:1.75;background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;max-height:360px;overflow:auto}
+.pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.searchbar{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:8px;color:#e6edf3;padding:10px 12px;font-size:14px;margin:10px 0 14px}
+.ma-strip{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-width:280px}
+.ma-pill{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:9px 10px;display:flex;align-items:center;justify-content:space-between}
+.ma-name{font-size:12px;color:#8b949e}
+.ma-value{font-size:15px;font-weight:800;color:#e6edf3}
+.arrow-up{color:#f85149;font-weight:900}
+.arrow-down{color:#3fb950;font-weight:900}
+.arrow-flat{color:#8b949e;font-weight:900}
+
+/* Market overview */
+.market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+.market-env{border-color:rgba(88,166,255,.25)}
+.market-env-head{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch}
+.market-env-score{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px;min-height:130px}
+.market-env-score .num{font-size:42px;line-height:1;font-weight:900;color:#e6edf3}
+.market-env-score .label{font-size:13px;font-weight:800;margin-top:8px}
+.market-env-score.green{border-color:rgba(63,185,80,.55);background:rgba(63,185,80,.08)}
+.market-env-score.yellow{border-color:rgba(210,153,34,.55);background:rgba(210,153,34,.08)}
+.market-env-score.red{border-color:rgba(248,81,73,.55);background:rgba(248,81,73,.08)}
+.market-env-score.green .label{color:#3fb950}.market-env-score.yellow .label{color:#d2a520}.market-env-score.red .label{color:#f85149}
+.market-env-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.market-env-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px;min-height:78px}
+.market-env-item .k{font-size:11px;color:#8b949e;font-weight:800;display:flex;align-items:center;gap:6px}
+.market-env-item .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:4px}
+.market-env-item .d{font-size:11px;color:#6e7681;line-height:1.45;margin-top:3px}
+.env-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#6e7681;box-shadow:0 0 0 3px rgba(110,118,129,.12)}
+.env-dot.green{background:#3fb950;box-shadow:0 0 0 3px rgba(63,185,80,.16)}
+.env-dot.yellow{background:#d2a520;box-shadow:0 0 0 3px rgba(210,153,34,.16)}
+.env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
+.market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
+.market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+
+/* Backtest dashboard */
+.backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
+.backtest-toolbar{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 12px}
+.backtest-toolbar select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:8px 10px;min-width:260px}
+.backtest-table-wrap{overflow:auto;max-height:520px;margin-top:12px}
+.backtest-chart-box{min-height:330px}
+.backtest-chart-box canvas{width:100%;min-height:300px}
+.backtest-heatmap{display:grid;grid-template-columns:repeat(12,minmax(38px,1fr));gap:6px;margin-top:10px}
+.heat-cell{border:1px solid #30363d;border-radius:6px;background:#161b22;min-height:42px;padding:6px;font-size:11px;color:#8b949e}
+.heat-cell .m{font-weight:800;color:#e6edf3}
+.heat-cell .r{font-size:12px;font-weight:900;margin-top:3px}
+.heat-pos{border-color:rgba(248,81,73,.32);background:rgba(248,81,73,.08)}
+.heat-neg{border-color:rgba(63,185,80,.32);background:rgba(63,185,80,.08)}
+.heat-flat{border-color:rgba(139,148,158,.28)}
+.strategy-params{white-space:pre-wrap;font-size:12px;color:#c9d1d9;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px;max-height:280px;overflow:auto}
+.stock-table th[data-sort-key]{cursor:pointer}
+.stock-table th[data-sort-key]::after{content:" ⇅";font-size:10px;color:#6e7681}
+.stock-table th[data-sort-key].sort-asc::after{content:" ↑";color:#58a6ff}
+.stock-table th[data-sort-key].sort-desc::after{content:" ↓";color:#58a6ff}
+
+/* Filter steps */
+.filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
+.filter-step{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:10px 14px;flex:1;min-width:140px}
+.filter-step .step-count{font-size:22px;font-weight:800;color:#58a6ff}
+.filter-step .step-label{font-size:11px;color:#6e7681;margin-top:2px}
+.filter-step .step-cond{font-size:11px;color:#8b949e;margin-top:4px}
+
+/* Stock table */
+.stock-table{width:100%;border-collapse:collapse;font-size:13px}
+.stock-table th{padding:8px 10px;text-align:left;color:#6e7681;font-weight:600;font-size:11px;border-bottom:1px solid #30363d;white-space:nowrap}
+.stock-table td{padding:10px 10px;border-bottom:1px solid #1c2128;vertical-align:middle}
+.stock-table tr:hover td{background:#1c2128}
+.stock-table tr:last-child td{border-bottom:none}
+.daily-top20-card .stock-table{font-size:15px}
+.daily-top20-card .stock-table th{font-size:12px;padding:10px 12px}
+.daily-top20-card .stock-table td{padding:12px 12px}
+.daily-top20-card .stock-link{font-size:17px;font-weight:900}
+.score-note-card{border-color:rgba(88,166,255,.32)}
+.score-note-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px}
+.score-note{background:#0d1117;border:1px solid #30363d;border-radius:8px;padding:12px}
+.score-note .k{font-size:12px;color:#8b949e;font-weight:700;margin-bottom:5px}
+.score-note .v{font-size:15px;color:#e6edf3;font-weight:800;line-height:1.5}
+.score-note .desc{font-size:12px;color:#8b949e;line-height:1.65;margin-top:6px}
+.score-rule{margin-top:10px;font-size:13px;line-height:1.75;color:#c9d1d9}
+.carybot-cell{min-width:150px}
+.carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
+.carybot-line strong{color:#e6edf3}
+.carybot-missing{font-size:12px;color:#6e7681}
+.sfz-control-bar{position:sticky;top:46px;z-index:22;display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin:12px 0;backdrop-filter:blur(8px)}
+.sfz-control{display:flex;flex-direction:column;gap:4px}
+.sfz-control label{font-size:11px;color:#8b949e;font-weight:800}
+.sfz-control select,.sfz-control input{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.sfz-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.sfz-actions button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:800}
+.sfz-actions button:hover{border-color:#58a6ff;color:#58a6ff}
+.sfz-count-line{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#8b949e;font-size:12px;margin:8px 0 10px}
+.sfz-pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.sfz-pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.sfz-pager button:disabled{opacity:.45;cursor:not-allowed}
+.sfz-bull-note{display:none;color:#d2a520;font-weight:800}
+
+/* Status badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
+.badge-green{background:rgba(63,185,80,0.15);color:#3fb950;border:1px solid rgba(63,185,80,0.3)}
+.badge-yellow{background:rgba(210,153,34,0.15);color:#d2a520;border:1px solid rgba(210,153,34,0.3)}
+.badge-red{background:rgba(248,81,73,0.15);color:#f85149;border:1px solid rgba(248,81,73,0.3)}
+
+/* Score bar */
+.score-bar{display:flex;align-items:center;gap:6px}
+.score-num{font-weight:700;color:#e6edf3;min-width:50px}
+
+/* Price info */
+.price-main{font-weight:700;font-size:14px;color:#e6edf3}
+.price-change{font-size:12px}
+.pos{color:#f85149}
+.neg{color:#3fb950}
+
+/* Entry/Target/Stop */
+.price-row{display:flex;flex-direction:column;gap:2px}
+.price-entry{color:#58a6ff;font-size:12px}
+.price-target{color:#f85149;font-size:12px}
+.price-stop{color:#3fb950;font-size:12px}
+.price-support{color:#8b949e;font-size:12px}
+.price-rr{font-size:12px;font-weight:800}
+.m-score{font-size:24px;font-weight:900;color:#e6edf3}
+.m-checks{display:flex;flex-wrap:wrap;gap:6px}
+.m-check{display:inline-flex;align-items:center;border:1px solid #30363d;border-radius:999px;padding:2px 8px;font-size:11px;color:#c9d1d9;background:#0d1117}
+.m-check.ok{border-color:rgba(63,185,80,.45);color:#3fb950}
+.m-check.warn{border-color:rgba(210,153,34,.45);color:#d2a520}
+.m-check.bad{border-color:rgba(248,81,73,.45);color:#f85149}
+
+/* Notes */
+.notes-list{list-style:none;padding:0}
+.notes-list li{padding:6px 0;border-bottom:1px solid #1c2128;font-size:13px;color:#c9d1d9;line-height:1.7}
+.notes-list li:last-child{border-bottom:none}
+.notes-list li::before{content:"⚠ ";color:#d2a520}
+
+/* History list */
+.history-list{list-style:none}
+.history-item{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #1c2128}
+.history-item:last-child{border-bottom:none}
+.history-date{font-weight:700;color:#e6edf3}
+.history-meta{font-size:12px;color:#6e7681}
+.history-link{font-size:12px;padding:4px 12px;border-radius:8px;background:#1a1a2e;color:#58a6ff;font-weight:600}
+.history-link:hover{background:#1a6bc4;color:#fff;text-decoration:none}
+
+/* Section label */
+.section-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#58a6ff;margin-bottom:6px}
+.section-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:8px}
+.section-date{font-size:12px;color:#8b949e;background:#0d1117;border:1px solid #30363d;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.subsection-title{font-size:15px;margin:16px 0 0;color:#e6edf3}
+.pending-box{background:#0d1117;border:1px solid #30363d;border-radius:10px;padding:14px;margin-top:12px}
+.placeholder-block{background:#0d1117;border:1px solid #30363d;border-radius:8px;margin-top:12px;color:#c9d1d9;overflow:hidden}
+.placeholder-block[open]{border-color:#3b4958;background:#111720}.placeholder-block.ready{border-color:rgba(63,185,80,.45)}
+.placeholder-block summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;color:#e6edf3;font-weight:800}.placeholder-block summary::-webkit-details-marker{display:none}
+.placeholder-body{padding:0 14px 14px}.coming-soon-badge{display:inline-flex;align-items:center;border:1px solid #30363d;background:#21262d;color:#8b949e;border-radius:999px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap}.placeholder-block.ready .coming-soon-badge{border-color:rgba(63,185,80,.45);background:rgba(63,185,80,.10);color:#7ee787}.inline-placeholder{margin:0;background:transparent;border-color:#30363d}.inline-placeholder summary{padding:6px 0;font-size:12px}
+.rr-warning{color:#f85149;font-size:12px;margin-left:6px;font-weight:800;white-space:nowrap}
+.warning-banner,.warning-bar{border:1px solid rgba(248,81,73,.55);background:rgba(248,81,73,.10);color:#ffdcd7;border-left:4px solid #d32f2f;border-radius:8px;padding:10px 12px;margin:0 0 12px;font-size:13px;font-weight:800}
+.traffic-light,.signal-light{border:1px solid #30363d;border-left:4px solid #30363d;border-radius:8px;padding:12px;margin-bottom:12px;color:#1f2328}.traffic-light .signal,.signal-light .signal{display:flex;align-items:center;gap:8px;font-size:20px;font-weight:900}.traffic-light .signal-label,.signal-light .signal-label{font-size:11px;font-weight:900;letter-spacing:1px;color:rgba(31,35,40,.72);text-transform:uppercase}.traffic-light .reason,.signal-light .reason{font-size:13px;line-height:1.6;margin-top:6px}.traffic-light.go,.signal-light.light-green{background:#ffebee;border-color:#c62828}.traffic-light.watch,.signal-light.light-yellow{background:#fff8e1;border-color:#f57c00}.traffic-light.nogo,.signal-light.light-red{background:#e8f5e9;border-color:#2e7d32}
+.ledger-controls,.radar-filter-bar,.radar-filter{position:sticky;top:0;z-index:20;display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin-bottom:12px;backdrop-filter:blur(8px)}.ledger-controls input,.ledger-controls select,.radar-filter-bar input,.radar-filter-bar select,.radar-filter input,.radar-filter select{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}.radar-filter-bar fieldset,.radar-filter fieldset{border:0;display:flex;gap:8px;flex-wrap:wrap;margin:0;padding:0}.radar-filter-bar legend,.radar-filter legend{font-size:11px;font-weight:800;color:#8b949e;margin-right:2px}.filter-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid #30363d;border-radius:999px;padding:6px 9px;color:#c9d1d9;font-size:12px;font-weight:700;cursor:pointer}.filter-chip input{accent-color:#58a6ff}.filter-count{margin-left:auto;color:#c9d1d9;font-size:12px;font-weight:800}.filter-reset,.pager button,.page-num{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}.pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px;flex-wrap:wrap}.pager button:disabled{opacity:.45;cursor:not-allowed}.page-num.active{background:#1a6bc4;border-color:#1a6bc4}.stock-table th[data-ledger-sort]{cursor:pointer;white-space:nowrap}.stock-table th[data-ledger-sort]::after{content:" ⇅";color:#6e7681;font-size:10px}.stock-table th.sort-asc::after{content:" ↑";color:#58a6ff}.stock-table th.sort-desc::after{content:" ↓";color:#58a6ff}
+.heat-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.heat-pill{border:1px solid #30363d;background:#0d1117;border-radius:8px;padding:9px 10px}.heat-pill .k{font-size:11px;color:#8b949e}.heat-pill .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:2px}
+.disclaimer-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(1,4,9,.72);z-index:2000;padding:18px}.disclaimer-modal.show{display:flex}.disclaimer-box{max-width:440px;background:#161b22;border:1px solid #30363d;border-radius:8px;padding:18px;box-shadow:0 18px 60px rgba(0,0,0,.45)}.disclaimer-box h2{margin:0 0 8px;font-size:18px}.disclaimer-box p{margin:0 0 14px;color:#c9d1d9;line-height:1.7;font-size:13px}.disclaimer-box button{background:#1a6bc4;border:0;color:white;border-radius:6px;padding:9px 12px;font-weight:800;cursor:pointer}
+
+/* Tabs */
+.tab-bar{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:18px;border-bottom:2px solid #21262d;padding-bottom:0}
+.tab-btn{background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:8px 16px;font-size:13px;font-weight:700;color:#8b949e;cursor:pointer;white-space:nowrap;transition:color .2s,border-color .2s}
+.tab-btn:hover{color:#c9d1d9}
+.tab-btn.active{color:#58a6ff;border-bottom-color:#58a6ff}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* Footer */
+footer{text-align:center;padding:24px 20px;color:#484f58;font-size:12px;border-top:1px solid #30363d;margin-top:48px}
+footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
+
+/* Responsive */
+@media(max-width:768px){
+  .stock-table{font-size:12px}
+  .stock-table.responsive-card{min-width:0}  .stock-table.responsive-card thead{display:none}
+  .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
+  .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
+  .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .daily-top20-card .stock-table{font-size:13px}
+  .daily-top20-card .stock-link{font-size:15px}
+  .score-note-grid{grid-template-columns:1fr}
+  .stock-table .hide-mobile{display:none}
+  .sfz-control-bar{position:static;grid-template-columns:1fr}
+  .sfz-count-line{display:grid}
+  .filter-steps{flex-direction:column}
+  .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
+  .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.market-env-head,.market-env-grid,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .section-head{display:grid}
+  .section-date{width:max-content}
+  .telegram-head{display:grid}
+  .telegram-rating{text-align:left}
+  .tab-btn{padding:6px 10px;font-size:12px}
+}
+</style>
+<link rel="stylesheet" href="css/components.css">
+<script defer src="js/auto-expand-placeholder.js"></script>
+</head>
+<body>
+
+<nav>
+  <span class="nav-brand">📊 Stockfrom脩</span>
+  <a href="index.html" class="tab">首頁</a>
+<a href="selection.html" class="tab">選股池</a>
+<a href="mda.html" class="tab">M大觀察</a>
+<a href="timing.html" class="tab">買賣時機</a>
+<a href="stocks.html" class="tab">個股查詢</a>
+<a href="backtest_dashboard.html" class="tab active">回測</a>
+<a href="history.html" class="tab">歷史分析</a>
+
+</nav>
+
+<div class="container" data-backtest-dashboard>
+  <div class="page-title">回測 Dashboard</div>
+  <div class="page-sub">標準化比較 SFZ、TA3、CaryBot timing sidecar 與既有分散回測輸出。資料更新：2026-06-01T02:25:21.549925+08:00</div>
+  <div class="grid grid-4">
+    <div class="metric"><div class="metric-num">39</div><div class="metric-label">策略數</div></div>
+    <div class="metric"><div class="metric-num">0.44%</div><div class="metric-label">台股單趟交易成本</div></div>
+    <div class="metric"><div class="metric-num">8.75</div><div class="metric-label">最佳 Sharpe</div></div>
+    <div class="metric"><div class="metric-num">29.5%</div><div class="metric-label">預設策略年化</div></div>
+  </div>
+  <div class="card">
+    <div class="section-label">策略比較表</div>
+    <div class="chip-line">期間：2024-01-03 ~ 2026-04-09 · 成本：買方手續費 0.6‰ + 賣方手續費 0.6‰ + 賣方證交稅 3‰ + slippage 0.2‰ = 0.44%</div>
+    <div class="backtest-table-wrap">
+      <table class="stock-table" data-strategy-table>
+        <thead><tr><th>策略</th><th data-sort-key="sharpe_ratio">Sharpe</th><th data-sort-key="annual_return">年化報酬</th><th data-sort-key="max_drawdown">最大回撤</th><th data-sort-key="win_rate">勝率</th><th data-sort-key="total_trades">交易數</th><th data-sort-key="profit_factor">Profit Factor</th></tr></thead>
+        <tbody data-strategy-body>
+<tr data-strategy-row data-index="0">
+  <td><strong>CaryBot_v51_EventStudy_BASELINE_every20_valid_day</strong><div class="signal-dates">event_study · 2024-01-03 ~ 2026-04-09</div></td>
+  <td data-value="1.438028">1.44</td>
+  <td data-value="0.295303" class="pos">29.5%</td>
+  <td data-value="-0.132083" class="neg">-13.2%</td>
+  <td data-value="0.498865">49.9%</td>
+  <td data-value="8814">8814</td>
+  <td data-value="1.804118">1.80</td>
+</tr>
+<tr data-strategy-row data-index="1">
+  <td><strong>CaryBot_v51_EventStudy_BUY_brown_pullback</strong><div class="signal-dates">event_study · 2024-01-03 ~ 2026-04-09</div></td>
+  <td data-value="1.563111">1.56</td>
+  <td data-value="0.395448" class="pos">39.5%</td>
+  <td data-value="-0.197744" class="neg">-19.8%</td>
+  <td data-value="0.517178">51.7%</td>
+  <td data-value="2736">2736</td>
+  <td data-value="2.048074">2.05</td>
+</tr>
+<tr data-strategy-row data-index="2">
+  <td><strong>CaryBot_v51_EventStudy_BUY_brown_pullback_transition</strong><div class="signal-dates">event_study · 2024-01-03 ~ 2026-04-09</div></td>
+  <td data-value="1.465799">1.47</td>
+  <td data-value="0.3823" class="pos">38.2%</td>
+  <td data-value="-0.192934" class="neg">-19.3%</td>
+  <td data-value="0.512903">51.3%</td>
+  <td data-value="2170">2170</td>
+  <td data-value="2.032543">2.03</td>
+</tr>
+<tr data-strategy-row data-index="3">
+  <td><strong>CaryBot_v51_EventStudy_BUY_vam20_reclaim_50</strong><div class="signal-dates">event_study · 2024-01-23 ~ 2026-04-09</div></td>
+  <td data-value="1.628185">1.63</td>
+  <td data-value="0.665731" class="pos">66.6%</td>
+  <td data-value="-0.372052" class="neg">-37.2%</td>
+  <td data-value="0.532051">53.2%</td>
+  <td data-value="312">312</td>
+  <td data-value="1.852303">1.85</td>
+</tr>
+<tr data-strategy-row data-index="4">
+  <td><strong>SFZ_CaryBot_A0_SFZ行進_訊號日進_MA20</strong><div class="signal-dates">trade_simulation · 2024-02-21 ~ 2025-12-31</div></td>
+  <td data-value="0.193824">0.19</td>
+  <td data-value="-0.007069" class="neg">-0.7%</td>
+  <td data-value="-0.546188" class="neg">-54.6%</td>
+  <td data-value="0.45625">45.6%</td>
+  <td data-value="160">160</td>
+  <td data-value="1.401214">1.40</td>
+</tr>
+<tr data-strategy-row data-index="5">
+  <td><strong>SFZ_CaryBot_A1_SFZ行進等CaryBot_carybot_any_MA20</strong><div class="signal-dates">trade_simulation · 2024-02-21 ~ 2025-12-31</div></td>
+  <td data-value="0.208793">0.21</td>
+  <td data-value="-0.004268" class="neg">-0.4%</td>
+  <td data-value="-0.535018" class="neg">-53.5%</td>
+  <td data-value="0.472603">47.3%</td>
+  <td data-value="146">146</td>
+  <td data-value="1.47379">1.47</td>
+</tr>
+<tr data-strategy-row data-index="6">
+  <td><strong>CaryBot_v51_EventStudy_BUY_vam20_confirmed_not_overheat</strong><div class="signal-dates">event_study · 2025-02-19 ~ 2025-12-01</div></td>
+  <td data-value="0.973073">0.97</td>
+  <td data-value="0.356184" class="pos">35.6%</td>
+  <td data-value="-0.289132" class="neg">-28.9%</td>
+  <td data-value="0.476923">47.7%</td>
+  <td data-value="130">130</td>
+  <td data-value="1.147406">1.15</td>
+</tr>
+<tr data-strategy-row data-index="7">
+  <td><strong>SFZ_MA_Trailing_行進_MA10_active10</strong><div class="signal-dates">trade_simulation · 2024-01-19 ~ 2025-12-31</div></td>
+  <td data-value="5.816424">5.82</td>
+  <td data-value="1.650626" class="pos">165.1%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="0.866667">86.7%</td>
+  <td data-value="120">120</td>
+  <td data-value="39.426655">39.43</td>
+</tr>
+<tr data-strategy-row data-index="8">
+  <td><strong>SFZ_MA_Trailing_行進_MA20_active10</strong><div class="signal-dates">trade_simulation · 2024-02-05 ~ 2025-12-31</div></td>
+  <td data-value="3.751958">3.75</td>
+  <td data-value="2.19174" class="pos">219.2%</td>
+  <td data-value="-0.035463" class="neg">-3.5%</td>
+  <td data-value="0.791667">79.2%</td>
+  <td data-value="120">120</td>
+  <td data-value="12.454486">12.45</td>
+</tr>
+<tr data-strategy-row data-index="9">
+  <td><strong>SFZ_MA_Trailing_行進_MA33_active10</strong><div class="signal-dates">trade_simulation · 2024-02-21 ~ 2025-12-31</div></td>
+  <td data-value="3.326215">3.33</td>
+  <td data-value="1.573803" class="pos">157.4%</td>
+  <td data-value="-0.0371" class="neg">-3.7%</td>
+  <td data-value="0.683333">68.3%</td>
+  <td data-value="120">120</td>
+  <td data-value="7.527861">7.53</td>
+</tr>
+<tr data-strategy-row data-index="10">
+  <td><strong>SFZ_MA_Trailing_行進_MA5_active10</strong><div class="signal-dates">trade_simulation · 2024-01-17 ~ 2025-12-31</div></td>
+  <td data-value="6.440579">6.44</td>
+  <td data-value="1.84352" class="pos">184.4%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="0.916667">91.7%</td>
+  <td data-value="120">120</td>
+  <td data-value="84.769124">84.77</td>
+</tr>
+<tr data-strategy-row data-index="11">
+  <td><strong>SFZ_MA_Trailing_行進_MA60_active10</strong><div class="signal-dates">trade_simulation · 2024-03-06 ~ 2025-12-31</div></td>
+  <td data-value="1.932964">1.93</td>
+  <td data-value="1.231972" class="pos">123.2%</td>
+  <td data-value="-0.1621" class="neg">-16.2%</td>
+  <td data-value="0.583333">58.3%</td>
+  <td data-value="120">120</td>
+  <td data-value="5.536474">5.54</td>
+</tr>
+<tr data-strategy-row data-index="12">
+  <td><strong>SFZ_CaryBot_A1_SFZ行進等CaryBot_atrb_vam_sweet_MA20</strong><div class="signal-dates">trade_simulation · 2024-02-15 ~ 2025-12-31</div></td>
+  <td data-value="0.458127">0.46</td>
+  <td data-value="0.10688" class="pos">10.7%</td>
+  <td data-value="-0.415298" class="neg">-41.5%</td>
+  <td data-value="0.413793">41.4%</td>
+  <td data-value="116">116</td>
+  <td data-value="1.191016">1.19</td>
+</tr>
+<tr data-strategy-row data-index="13">
+  <td><strong>SFZ_CaryBot_A1_SFZ行進等CaryBot_atrb_vam_strong_MA20</strong><div class="signal-dates">trade_simulation · 2024-02-21 ~ 2025-12-31</div></td>
+  <td data-value="0.262334">0.26</td>
+  <td data-value="0.026138" class="pos">2.6%</td>
+  <td data-value="-0.475667" class="neg">-47.6%</td>
+  <td data-value="0.495652">49.6%</td>
+  <td data-value="115">115</td>
+  <td data-value="1.551299">1.55</td>
+</tr>
+<tr data-strategy-row data-index="14">
+  <td><strong>SFZ_CaryBot_B_MABC盤整_日K行進_VPA_ATRB_VAM_回拉進_MA20</strong><div class="signal-dates">trade_simulation · 2024-03-06 ~ 2025-12-31</div></td>
+  <td data-value="0.468084">0.47</td>
+  <td data-value="0.126617" class="pos">12.7%</td>
+  <td data-value="-0.424171" class="neg">-42.4%</td>
+  <td data-value="0.254386">25.4%</td>
+  <td data-value="114">114</td>
+  <td data-value="1.110886">1.11</td>
+</tr>
+<tr data-strategy-row data-index="15">
+  <td><strong>SFZ_MA_Trailing_行進_MA10_active20</strong><div class="signal-dates">trade_simulation · 2024-01-19 ~ 2025-12-31</div></td>
+  <td data-value="8.753136">8.75</td>
+  <td data-value="4.854435" class="pos">485.4%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="96">96</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="16">
+  <td><strong>SFZ_MA_Trailing_行進_MA20_active20</strong><div class="signal-dates">trade_simulation · 2024-02-05 ~ 2025-12-31</div></td>
+  <td data-value="4.844634">4.84</td>
+  <td data-value="4.60969" class="pos">461.0%</td>
+  <td data-value="-0.0675" class="neg">-6.8%</td>
+  <td data-value="0.989583">99.0%</td>
+  <td data-value="96">96</td>
+  <td data-value="337.565926">337.57</td>
+</tr>
+<tr data-strategy-row data-index="17">
+  <td><strong>SFZ_MA_Trailing_行進_MA33_active20</strong><div class="signal-dates">trade_simulation · 2024-02-21 ~ 2025-12-31</div></td>
+  <td data-value="4.298793">4.30</td>
+  <td data-value="3.482628" class="pos">348.3%</td>
+  <td data-value="-0.0945" class="neg">-9.4%</td>
+  <td data-value="0.90625">90.6%</td>
+  <td data-value="96">96</td>
+  <td data-value="63.663946">63.66</td>
+</tr>
+<tr data-strategy-row data-index="18">
+  <td><strong>SFZ_MA_Trailing_行進_MA5_active20</strong><div class="signal-dates">trade_simulation · 2024-01-17 ~ 2025-12-31</div></td>
+  <td data-value="7.128238">7.13</td>
+  <td data-value="6.09555" class="pos">609.6%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="96">96</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="19">
+  <td><strong>SFZ_MA_Trailing_行進_MA60_active20</strong><div class="signal-dates">trade_simulation · 2024-03-06 ~ 2025-12-31</div></td>
+  <td data-value="2.432478">2.43</td>
+  <td data-value="2.407037" class="pos">240.7%</td>
+  <td data-value="-0.1621" class="neg">-16.2%</td>
+  <td data-value="0.729167">72.9%</td>
+  <td data-value="96">96</td>
+  <td data-value="15.059625">15.06</td>
+</tr>
+<tr data-strategy-row data-index="20">
+  <td><strong>SFZ_TA3_WaitEntry_Soft_active10_ma20</strong><div class="signal-dates">trade_simulation · 2024-02-05 ~ 2025-12-31</div></td>
+  <td data-value="1.324713">1.32</td>
+  <td data-value="0.838571" class="pos">83.9%</td>
+  <td data-value="-0.4265" class="neg">-42.6%</td>
+  <td data-value="0.583333">58.3%</td>
+  <td data-value="84">84</td>
+  <td data-value="2.246484">2.25</td>
+</tr>
+<tr data-strategy-row data-index="21">
+  <td><strong>SFZ_TA3_WaitEntry_Soft_active20_ma20</strong><div class="signal-dates">trade_simulation · 2024-03-08 ~ 2025-12-31</div></td>
+  <td data-value="1.4469">1.45</td>
+  <td data-value="1.477951" class="pos">147.8%</td>
+  <td data-value="-0.43392" class="neg">-43.4%</td>
+  <td data-value="0.654762">65.5%</td>
+  <td data-value="84">84</td>
+  <td data-value="2.571775">2.57</td>
+</tr>
+<tr data-strategy-row data-index="22">
+  <td><strong>SFZ_TA3_WaitEntry_Soft_base_exit</strong><div class="signal-dates">trade_simulation · 2024-01-11 ~ 2025-12-31</div></td>
+  <td data-value="0.524454">0.52</td>
+  <td data-value="0.100552" class="pos">10.1%</td>
+  <td data-value="-0.1873" class="neg">-18.7%</td>
+  <td data-value="0.404762">40.5%</td>
+  <td data-value="84">84</td>
+  <td data-value="2.012072">2.01</td>
+</tr>
+<tr data-strategy-row data-index="23">
+  <td><strong>SFZ_TA3_WaitEntry_Strict_active10_ma20</strong><div class="signal-dates">trade_simulation · 2024-03-08 ~ 2025-12-31</div></td>
+  <td data-value="2.037301">2.04</td>
+  <td data-value="0.817094" class="pos">81.7%</td>
+  <td data-value="-0.0227" class="neg">-2.3%</td>
+  <td data-value="0.8">80.0%</td>
+  <td data-value="10">10</td>
+  <td data-value="53.987179">53.99</td>
+</tr>
+<tr data-strategy-row data-index="24">
+  <td><strong>SFZ_TA3_WaitEntry_Strict_active20_ma20</strong><div class="signal-dates">trade_simulation · 2024-03-08 ~ 2025-12-31</div></td>
+  <td data-value="3.138705">3.14</td>
+  <td data-value="1.33982" class="pos">134.0%</td>
+  <td data-value="-0.0227" class="neg">-2.3%</td>
+  <td data-value="0.9">90.0%</td>
+  <td data-value="10">10</td>
+  <td data-value="96.709251">96.71</td>
+</tr>
+<tr data-strategy-row data-index="25">
+  <td><strong>SFZ_TA3_WaitEntry_Strict_base_exit</strong><div class="signal-dates">trade_simulation · 2024-03-08 ~ 2025-12-31</div></td>
+  <td data-value="1.384622">1.38</td>
+  <td data-value="0.687073" class="pos">68.7%</td>
+  <td data-value="-0.0447" class="neg">-4.5%</td>
+  <td data-value="0.6">60.0%</td>
+  <td data-value="10">10</td>
+  <td data-value="7.287404">7.29</td>
+</tr>
+<tr data-strategy-row data-index="26">
+  <td><strong>SFZ_CaryBot_A1_SFZ行進等CaryBot_prebuy_tree_MA20</strong><div class="signal-dates">trade_simulation · 2024-11-13 ~ 2025-12-31</div></td>
+  <td data-value="-0.124022">-0.12</td>
+  <td data-value="-0.090597" class="neg">-9.1%</td>
+  <td data-value="-0.171418" class="neg">-17.1%</td>
+  <td data-value="0.142857">14.3%</td>
+  <td data-value="7">7</td>
+  <td data-value="0.739952">0.74</td>
+</tr>
+<tr data-strategy-row data-index="27">
+  <td><strong>SFZ_CaryBot_A1_SFZ行進等CaryBot_vpa_pressure_build_MA20</strong><div class="signal-dates">trade_simulation · 2024-07-01 ~ 2025-09-15</div></td>
+  <td data-value="0.138959">0.14</td>
+  <td data-value="0.009059" class="pos">0.9%</td>
+  <td data-value="-0.169883" class="neg">-17.0%</td>
+  <td data-value="0.571429">57.1%</td>
+  <td data-value="7">7</td>
+  <td data-value="1.275328">1.28</td>
+</tr>
+<tr data-strategy-row data-index="28">
+  <td><strong>SFZ_MA_Trailing_盤整_MA10_active10</strong><div class="signal-dates">trade_simulation · 2024-01-19 ~ 2025-08-01</div></td>
+  <td data-value="1.713793">1.71</td>
+  <td data-value="0.144335" class="pos">14.4%</td>
+  <td data-value="-0.0331" class="neg">-3.3%</td>
+  <td data-value="0.8">80.0%</td>
+  <td data-value="5">5</td>
+  <td data-value="7.528701">7.53</td>
+</tr>
+<tr data-strategy-row data-index="29">
+  <td><strong>SFZ_MA_Trailing_盤整_MA20_active10</strong><div class="signal-dates">trade_simulation · 2024-02-02 ~ 2025-09-02</div></td>
+  <td data-value="1.0341">1.03</td>
+  <td data-value="0.164705" class="pos">16.5%</td>
+  <td data-value="-0.0846" class="neg">-8.5%</td>
+  <td data-value="0.8">80.0%</td>
+  <td data-value="5">5</td>
+  <td data-value="4.15721">4.16</td>
+</tr>
+<tr data-strategy-row data-index="30">
+  <td><strong>SFZ_MA_Trailing_盤整_MA33_active10</strong><div class="signal-dates">trade_simulation · 2024-01-19 ~ 2025-09-02</div></td>
+  <td data-value="0.893914">0.89</td>
+  <td data-value="0.138843" class="pos">13.9%</td>
+  <td data-value="-0.0846" class="neg">-8.5%</td>
+  <td data-value="0.8">80.0%</td>
+  <td data-value="5">5</td>
+  <td data-value="3.781324">3.78</td>
+</tr>
+<tr data-strategy-row data-index="31">
+  <td><strong>SFZ_MA_Trailing_盤整_MA5_active10</strong><div class="signal-dates">trade_simulation · 2024-01-19 ~ 2025-07-25</div></td>
+  <td data-value="1.724746">1.72</td>
+  <td data-value="0.142407" class="pos">14.2%</td>
+  <td data-value="-0.0331" class="neg">-3.3%</td>
+  <td data-value="0.8">80.0%</td>
+  <td data-value="5">5</td>
+  <td data-value="7.359517">7.36</td>
+</tr>
+<tr data-strategy-row data-index="32">
+  <td><strong>SFZ_MA_Trailing_盤整_MA60_active10</strong><div class="signal-dates">trade_simulation · 2024-05-14 ~ 2025-09-15</div></td>
+  <td data-value="0.899755">0.90</td>
+  <td data-value="0.362161" class="pos">36.2%</td>
+  <td data-value="-0.136137" class="neg">-13.6%</td>
+  <td data-value="0.6">60.0%</td>
+  <td data-value="5">5</td>
+  <td data-value="4.804826">4.80</td>
+</tr>
+<tr data-strategy-row data-index="33">
+  <td><strong>SFZ_MA_Trailing_盤整_MA10_active20</strong><div class="signal-dates">trade_simulation · 2024-03-11 ~ 2025-08-20</div></td>
+  <td data-value="3.248125">3.25</td>
+  <td data-value="0.621355" class="pos">62.1%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="4">4</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="34">
+  <td><strong>SFZ_MA_Trailing_盤整_MA20_active20</strong><div class="signal-dates">trade_simulation · 2024-03-28 ~ 2025-09-02</div></td>
+  <td data-value="2.326082">2.33</td>
+  <td data-value="0.595143" class="pos">59.5%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="4">4</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="35">
+  <td><strong>SFZ_MA_Trailing_盤整_MA33_active20</strong><div class="signal-dates">trade_simulation · 2024-05-03 ~ 2025-09-02</div></td>
+  <td data-value="1.575037">1.58</td>
+  <td data-value="0.855415" class="pos">85.5%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="4">4</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="36">
+  <td><strong>SFZ_MA_Trailing_盤整_MA5_active20</strong><div class="signal-dates">trade_simulation · 2024-03-08 ~ 2025-08-19</div></td>
+  <td data-value="3.118276">3.12</td>
+  <td data-value="0.807933" class="pos">80.8%</td>
+  <td data-value="0.0" class="neg">0.0%</td>
+  <td data-value="1.0">100.0%</td>
+  <td data-value="4">4</td>
+  <td data-value="999.0">999.00</td>
+</tr>
+<tr data-strategy-row data-index="37">
+  <td><strong>SFZ_MA_Trailing_盤整_MA60_active20</strong><div class="signal-dates">trade_simulation · 2024-05-14 ~ 2025-09-15</div></td>
+  <td data-value="1.145844">1.15</td>
+  <td data-value="0.455132" class="pos">45.5%</td>
+  <td data-value="-0.0563" class="neg">-5.6%</td>
+  <td data-value="0.75">75.0%</td>
+  <td data-value="4">4</td>
+  <td data-value="12.024867">12.02</td>
+</tr>
+<tr data-strategy-row data-index="38">
+  <td><strong>SFZ_CaryBot_B_MABC盤整_SFZ行進籃_VPA_ATRB_VAM_回拉進_MA20</strong><div class="signal-dates">trade_simulation · 2025-06-19 ~ 2025-09-26</div></td>
+  <td data-value="-13.733376">-13.73</td>
+  <td data-value="-0.389397" class="neg">-38.9%</td>
+  <td data-value="-0.125156" class="neg">-12.5%</td>
+  <td data-value="0.0">0.0%</td>
+  <td data-value="3">3</td>
+  <td data-value="0.0">0.00</td>
+</tr></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="backtest-layout">
+    <div class="card">
+      <div class="section-label">Equity Curve</div>
+      <div class="backtest-toolbar">
+        <select data-strategy-select aria-label="Strategy selector"></select>
+        <span class="tag tag-blue" data-lib="Chart.js">Chart.js</span>
+      </div>
+      <div class="chart-box backtest-chart-box"><canvas id="equityCurveChart" height="130"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="section-label">策略參數</div>
+      <div class="chip-line" data-selected-strategy>CaryBot_v51_EventStudy_BASELINE_every20_valid_day</div>
+      <pre class="strategy-params" data-strategy-params>{}</pre>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">月報酬 Heatmap</div>
+    <div class="backtest-heatmap" data-monthly-heatmap></div>
+  </div>
+  <div class="card">
+    <div class="section-label">資料備註</div>
+    <div class="chip-line">This JSON is the standard static contract for backtest_dashboard.html.</div><div class="chip-line">Taiwan cost model is forced to buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, and default slippage 0.2 per mille.</div>
+    <div class="chip-line">Public JSON: <code>data/backtest_results.json</code></div>
+  </div>
+</div>
+<script id="backtestDashboardData" type="application/json">{"schema_version": 1, "date": "2026-06-01", "updated_at": "2026-06-01T02:25:21.549925+08:00", "source_dir": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\自動交易程式\\回測\\v6_outputs", "source_available": true, "period": {"start": "2024-01-03", "end": "2026-04-09"}, "cost_model": {"buy_fee_rate": 0.0006, "sell_fee_rate": 0.0006, "sell_tax_rate": 0.003, "slippage_rate": 0.0002, "round_trip_rate": 0.0044}, "strategies": [{"strategy_name": "CaryBot_v51_EventStudy_BASELINE_every20_valid_day", "category": "event_study", "period": {"start": "2024-01-03", "end": "2026-04-09"}, "metrics": {"annual_return": 0.295303, "sharpe_ratio": 1.438028, "max_drawdown": -0.132083, "win_rate": 0.498865, "total_trades": 8814, "profit_factor": 1.804118}, "monthly_returns": {"2024-01": 0.023415, "2024-02": 0.071629, "2024-03": 0.061353, "2024-04": 0.022436, "2024-05": 0.073151, "2024-06": 0.020844, "2024-07": -0.076773, "2024-08": 0.011888, "2024-09": 0.047339, "2024-10": -0.027503, "2024-11": 0.036343, "2024-12": -0.018829, "2025-01": 0.078896, "2025-02": -0.050313, "2025-03": -0.086102, "2025-04": 0.086347, "2025-05": -0.03447, "2025-06": 0.011688, "2025-07": 0.052669, "2025-08": 0.032872, "2025-09": 0.01701, "2025-10": -0.053718, "2025-11": 0.053786, "2025-12": 0.063691, "2026-01": -0.01725, "2026-02": 0.029187, "2026-03": 0.030421, "2026-04": 0.172497}, "equity_curve": [["2024-01-03", 1.0], ["2024-01-01", 1.023415], ["2024-02-01", 1.096721], ["2024-03-01", 1.164008], ["2024-04-01", 1.190124], ["2024-05-01", 1.277183], ["2024-06-01", 1.303804], ["2024-07-01", 1.203707], ["2024-08-01", 1.218017], ["2024-09-01", 1.275677], ["2024-10-01", 1.240592], ["2024-11-01", 1.285679], ["2024-12-01", 1.261471], ["2025-01-01", 1.360996], ["2025-02-01", 1.29252], ["2025-03-01", 1.181231], ["2025-04-01", 1.283227], ["2025-05-01", 1.238994], ["2025-06-01", 1.253476], ["2025-07-01", 1.319495], ["2025-08-01", 1.362869], ["2025-09-01", 1.386052], ["2025-10-01", 1.311596], ["2025-11-01", 1.382141], ["2025-12-01", 1.470171], ["2026-01-01", 1.444811], ["2026-02-01", 1.486981], ["2026-03-01", 1.532216], ["2026-04-01", 1.796519]], "parameters": {"entry_rule": "BASELINE_every20_valid_day", "exit_rule": "20 trading-day forward event return", "research_status": "sidecar event study", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "carybot_vam_v51_market_2024_2026_events.csv", "return_column": "future_return_20d", "return_unit": "decimal"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.7965."]}, {"strategy_name": "CaryBot_v51_EventStudy_BUY_brown_pullback", "category": "event_study", "period": {"start": "2024-01-03", "end": "2026-04-09"}, "metrics": {"annual_return": 0.395448, "sharpe_ratio": 1.563111, "max_drawdown": -0.197744, "win_rate": 0.517178, "total_trades": 2736, "profit_factor": 2.048074}, "monthly_returns": {"2024-01": 0.074843, "2024-02": 0.0582, "2024-03": -0.011048, "2024-04": 0.023334, "2024-05": 0.083817, "2024-06": 0.013279, "2024-07": -0.070913, "2024-08": 0.057883, "2024-09": 0.009898, "2024-10": 0.012279, "2024-11": 0.047928, "2024-12": -0.013084, "2025-01": -0.017112, "2025-02": -0.044296, "2025-03": -0.134623, "2025-04": 0.012567, "2025-05": 0.010034, "2025-06": 0.007014, "2025-07": 0.080003, "2025-08": 0.056232, "2025-09": 0.02475, "2025-10": -0.01286, "2025-11": 0.050481, "2025-12": 0.060375, "2026-01": 0.031774, "2026-02": 0.047867, "2026-03": 0.117385, "2026-04": 0.245194}, "equity_curve": [["2024-01-03", 1.0], ["2024-01-01", 1.074843], ["2024-02-01", 1.137399], ["2024-03-01", 1.124833], ["2024-04-01", 1.15108], ["2024-05-01", 1.24756], ["2024-06-01", 1.264126], ["2024-07-01", 1.174483], ["2024-08-01", 1.242466], ["2024-09-01", 1.254764], ["2024-10-01", 1.270171], ["2024-11-01", 1.331048], ["2024-12-01", 1.313632], ["2025-01-01", 1.291153], ["2025-02-01", 1.23396], ["2025-03-01", 1.067841], ["2025-04-01", 1.081261], ["2025-05-01", 1.09211], ["2025-06-01", 1.09977], ["2025-07-01", 1.187755], ["2025-08-01", 1.254545], ["2025-09-01", 1.285595], ["2025-10-01", 1.269062], ["2025-11-01", 1.333125], ["2025-12-01", 1.413613], ["2026-01-01", 1.458529], ["2026-02-01", 1.528344], ["2026-03-01", 1.707749], ["2026-04-01", 2.126479]], "parameters": {"entry_rule": "BUY_brown_pullback", "exit_rule": "20 trading-day forward event return", "research_status": "sidecar event study", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "carybot_vam_v51_market_2024_2026_events.csv", "return_column": "future_return_20d", "return_unit": "decimal"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.1265."]}, {"strategy_name": "CaryBot_v51_EventStudy_BUY_brown_pullback_transition", "category": "event_study", "period": {"start": "2024-01-03", "end": "2026-04-09"}, "metrics": {"annual_return": 0.3823, "sharpe_ratio": 1.465799, "max_drawdown": -0.192934, "win_rate": 0.512903, "total_trades": 2170, "profit_factor": 2.032543}, "monthly_returns": {"2024-01": 0.078096, "2024-02": 0.040966, "2024-03": 0.025461, "2024-04": 0.010991, "2024-05": 0.083411, "2024-06": -0.010321, "2024-07": -0.067231, "2024-08": 0.011487, "2024-09": 0.011723, "2024-10": -0.012675, "2024-11": 0.044668, "2024-12": -0.005193, "2025-01": 0.001568, "2025-02": -0.038026, "2025-03": -0.135833, "2025-04": 0.024882, "2025-05": 0.009085, "2025-06": -0.000154, "2025-07": 0.06891, "2025-08": 0.089012, "2025-09": 0.021248, "2025-10": -0.025324, "2025-11": 0.046876, "2025-12": 0.063062, "2026-01": 0.023692, "2026-02": 0.065964, "2026-03": 0.108849, "2026-04": 0.268093}, "equity_curve": [["2024-01-03", 1.0], ["2024-01-01", 1.078096], ["2024-02-01", 1.122261], ["2024-03-01", 1.150835], ["2024-04-01", 1.163484], ["2024-05-01", 1.260531], ["2024-06-01", 1.247521], ["2024-07-01", 1.163649], ["2024-08-01", 1.177016], ["2024-09-01", 1.190814], ["2024-10-01", 1.175721], ["2024-11-01", 1.228238], ["2024-12-01", 1.22186], ["2025-01-01", 1.223775], ["2025-02-01", 1.17724], ["2025-03-01", 1.017332], ["2025-04-01", 1.042645], ["2025-05-01", 1.052118], ["2025-06-01", 1.051956], ["2025-07-01", 1.124446], ["2025-08-01", 1.224535], ["2025-09-01", 1.250554], ["2025-10-01", 1.218885], ["2025-11-01", 1.276022], ["2025-12-01", 1.35649], ["2026-01-01", 1.388628], ["2026-02-01", 1.480227], ["2026-03-01", 1.641349], ["2026-04-01", 2.081383]], "parameters": {"entry_rule": "BUY_brown_pullback_transition", "exit_rule": "20 trading-day forward event return", "research_status": "sidecar event study", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "carybot_vam_v51_market_2024_2026_events.csv", "return_column": "future_return_20d", "return_unit": "decimal"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.0814."]}, {"strategy_name": "CaryBot_v51_EventStudy_BUY_vam20_reclaim_50", "category": "event_study", "period": {"start": "2024-01-23", "end": "2026-04-09"}, "metrics": {"annual_return": 0.665731, "sharpe_ratio": 1.628185, "max_drawdown": -0.372052, "win_rate": 0.532051, "total_trades": 312, "profit_factor": 1.852303}, "monthly_returns": {"2024-01": 0.216574, "2024-02": 0.197377, "2024-03": 0.126224, "2024-04": 0.061775, "2024-05": 0.081096, "2024-06": -0.084379, "2024-07": -0.149488, "2024-08": 0.007782, "2024-09": 0.032299, "2024-10": -0.070801, "2024-11": 0.069175, "2024-12": -0.002898, "2025-01": 0.053914, "2025-02": -0.090981, "2025-03": -0.183267, "2025-04": 0.101235, "2025-05": -0.008267, "2025-06": 0.086103, "2025-07": 0.178387, "2025-08": 0.097449, "2025-09": 0.004641, "2025-10": 0.012621, "2025-11": 0.090142, "2025-12": 0.018207, "2026-01": 0.032079, "2026-02": 0.113643, "2026-03": 0.106714, "2026-04": 0.185004}, "equity_curve": [["2024-01-23", 1.0], ["2024-01-01", 1.216574], ["2024-02-01", 1.456698], ["2024-03-01", 1.640568], ["2024-04-01", 1.741914], ["2024-05-01", 1.883176], ["2024-06-01", 1.724276], ["2024-07-01", 1.466517], ["2024-08-01", 1.47793], ["2024-09-01", 1.525665], ["2024-10-01", 1.417647], ["2024-11-01", 1.515712], ["2024-12-01", 1.51132], ["2025-01-01", 1.592801], ["2025-02-01", 1.447887], ["2025-03-01", 1.182537], ["2025-04-01", 1.302251], ["2025-05-01", 1.291485], ["2025-06-01", 1.402686], ["2025-07-01", 1.652907], ["2025-08-01", 1.813981], ["2025-09-01", 1.8224], ["2025-10-01", 1.8454], ["2025-11-01", 2.011748], ["2025-12-01", 2.048376], ["2026-01-01", 2.114086], ["2026-02-01", 2.354337], ["2026-03-01", 2.605578], ["2026-04-01", 3.08762]], "parameters": {"entry_rule": "BUY_vam20_reclaim_50", "exit_rule": "20 trading-day forward event return", "research_status": "sidecar event study", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "carybot_vam_v51_market_2024_2026_events.csv", "return_column": "future_return_20d", "return_unit": "decimal"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 2.0876."]}, {"strategy_name": "SFZ_CaryBot_A0_SFZ行進_訊號日進_MA20", "category": "trade_simulation", "period": {"start": "2024-02-21", "end": "2025-12-31"}, "metrics": {"annual_return": -0.007069, "sharpe_ratio": 0.193824, "max_drawdown": -0.546188, "win_rate": 0.45625, "total_trades": 160, "profit_factor": 1.401214}, "monthly_returns": {"2024-02": -0.071, "2024-03": -0.019215, "2024-04": 0.08645, "2024-05": -0.042725, "2024-06": 0.020786, "2024-07": 0.035647, "2024-09": -0.08555, "2024-10": -0.133233, "2024-11": -0.0306, "2024-12": 0.019233, "2025-01": -0.109143, "2025-02": 0.0146, "2025-03": -0.04662, "2025-04": -0.1683, "2025-05": -0.1725, "2025-06": -0.022914, "2025-07": 0.04984, "2025-08": 0.15184, "2025-09": 0.097165, "2025-10": 0.5445, "2025-11": 0.034631, "2025-12": 0.023893}, "equity_curve": [["2024-02-21", 1.0], ["2024-02-01", 0.929], ["2024-03-01", 0.911149], ["2024-04-01", 0.989918], ["2024-05-01", 0.947624], ["2024-06-01", 0.967321], ["2024-07-01", 1.001803], ["2024-09-01", 0.916099], ["2024-10-01", 0.794044], ["2024-11-01", 0.769747], ["2024-12-01", 0.784551], ["2025-01-01", 0.698923], ["2025-02-01", 0.709127], ["2025-03-01", 0.676068], ["2025-04-01", 0.562285], ["2025-05-01", 0.465291], ["2025-06-01", 0.45463], ["2025-07-01", 0.477288], ["2025-08-01", 0.54976], ["2025-09-01", 0.603177], ["2025-10-01", 0.931607], ["2025-11-01", 0.96387], ["2025-12-01", 0.986899]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is -0.0131."]}, {"strategy_name": "SFZ_CaryBot_A1_SFZ行進等CaryBot_carybot_any_MA20", "category": "trade_simulation", "period": {"start": "2024-02-21", "end": "2025-12-31"}, "metrics": {"annual_return": -0.004268, "sharpe_ratio": 0.208793, "max_drawdown": -0.535018, "win_rate": 0.472603, "total_trades": 146, "profit_factor": 1.47379}, "monthly_returns": {"2024-02": -0.1409, "2024-03": -0.013138, "2024-04": 0.110433, "2024-05": -0.027367, "2024-06": 0.020786, "2024-07": 0.054754, "2024-09": -0.06545, "2024-10": -0.1535, "2024-11": -0.0306, "2024-12": 0.010867, "2025-01": -0.104536, "2025-02": 0.0417, "2025-03": -0.01516, "2025-04": -0.1683, "2025-05": -0.1813, "2025-06": -0.0274, "2025-07": 0.1264, "2025-08": 0.1055, "2025-09": 0.095812, "2025-10": 0.5445, "2025-11": 0.004925, "2025-12": 0.0074}, "equity_curve": [["2024-02-21", 1.0], ["2024-02-01", 0.8591], ["2024-03-01", 0.847813], ["2024-04-01", 0.94144], ["2024-05-01", 0.915675], ["2024-06-01", 0.934709], ["2024-07-01", 0.985888], ["2024-09-01", 0.921361], ["2024-10-01", 0.779932], ["2024-11-01", 0.756066], ["2024-12-01", 0.764283], ["2025-01-01", 0.684387], ["2025-02-01", 0.712926], ["2025-03-01", 0.702118], ["2025-04-01", 0.583952], ["2025-05-01", 0.478081], ["2025-06-01", 0.464982], ["2025-07-01", 0.523756], ["2025-08-01", 0.579012], ["2025-09-01", 0.634488], ["2025-10-01", 0.979967], ["2025-11-01", 0.984793], ["2025-12-01", 0.992081]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is -0.0079."]}, {"strategy_name": "CaryBot_v51_EventStudy_BUY_vam20_confirmed_not_overheat", "category": "event_study", "period": {"start": "2025-02-19", "end": "2025-12-01"}, "metrics": {"annual_return": 0.356184, "sharpe_ratio": 0.973073, "max_drawdown": -0.289132, "win_rate": 0.476923, "total_trades": 130, "profit_factor": 1.147406}, "monthly_returns": {"2025-02": -0.099291, "2025-03": -0.210768, "2025-04": 0.050367, "2025-05": 0.136497, "2025-06": 0.055662, "2025-07": 0.110419, "2025-08": 0.029761, "2025-09": 0.026427, "2025-10": 0.031178, "2025-11": 0.064578, "2025-12": 0.098906}, "equity_curve": [["2025-02-19", 1.0], ["2025-02-01", 0.900709], ["2025-03-01", 0.710868], ["2025-04-01", 0.746673], ["2025-05-01", 0.848591], ["2025-06-01", 0.895826], ["2025-07-01", 0.994742], ["2025-08-01", 1.024346], ["2025-09-01", 1.051417], ["2025-10-01", 1.084198], ["2025-11-01", 1.154213], ["2025-12-01", 1.268372]], "parameters": {"entry_rule": "BUY_vam20_confirmed_not_overheat", "exit_rule": "20 trading-day forward event return", "research_status": "sidecar event study", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "carybot_vam_v51_market_2024_2026_events.csv", "return_column": "future_return_20d", "return_unit": "decimal"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2684."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA10_active10", "category": "trade_simulation", "period": {"start": "2024-01-19", "end": "2025-12-31"}, "metrics": {"annual_return": 1.650626, "sharpe_ratio": 5.816424, "max_drawdown": 0.0, "win_rate": 0.866667, "total_trades": 120, "profit_factor": 39.426655}, "monthly_returns": {"2024-01": 0.055, "2024-02": 0.1286, "2024-03": 0.15109, "2024-04": 0.237083, "2024-05": 0.07615, "2024-06": 0.085833, "2024-07": 0.06692, "2024-08": 0.0557, "2024-10": 0.063667, "2024-11": 0.0484, "2024-12": 0.1314, "2025-01": 0.00234, "2025-02": 0.118875, "2025-03": 0.0153, "2025-05": 0.098, "2025-06": 0.07443, "2025-07": 0.07635, "2025-08": 0.0918, "2025-09": 0.187828, "2025-10": 0.0859, "2025-11": 0.119125, "2025-12": 0.042333}, "equity_curve": [["2024-01-19", 1.0], ["2024-01-01", 1.055], ["2024-02-01", 1.190673], ["2024-03-01", 1.370572], ["2024-04-01", 1.695511], ["2024-05-01", 1.824624], ["2024-06-01", 1.981237], ["2024-07-01", 2.113822], ["2024-08-01", 2.231561], ["2024-10-01", 2.373638], ["2024-11-01", 2.488522], ["2024-12-01", 2.815514], ["2025-01-01", 2.822103], ["2025-02-01", 3.15758], ["2025-03-01", 3.205891], ["2025-05-01", 3.520068], ["2025-06-01", 3.782067], ["2025-07-01", 4.070828], ["2025-08-01", 4.44453], ["2025-09-01", 5.279337], ["2025-10-01", 5.732832], ["2025-11-01", 6.415755], ["2025-12-01", 6.687354]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA10 trailing after +10% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 5.6874."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA20_active10", "category": "trade_simulation", "period": {"start": "2024-02-05", "end": "2025-12-31"}, "metrics": {"annual_return": 2.19174, "sharpe_ratio": 3.751958, "max_drawdown": -0.035463, "win_rate": 0.791667, "total_trades": 120, "profit_factor": 12.454486}, "monthly_returns": {"2024-02": 0.123, "2024-03": 0.09915, "2024-04": 0.240667, "2024-05": 0.0626, "2024-06": 0.09155, "2024-07": 0.125817, "2024-08": -0.0312, "2024-10": -0.0044, "2024-11": 0.049333, "2024-12": 0.0906, "2025-01": -0.007425, "2025-02": 0.14255, "2025-03": 0.013975, "2025-05": 0.1869, "2025-06": -0.0083, "2025-07": 0.1595, "2025-08": 0.28254, "2025-09": 0.159567, "2025-10": 0.374533, "2025-11": 0.215873, "2025-12": 0.05695}, "equity_curve": [["2024-02-05", 1.0], ["2024-02-01", 1.123], ["2024-03-01", 1.234345], ["2024-04-01", 1.531412], ["2024-05-01", 1.627278], ["2024-06-01", 1.776255], ["2024-07-01", 1.999738], ["2024-08-01", 1.937347], ["2024-10-01", 1.928822], ["2024-11-01", 2.023977], ["2024-12-01", 2.207349], ["2025-01-01", 2.19096], ["2025-02-01", 2.503281], ["2025-03-01", 2.538264], ["2025-05-01", 3.012666], ["2025-06-01", 2.987661], ["2025-07-01", 3.464193], ["2025-08-01", 4.442966], ["2025-09-01", 5.151916], ["2025-10-01", 7.081479], ["2025-11-01", 8.610179], ["2025-12-01", 9.100529]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA20 trailing after +10% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 8.1005."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA33_active10", "category": "trade_simulation", "period": {"start": "2024-02-21", "end": "2025-12-31"}, "metrics": {"annual_return": 1.573803, "sharpe_ratio": 3.326215, "max_drawdown": -0.0371, "win_rate": 0.683333, "total_trades": 120, "profit_factor": 7.527861}, "monthly_returns": {"2024-02": 0.0276, "2024-03": 0.043256, "2024-04": 0.2416, "2024-05": 0.284, "2024-06": 0.07492, "2024-07": 0.129521, "2024-08": -0.0312, "2024-11": -0.000125, "2024-12": 0.049933, "2025-01": 0.0225, "2025-02": -0.0256, "2025-03": 0.04882, "2025-05": 0.1869, "2025-06": -0.0371, "2025-07": 0.17935, "2025-08": 0.151233, "2025-09": 0.211835, "2025-10": 0.11648, "2025-11": 0.199455, "2025-12": 0.044011}, "equity_curve": [["2024-02-21", 1.0], ["2024-02-01", 1.0276], ["2024-03-01", 1.07205], ["2024-04-01", 1.331057], ["2024-05-01", 1.709077], ["2024-06-01", 1.837121], ["2024-07-01", 2.075067], ["2024-08-01", 2.010325], ["2024-11-01", 2.010074], ["2024-12-01", 2.110443], ["2025-01-01", 2.157928], ["2025-02-01", 2.102685], ["2025-03-01", 2.205338], ["2025-05-01", 2.617516], ["2025-06-01", 2.520406], ["2025-07-01", 2.972441], ["2025-08-01", 3.421972], ["2025-09-01", 4.146865], ["2025-10-01", 4.629892], ["2025-11-01", 5.553347], ["2025-12-01", 5.797755]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA33 trailing after +10% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 4.7978."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA5_active10", "category": "trade_simulation", "period": {"start": "2024-01-17", "end": "2025-12-31"}, "metrics": {"annual_return": 1.84352, "sharpe_ratio": 6.440579, "max_drawdown": 0.0, "win_rate": 0.916667, "total_trades": 120, "profit_factor": 84.769124}, "monthly_returns": {"2024-01": 0.042533, "2024-02": 0.1169, "2024-03": 0.124129, "2024-04": 0.259875, "2024-05": 0.073533, "2024-06": 0.072183, "2024-07": 0.09076, "2024-08": 0.0557, "2024-10": 0.0674, "2024-11": 0.13725, "2024-12": 0.1398, "2025-01": 0.01188, "2025-02": 0.14675, "2025-03": 0.06435, "2025-05": 0.052933, "2025-06": 0.10084, "2025-07": 0.1478, "2025-08": 0.119413, "2025-09": 0.11757, "2025-10": 0.08446, "2025-11": 0.1033, "2025-12": 0.036933}, "equity_curve": [["2024-01-17", 1.0], ["2024-01-01", 1.042533], ["2024-02-01", 1.164405], ["2024-03-01", 1.308942], ["2024-04-01", 1.649103], ["2024-05-01", 1.770366], ["2024-06-01", 1.898157], ["2024-07-01", 2.070433], ["2024-08-01", 2.185756], ["2024-10-01", 2.333076], ["2024-11-01", 2.653291], ["2024-12-01", 3.024221], ["2025-01-01", 3.060149], ["2025-02-01", 3.509226], ["2025-03-01", 3.735044], ["2025-05-01", 3.932752], ["2025-06-01", 4.32933], ["2025-07-01", 4.969205], ["2025-08-01", 5.562593], ["2025-09-01", 6.216587], ["2025-10-01", 6.74164], ["2025-11-01", 7.438051], ["2025-12-01", 7.712761]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA5 trailing after +10% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 6.7128."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA60_active10", "category": "trade_simulation", "period": {"start": "2024-03-06", "end": "2025-12-31"}, "metrics": {"annual_return": 1.231972, "sharpe_ratio": 1.932964, "max_drawdown": -0.1621, "win_rate": 0.583333, "total_trades": 120, "profit_factor": 5.536474}, "monthly_returns": {"2024-03": -0.02792, "2024-04": -0.0637, "2024-05": 0.211157, "2024-06": 0.390933, "2024-07": 0.012771, "2024-08": 0.05742, "2024-09": 0.0812, "2024-11": -0.00865, "2025-01": -0.009675, "2025-02": 0.0556, "2025-03": -0.055833, "2025-04": -0.0858, "2025-05": 0.1869, "2025-06": -0.1621, "2025-07": 0.091225, "2025-09": 0.320645, "2025-10": 0.147671, "2025-11": 0.320756, "2025-12": 0.250311}, "equity_curve": [["2024-03-06", 1.0], ["2024-03-01", 0.97208], ["2024-04-01", 0.910159], ["2024-05-01", 1.102345], ["2024-06-01", 1.533288], ["2024-07-01", 1.552869], ["2024-08-01", 1.642035], ["2024-09-01", 1.775368], ["2024-11-01", 1.760012], ["2025-01-01", 1.742983], ["2025-02-01", 1.839893], ["2025-03-01", 1.737167], ["2025-04-01", 1.588118], ["2025-05-01", 1.884937], ["2025-06-01", 1.579389], ["2025-07-01", 1.723468], ["2025-09-01", 2.27609], ["2025-10-01", 2.612202], ["2025-11-01", 3.450082], ["2025-12-01", 4.313675]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA60 trailing after +10% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 3.3137."]}, {"strategy_name": "SFZ_CaryBot_A1_SFZ行進等CaryBot_atrb_vam_sweet_MA20", "category": "trade_simulation", "period": {"start": "2024-02-15", "end": "2025-12-31"}, "metrics": {"annual_return": 0.10688, "sharpe_ratio": 0.458127, "max_drawdown": -0.415298, "win_rate": 0.413793, "total_trades": 116, "profit_factor": 1.191016}, "monthly_returns": {"2024-02": -0.0021, "2024-03": -0.027342, "2024-04": 0.124633, "2024-05": 0.0448, "2024-06": 0.023057, "2024-07": 0.056378, "2024-09": -0.04195, "2024-10": -0.0992, "2024-11": -0.0306, "2024-12": -0.053333, "2025-01": -0.111711, "2025-02": 0.038525, "2025-03": -0.01302, "2025-04": -0.1683, "2025-06": -0.025075, "2025-07": 0.3044, "2025-08": 0.04204, "2025-09": 0.009953, "2025-10": 0.2167, "2025-11": -0.007814, "2025-12": 0.012954}, "equity_curve": [["2024-02-15", 1.0], ["2024-02-01", 0.9979], ["2024-03-01", 0.970615], ["2024-04-01", 1.091586], ["2024-05-01", 1.140489], ["2024-06-01", 1.166785], ["2024-07-01", 1.232566], ["2024-09-01", 1.18086], ["2024-10-01", 1.063719], ["2024-11-01", 1.031169], ["2024-12-01", 0.976174], ["2025-01-01", 0.867124], ["2025-02-01", 0.90053], ["2025-03-01", 0.888806], ["2025-04-01", 0.73922], ["2025-06-01", 0.720684], ["2025-07-01", 0.94006], ["2025-08-01", 0.97958], ["2025-09-01", 0.98933], ["2025-10-01", 1.203717], ["2025-11-01", 1.194311], ["2025-12-01", 1.209783]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2098."]}, {"strategy_name": "SFZ_CaryBot_A1_SFZ行進等CaryBot_atrb_vam_strong_MA20", "category": "trade_simulation", "period": {"start": "2024-02-21", "end": "2025-12-31"}, "metrics": {"annual_return": 0.026138, "sharpe_ratio": 0.262334, "max_drawdown": -0.475667, "win_rate": 0.495652, "total_trades": 115, "profit_factor": 1.551299}, "monthly_returns": {"2024-02": -0.1409, "2024-03": -0.019936, "2024-04": 0.13315, "2024-05": -0.027367, "2024-06": -0.015057, "2024-07": 0.032, "2024-09": -0.0787, "2024-10": -0.1535, "2024-11": -0.0803, "2024-12": 0.04855, "2025-01": -0.08606, "2025-02": 0.07965, "2025-03": -0.0325, "2025-05": -0.1813, "2025-06": -0.054325, "2025-07": 0.0374, "2025-08": 0.13925, "2025-09": 0.095, "2025-10": 0.5445, "2025-11": -0.009875, "2025-12": 0.011037}, "equity_curve": [["2024-02-21", 1.0], ["2024-02-01", 0.8591], ["2024-03-01", 0.841973], ["2024-04-01", 0.954082], ["2024-05-01", 0.927971], ["2024-06-01", 0.913999], ["2024-07-01", 0.943247], ["2024-09-01", 0.869013], ["2024-10-01", 0.73562], ["2024-11-01", 0.676549], ["2024-12-01", 0.709396], ["2025-01-01", 0.648345], ["2025-02-01", 0.699986], ["2025-03-01", 0.677237], ["2025-05-01", 0.554454], ["2025-06-01", 0.524333], ["2025-07-01", 0.543943], ["2025-08-01", 0.619687], ["2025-09-01", 0.678557], ["2025-10-01", 1.048032], ["2025-11-01", 1.037682], ["2025-12-01", 1.049135]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.0491."]}, {"strategy_name": "SFZ_CaryBot_B_MABC盤整_日K行進_VPA_ATRB_VAM_回拉進_MA20", "category": "trade_simulation", "period": {"start": "2024-03-06", "end": "2025-12-31"}, "metrics": {"annual_return": 0.126617, "sharpe_ratio": 0.468084, "max_drawdown": -0.424171, "win_rate": 0.254386, "total_trades": 114, "profit_factor": 1.110886}, "monthly_returns": {"2024-03": -0.04474, "2024-04": -0.01675, "2024-05": -0.04345, "2024-06": 0.00453, "2024-07": -0.06304, "2024-08": -0.047867, "2024-09": -0.0574, "2024-10": -0.0023, "2024-11": -0.017925, "2024-12": -0.044875, "2025-01": -0.0856, "2025-02": -0.0069, "2025-03": -0.027767, "2025-04": -0.047833, "2025-06": -0.035563, "2025-07": 0.00353, "2025-08": 0.022425, "2025-09": 0.18375, "2025-10": 0.434, "2025-11": 0.02192, "2025-12": 0.212233}, "equity_curve": [["2024-03-06", 1.0], ["2024-03-01", 0.95526], ["2024-04-01", 0.939259], ["2024-05-01", 0.898449], ["2024-06-01", 0.902519], ["2024-07-01", 0.845624], ["2024-08-01", 0.805146], ["2024-09-01", 0.758931], ["2024-10-01", 0.757185], ["2024-11-01", 0.743613], ["2024-12-01", 0.710243], ["2025-01-01", 0.649446], ["2025-02-01", 0.644965], ["2025-03-01", 0.627056], ["2025-04-01", 0.597062], ["2025-06-01", 0.575829], ["2025-07-01", 0.577862], ["2025-08-01", 0.59082], ["2025-09-01", 0.699384], ["2025-10-01", 1.002916], ["2025-11-01", 1.0249], ["2025-12-01", 1.242418]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2424."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA10_active20", "category": "trade_simulation", "period": {"start": "2024-01-19", "end": "2025-12-31"}, "metrics": {"annual_return": 4.854435, "sharpe_ratio": 8.753136, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 96, "profit_factor": 999.0}, "monthly_returns": {"2024-01": 0.055, "2024-02": 0.1603, "2024-03": 0.290117, "2024-04": 0.236629, "2024-05": 0.137133, "2024-06": 0.17932, "2024-07": 0.12484, "2024-09": 0.1122, "2024-11": 0.082633, "2024-12": 0.2016, "2025-02": 0.159357, "2025-03": 0.31415, "2025-05": 0.216367, "2025-06": 0.15285, "2025-07": 0.182233, "2025-08": 0.274475, "2025-09": 0.303107, "2025-10": 0.2134, "2025-11": 0.22714, "2025-12": 0.17716}, "equity_curve": [["2024-01-19", 1.0], ["2024-01-01", 1.055], ["2024-02-01", 1.224116], ["2024-03-01", 1.579254], ["2024-04-01", 1.952951], ["2024-05-01", 2.220765], ["2024-06-01", 2.618992], ["2024-07-01", 2.945947], ["2024-09-01", 3.276482], ["2024-11-01", 3.547228], ["2024-12-01", 4.262349], ["2025-02-01", 4.941584], ["2025-03-01", 6.493983], ["2025-05-01", 7.899067], ["2025-06-01", 9.106439], ["2025-07-01", 10.765933], ["2025-08-01", 13.720912], ["2025-09-01", 17.879817], ["2025-10-01", 21.69537], ["2025-11-01", 26.623256], ["2025-12-01", 31.339832]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA10 trailing after +20% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 30.3398."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA20_active20", "category": "trade_simulation", "period": {"start": "2024-02-05", "end": "2025-12-31"}, "metrics": {"annual_return": 4.60969, "sharpe_ratio": 4.844634, "max_drawdown": -0.0675, "win_rate": 0.989583, "total_trades": 96, "profit_factor": 337.565926}, "monthly_returns": {"2024-02": 0.123, "2024-03": 0.180983, "2024-04": 0.27175, "2024-05": 0.10945, "2024-06": 0.214743, "2024-07": 0.236288, "2024-09": 0.0574, "2024-11": 0.081367, "2024-12": 0.1136, "2025-02": 0.12474, "2025-03": 0.14755, "2025-05": 0.25425, "2025-06": -0.0675, "2025-07": 0.195725, "2025-08": 0.326783, "2025-09": 0.35355, "2025-10": 0.5445, "2025-11": 0.258764, "2025-12": 0.180083}, "equity_curve": [["2024-02-05", 1.0], ["2024-02-01", 1.123], ["2024-03-01", 1.326244], ["2024-04-01", 1.686651], ["2024-05-01", 1.871255], ["2024-06-01", 2.273093], ["2024-07-01", 2.810198], ["2024-09-01", 2.971504], ["2024-11-01", 3.213286], ["2024-12-01", 3.578315], ["2025-02-01", 4.024674], ["2025-03-01", 4.618515], ["2025-05-01", 5.792772], ["2025-06-01", 5.40176], ["2025-07-01", 6.45902], ["2025-08-01", 8.569717], ["2025-09-01", 11.599541], ["2025-10-01", 17.915491], ["2025-11-01", 22.551375], ["2025-12-01", 26.612494]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA20 trailing after +20% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 25.6125."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA33_active20", "category": "trade_simulation", "period": {"start": "2024-02-21", "end": "2025-12-31"}, "metrics": {"annual_return": 3.482628, "sharpe_ratio": 4.298793, "max_drawdown": -0.0945, "win_rate": 0.90625, "total_trades": 96, "profit_factor": 63.663946}, "monthly_returns": {"2024-02": 0.0276, "2024-03": 0.1085, "2024-04": 0.29565, "2024-05": 0.37775, "2024-06": 0.214286, "2024-07": 0.23457, "2024-09": 0.0387, "2024-11": 0.0413, "2024-12": 0.0701, "2025-02": 0.018225, "2025-03": 0.146225, "2025-04": 0.1027, "2025-05": 0.20085, "2025-06": -0.0945, "2025-07": 0.17935, "2025-08": 0.154675, "2025-09": 0.387639, "2025-10": 0.184967, "2025-11": 0.25178, "2025-12": 0.17515}, "equity_curve": [["2024-02-21", 1.0], ["2024-02-01", 1.0276], ["2024-03-01", 1.139095], ["2024-04-01", 1.475868], ["2024-05-01", 2.033377], ["2024-06-01", 2.469101], ["2024-07-01", 3.048278], ["2024-09-01", 3.166247], ["2024-11-01", 3.297013], ["2024-12-01", 3.528133], ["2025-02-01", 3.592434], ["2025-03-01", 4.117737], ["2025-04-01", 4.540629], ["2025-05-01", 5.452614], ["2025-06-01", 4.937342], ["2025-07-01", 5.822854], ["2025-08-01", 6.723504], ["2025-09-01", 9.329797], ["2025-10-01", 11.055501], ["2025-11-01", 13.839055], ["2025-12-01", 16.262966]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA33 trailing after +20% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 15.2630."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA5_active20", "category": "trade_simulation", "period": {"start": "2024-01-17", "end": "2025-12-31"}, "metrics": {"annual_return": 6.09555, "sharpe_ratio": 7.128238, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 96, "profit_factor": 999.0}, "monthly_returns": {"2024-01": 0.08205, "2024-02": 0.212025, "2024-03": 0.24486, "2024-04": 0.2394, "2024-05": 0.173988, "2024-06": 0.149567, "2024-07": 0.14692, "2024-08": 0.1355, "2024-11": 0.1261, "2024-12": 0.3085, "2025-02": 0.147086, "2025-03": 0.3126, "2025-04": 0.5326, "2025-05": 0.1183, "2025-06": 0.17072, "2025-07": 0.158525, "2025-08": 0.232455, "2025-09": 0.235822, "2025-10": 0.1789, "2025-11": 0.192688, "2025-12": 0.17318}, "equity_curve": [["2024-01-17", 1.0], ["2024-01-01", 1.08205], ["2024-02-01", 1.311472], ["2024-03-01", 1.632599], ["2024-04-01", 2.023443], ["2024-05-01", 2.375497], ["2024-06-01", 2.730793], ["2024-07-01", 3.132002], ["2024-08-01", 3.556388], ["2024-11-01", 4.004848], ["2024-12-01", 5.240344], ["2025-02-01", 6.011125], ["2025-03-01", 7.890203], ["2025-04-01", 12.092525], ["2025-05-01", 13.523071], ["2025-06-01", 15.83173], ["2025-07-01", 18.341455], ["2025-08-01", 22.605018], ["2025-09-01", 27.935778], ["2025-10-01", 32.933489], ["2025-11-01", 39.279377], ["2025-12-01", 46.08178]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA5 trailing after +20% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 45.0818."]}, {"strategy_name": "SFZ_MA_Trailing_行進_MA60_active20", "category": "trade_simulation", "period": {"start": "2024-03-06", "end": "2025-12-31"}, "metrics": {"annual_return": 2.407037, "sharpe_ratio": 2.432478, "max_drawdown": -0.1621, "win_rate": 0.729167, "total_trades": 96, "profit_factor": 15.059625}, "monthly_returns": {"2024-03": -0.020075, "2024-04": -0.04575, "2024-05": 0.211157, "2024-06": 0.427, "2024-07": 0.09118, "2024-08": 0.151, "2024-09": 0.05995, "2024-11": 0.04, "2025-01": -0.0117, "2025-02": 0.103567, "2025-03": -0.01314, "2025-04": -0.04655, "2025-05": 0.21315, "2025-06": -0.1621, "2025-07": 0.16045, "2025-09": 0.596444, "2025-10": 0.180583, "2025-11": 0.366538, "2025-12": 0.335571}, "equity_curve": [["2024-03-06", 1.0], ["2024-03-01", 0.979925], ["2024-04-01", 0.935093], ["2024-05-01", 1.132545], ["2024-06-01", 1.616142], ["2024-07-01", 1.763501], ["2024-08-01", 2.02979], ["2024-09-01", 2.151476], ["2024-11-01", 2.237535], ["2025-01-01", 2.211356], ["2025-02-01", 2.440379], ["2025-03-01", 2.408313], ["2025-04-01", 2.296206], ["2025-05-01", 2.785642], ["2025-06-01", 2.33409], ["2025-07-01", 2.708594], ["2025-09-01", 4.324119], ["2025-10-01", 5.104981], ["2025-11-01", 6.976151], ["2025-12-01", 9.317145]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA60 trailing after +20% activation", "basket_type": "行進", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 8.3171."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Soft_active10_ma20", "category": "trade_simulation", "period": {"start": "2024-02-05", "end": "2025-12-31"}, "metrics": {"annual_return": 0.838571, "sharpe_ratio": 1.324713, "max_drawdown": -0.4265, "win_rate": 0.583333, "total_trades": 84, "profit_factor": 2.246484}, "monthly_returns": {"2024-02": 0.0137, "2024-03": 0.16545, "2024-04": 0.14365, "2024-05": 0.0982, "2024-06": 0.13495, "2024-07": 0.016645, "2024-08": -0.16765, "2024-09": -0.0373, "2024-10": -0.021267, "2024-11": -0.227167, "2024-12": 0.0471, "2025-01": -0.0313, "2025-02": 0.0549, "2025-03": -0.1068, "2025-05": -0.009967, "2025-06": 0.02805, "2025-07": 0.136067, "2025-08": 0.4827, "2025-09": 0.2212, "2025-10": 0.50875, "2025-11": 0.09068, "2025-12": -0.067553}, "equity_curve": [["2024-02-05", 1.0], ["2024-02-01", 1.0137], ["2024-03-01", 1.181417], ["2024-04-01", 1.351127], ["2024-05-01", 1.483808], ["2024-06-01", 1.684048], ["2024-07-01", 1.712079], ["2024-08-01", 1.425049], ["2024-09-01", 1.371894], ["2024-10-01", 1.342718], ["2024-11-01", 1.037697], ["2024-12-01", 1.086573], ["2025-01-01", 1.052563], ["2025-02-01", 1.110349], ["2025-03-01", 0.991763], ["2025-05-01", 0.981878], ["2025-06-01", 1.00942], ["2025-07-01", 1.146769], ["2025-08-01", 1.700314], ["2025-09-01", 2.076424], ["2025-10-01", 3.132804], ["2025-11-01", 3.416887], ["2025-12-01", 3.186066]], "parameters": {"entry_rule": "TA3 wait-entry Soft", "exit_rule": "+10% activation then MA20", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "active10_ma20", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 2.1861."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Soft_active20_ma20", "category": "trade_simulation", "period": {"start": "2024-03-08", "end": "2025-12-31"}, "metrics": {"annual_return": 1.477951, "sharpe_ratio": 1.4469, "max_drawdown": -0.43392, "win_rate": 0.654762, "total_trades": 84, "profit_factor": 2.571775}, "monthly_returns": {"2024-03": 0.20696, "2024-04": 0.196267, "2024-06": 0.037125, "2024-07": 0.066478, "2024-08": -0.16765, "2024-10": -0.1246, "2024-11": -0.2231, "2024-12": 0.0747, "2025-01": 0.1252, "2025-02": -0.0327, "2025-03": 0.0007, "2025-05": -0.069, "2025-07": 0.1792, "2025-08": 0.467575, "2025-09": 0.360345, "2025-10": 0.9675, "2025-11": 0.164225, "2025-12": -0.022643}, "equity_curve": [["2024-03-08", 1.0], ["2024-03-01", 1.20696], ["2024-04-01", 1.443846], ["2024-06-01", 1.497449], ["2024-07-01", 1.596997], ["2024-08-01", 1.32926], ["2024-10-01", 1.163634], ["2024-11-01", 0.904028], ["2024-12-01", 0.971558], ["2025-01-01", 1.093197], ["2025-02-01", 1.05745], ["2025-03-01", 1.05819], ["2025-05-01", 0.985175], ["2025-07-01", 1.161718], ["2025-08-01", 1.704909], ["2025-09-01", 2.319264], ["2025-10-01", 4.563152], ["2025-11-01", 5.312536], ["2025-12-01", 5.192244]], "parameters": {"entry_rule": "TA3 wait-entry Soft", "exit_rule": "+20% activation then MA20", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "active20_ma20", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 4.1922."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Soft_base_exit", "category": "trade_simulation", "period": {"start": "2024-01-11", "end": "2025-12-31"}, "metrics": {"annual_return": 0.100552, "sharpe_ratio": 0.524454, "max_drawdown": -0.1873, "win_rate": 0.404762, "total_trades": 84, "profit_factor": 2.012072}, "monthly_returns": {"2024-01": 0.003, "2024-02": -0.016, "2024-03": 0.020009, "2024-04": 0.13845, "2024-05": 0.0982, "2024-06": 0.0022, "2024-07": 0.046322, "2024-09": -0.0514, "2024-10": -0.07865, "2024-11": -0.02865, "2024-12": 0.0195, "2025-01": -0.012, "2025-02": 0.0549, "2025-05": -0.002, "2025-06": -0.02065, "2025-07": 0.023733, "2025-08": 0.06048, "2025-09": 0.173273, "2025-10": -0.1873, "2025-11": 0.0085, "2025-12": -0.005722}, "equity_curve": [["2024-01-11", 1.0], ["2024-01-01", 1.003], ["2024-02-01", 0.986952], ["2024-03-01", 1.0067], ["2024-04-01", 1.146078], ["2024-05-01", 1.258622], ["2024-06-01", 1.261391], ["2024-07-01", 1.319821], ["2024-09-01", 1.251983], ["2024-10-01", 1.153514], ["2024-11-01", 1.120466], ["2024-12-01", 1.142315], ["2025-01-01", 1.128607], ["2025-02-01", 1.190568], ["2025-05-01", 1.188187], ["2025-06-01", 1.163651], ["2025-07-01", 1.191268], ["2025-08-01", 1.263315], ["2025-09-01", 1.482214], ["2025-10-01", 1.204595], ["2025-11-01", 1.214834], ["2025-12-01", 1.207883]], "parameters": {"entry_rule": "TA3 wait-entry Soft", "exit_rule": "TA3 entry base exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "base_exit", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2079."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Strict_active10_ma20", "category": "trade_simulation", "period": {"start": "2024-03-08", "end": "2025-12-31"}, "metrics": {"annual_return": 0.817094, "sharpe_ratio": 2.037301, "max_drawdown": -0.0227, "win_rate": 0.8, "total_trades": 10, "profit_factor": 53.987179}, "monthly_returns": {"2024-03": 0.3289, "2024-06": 0.1015, "2024-07": 0.0389, "2024-08": -0.0227, "2024-12": 0.023, "2025-06": -0.0085, "2025-07": 0.2638, "2025-09": 0.4162, "2025-12": 0.0959}, "equity_curve": [["2024-03-08", 1.0], ["2024-03-01", 1.3289], ["2024-06-01", 1.463783], ["2024-07-01", 1.520725], ["2024-08-01", 1.486204], ["2024-12-01", 1.520387], ["2025-06-01", 1.507463], ["2025-07-01", 1.905132], ["2025-09-01", 2.698048], ["2025-12-01", 2.956791]], "parameters": {"entry_rule": "TA3 wait-entry Strict", "exit_rule": "+10% activation then MA20", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "active10_ma20", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.9568."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Strict_active20_ma20", "category": "trade_simulation", "period": {"start": "2024-03-08", "end": "2025-12-31"}, "metrics": {"annual_return": 1.33982, "sharpe_ratio": 3.138705, "max_drawdown": -0.0227, "win_rate": 0.9, "total_trades": 10, "profit_factor": 96.709251}, "monthly_returns": {"2024-03": 0.3289, "2024-06": 0.1015, "2024-07": 0.0389, "2024-08": -0.0227, "2025-03": 0.2559, "2025-07": 0.2638, "2025-08": 0.278, "2025-09": 0.4162, "2025-12": 0.0959}, "equity_curve": [["2024-03-08", 1.0], ["2024-03-01", 1.3289], ["2024-06-01", 1.463783], ["2024-07-01", 1.520725], ["2024-08-01", 1.486204], ["2025-03-01", 1.866524], ["2025-07-01", 2.358913], ["2025-08-01", 3.01469], ["2025-09-01", 4.269404], ["2025-12-01", 4.67884]], "parameters": {"entry_rule": "TA3 wait-entry Strict", "exit_rule": "+20% activation then MA20", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "active20_ma20", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 3.6788."]}, {"strategy_name": "SFZ_TA3_WaitEntry_Strict_base_exit", "category": "trade_simulation", "period": {"start": "2024-03-08", "end": "2025-12-31"}, "metrics": {"annual_return": 0.687073, "sharpe_ratio": 1.384622, "max_drawdown": -0.0447, "win_rate": 0.6, "total_trades": 10, "profit_factor": 7.287404}, "monthly_returns": {"2024-03": 0.3289, "2024-04": -0.035, "2024-06": 0.1015, "2024-07": 0.0389, "2024-12": 0.023, "2025-06": -0.0447, "2025-09": 0.6441, "2025-12": 0.0959}, "equity_curve": [["2024-03-08", 1.0], ["2024-03-01", 1.3289], ["2024-04-01", 1.282388], ["2024-06-01", 1.412551], ["2024-07-01", 1.467499], ["2024-12-01", 1.501252], ["2025-06-01", 1.434146], ["2025-09-01", 2.357879], ["2025-12-01", 2.584]], "parameters": {"entry_rule": "TA3 wait-entry Strict", "exit_rule": "TA3 entry base exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_signal_wait_ta3_entry_detail.csv", "variant": "base_exit", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.5840."]}, {"strategy_name": "SFZ_CaryBot_A1_SFZ行進等CaryBot_prebuy_tree_MA20", "category": "trade_simulation", "period": {"start": "2024-11-13", "end": "2025-12-31"}, "metrics": {"annual_return": -0.090597, "sharpe_ratio": -0.124022, "max_drawdown": -0.171418, "win_rate": 0.142857, "total_trades": 7, "profit_factor": 0.739952}, "monthly_returns": {"2024-11": -0.1021, "2025-02": -0.0772, "2025-09": 0.3056, "2025-11": -0.1442, "2025-12": -0.029833}, "equity_curve": [["2024-11-13", 1.0], ["2024-11-01", 0.8979], ["2025-02-01", 0.828582], ["2025-09-01", 1.081797], ["2025-11-01", 0.925802], ["2025-12-01", 0.898182]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is -0.1018."]}, {"strategy_name": "SFZ_CaryBot_A1_SFZ行進等CaryBot_vpa_pressure_build_MA20", "category": "trade_simulation", "period": {"start": "2024-07-01", "end": "2025-09-15"}, "metrics": {"annual_return": 0.009059, "sharpe_ratio": 0.138959, "max_drawdown": -0.169883, "win_rate": 0.571429, "total_trades": 7, "profit_factor": 1.275328}, "monthly_returns": {"2024-07": 0.1139, "2024-10": -0.1034, "2025-06": -0.07415, "2025-08": 0.092, "2025-09": 0.0012}, "equity_curve": [["2024-07-01", 1.0], ["2024-07-01", 1.1139], ["2024-10-01", 0.998723], ["2025-06-01", 0.924667], ["2025-08-01", 1.009737], ["2025-09-01", 1.010949]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.0109."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA10_active10", "category": "trade_simulation", "period": {"start": "2024-01-19", "end": "2025-08-01"}, "metrics": {"annual_return": 0.144335, "sharpe_ratio": 1.713793, "max_drawdown": -0.0331, "win_rate": 0.8, "total_trades": 5, "profit_factor": 7.528701}, "monthly_returns": {"2024-01": 0.0252, "2024-05": 0.0462, "2024-07": -0.0331, "2025-02": 0.0845, "2025-08": 0.0933}, "equity_curve": [["2024-01-19", 1.0], ["2024-01-01", 1.0252], ["2024-05-01", 1.072564], ["2024-07-01", 1.037062], ["2025-02-01", 1.124694], ["2025-08-01", 1.229628]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA10 trailing after +10% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2296."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA20_active10", "category": "trade_simulation", "period": {"start": "2024-02-02", "end": "2025-09-02"}, "metrics": {"annual_return": 0.164705, "sharpe_ratio": 1.0341, "max_drawdown": -0.0846, "win_rate": 0.8, "total_trades": 5, "profit_factor": 4.15721}, "monthly_returns": {"2024-02": 0.0509, "2024-05": 0.041, "2024-08": -0.0846, "2025-02": 0.0549, "2025-09": 0.2049}, "equity_curve": [["2024-02-02", 1.0], ["2024-02-01", 1.0509], ["2024-05-01", 1.093987], ["2024-08-01", 1.001436], ["2025-02-01", 1.056414], ["2025-09-01", 1.272874]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA20 trailing after +10% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2729."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA33_active10", "category": "trade_simulation", "period": {"start": "2024-01-19", "end": "2025-09-02"}, "metrics": {"annual_return": 0.138843, "sharpe_ratio": 0.893914, "max_drawdown": -0.0846, "win_rate": 0.8, "total_trades": 5, "profit_factor": 3.781324}, "monthly_returns": {"2024-01": 0.0252, "2024-06": 0.0423, "2024-08": -0.0846, "2025-03": 0.0475, "2025-09": 0.2049}, "equity_curve": [["2024-01-19", 1.0], ["2024-01-01", 1.0252], ["2024-06-01", 1.068566], ["2024-08-01", 0.978165], ["2025-03-01", 1.024628], ["2025-09-01", 1.234574]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA33 trailing after +10% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2346."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA5_active10", "category": "trade_simulation", "period": {"start": "2024-01-19", "end": "2025-07-25"}, "metrics": {"annual_return": 0.142407, "sharpe_ratio": 1.724746, "max_drawdown": -0.0331, "win_rate": 0.8, "total_trades": 5, "profit_factor": 7.359517}, "monthly_returns": {"2024-01": 0.0252, "2024-05": 0.0462, "2024-07": -0.0331, "2025-02": 0.0882, "2025-07": 0.084}, "equity_curve": [["2024-01-19", 1.0], ["2024-01-01", 1.0252], ["2024-05-01", 1.072564], ["2024-07-01", 1.037062], ["2025-02-01", 1.128531], ["2025-07-01", 1.223328]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA5 trailing after +10% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.2233."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA60_active10", "category": "trade_simulation", "period": {"start": "2024-05-14", "end": "2025-09-15"}, "metrics": {"annual_return": 0.362161, "sharpe_ratio": 0.899755, "max_drawdown": -0.136137, "win_rate": 0.6, "total_trades": 5, "profit_factor": 4.804826}, "monthly_returns": {"2024-05": 0.5464, "2024-06": -0.0563, "2024-08": -0.0846, "2025-03": 0.0141, "2025-09": 0.1165}, "equity_curve": [["2024-05-14", 1.0], ["2024-05-01", 1.5464], ["2024-06-01", 1.459338], ["2024-08-01", 1.335878], ["2025-03-01", 1.354714], ["2025-09-01", 1.512538]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA60 trailing after +10% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.5125."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA10_active20", "category": "trade_simulation", "period": {"start": "2024-03-11", "end": "2025-08-20"}, "metrics": {"annual_return": 0.621355, "sharpe_ratio": 3.248125, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 4, "profit_factor": 999.0}, "monthly_returns": {"2024-03": 0.3341, "2024-06": 0.1175, "2025-02": 0.0845, "2025-08": 0.2421}, "equity_curve": [["2024-03-11", 1.0], ["2024-03-01", 1.3341], ["2024-06-01", 1.490857], ["2025-02-01", 1.616834], ["2025-08-01", 2.00827]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA10 trailing after +20% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.0083."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA20_active20", "category": "trade_simulation", "period": {"start": "2024-03-28", "end": "2025-09-02"}, "metrics": {"annual_return": 0.595143, "sharpe_ratio": 2.326082, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 4, "profit_factor": 999.0}, "monthly_returns": {"2024-03": 0.4049, "2024-06": 0.0929, "2025-02": 0.0549, "2025-09": 0.2049}, "equity_curve": [["2024-03-28", 1.0], ["2024-03-01", 1.4049], ["2024-06-01", 1.535415], ["2025-02-01", 1.61971], ["2025-09-01", 1.951588]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA20 trailing after +20% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.9516."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA33_active20", "category": "trade_simulation", "period": {"start": "2024-05-03", "end": "2025-09-02"}, "metrics": {"annual_return": 0.855415, "sharpe_ratio": 1.575037, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 4, "profit_factor": 999.0}, "monthly_returns": {"2024-05": 0.7331, "2024-06": 0.0423, "2025-03": 0.0475, "2025-09": 0.2049}, "equity_curve": [["2024-05-03", 1.0], ["2024-05-01", 1.7331], ["2024-06-01", 1.80641], ["2025-03-01", 1.892215], ["2025-09-01", 2.279929]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA33 trailing after +20% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.2799."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA5_active20", "category": "trade_simulation", "period": {"start": "2024-03-08", "end": "2025-08-19"}, "metrics": {"annual_return": 0.807933, "sharpe_ratio": 3.118276, "max_drawdown": 0.0, "win_rate": 1.0, "total_trades": 4, "profit_factor": 999.0}, "monthly_returns": {"2024-03": 0.3791, "2024-05": 0.1448, "2025-02": 0.0882, "2025-08": 0.3723}, "equity_curve": [["2024-03-08", 1.0], ["2024-03-01", 1.3791], ["2024-05-01", 1.578794], ["2025-02-01", 1.718043], ["2025-08-01", 2.357671]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA5 trailing after +20% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 1.3577."]}, {"strategy_name": "SFZ_MA_Trailing_盤整_MA60_active20", "category": "trade_simulation", "period": {"start": "2024-05-14", "end": "2025-09-15"}, "metrics": {"annual_return": 0.455132, "sharpe_ratio": 1.145844, "max_drawdown": -0.0563, "win_rate": 0.75, "total_trades": 4, "profit_factor": 12.024867}, "monthly_returns": {"2024-05": 0.5464, "2024-06": -0.0563, "2025-03": 0.0141, "2025-09": 0.1165}, "equity_curve": [["2024-05-14", 1.0], ["2024-05-01", 1.5464], ["2024-06-01", 1.459338], ["2025-03-01", 1.479914], ["2025-09-01", 1.652324]], "parameters": {"entry_rule": "SFZ signal", "exit_rule": "MA60 trailing after +20% activation", "basket_type": "盤整", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_ma_trailing_after_activation_detail.csv", "return_column": "ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is 0.6523."]}, {"strategy_name": "SFZ_CaryBot_B_MABC盤整_SFZ行進籃_VPA_ATRB_VAM_回拉進_MA20", "category": "trade_simulation", "period": {"start": "2025-06-19", "end": "2025-09-26"}, "metrics": {"annual_return": -0.389397, "sharpe_ratio": -13.733376, "max_drawdown": -0.125156, "win_rate": 0.0, "total_trades": 3, "profit_factor": 0.0}, "monthly_returns": {"2025-06": -0.029, "2025-07": -0.0479, "2025-09": -0.0537}, "equity_curve": [["2025-06-19", 1.0], ["2025-06-01", 0.971], ["2025-07-01", 0.924489], ["2025-09-01", 0.874844]], "parameters": {"entry_rule": "SFZ plus CaryBot confirmation", "exit_rule": "MA20 / study exit", "slippage_rate": 0.0002, "round_trip_cost_rate": 0.0044, "cost_application": "gross_return_minus_round_trip_cost"}, "source": {"file": "sfz_carybot_two_paths_detail.csv", "return_column": "trade_ret", "return_unit": "percent"}, "notes": ["Returns are standardized with Taiwan stock costs: buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, slippage 0.2 per mille.", "Signal rows are aggregated to monthly average net returns before drawing equity curves, so overlapping signals are not treated as executable sequential trades.", "Gross total return before sequence compounding is not used directly; compounded net sequence return is -0.1252."]}], "notes": ["This JSON is the standard static contract for backtest_dashboard.html.", "Taiwan cost model is forced to buy fee 0.6 per mille, sell fee 0.6 per mille, sell tax 3 per mille, and default slippage 0.2 per mille."], "future_extensions": {"markets": ["US", "Japan", "Korea"], "sector_rotation": "reserved for daily cross-market rotation inputs"}}</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+<script>
+(function(){
+  const dataNode=document.getElementById('backtestDashboardData');
+  if(!dataNode) return;
+  const payload=JSON.parse(dataNode.textContent||'{}');
+  const strategies=payload.strategies||[];
+  const select=document.querySelector('[data-strategy-select]');
+  const label=document.querySelector('[data-selected-strategy]');
+  const params=document.querySelector('[data-strategy-params]');
+  const heat=document.querySelector('[data-monthly-heatmap]');
+  const tbody=document.querySelector('[data-strategy-body]');
+  let chart=null;
+  function pct(v){ if(v===null||v===undefined||v==='') return 'N/A'; return (Number(v)*100).toFixed(1)+'%'; }
+  function choose(index){
+    const s=strategies[index]||strategies[0];
+    if(!s) return;
+    const selectedIndex=strategies.indexOf(s);
+    if(label) label.textContent=s.strategy_name||'Strategy';
+    if(params) params.textContent=JSON.stringify(s.parameters||{}, null, 2);
+    if(select) select.value=String(selectedIndex);
+    document.querySelectorAll('[data-strategy-row]').forEach(row=>row.classList.toggle('active', row.dataset.index===String(selectedIndex)));
+    renderHeatmap(s);
+    renderChart(s);
+  }
+  function renderChart(s){
+    const canvas=document.getElementById('equityCurveChart');
+    if(!canvas || !window.Chart) return;
+    const curve=s.equity_curve||[];
+    const labels=curve.map(p=>p[0]);
+    const values=curve.map(p=>p[1]);
+    if(chart) chart.destroy();
+    chart=new Chart(canvas, {
+      type:'line',
+      data:{labels:labels,datasets:[{label:s.strategy_name||'Equity',data:values,borderColor:'#58a6ff',backgroundColor:'rgba(88,166,255,.14)',borderWidth:2,tension:.18,pointRadius:0,fill:true}]},
+      options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){return 'Equity '+Number(ctx.parsed.y).toFixed(3);}}}},scales:{x:{ticks:{color:'#8b949e',maxTicksLimit:8},grid:{color:'rgba(48,54,61,.35)'}},y:{ticks:{color:'#8b949e'},grid:{color:'rgba(48,54,61,.35)'}}}}
+    });
+  }
+  function renderHeatmap(s){
+    if(!heat) return;
+    const monthly=s.monthly_returns||{};
+    const months=Object.keys(monthly).sort();
+    heat.innerHTML='';
+    months.forEach(month=>{
+      const value=Number(monthly[month]);
+      const cell=document.createElement('div');
+      cell.className='heat-cell '+(value>0?'heat-pos':value<0?'heat-neg':'heat-flat');
+      cell.innerHTML='<div class="m">'+month+'</div><div class="r">'+pct(value)+'</div>';
+      heat.appendChild(cell);
+    });
+    if(!months.length) heat.innerHTML='<div class="chip-line">No monthly returns.</div>';
+  }
+  if(select){
+    strategies.forEach((s,i)=>{ const opt=document.createElement('option'); opt.value=String(i); opt.textContent=s.strategy_name||('Strategy '+(i+1)); select.appendChild(opt); });
+    select.addEventListener('change',()=>choose(Number(select.value||0)));
+  }
+  document.querySelectorAll('[data-strategy-row]').forEach(row=>row.addEventListener('click',()=>choose(Number(row.dataset.index||0))));
+  document.querySelectorAll('[data-sort-key]').forEach(th=>{
+    th.addEventListener('click',()=>{
+      const key=th.dataset.sortKey;
+      const asc=!th.classList.contains('sort-asc');
+      document.querySelectorAll('[data-sort-key]').forEach(x=>x.classList.remove('sort-asc','sort-desc'));
+      th.classList.add(asc?'sort-asc':'sort-desc');
+      const metricKeys=['sharpe_ratio','annual_return','max_drawdown','win_rate','total_trades','profit_factor'];
+      const rows=Array.from(document.querySelectorAll('[data-strategy-row]'));
+      rows.sort((a,b)=>{
+        const sa=strategies[Number(a.dataset.index)]||{};
+        const sb=strategies[Number(b.dataset.index)]||{};
+        const av=metricKeys.includes(key)?Number((sa.metrics||{})[key] ?? -999999):0;
+        const bv=metricKeys.includes(key)?Number((sb.metrics||{})[key] ?? -999999):0;
+        return asc ? av-bv : bv-av;
+      });
+      rows.forEach(row=>tbody&&tbody.appendChild(row));
+    });
+  });
+  choose(0);
+})();
+</script>
+
+<footer>
+  <p class="site-freshness">資料更新：2026-05-29 收盤後</p>
+  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
+  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
+</footer>
+</body>
+</html>

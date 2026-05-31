@@ -2,6 +2,97 @@
 
 Last updated: 2026-06-01
 
+## 2026-06-01 Backtest Dashboard Task 3
+
+### Goal
+
+Create a unified `backtest_dashboard.html` page and standardized backtest JSON
+contract so SFZ / TA3 / CaryBot-sidecar strategy outputs can be compared in one
+static GitHub Pages dashboard.
+
+### Completed
+
+- Added `backtest_dashboard.py`:
+  - writes `data/backtest_results.json`.
+  - reads local v6 backtest CSVs from the sibling trading workspace when
+    available.
+  - standardizes strategies to the requested JSON shape with metrics,
+    monthly returns, equity curve, parameters, and source metadata.
+  - forces the Task 3 Taiwan cost model:
+    buy fee `0.6‰` + sell fee `0.6‰` + sell tax `3‰` + slippage `0.2‰`
+    = round-trip `0.44%`.
+  - preserves an existing committed JSON in GitHub Actions when local backtest
+    source CSVs are unavailable.
+  - treats CaryBot v51 as a sidecar event study and aggregates all signal-level
+    curves by monthly average net return so overlapping events are not shown as
+    executable sequential trades.
+- Updated `generate_site.py`:
+  - publishes `data/backtest_results.json` to `docs/data/backtest_results.json`.
+  - builds `docs/backtest_dashboard.html` with sortable strategy table,
+    Chart.js equity curve, monthly heatmap, and parameter panel.
+  - adds the new page to the main nav and sitemap.
+  - redirects legacy `docs/backtest.html` to `backtest_dashboard.html`.
+  - keeps `history.html#backtest` as a link/summary to the unified dashboard
+    unless `SITE_FULL_BACKTEST=1` is explicitly used for the old heavy scan.
+- Updated `.github/workflows/daily_update.yml` to run
+  `python backtest_dashboard.py` before `python generate_site.py`.
+- Added regression tests in `tools/test_backtest_dashboard.py`.
+- Generated current local dashboard snapshot:
+  - strategies: `39`
+  - period: `2024-01-03` to `2026-04-09`
+  - public JSON copied to `docs/data/backtest_results.json`.
+- Regenerated the full static site under `docs/`.
+
+### Changed Files
+
+- `backtest_dashboard.py`
+- `data/backtest_results.json`
+- `docs/data/backtest_results.json`
+- `generate_site.py`
+- `.github/workflows/daily_update.yml`
+- `tools/test_backtest_dashboard.py`
+- regenerated `docs/`
+- `codex_context/logs/2026-06-01-backtest-dashboard-task3.md`
+- `codex_context/plans/2026-06-01-backtest-dashboard-task3-plan.md`
+- `CODEX_HANDOFF.md`
+
+### Source of Truth
+
+- Backtest JSON pipeline: `backtest_dashboard.py`
+- Generated JSON consumed by the site: `data/backtest_results.json`
+- Static site generator: `generate_site.py`
+- Visible output: `docs/backtest_dashboard.html`
+
+### Rebuild / Run
+
+- `python backtest_dashboard.py`
+- `python generate_site.py`
+
+### Verification
+
+- `python -m py_compile backtest_dashboard.py carybot_signals.py market_sentiment.py generate_site.py run_screener.py` OK.
+- `python -m unittest tools.test_backtest_dashboard tools.test_carybot_signals tools.test_market_sentiment tools.test_run_screener_sector_filter tools.test_pr3_logic tools.test_verify_daily_update_artifacts tools.test_refresh_industry_cache -v` OK, 35 tests.
+- `python backtest_dashboard.py` OK:
+  - wrote `data/backtest_results.json`.
+  - strategies: `39`.
+- `python generate_site.py` OK:
+  - regenerated `2864` files.
+- `python tools/verify_daily_update_artifacts.py` OK:
+  - latest report date `2026-05-29`, report date count `19`.
+- Chrome headless checks OK:
+  - desktop and mobile widths load `backtest_dashboard.html`.
+  - dashboard has 39 strategy options, Chart.js equity curve, heatmap cells,
+    and `0.44%` cost text.
+
+### Remaining / Next Notes
+
+- The dashboard is a standardized signal-level comparison layer. Existing v6
+  CSVs are not yet a full capital-allocation simulator, so equity curves use
+  monthly average net signal returns.
+- Future Task 3 expansion can add a true portfolio simulator with position
+  sizing, single/multi-position rules, limit-up/down no-fill handling, T+2 cash
+  constraints, disposal/attention stock exclusion, and slippage sensitivity.
+
 ## 2026-06-01 CaryBot Task 2 signal bridge
 
 ### Goal
