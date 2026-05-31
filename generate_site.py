@@ -41,6 +41,7 @@ LOCAL_MARGIN_DIR = LOCAL_DATA_DIR / "margin"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 SFZ_ALL_PATH = LOCAL_DATA_DIR / "sfz_all.json"
 MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
+CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
@@ -1038,6 +1039,147 @@ def stock_href(stock_id: str, prefix: str = "stocks") -> str:
 
 
 _CARYBOT_MARKER_CACHE: dict[str, dict] | None = None
+_CARYBOT_SIGNAL_PAYLOAD_CACHE: dict | None = None
+
+
+def default_carybot_signals_payload() -> dict:
+    return {
+        "date": "",
+        "signals": [],
+        "history": [],
+        "sources": {"mode": "missing"},
+    }
+
+
+def load_carybot_signals_payload(path: Path | str = CARYBOT_SIGNALS_PATH) -> dict:
+    global _CARYBOT_SIGNAL_PAYLOAD_CACHE
+    path_obj = Path(path)
+    if path_obj == CARYBOT_SIGNALS_PATH and _CARYBOT_SIGNAL_PAYLOAD_CACHE is not None:
+        return _CARYBOT_SIGNAL_PAYLOAD_CACHE
+    if not path_obj.exists():
+        payload = default_carybot_signals_payload()
+    else:
+        try:
+            payload = json.loads(path_obj.read_text(encoding="utf-8"))
+        except Exception:
+            payload = default_carybot_signals_payload()
+    if not isinstance(payload, dict):
+        payload = default_carybot_signals_payload()
+    payload.setdefault("signals", [])
+    payload.setdefault("history", [])
+    payload.setdefault("date", "")
+    payload.setdefault("sources", {})
+    if not isinstance(payload.get("signals"), list):
+        payload["signals"] = []
+    if not isinstance(payload.get("history"), list):
+        payload["history"] = []
+    if path_obj == CARYBOT_SIGNALS_PATH:
+        _CARYBOT_SIGNAL_PAYLOAD_CACHE = payload
+    return payload
+
+
+def _carybot_signal_rank(signal: dict) -> tuple:
+    type_rank = {"B1": 2, "B2": 1}.get(str(signal.get("signal_type") or ""), 0)
+    score = _num_or_none(signal.get("score")) or 0
+    rank = _num_or_none(signal.get("rank")) or 999999
+    return (str(signal.get("date") or ""), type_rank, score, -rank)
+
+
+def latest_carybot_signals_by_stock(payload: dict | None = None) -> dict[str, dict]:
+    payload = payload or load_carybot_signals_payload()
+    latest: dict[str, dict] = {}
+    for row in payload.get("signals") or []:
+        if not isinstance(row, dict):
+            continue
+        sid = str(row.get("stock_id") or row.get("stock") or "").strip()
+        if not sid:
+            continue
+        old = latest.get(sid)
+        if old is None or _carybot_signal_rank(row) >= _carybot_signal_rank(old):
+            latest[sid] = row
+    return latest
+
+
+def carybot_signals_for_stock(stock_id: str, payload: dict | None = None, limit: int = 8) -> list[dict]:
+    payload = payload or load_carybot_signals_payload()
+    sid = str(stock_id)
+    seen: set[tuple[str, str]] = set()
+    rows: list[dict] = []
+    for row in list(payload.get("signals") or []) + list(payload.get("history") or []):
+        if not isinstance(row, dict):
+            continue
+        if str(row.get("stock_id") or row.get("stock") or "") != sid:
+            continue
+        key = (str(row.get("date") or ""), str(row.get("signal_type") or ""))
+        if key in seen:
+            continue
+        seen.add(key)
+        rows.append(row)
+    rows.sort(key=_carybot_signal_rank, reverse=True)
+    return rows[:limit]
+
+
+def carybot_signal_badge(signal: dict, double_confirm: bool = False) -> str:
+    signal_type = str(signal.get("signal_type") or "")
+    tag_cls = "tag-green" if signal_type == "B1" else "tag-blue" if signal_type == "B2" else ""
+    icon = "&#128994;" if signal_type == "B1" else "&#128309;" if signal_type == "B2" else ""
+    score = _num_or_none(signal.get("score"))
+    temp = _num_or_none(signal.get("thermometer_score"))
+    date_text = str(signal.get("date") or "-")
+    bits = []
+    if double_confirm:
+        bits.append('<span class="tag tag-yellow">&#11088; SFZ + CaryBot</span>')
+    bits.append(f'<span class="tag {tag_cls}">{icon} {esc(signal_type or "CaryBot")}</span>')
+    meta = [date_text]
+    if score is not None:
+        meta.append(f"分數 {score:.0f}")
+    if temp is not None:
+        meta.append(f"溫度 {temp:.0f}")
+    bits.append(f'<div class="signal-dates">{"｜".join(esc(x) for x in meta if x)}</div>')
+    return "".join(bits)
+
+
+def build_carybot_signal_history_panel(stock_id: str, payload: dict | None = None) -> str:
+    rows = carybot_signals_for_stock(stock_id, payload)
+    payload = payload or load_carybot_signals_payload()
+    source_date = payload.get("date") or "-"
+    if not rows:
+        return f"""
+<div class="card" data-carybot-history>
+  <div class="section-label">CaryBot 買點歷史</div>
+  <div class="strategy-note">目前 data/carybot_signals.json 尚無 {esc(stock_id)} 的 B1/B2 買點紀錄；此區只作 timing / confirmation layer，不取代 SFZ 趨勢篩選。</div>
+</div>"""
+    body_rows = ""
+    for row in rows:
+        signal_type = str(row.get("signal_type") or "")
+        tag_cls = "tag-green" if signal_type == "B1" else "tag-blue"
+        metrics = row.get("metrics") if isinstance(row.get("metrics"), dict) else {}
+        qz = _fmt_short(metrics.get("QZ") if metrics else row.get("QZ"))
+        qtyr = _fmt_short(metrics.get("QTYR") if metrics else row.get("QTYR"))
+        vam20 = _fmt_short(metrics.get("VAM20") if metrics else row.get("VAM20"))
+        phase = row.get("phase") or row.get("carybot_phase") or "-"
+        reason = row.get("reason") or row.get("transition_5d") or "-"
+        body_rows += f"""
+<tr>
+  <td>{esc(row.get("date") or "-")}</td>
+  <td><span class="tag {tag_cls}">{esc(signal_type)}</span><div class="signal-dates">raw {esc(row.get("raw_signal_type") or "")}</div></td>
+  <td><strong>{esc(row.get("score") or "-")}</strong><div class="signal-dates">溫度 {esc(row.get("thermometer_score") or "-")}</div></td>
+  <td>QZ {esc(qz)}｜QTYR {esc(qtyr)}｜VAM20 {esc(vam20)}</td>
+  <td>{esc(phase)}<div class="signal-dates">{esc(reason)}</div></td>
+</tr>"""
+    return f"""
+<div class="card" data-carybot-history>
+  <div class="section-head">
+    <div>
+      <div class="section-label">CaryBot 買點歷史</div>
+      <div class="strategy-note">讀取 <code>data/carybot_signals.json</code> 的 B1/B2 買點與溫度計分數；CaryBot 是買點確認層，不取代 SFZ / M大股票池。</div>
+    </div>
+    <div class="section-date">資料日 {esc(source_date)}</div>
+  </div>
+  <div style="overflow-x:auto">
+    <table class="stock-table"><thead><tr><th>日期</th><th>訊號</th><th>分數</th><th>溫度計指標</th><th>階段 / 原因</th></tr></thead><tbody>{body_rows}</tbody></table>
+  </div>
+</div>"""
 
 
 def _num_or_none(value):
@@ -1098,6 +1240,23 @@ def latest_carybot_markers_by_stock() -> dict[str, dict]:
 
 
 def carybot_marker_cell(stock_id: str, hide_empty_col: bool = False) -> str:
+    signal = latest_carybot_signals_by_stock().get(str(stock_id))
+    if signal:
+        metrics = signal.get("metrics") if isinstance(signal.get("metrics"), dict) else {}
+        qz = metrics.get("QZ") if metrics else signal.get("QZ")
+        qz_num = _num_or_none(qz)
+        qz_cls = "pos" if qz_num is not None and qz_num > 0 else "neg" if qz_num is not None and qz_num < 0 else ""
+        qtyr = metrics.get("QTYR") if metrics else signal.get("QTYR")
+        vam20 = metrics.get("VAM20") if metrics else signal.get("VAM20")
+        vam60 = metrics.get("VAM60") if metrics else signal.get("VAM60")
+        phase = signal.get("phase") or signal.get("carybot_phase") or "-"
+        return f"""<td class="hide-mobile carybot-cell">
+  {carybot_signal_badge(signal)}
+  <div class="carybot-line">QZ <strong class="{qz_cls}">{_fmt_short(qz)}</strong>｜QTYR <strong>{_fmt_short(qtyr)}</strong></div>
+  <div class="carybot-line">VAM20 {_fmt_short(vam20)}｜VAM60 {_fmt_short(vam60)}</div>
+  <div class="carybot-line">{esc(phase)}</div>
+</td>"""
+
     marker = latest_carybot_markers_by_stock().get(str(stock_id))
     if not marker:
         empty_attr = ' data-empty="true"' if hide_empty_col else ""
@@ -1198,8 +1357,11 @@ def build_stock_table(
 ) -> str:
     """生成股票表格 HTML"""
     rows = ""
+    carybot_signal_map = latest_carybot_signals_by_stock()
+    carybot_marker_map = latest_carybot_markers_by_stock()
     carybot_empty_col = bool(
-        show_carybot and not any(str(row.get("id", "")) in latest_carybot_markers_by_stock() for row in stocks)
+        show_carybot
+        and not any(str(row.get("id", "")) in carybot_signal_map or str(row.get("id", "")) in carybot_marker_map for row in stocks)
     )
     for i, s in enumerate(stocks, 1):
         s = enrich_stock_fields(s)
@@ -1449,7 +1611,11 @@ def _sfz_tag_class(row: dict) -> str:
     return "tag-green"
 
 
-def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) -> str:
+def build_sfz_all_controls(
+    payload: dict,
+    market_sentiment: dict | None = None,
+    carybot_payload: dict | None = None,
+) -> str:
     stocks = payload.get("stocks") or []
     date_str = payload.get("date") or "-"
     total = len(stocks)
@@ -1460,7 +1626,10 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
   <div class="strategy-note">尚未找到 <code>data/sfz_all.json</code>；請先執行 <code>python run_screener.py</code> 產生全量候選資料。</div>
 </div>"""
 
-    carybot_map = latest_carybot_markers_by_stock()
+    carybot_payload = carybot_payload or load_carybot_signals_payload()
+    carybot_map = latest_carybot_signals_by_stock(carybot_payload)
+    legacy_carybot_map = latest_carybot_markers_by_stock()
+    use_legacy_carybot = not carybot_map
     market_sentiment = market_sentiment or load_market_sentiment_payload()
     market_score = _num_or_none(market_sentiment.get("score"))
     market_score = 50 if market_score is None else market_score
@@ -1468,7 +1637,17 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
     market_bullish_attr = "1" if market_bullish else "0"
     bull_note_style = ' style="display:inline"' if market_bullish else ""
     rows_html = ""
-    for row in stocks:
+    sorted_stocks = sorted(
+        stocks,
+        key=lambda row: (
+            0
+            if str(row.get("stock_id") or row.get("id") or "") in carybot_map
+            or (use_legacy_carybot and str(row.get("stock_id") or row.get("id") or "") in legacy_carybot_map)
+            else 1,
+            _num_or_none(row.get("rank")) or 999999,
+        ),
+    )
+    for row in sorted_stocks:
         sid = str(row.get("stock_id") or row.get("id") or "")
         name = row.get("name") or sid
         basket_text = row.get("basket") or row.get("rank_basket") or row.get("status") or "-"
@@ -1478,7 +1657,14 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
         gain = _num_or_none(row.get("gain_6w"))
         turnover = _num_or_none(row.get("turnover_value")) or 0
         cap_bucket = str(row.get("market_cap_bucket") or "unknown")
-        has_carybot = "1" if sid in carybot_map else "0"
+        carybot_signal = carybot_map.get(sid)
+        has_carybot = "1" if carybot_signal or (use_legacy_carybot and sid in legacy_carybot_map) else "0"
+        if carybot_signal:
+            carybot_cell = carybot_signal_badge(carybot_signal, double_confirm=True)
+        elif use_legacy_carybot and sid in legacy_carybot_map:
+            carybot_cell = '<span class="tag tag-blue">CaryBot</span><div class="signal-dates">legacy marker</div>'
+        else:
+            carybot_cell = '<span class="tag">待接入</span>'
         search = f"{sid} {name} {basket_text} {row.get('sector', '')}".lower()
         rows_html += f"""
 <tr data-sfz-row data-rank="{esc(row.get('rank') or 0)}" data-code="{esc(sid)}" data-name="{esc(name)}" data-score="{esc(score if score is not None else 0)}" data-turnover="{esc(turnover)}" data-gain="{esc(gain if gain is not None else 0)}" data-market-cap="{esc(cap_bucket)}" data-carybot="{has_carybot}" data-bullish="{market_bullish_attr}" data-text="{esc(search)}">
@@ -1489,7 +1675,7 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
   <td><span style="color:#58a6ff;font-weight:800">{_sfz_fmt(score, 1)}</span></td>
   <td class="{('pos' if (gain or 0) >= 0 else 'neg')}">{_sfz_fmt(gain, 1, '%')}</td>
   <td>{_sfz_money(turnover)}<div class="signal-dates">5日均量 {_sfz_fmt(row.get('vol5_lot'), 0)} 張</div></td>
-  <td>{'<span class="tag tag-green">CaryBot</span>' if has_carybot == '1' else '<span class="tag">待接入</span>'}</td>
+  <td>{carybot_cell}</td>
 </tr>"""
 
     return f"""
@@ -1549,6 +1735,7 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
       const reset=root.querySelector('#sfzReset');
       let page=1;
       function num(v){{ const n=Number(v); return Number.isFinite(n)?n:0; }}
+      function carybotFirst(a,b){{ const av=a.dataset.carybot==='1'?0:1; const bv=b.dataset.carybot==='1'?0:1; return av-bv; }}
       function selected(){{
         const query=(q&&q.value||'').trim().toLowerCase();
         const minTurnover=volume&&volume.value!=='all'?Number(volume.value):0;
@@ -1571,7 +1758,7 @@ def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) 
           if(key==='score') return num(b.dataset.score)-num(a.dataset.score);
           if(key==='turnover') return num(b.dataset.turnover)-num(a.dataset.turnover);
           if(key==='gain') return num(b.dataset.gain)-num(a.dataset.gain);
-          return num(a.dataset.rank)-num(b.dataset.rank);
+          return carybotFirst(a,b)||num(a.dataset.rank)-num(b.dataset.rank);
         }});
       }}
       function render(){{
@@ -7561,6 +7748,7 @@ initMainForceHover_{stock_id}();
     traffic_light = stock_traffic_light(stock_id, s_view, tech, decision, daily, chip_series)
     rr_warning = rr_warning_bar(decision)
     mda_abc_card = build_stock_mda_abc_block(stock_id, s_view, daily, tech, chip_series, holding)
+    carybot_history_card = build_carybot_signal_history_panel(stock_id)
     report_date = str(s.get("report_date") or "").strip()
     price_date = str(s_view.get("price_date") or latest.get("date") or "").strip()
     if not is_blank(report_date):
@@ -7592,6 +7780,8 @@ initMainForceHover_{stock_id}();
       </div>
     </div>
   </div>
+
+  {carybot_history_card}
 
   {mda_abc_card}
 

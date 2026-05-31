@@ -57,6 +57,9 @@ jobs:
       - name: Generate market sentiment data
         run: python market_sentiment.py
 
+      - name: Generate CaryBot signal bridge
+        run: python carybot_signals.py
+
       - name: Refresh all-market stock prices
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

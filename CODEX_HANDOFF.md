@@ -2,6 +2,102 @@
 
 Last updated: 2026-06-01
 
+## 2026-06-01 CaryBot Task 2 signal bridge
+
+### Goal
+
+Integrate CaryBot v50/v51 buy-point signals into the static site through a
+local JSON bridge, then show B1/B2 confirmation on the SFZ baskets page and
+recent CaryBot history on stock-detail pages.
+
+### Completed
+
+- Added `carybot_signals.py`:
+  - writes `data/carybot_signals.json`.
+  - reads local CaryBot exports from the sibling trading workspace when
+    available:
+    - `carybot_daily_ai_buy_v51.csv` for current daily B1 signals.
+    - `carybot_daily_ai_buy_v51_history.csv` for recent history.
+    - `carybot_signal_master_v50.csv` for v50 AI_Buy / PreBuy history.
+  - maps `AI_Buy` and `AI_Buy_like_v51` to `B1`; maps `PreBuy` to `B2`.
+  - keeps `score`, `thermometer_score`, `phase`, `transition_5d`, and core
+    QZ/QTYR/VAM metrics for display.
+  - preserves an existing JSON file when the local CaryBot CSV source is
+    absent, so GitHub Actions will not wipe the committed bridge data.
+- Updated `generate_site.py`:
+  - loads `data/carybot_signals.json` as the first-class CaryBot interface.
+  - marks SFZ rows with current CaryBot signals as `SFZ + CaryBot` double
+    confirmation.
+  - displays B1 as a green tag and B2 as a blue tag.
+  - keeps double-confirmed rows at the top for the default SFZ full-list sort,
+    including after the frontend JS initializes.
+  - adds a `CaryBot 買點歷史` card to each stock detail page with recent B1/B2
+    history and thermometer/metric context.
+  - keeps CaryBot as a timing / confirmation layer, not a replacement for SFZ
+    or M大 selection logic.
+- Updated `.github/workflows/daily_update.yml` to run
+  `python carybot_signals.py` before `python generate_site.py`.
+- Added tests for the CaryBot JSON schema mapping, JSON preservation behavior,
+  SFZ double-confirm labels, frontend sort protection, and stock-history
+  deduplication.
+- Generated current local bridge snapshot:
+  - `date`: `2026-05-12`
+  - current signals: `20`
+  - history rows: `567`
+  - current SFZ overlaps shown as double-confirmed: `19`
+- Regenerated the static site under `docs/`.
+
+### Changed Files
+
+- `carybot_signals.py`
+- `data/carybot_signals.json`
+- `generate_site.py`
+- `.github/workflows/daily_update.yml`
+- `tools/test_carybot_signals.py`
+- `tools/test_pr3_logic.py`
+- regenerated `docs/`
+- `codex_context/logs/2026-06-01-carybot-task2.md`
+- `CODEX_HANDOFF.md`
+
+### Source of Truth
+
+- CaryBot upstream exports remain in the trading workspace `回測/v6_outputs/`.
+- Website bridge data: `data/carybot_signals.json`
+- Static site generator: `generate_site.py`
+- Visible outputs: `docs/selection.html#sfz-baskets` and
+  `docs/stocks/*.html`
+
+### Rebuild / Run
+
+- `python carybot_signals.py`
+- `python generate_site.py`
+
+### Verification
+
+- `python -m py_compile carybot_signals.py market_sentiment.py generate_site.py run_screener.py` OK.
+- `python -m unittest tools.test_carybot_signals tools.test_market_sentiment tools.test_run_screener_sector_filter tools.test_pr3_logic tools.test_verify_daily_update_artifacts tools.test_refresh_industry_cache -v` OK, 27 tests.
+- `python carybot_signals.py` OK:
+  - wrote `data/carybot_signals.json`.
+  - current signals: `20`; history rows: `567`.
+- `python generate_site.py` OK:
+  - regenerated 2863 files.
+- `python tools/verify_daily_update_artifacts.py` OK:
+  - latest report date `2026-05-29`, report date count `19`.
+- Browser checks with Chrome DevTools OK:
+  - `selection.html#sfz-baskets` shows `SFZ + CaryBot` rows at the top after JS
+    initialization and displays B1 green tags with thermometer scores.
+  - `stocks/2105.html` shows the `CaryBot 買點歷史` card with one deduped
+    `2026-05-12` B1 row and its thermometer/QZ/QTYR/VAM context.
+
+### Remaining / Next Notes
+
+- Future API integration can replace `carybot_signals.py` internals while
+  keeping the same `data/carybot_signals.json` contract.
+- v51 remains a proxy/sidecar timing layer; do not treat it as a fully solved
+  CaryBot formula engine without a separate research gate.
+- Task 3 backtest dashboard can consume this JSON later for CaryBot/SFZ
+  overlap comparisons.
+
 ## 2026-06-01 Market sentiment and US VIX Task 1
 
 ### Goal
