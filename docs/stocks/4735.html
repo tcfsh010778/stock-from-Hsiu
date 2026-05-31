@@ -196,6 +196,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
 .carybot-line strong{color:#e6edf3}
 .carybot-missing{font-size:12px;color:#6e7681}
+.sfz-control-bar{position:sticky;top:46px;z-index:22;display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin:12px 0;backdrop-filter:blur(8px)}
+.sfz-control{display:flex;flex-direction:column;gap:4px}
+.sfz-control label{font-size:11px;color:#8b949e;font-weight:800}
+.sfz-control select,.sfz-control input{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.sfz-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.sfz-actions button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:800}
+.sfz-actions button:hover{border-color:#58a6ff;color:#58a6ff}
+.sfz-count-line{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#8b949e;font-size:12px;margin:8px 0 10px}
+.sfz-pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.sfz-pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.sfz-pager button:disabled{opacity:.45;cursor:not-allowed}
+.sfz-bull-note{display:none;color:#d2a520;font-weight:800}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -282,6 +294,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
+  .sfz-control-bar{position:static;grid-template-columns:1fr}
+  .sfz-count-line{display:grid}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}

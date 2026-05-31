@@ -14,6 +14,7 @@ DATA_DIR = ROOT / "data"
 REPORTS_DIR = ROOT / "reports"
 PRICE_DIR = DATA_DIR / "prices"
 SCAN_PATH = DATA_DIR / "mda_universe_scan.json"
+SFZ_ALL_PATH = DATA_DIR / "sfz_all.json"
 MARKETS_PATH = DATA_DIR / "stock_markets.json"
 INDUSTRY_PATH = DATA_DIR / "stock_industries.json"
 MIN_CLOSE = float(os.environ.get("DAILY_TOP20_MIN_CLOSE", "20"))
@@ -312,16 +313,20 @@ def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
     closes = [r["close"] for r in rows]
     latest = rows[-1] if rows else {}
     close = latest.get("close") or to_float(row.get("close"), None)
+    latest_volume = to_float(latest.get("volume"), None)
+    turnover_value = close * latest_volume if close is not None and latest_volume is not None else None
     high21 = max((r["high"] for r in rows[-21:]), default=None)
     low21 = min((r["low"] for r in rows[-21:]), default=None)
     ma5 = sma(closes, 5)
     ma34 = sma(closes, 34)
-    gain_6w = pct_change(close, closes[-31]) if close and len(closes) >= 31 else None
-    gain_3d = pct_change(close, closes[-4]) if close and len(closes) >= 4 else None
+    gain_6w = pct_change(close, closes[-31]) if close and len(closes) >= 31 else to_float(row.get("gain_6w"), None)
+    gain_3d = pct_change(close, closes[-4]) if close and len(closes) >= 4 else to_float(row.get("gain_3d"), None)
     vol5 = (sum(r["volume"] for r in rows[-5:]) / 5 / 1000) if len(rows) >= 5 else None
     entry = ma5 * 0.985 if ma5 else close
     target = high21 * 1.02 if high21 else (close * 1.12 if close else None)
     stop = low21 * 0.995 if low21 else (close * 0.9 if close else None)
+    rsi_value = rsi(closes)
+    bb_value = bb_pct(closes)
     enriched = {
         **row,
         "rank_basket": row.get("rank_basket") or row.get("original_basket") or row.get("basket"),
@@ -332,11 +337,13 @@ def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
         "close": close,
         "gain_6w": gain_6w,
         "gain_3d": gain_3d,
-        "rsi": rsi(closes),
-        "bb_pct": bb_pct(closes),
+        "rsi": rsi_value if rsi_value is not None else to_float(row.get("rsi") or row.get("rsi_14"), None),
+        "bb_pct": bb_value if bb_value is not None else to_float(row.get("bb_pct") or row.get("percent_b"), None),
         "ma5": ma5,
         "ma34": ma34,
         "vol5_lot": vol5,
+        "latest_volume": latest_volume,
+        "turnover_value": turnover_value,
         "high21": high21,
         "low21": low21,
         "entry": entry,
@@ -430,6 +437,139 @@ def rank_candidates_with_sector_flow(
         if len(selected) >= top_n:
             break
     return selected
+
+
+def rank_all_candidates_with_sector_flow(rows: list[dict], sector_scores: dict[str, dict]) -> list[dict]:
+    def base_key(row: dict):
+        return (
+            _basket_rank(row),
+            -to_float(row.get("score"), 0),
+            str(row.get("stock_id") or ""),
+        )
+
+    if not sector_scores:
+        ranked = sorted(rows, key=base_key)
+    else:
+        def sector_key(row: dict):
+            rank = to_float(row.get("sector_rank"), 999) or 999
+            return (
+                rank,
+                -to_float(row.get("sector_flow_score"), 0),
+                *base_key(row),
+            )
+
+        ranked = sorted(rows, key=sector_key)
+    for idx, row in enumerate(ranked, 1):
+        row["rank"] = idx
+    return ranked
+
+
+def latest_enriched_candidates(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+) -> list[dict]:
+    industry_map = industry_map if industry_map is not None else load_industry_map()
+    sector_scores = sector_scores if sector_scores is not None else market_sector_flow(industry_map)
+    enriched = [enrich(r, industry_map) for r in rows]
+    enriched = [r for r in enriched if r.get("close") and r.get("date")]
+    latest_date = max((r.get("date", "") for r in enriched), default="")
+    if latest_date:
+        enriched = [r for r in enriched if r.get("date") == latest_date]
+    for item in enriched:
+        sector = str(item.get("sector") or "")
+        summary = sector_scores.get(sector) or {}
+        item["sector_rank"] = summary.get("rank")
+        item["sector_flow_score"] = summary.get("score")
+        item["sector_turnover_billion"] = summary.get("turnover_billion")
+    return rank_all_candidates_with_sector_flow(enriched, sector_scores)
+
+
+def market_cap_bucket(row: dict) -> str:
+    for key in ("market_cap", "market_value", "market_capitalization"):
+        value = to_float(row.get(key), None)
+        if value is not None:
+            value_billion = value / 1_000_000_000
+            break
+    else:
+        for key in ("market_cap_billion", "market_value_billion"):
+            value = to_float(row.get(key), None)
+            if value is not None:
+                value_billion = value
+                break
+        else:
+            return "unknown"
+    if value_billion >= 100:
+        return "large"
+    if value_billion >= 20:
+        return "mid"
+    return "small"
+
+
+def sfz_json_stock(row: dict) -> dict:
+    turnover_value = to_float(row.get("turnover_value"), None)
+    return {
+        "rank": int(to_float(row.get("rank"), 0) or 0),
+        "stock_id": str(row.get("stock_id") or ""),
+        "name": row.get("name") or str(row.get("stock_id") or ""),
+        "date": row.get("date") or "",
+        "basket": row.get("basket") or "",
+        "rank_basket": row.get("rank_basket") or row.get("basket") or "",
+        "status": row.get("status") or "",
+        "icon": row.get("icon") or "",
+        "score": to_float(row.get("score"), None),
+        "close": to_float(row.get("close"), None),
+        "gain_6w": to_float(row.get("gain_6w"), None),
+        "gain_3d": to_float(row.get("gain_3d"), None),
+        "rsi": to_float(row.get("rsi"), None),
+        "bb_pct": to_float(row.get("bb_pct"), None),
+        "vol5_lot": to_float(row.get("vol5_lot"), None),
+        "latest_volume": to_float(row.get("latest_volume"), None),
+        "turnover_value": turnover_value,
+        "turnover_million": turnover_value / 1_000_000 if turnover_value is not None else None,
+        "market_cap_bucket": market_cap_bucket(row),
+        "sector": row.get("sector") or "",
+        "sector_rank": to_float(row.get("sector_rank"), None),
+        "sector_flow_score": to_float(row.get("sector_flow_score"), None),
+        "sector_turnover_billion": to_float(row.get("sector_turnover_billion"), None),
+        "entry": to_float(row.get("entry"), None),
+        "target": to_float(row.get("target"), None),
+        "stop": to_float(row.get("stop"), None),
+        "reason": row.get("reason") or "",
+    }
+
+
+def build_sfz_all_payload(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+) -> dict:
+    stocks = latest_enriched_candidates(rows, industry_map, sector_scores)
+    json_stocks = [sfz_json_stock(row) for row in stocks]
+    latest_date = json_stocks[0]["date"] if json_stocks else ""
+    return {
+        "date": latest_date,
+        "source": "data/mda_universe_scan.json",
+        "count": len(json_stocks),
+        "default_limit": TOP_N,
+        "filters": {
+            "page_sizes": [20, 50, "all"],
+            "turnover_thresholds": [50_000_000, 100_000_000],
+            "market_cap_buckets": ["large", "mid", "small", "unknown"],
+        },
+        "stocks": json_stocks,
+    }
+
+
+def write_sfz_all_json(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+) -> dict:
+    payload = build_sfz_all_payload(rows, industry_map, sector_scores)
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    SFZ_ALL_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return payload
 
 
 def select_top20(
@@ -545,7 +685,9 @@ def report_markdown(rows: list[dict], report_date: str, sector_scores: dict[str,
 def main() -> None:
     industry_map = load_industry_map()
     sector_scores = market_sector_flow(industry_map)
-    rows = select_top20(load_scan_rows(), industry_map, sector_scores)
+    scan_rows = load_scan_rows()
+    sfz_all = write_sfz_all_json(scan_rows, industry_map, sector_scores)
+    rows = select_top20(scan_rows, industry_map, sector_scores)
     if not rows:
         raise SystemExit("No rows available. Run mda_full_market_refresh.py and mda_universe_scan.py first.")
     report_date = max((r.get("date", "") for r in rows), default=date.today().isoformat())
@@ -553,6 +695,7 @@ def main() -> None:
     out = REPORTS_DIR / f"每日選股報告_{report_date}.md"
     out.write_text(report_markdown(rows, report_date, sector_scores), encoding="utf-8")
     print(f"[run_screener] wrote {out} rows={len(rows)}")
+    print(f"[run_screener] wrote {SFZ_ALL_PATH} rows={sfz_all.get('count', 0)}")
 
 
 if __name__ == "__main__":

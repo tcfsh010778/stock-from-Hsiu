@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import json
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -59,6 +61,37 @@ class PR3LogicTest(unittest.TestCase):
         for old, expected in cases.items():
             with self.subTest(old=old):
                 self.assertEqual(generate_site.normalize_score_value(old), expected)
+
+    def test_sfz_all_payload_loader_reads_json_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "sfz_all.json"
+            path.write_text(
+                json.dumps({"date": "2026-05-29", "count": 1, "stocks": [{"stock_id": "2330"}]}),
+                encoding="utf-8",
+            )
+
+            payload = generate_site.load_sfz_all_payload(path)
+
+        self.assertEqual(payload["date"], "2026-05-29")
+        self.assertEqual(payload["stocks"][0]["stock_id"], "2330")
+
+    def test_sfz_all_controls_include_paging_filters_and_sort(self) -> None:
+        payload = {
+            "date": "2026-05-29",
+            "count": 1,
+            "default_limit": 20,
+            "stocks": [{"rank": 1, "stock_id": "2330", "name": "TSMC", "score": 90}],
+        }
+
+        html = generate_site.build_sfz_all_controls(payload)
+
+        self.assertIn("data-sfz-table", html)
+        self.assertIn('id="sfzPageSize"', html)
+        self.assertIn('id="sfzMarketCapFilter"', html)
+        self.assertIn('id="sfzVolumeFilter"', html)
+        self.assertIn('id="sfzCarybotFilter"', html)
+        self.assertIn('id="sfzBullishFilter"', html)
+        self.assertIn('id="sfzSort"', html)
 
 
 if __name__ == "__main__":

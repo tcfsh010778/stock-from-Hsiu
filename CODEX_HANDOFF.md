@@ -1,6 +1,80 @@
 # Codex Handoff
 
-Last updated: 2026-05-27
+Last updated: 2026-05-31
+
+## 2026-05-31 SFZ full candidate output and baskets paging
+
+### Goal
+
+Implement Task 4 first: keep the daily report/homepage Top 20 experience, but
+make the SFZ baskets page show every stock that passes the SFZ scan instead of
+only the first 20.
+
+### Completed
+
+- Updated `run_screener.py`:
+  - added `data/sfz_all.json` output for the full latest SFZ candidate set.
+  - kept the existing daily report capped at Top 20.
+  - enriched each full-candidate row with basket, rank, sector score,
+    turnover, volume, gains, RSI, percent-B, and market-cap bucket fields.
+- Updated `generate_site.py`:
+  - added a full SFZ listing module to `selection.html#sfz-baskets`.
+  - added search, basket filter, market-cap filter, turnover filter, CaryBot
+    marker filter, disabled market-bullish placeholder, sorting, paging,
+    page-size 20/50/all, show-all, and reset controls.
+  - left `index.html` without the new SFZ full table, per the task decision.
+- Regenerated the static site under `docs/`.
+
+### Changed Files
+
+- `run_screener.py`
+- `generate_site.py`
+- `tools/test_run_screener_sector_filter.py`
+- `tools/test_pr3_logic.py`
+- `data/sfz_all.json`
+- regenerated `data/site_reports.json`, `data/stock_markets.json`,
+  `reports/*.md`, and `docs/`
+- `codex_context/logs/2026-05-31-sfz-all-task4.md`
+- `codex_context/plans/2026-05-31-sfz-all-task4-plan.md`
+- `CODEX_HANDOFF.md`
+
+### Source of Truth
+
+- Pipeline source: `run_screener.py`
+- Site generator source: `generate_site.py`
+- Generated JSON consumed by the frontend: `data/sfz_all.json`
+- Generated page to inspect: `docs/selection.html`
+
+### Rebuild / Run
+
+- `python run_screener.py`
+- `python generate_site.py`
+
+### Verification
+
+- `python -m py_compile run_screener.py generate_site.py` OK.
+- `python -m unittest tools.test_run_screener_sector_filter tools.test_pr3_logic tools.test_verify_daily_update_artifacts -v` OK, 13 tests.
+- `python run_screener.py` OK:
+  - `reports/每日選股報告_2026-05-29.md` remains 20 rows.
+  - `data/sfz_all.json` contains 802 full SFZ candidates.
+- `python generate_site.py` OK:
+  - regenerated 2863 files.
+- `python tools/verify_daily_update_artifacts.py` OK:
+  - latest daily report date is 2026-05-29.
+- `python -m unittest tools.test_phase4a_pipeline tools.test_pr3_logic tools.test_verify_daily_update_artifacts tools.test_refresh_industry_cache tools.test_run_screener_sector_filter -v` OK, 22 tests.
+- Local browser preview at `selection.html#sfz-baskets` confirmed the new full
+  table loads with the full candidate set and defaults to 20 per page.
+- File checks confirmed `docs/index.html` does not include the full SFZ table.
+
+### Remaining / Next Notes
+
+- Market-cap filtering is wired, but most current rows are `unknown` until a
+  real market-cap source is added to the pipeline.
+- CaryBot markers currently use the existing site marker helper. Task 2 should
+  replace this with the agreed `carybot_signals.json` / CaryBot v50-v51 timing
+  interface.
+- Task 1 should use free/static data first and treat VIX as the US VIX, with
+  later extension points for US/KR/JP market and sector rotation.
 
 ## 2026-05-27 Stock Detail Chart Text Cleanup
 

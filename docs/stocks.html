@@ -196,6 +196,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
 .carybot-line strong{color:#e6edf3}
 .carybot-missing{font-size:12px;color:#6e7681}
+.sfz-control-bar{position:sticky;top:46px;z-index:22;display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin:12px 0;backdrop-filter:blur(8px)}
+.sfz-control{display:flex;flex-direction:column;gap:4px}
+.sfz-control label{font-size:11px;color:#8b949e;font-weight:800}
+.sfz-control select,.sfz-control input{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.sfz-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.sfz-actions button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:800}
+.sfz-actions button:hover{border-color:#58a6ff;color:#58a6ff}
+.sfz-count-line{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#8b949e;font-size:12px;margin:8px 0 10px}
+.sfz-pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.sfz-pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.sfz-pager button:disabled{opacity:.45;cursor:not-allowed}
+.sfz-bull-note{display:none;color:#d2a520;font-weight:800}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -282,6 +294,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
+  .sfz-control-bar{position:static;grid-template-columns:1fr}
+  .sfz-count-line{display:grid}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -396,12 +410,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1101 台泥 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 54.71%｜中實戶 1048人 個股查詢 未入籃">
+<tr data-search="1101 台泥 未入籃 法人 2025-12-31｜外資5日 +21,622張｜主力5日 +23,743張｜股權 2026-05-22｜大戶 54.71%｜中實戶 1048人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1101.html">1101 台泥</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">24.40</td>
   <td><div class="price-entry">進 24.11</div><div class="price-target">目 27.03</div><div class="price-stop">初停 22.29</div><div class="price-support">支撐 22.29</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 54.71%｜中實戶 1048人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +21,622張｜主力5日 +23,743張｜股權 2026-05-22｜大戶 54.71%｜中實戶 1048人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -504,12 +518,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1216 統一 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 88.67%｜中實戶 294人 個股查詢 未入籃">
+<tr data-search="1216 統一 未入籃 法人 2025-12-31｜外資5日 -38,154張｜主力5日 +6,660張｜股權 2026-05-22｜大戶 88.67%｜中實戶 294人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1216.html">1216 統一</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">71.80</td>
   <td><div class="price-entry">進 71.67</div><div class="price-target">目 78.23</div><div class="price-stop">初停 68.36</div><div class="price-support">支撐 68.36</div><div class="price-rr rr-mid">R:R 1:2.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 88.67%｜中實戶 294人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -38,154張｜主力5日 +6,660張｜股權 2026-05-22｜大戶 88.67%｜中實戶 294人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -1350,30 +1364,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1477 聚陽 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 64.95%｜中實戶 52人 個股查詢 未入籃">
+<tr data-search="1477 聚陽 未入籃 法人 2025-12-31｜外資5日 +1,149張｜主力5日 -970張｜股權 2026-05-22｜大戶 64.95%｜中實戶 52人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1477.html">1477 聚陽</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">216.50</td>
   <td><div class="price-entry">進 215.12</div><div class="price-target">目 322.34</div><div class="price-stop">初停 208.45</div><div class="price-support">支撐 208.45</div><div class="price-rr rr-good">R:R 1:16.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 64.95%｜中實戶 52人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,149張｜主力5日 -970張｜股權 2026-05-22｜大戶 64.95%｜中實戶 52人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1503 士電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 74.27%｜中實戶 48人 個股查詢 未入籃">
+<tr data-search="1503 士電 未入籃 法人 2025-12-31｜外資5日 +704張｜主力5日 +722張｜股權 2026-05-22｜大戶 74.27%｜中實戶 48人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1503.html">1503 士電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">219.00</td>
   <td><div class="price-entry">進 195.50</div><div class="price-target">目 247.35</div><div class="price-stop">初停 177.11</div><div class="price-support">支撐 177.11</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 74.27%｜中實戶 48人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +704張｜主力5日 +722張｜股權 2026-05-22｜大戶 74.27%｜中實戶 48人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1504 東元 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 73.50%｜中實戶 194人 個股查詢 未入籃">
+<tr data-search="1504 東元 未入籃 法人 2025-12-31｜外資5日 +32,824張｜主力5日 -6,568張｜股權 2026-05-22｜大戶 73.50%｜中實戶 194人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1504.html">1504 東元</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">75.00</td>
   <td><div class="price-entry">進 69.17</div><div class="price-target">目 84.97</div><div class="price-stop">初停 65.02</div><div class="price-support">支撐 58.21</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 73.50%｜中實戶 194人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +32,824張｜主力5日 -6,568張｜股權 2026-05-22｜大戶 73.50%｜中實戶 194人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -1395,21 +1409,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1513 中興電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 42.01%｜中實戶 49人 個股查詢 未入籃">
+<tr data-search="1513 中興電 未入籃 法人 2025-12-31｜外資5日 +1,733張｜主力5日 +1,652張｜股權 2026-05-22｜大戶 42.01%｜中實戶 49人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1513.html">1513 中興電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">166.50</td>
   <td><div class="price-entry">進 154.12</div><div class="price-target">目 181.56</div><div class="price-stop">初停 141.79</div><div class="price-support">支撐 141.79</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 42.01%｜中實戶 49人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,733張｜主力5日 +1,652張｜股權 2026-05-22｜大戶 42.01%｜中實戶 49人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1514 亞力 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 44.11%｜中實戶 36人 個股查詢 未入籃">
+<tr data-search="1514 亞力 未入籃 法人 2025-12-31｜外資5日 +1,290張｜主力5日 +1,162張｜股權 2026-05-22｜大戶 44.11%｜中實戶 36人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1514.html">1514 亞力</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">125.50</td>
   <td><div class="price-entry">進 118.12</div><div class="price-target">目 139.23</div><div class="price-stop">初停 111.04</div><div class="price-support">支撐 99.50</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 44.11%｜中實戶 36人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,290張｜主力5日 +1,162張｜股權 2026-05-22｜大戶 44.11%｜中實戶 36人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -1440,12 +1454,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1519 華城 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 74.88%｜中實戶 50人 個股查詢 未入籃">
+<tr data-search="1519 華城 未入籃 法人 2025-12-31｜外資5日 -796張｜主力5日 -982張｜股權 2026-05-22｜大戶 74.88%｜中實戶 50人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1519.html">1519 華城</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">874.00</td>
   <td><div class="price-entry">進 813.00</div><div class="price-target">目 1137.30</div><div class="price-stop">初停 766.15</div><div class="price-support">支撐 766.15</div><div class="price-rr rr-good">R:R 1:6.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 74.88%｜中實戶 50人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -796張｜主力5日 -982張｜股權 2026-05-22｜大戶 74.88%｜中實戶 50人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -1566,12 +1580,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1536 和大 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 35.14%｜中實戶 40人 個股查詢 未入籃">
+<tr data-search="1536 和大 未入籃 法人 2025-12-31｜外資5日 -1,400張｜主力5日 -1,395張｜股權 2026-05-22｜大戶 35.14%｜中實戶 40人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1536.html">1536 和大</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">52.80</td>
   <td><div class="price-entry">進 49.62</div><div class="price-target">目 64.16</div><div class="price-stop">初停 46.86</div><div class="price-support">支撐 46.86</div><div class="price-rr rr-good">R:R 1:5.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 35.14%｜中實戶 40人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,400張｜主力5日 -1,395張｜股權 2026-05-22｜大戶 35.14%｜中實戶 40人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -2286,12 +2300,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="1795 美時 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 57.37%｜中實戶 25人 個股查詢 未入籃">
+<tr data-search="1795 美時 未入籃 法人 2025-12-31｜外資5日 -1,017張｜主力5日 -746張｜股權 2026-05-22｜大戶 57.37%｜中實戶 25人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/1795.html">1795 美時</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">195.00</td>
   <td><div class="price-entry">進 193.62</div><div class="price-target">目 291.72</div><div class="price-stop">初停 186.06</div><div class="price-support">支撐 186.06</div><div class="price-rr rr-good">R:R 1:13.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 57.37%｜中實戶 25人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,017張｜主力5日 -746張｜股權 2026-05-22｜大戶 57.37%｜中實戶 25人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3132,12 +3146,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2308 台達電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 83.31%｜中實戶 361人 個股查詢 未入籃">
+<tr data-search="2308 台達電 未入籃 法人 2025-12-31｜外資5日 +320張｜主力5日 -27張｜股權 2026-05-22｜大戶 83.31%｜中實戶 361人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2308.html">2308 台達電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">2445.00</td>
   <td><div class="price-entry">進 2056.25</div><div class="price-target">目 2636.70</div><div class="price-stop">初停 1990.00</div><div class="price-support">支撐 1189.03</div><div class="price-rr rr-good">R:R 1:8.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 83.31%｜中實戶 361人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +320張｜主力5日 -27張｜股權 2026-05-22｜大戶 83.31%｜中實戶 361人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3150,12 +3164,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>4 次</td>
 </tr>
-<tr data-search="2313 華通 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 65.33%｜中實戶 104人 個股查詢 未入籃">
+<tr data-search="2313 華通 未入籃 法人 2025-12-31｜外資5日 -39,224張｜主力5日 -44,693張｜股權 2026-05-22｜大戶 65.33%｜中實戶 104人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2313.html">2313 華通</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">284.50</td>
   <td><div class="price-entry">進 251.50</div><div class="price-target">目 311.61</div><div class="price-stop">初停 236.41</div><div class="price-support">支撐 182.09</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 65.33%｜中實戶 104人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -39,224張｜主力5日 -44,693張｜股權 2026-05-22｜大戶 65.33%｜中實戶 104人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3204,30 +3218,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2324 仁寶 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 65.90%｜中實戶 398人 個股查詢 未入籃">
+<tr data-search="2324 仁寶 未入籃 法人 2025-12-31｜外資5日 +20,834張｜主力5日 +10,051張｜股權 2026-05-22｜大戶 65.90%｜中實戶 398人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2324.html">2324 仁寶</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">36.70</td>
   <td><div class="price-entry">進 29.84</div><div class="price-target">目 37.59</div><div class="price-stop">初停 26.62</div><div class="price-support">支撐 26.62</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 65.90%｜中實戶 398人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +20,834張｜主力5日 +10,051張｜股權 2026-05-22｜大戶 65.90%｜中實戶 398人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2327 國巨* 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 75.13%｜中實戶 233人 個股查詢 未入籃">
+<tr data-search="2327 國巨* 未入籃 法人 2025-12-31｜外資5日 -12,824張｜主力5日 -2,496張｜股權 2026-05-22｜大戶 75.13%｜中實戶 233人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2327.html">2327 國巨*</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">738.00</td>
   <td><div class="price-entry">進 488.88</div><div class="price-target">目 799.68</div><div class="price-stop">初停 467.50</div><div class="price-support">支撐 238.80</div><div class="price-rr rr-good">R:R 1:14.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 75.13%｜中實戶 233人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -12,824張｜主力5日 -2,496張｜股權 2026-05-22｜大戶 75.13%｜中實戶 233人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2328 廣宇 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 41.22%｜中實戶 59人 個股查詢 未入籃">
+<tr data-search="2328 廣宇 未入籃 法人 2025-12-31｜外資5日 -5,618張｜主力5日 -5,705張｜股權 2026-05-22｜大戶 41.22%｜中實戶 59人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2328.html">2328 廣宇</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">55.50</td>
   <td><div class="price-entry">進 51.41</div><div class="price-target">目 58.45</div><div class="price-stop">初停 48.33</div><div class="price-support">支撐 42.54</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 41.22%｜中實戶 59人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -5,618張｜主力5日 -5,705張｜股權 2026-05-22｜大戶 41.22%｜中實戶 59人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3240,12 +3254,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2330 台積電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 88.10%｜中實戶 1324人 個股查詢 未入籃">
+<tr data-search="2330 台積電 未入籃 法人 2025-12-31｜外資5日 +3,608張｜主力5日 +4,448張｜股權 2026-05-22｜大戶 88.10%｜中實戶 1324人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2330.html">2330 台積電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">2355.00</td>
   <td><div class="price-entry">進 2232.50</div><div class="price-target">目 2422.50</div><div class="price-stop">初停 2098.55</div><div class="price-support">支撐 1751.20</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 88.10%｜中實戶 1324人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +3,608張｜主力5日 +4,448張｜股權 2026-05-22｜大戶 88.10%｜中實戶 1324人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3357,30 +3371,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>10 次</td>
 </tr>
-<tr data-search="2352 佳世達 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 49.28%｜中實戶 261人 個股查詢 未入籃">
+<tr data-search="2352 佳世達 未入籃 法人 2025-12-31｜外資5日 -7,268張｜主力5日 -7,218張｜股權 2026-05-22｜大戶 49.28%｜中實戶 261人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2352.html">2352 佳世達</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">28.90</td>
   <td><div class="price-entry">進 25.96</div><div class="price-target">目 29.89</div><div class="price-stop">初停 24.40</div><div class="price-support">支撐 22.44</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 49.28%｜中實戶 261人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -7,268張｜主力5日 -7,218張｜股權 2026-05-22｜大戶 49.28%｜中實戶 261人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2353 宏碁 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 39.99%｜中實戶 429人 個股查詢 未入籃">
+<tr data-search="2353 宏碁 未入籃 法人 2025-12-31｜外資5日 -56,013張｜主力5日 -36,248張｜股權 2026-05-22｜大戶 39.99%｜中實戶 429人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2353.html">2353 宏碁</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">35.20</td>
   <td><div class="price-entry">進 29.24</div><div class="price-target">目 35.90</div><div class="price-stop">初停 27.48</div><div class="price-support">支撐 25.47</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 39.99%｜中實戶 429人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -56,013張｜主力5日 -36,248張｜股權 2026-05-22｜大戶 39.99%｜中實戶 429人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2354 鴻準 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 44.65%｜中實戶 127人 個股查詢 未入籃">
+<tr data-search="2354 鴻準 未入籃 法人 2025-12-31｜外資5日 +651張｜主力5日 +1張｜股權 2026-05-22｜大戶 44.65%｜中實戶 127人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2354.html">2354 鴻準</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">60.90</td>
   <td><div class="price-entry">進 58.40</div><div class="price-target">目 66.61</div><div class="price-stop">初停 54.90</div><div class="price-support">支撐 49.45</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 44.65%｜中實戶 127人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +651張｜主力5日 +1張｜股權 2026-05-22｜大戶 44.65%｜中實戶 127人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3411,12 +3425,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>2 次</td>
 </tr>
-<tr data-search="2359 所羅門 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 45.54%｜中實戶 18人 個股查詢 未入籃">
+<tr data-search="2359 所羅門 未入籃 法人 2025-12-31｜外資5日 -300張｜主力5日 -306張｜股權 2026-05-22｜大戶 45.54%｜中實戶 18人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2359.html">2359 所羅門</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">143.00</td>
   <td><div class="price-entry">進 127.12</div><div class="price-target">目 167.79</div><div class="price-stop">初停 117.41</div><div class="price-support">支撐 117.41</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 45.54%｜中實戶 18人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -300張｜主力5日 -306張｜股權 2026-05-22｜大戶 45.54%｜中實戶 18人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3429,12 +3443,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2362 藍天 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 80.43%｜中實戶 42人 個股查詢 未入籃">
+<tr data-search="2362 藍天 未入籃 法人 2025-12-31｜外資5日 -1,321張｜主力5日 -1,320張｜股權 2026-05-22｜大戶 80.43%｜中實戶 42人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2362.html">2362 藍天</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">44.05</td>
   <td><div class="price-entry">進 39.61</div><div class="price-target">目 55.79</div><div class="price-stop">初停 37.91</div><div class="price-support">支撐 37.91</div><div class="price-rr rr-good">R:R 1:9.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 80.43%｜中實戶 42人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,321張｜主力5日 -1,320張｜股權 2026-05-22｜大戶 80.43%｜中實戶 42人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3510,12 +3524,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2374 佳能 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 29.93%｜中實戶 38人 個股查詢 未入籃">
+<tr data-search="2374 佳能 未入籃 法人 2025-12-31｜外資5日 -3,364張｜主力5日 -3,198張｜股權 2026-05-22｜大戶 29.93%｜中實戶 38人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2374.html">2374 佳能</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">83.20</td>
   <td><div class="price-entry">進 79.35</div><div class="price-target">目 87.52</div><div class="price-stop">初停 74.59</div><div class="price-support">支撐 64.58</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 29.93%｜中實戶 38人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,364張｜主力5日 -3,198張｜股權 2026-05-22｜大戶 29.93%｜中實戶 38人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3537,12 +3551,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>5 次</td>
 </tr>
-<tr data-search="2377 微星 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 58.08%｜中實戶 86人 個股查詢 未入籃">
+<tr data-search="2377 微星 未入籃 法人 2025-12-31｜外資5日 -7,190張｜主力5日 -6,659張｜股權 2026-05-22｜大戶 58.08%｜中實戶 86人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2377.html">2377 微星</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">131.00</td>
   <td><div class="price-entry">進 111.62</div><div class="price-target">目 138.72</div><div class="price-stop">初停 104.93</div><div class="price-support">支撐 84.58</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 58.08%｜中實戶 86人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -7,190張｜主力5日 -6,659張｜股權 2026-05-22｜大戶 58.08%｜中實戶 86人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3573,12 +3587,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>2 次</td>
 </tr>
-<tr data-search="2383 台光電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 69.73%｜中實戶 101人 個股查詢 未入籃">
+<tr data-search="2383 台光電 未入籃 法人 2025-12-31｜外資5日 -1,545張｜主力5日 -754張｜股權 2026-05-22｜大戶 69.73%｜中實戶 101人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2383.html">2383 台光電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">5120.00</td>
   <td><div class="price-entry">進 4633.75</div><div class="price-target">目 5747.70</div><div class="price-stop">初停 4355.72</div><div class="price-support">支撐 2114.38</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 69.73%｜中實戶 101人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,545張｜主力5日 -754張｜股權 2026-05-22｜大戶 69.73%｜中實戶 101人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3681,12 +3695,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>65.0</td>
   <td>2 次</td>
 </tr>
-<tr data-search="2404 漢唐 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.12%｜中實戶 49人 個股查詢 未入籃">
+<tr data-search="2404 漢唐 未入籃 法人 2025-12-31｜外資5日 +1,940張｜主力5日 +318張｜股權 2026-05-22｜大戶 51.12%｜中實戶 49人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2404.html">2404 漢唐</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1155.00</td>
   <td><div class="price-entry">進 1072.75</div><div class="price-target">目 1371.90</div><div class="price-stop">初停 1008.38</div><div class="price-support">支撐 816.89</div><div class="price-rr rr-good">R:R 1:4.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.12%｜中實戶 49人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,940張｜主力5日 +318張｜股權 2026-05-22｜大戶 51.12%｜中實戶 49人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3708,30 +3722,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>100.0</td>
   <td>1 次</td>
 </tr>
-<tr data-search="2408 南亞科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 81.05%｜中實戶 192人 個股查詢 未入籃">
+<tr data-search="2408 南亞科 未入籃 法人 2025-12-31｜外資5日 -14,039張｜主力5日 +18,927張｜股權 2026-05-22｜大戶 81.05%｜中實戶 192人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2408.html">2408 南亞科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">347.00</td>
   <td><div class="price-entry">進 287.38</div><div class="price-target">目 360.06</div><div class="price-stop">初停 270.13</div><div class="price-support">支撐 197.51</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 81.05%｜中實戶 192人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -14,039張｜主力5日 +18,927張｜股權 2026-05-22｜大戶 81.05%｜中實戶 192人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2409 友達 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 53.08%｜中實戶 1231人 個股查詢 未入籃">
+<tr data-search="2409 友達 未入籃 法人 2025-12-31｜外資5日 -103,045張｜主力5日 -101,022張｜股權 2026-05-22｜大戶 53.08%｜中實戶 1231人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2409.html">2409 友達</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">23.00</td>
   <td><div class="price-entry">進 20.10</div><div class="price-target">目 26.32</div><div class="price-stop">初停 18.89</div><div class="price-support">支撐 13.93</div><div class="price-rr rr-good">R:R 1:5.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 53.08%｜中實戶 1231人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -103,045張｜主力5日 -101,022張｜股權 2026-05-22｜大戶 53.08%｜中實戶 1231人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2412 中華電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 79.60%｜中實戶 338人 個股查詢 未入籃">
+<tr data-search="2412 中華電 未入籃 法人 2025-12-31｜外資5日 +545張｜主力5日 -132張｜股權 2026-05-22｜大戶 79.60%｜中實戶 338人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2412.html">2412 中華電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">137.00</td>
   <td><div class="price-entry">進 137.62</div><div class="price-target">目 146.88</div><div class="price-stop">初停 132.34</div><div class="price-support">支撐 132.34</div><div class="price-rr rr-mid">R:R 1:1.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 79.60%｜中實戶 338人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +545張｜主力5日 -132張｜股權 2026-05-22｜大戶 79.60%｜中實戶 338人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3789,12 +3803,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2421 建準 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 55.77%｜中實戶 49人 個股查詢 未入籃">
+<tr data-search="2421 建準 未入籃 法人 2025-12-31｜外資5日 -3,385張｜主力5日 -3,344張｜股權 2026-05-22｜大戶 55.77%｜中實戶 49人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2421.html">2421 建準</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">159.00</td>
   <td><div class="price-entry">進 142.88</div><div class="price-target">目 169.83</div><div class="price-stop">初停 134.30</div><div class="price-support">支撐 89.65</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 55.77%｜中實戶 49人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,385張｜主力5日 -3,344張｜股權 2026-05-22｜大戶 55.77%｜中實戶 49人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -3969,12 +3983,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2449 京元電子 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 62.44%｜中實戶 172人 個股查詢 未入籃">
+<tr data-search="2449 京元電子 未入籃 法人 2025-12-31｜外資5日 +25,366張｜主力5日 +5,394張｜股權 2026-05-22｜大戶 62.44%｜中實戶 172人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2449.html">2449 京元電子</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">328.50</td>
   <td><div class="price-entry">進 294.50</div><div class="price-target">目 355.47</div><div class="price-stop">初停 275.64</div><div class="price-support">支撐 98.01</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 62.44%｜中實戶 172人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +25,366張｜主力5日 +5,394張｜股權 2026-05-22｜大戶 62.44%｜中實戶 172人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4005,12 +4019,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2454 聯發科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 76.39%｜中實戶 340人 個股查詢 未入籃">
+<tr data-search="2454 聯發科 未入籃 法人 2025-12-31｜外資5日 -3,718張｜主力5日 -758張｜股權 2026-05-22｜大戶 76.39%｜中實戶 340人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2454.html">2454 聯發科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">4310.00</td>
   <td><div class="price-entry">進 3497.50</div><div class="price-target">目 4783.80</div><div class="price-stop">初停 3287.65</div><div class="price-support">支撐 1422.85</div><div class="price-rr rr-good">R:R 1:6.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 76.39%｜中實戶 340人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,718張｜主力5日 -758張｜股權 2026-05-22｜大戶 76.39%｜中實戶 340人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4140,12 +4154,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2474 可成 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 76.45%｜中實戶 76人 個股查詢 未入籃">
+<tr data-search="2474 可成 未入籃 法人 2025-12-31｜外資5日 +9,414張｜主力5日 +1,276張｜股權 2026-05-22｜大戶 76.45%｜中實戶 76人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2474.html">2474 可成</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">203.50</td>
   <td><div class="price-entry">進 190.50</div><div class="price-target">目 218.79</div><div class="price-stop">初停 181.59</div><div class="price-support">支撐 181.59</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 76.45%｜中實戶 76人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +9,414張｜主力5日 +1,276張｜股權 2026-05-22｜大戶 76.45%｜中實戶 76人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4230,12 +4244,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2486 一詮 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 46.25%｜中實戶 43人 個股查詢 未入籃">
+<tr data-search="2486 一詮 未入籃 法人 2025-12-31｜外資5日 -247張｜主力5日 +188張｜股權 2026-05-22｜大戶 46.25%｜中實戶 43人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2486.html">2486 一詮</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">264.50</td>
   <td><div class="price-entry">進 254.00</div><div class="price-target">目 320.28</div><div class="price-stop">初停 245.57</div><div class="price-support">支撐 98.80</div><div class="price-rr rr-good">R:R 1:7.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 46.25%｜中實戶 43人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -247張｜主力5日 +188張｜股權 2026-05-22｜大戶 46.25%｜中實戶 43人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4311,12 +4325,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2498 宏達電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 39.48%｜中實戶 125人 個股查詢 未入籃">
+<tr data-search="2498 宏達電 未入籃 法人 2025-12-31｜外資5日 -1,509張｜主力5日 -1,672張｜股權 2026-05-22｜大戶 39.48%｜中實戶 125人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2498.html">2498 宏達電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">45.25</td>
   <td><div class="price-entry">進 41.46</div><div class="price-target">目 48.76</div><div class="price-stop">初停 38.46</div><div class="price-support">支撐 38.46</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 39.48%｜中實戶 125人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,509張｜主力5日 -1,672張｜股權 2026-05-22｜大戶 39.48%｜中實戶 125人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4329,12 +4343,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2504 國產 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 76.21%｜中實戶 124人 個股查詢 未入籃">
+<tr data-search="2504 國產 未入籃 法人 2025-12-31｜外資5日 +8,853張｜主力5日 -2,196張｜股權 2026-05-22｜大戶 76.21%｜中實戶 124人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2504.html">2504 國產</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">34.60</td>
   <td><div class="price-entry">進 34.10</div><div class="price-target">目 46.16</div><div class="price-stop">初停 32.05</div><div class="price-support">支撐 33.53</div><div class="price-rr rr-good">R:R 1:5.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 76.21%｜中實戶 124人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +8,853張｜主力5日 -2,196張｜股權 2026-05-22｜大戶 76.21%｜中實戶 124人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4590,12 +4604,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2603 長榮 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 69.65%｜中實戶 216人 個股查詢 未入籃">
+<tr data-search="2603 長榮 未入籃 法人 2025-12-31｜外資5日 +6,268張｜主力5日 +17,275張｜股權 2026-05-22｜大戶 69.65%｜中實戶 216人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2603.html">2603 長榮</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">213.00</td>
   <td><div class="price-entry">進 202.12</div><div class="price-target">目 226.95</div><div class="price-stop">初停 194.52</div><div class="price-support">支撐 194.52</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 69.65%｜中實戶 216人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +6,268張｜主力5日 +17,275張｜股權 2026-05-22｜大戶 69.65%｜中實戶 216人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4635,21 +4649,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2609 陽明 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 56.77%｜中實戶 211人 個股查詢 未入籃">
+<tr data-search="2609 陽明 未入籃 法人 2025-12-31｜外資5日 +53,092張｜主力5日 +52,364張｜股權 2026-05-22｜大戶 56.77%｜中實戶 211人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2609.html">2609 陽明</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">52.70</td>
   <td><div class="price-entry">進 48.99</div><div class="price-target">目 79.56</div><div class="price-stop">初停 47.11</div><div class="price-support">支撐 47.11</div><div class="price-rr rr-good">R:R 1:16.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 56.77%｜中實戶 211人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +53,092張｜主力5日 +52,364張｜股權 2026-05-22｜大戶 56.77%｜中實戶 211人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2610 華航 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 67.85%｜中實戶 571人 個股查詢 未入籃">
+<tr data-search="2610 華航 未入籃 法人 2025-12-31｜外資5日 +35,701張｜主力5日 +35,230張｜股權 2026-05-22｜大戶 67.85%｜中實戶 571人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2610.html">2610 華航</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">19.10</td>
   <td><div class="price-entry">進 18.48</div><div class="price-target">目 25.60</div><div class="price-stop">初停 17.37</div><div class="price-support">支撐 17.96</div><div class="price-rr rr-good">R:R 1:6.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 67.85%｜中實戶 571人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +35,701張｜主力5日 +35,230張｜股權 2026-05-22｜大戶 67.85%｜中實戶 571人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4689,12 +4703,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2615 萬海 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 84.45%｜中實戶 108人 個股查詢 未入籃">
+<tr data-search="2615 萬海 未入籃 法人 2025-12-31｜外資5日 +2,142張｜主力5日 +1,738張｜股權 2026-05-22｜大戶 84.45%｜中實戶 108人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2615.html">2615 萬海</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">82.00</td>
   <td><div class="price-entry">進 76.45</div><div class="price-target">目 94.25</div><div class="price-stop">初停 73.13</div><div class="price-support">支撐 73.13</div><div class="price-rr rr-good">R:R 1:5.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 84.45%｜中實戶 108人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +2,142張｜主力5日 +1,738張｜股權 2026-05-22｜大戶 84.45%｜中實戶 108人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4716,21 +4730,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2618 長榮航 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 73.01%｜中實戶 503人 個股查詢 未入籃">
+<tr data-search="2618 長榮航 未入籃 法人 2025-12-31｜外資5日 +27,470張｜主力5日 +13,498張｜股權 2026-05-22｜大戶 73.01%｜中實戶 503人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2618.html">2618 長榮航</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">36.05</td>
   <td><div class="price-entry">進 34.75</div><div class="price-target">目 46.41</div><div class="price-stop">初停 32.66</div><div class="price-support">支撐 33.93</div><div class="price-rr rr-good">R:R 1:5.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 73.01%｜中實戶 503人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +27,470張｜主力5日 +13,498張｜股權 2026-05-22｜大戶 73.01%｜中實戶 503人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2630 亞航 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 65.70%｜中實戶 14人 個股查詢 未入籃">
+<tr data-search="2630 亞航 未入籃 法人 2025-12-31｜外資5日 -2,388張｜主力5日 -2,505張｜股權 2026-05-22｜大戶 65.70%｜中實戶 14人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2630.html">2630 亞航</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">42.75</td>
   <td><div class="price-entry">進 42.31</div><div class="price-target">目 55.69</div><div class="price-stop">初停 40.89</div><div class="price-support">支撐 40.89</div><div class="price-rr rr-good">R:R 1:9.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 65.70%｜中實戶 14人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -2,388張｜主力5日 -2,505張｜股權 2026-05-22｜大戶 65.70%｜中實戶 14人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -4752,12 +4766,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2636 台驊控股 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 40.94%｜中實戶 23人 個股查詢 未入籃">
+<tr data-search="2636 台驊控股 未入籃 法人 2025-12-31｜外資5日 +274張｜主力5日 +273張｜股權 2026-05-22｜大戶 40.94%｜中實戶 23人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2636.html">2636 台驊控股</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">67.70</td>
   <td><div class="price-entry">進 65.35</div><div class="price-target">目 73.13</div><div class="price-stop">初停 61.79</div><div class="price-support">支撐 61.79</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 40.94%｜中實戶 23人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +274張｜主力5日 +273張｜股權 2026-05-22｜大戶 40.94%｜中實戶 23人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5103,12 +5117,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2801 彰銀 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 76.35%｜中實戶 1662人 個股查詢 未入籃">
+<tr data-search="2801 彰銀 未入籃 法人 2025-12-31｜外資5日 -14,848張｜主力5日 -34,884張｜股權 2026-05-22｜大戶 76.35%｜中實戶 1662人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2801.html">2801 彰銀</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">20.25</td>
   <td><div class="price-entry">進 20.28</div><div class="price-target">目 21.57</div><div class="price-stop">初停 19.06</div><div class="price-support">支撐 17.56</div><div class="price-rr rr-bad">R:R 1:1.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 76.35%｜中實戶 1662人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -14,848張｜主力5日 -34,884張｜股權 2026-05-22｜大戶 76.35%｜中實戶 1662人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5247,30 +5261,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2881 富邦金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 85.66%｜中實戶 715人 個股查詢 未入籃">
+<tr data-search="2881 富邦金 未入籃 法人 2025-12-31｜外資5日 +17,294張｜主力5日 -7,815張｜股權 2026-05-22｜大戶 85.66%｜中實戶 715人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2881.html">2881 富邦金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">110.00</td>
   <td><div class="price-entry">進 97.97</div><div class="price-target">目 114.24</div><div class="price-stop">初停 92.10</div><div class="price-support">支撐 83.08</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 85.66%｜中實戶 715人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +17,294張｜主力5日 -7,815張｜股權 2026-05-22｜大戶 85.66%｜中實戶 715人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2882 國泰金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 85.32%｜中實戶 799人 個股查詢 未入籃">
+<tr data-search="2882 國泰金 未入籃 法人 2025-12-31｜外資5日 +20,215張｜主力5日 -372張｜股權 2026-05-22｜大戶 85.32%｜中實戶 799人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2882.html">2882 國泰金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">85.70</td>
   <td><div class="price-entry">進 78.67</div><div class="price-target">目 88.13</div><div class="price-stop">初停 73.95</div><div class="price-support">支撐 64.48</div><div class="price-rr rr-good">R:R 1:2.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 85.32%｜中實戶 799人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +20,215張｜主力5日 -372張｜股權 2026-05-22｜大戶 85.32%｜中實戶 799人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2883 凱基金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 66.49%｜中實戶 2518人 個股查詢 未入籃">
+<tr data-search="2883 凱基金 未入籃 法人 2025-12-31｜外資5日 -14,688張｜主力5日 +3,211張｜股權 2026-05-22｜大戶 66.49%｜中實戶 2518人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2883.html">2883 凱基金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">22.50</td>
   <td><div class="price-entry">進 21.66</div><div class="price-target">目 23.56</div><div class="price-stop">初停 20.75</div><div class="price-support">支撐 19.10</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 66.49%｜中實戶 2518人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -14,688張｜主力5日 +3,211張｜股權 2026-05-22｜大戶 66.49%｜中實戶 2518人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5283,21 +5297,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2885 元大金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 83.07%｜中實戶 841人 個股查詢 未入籃">
+<tr data-search="2885 元大金 未入籃 法人 2025-12-31｜外資5日 +101,254張｜主力5日 -1,927張｜股權 2026-05-22｜大戶 83.07%｜中實戶 841人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2885.html">2885 元大金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">59.60</td>
   <td><div class="price-entry">進 55.47</div><div class="price-target">目 61.40</div><div class="price-stop">初停 53.06</div><div class="price-support">支撐 34.08</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 83.07%｜中實戶 841人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +101,254張｜主力5日 -1,927張｜股權 2026-05-22｜大戶 83.07%｜中實戶 841人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2886 兆豐金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 81.92%｜中實戶 706人 個股查詢 未入籃">
+<tr data-search="2886 兆豐金 未入籃 法人 2025-12-31｜外資5日 -18,647張｜主力5日 -17,082張｜股權 2026-05-22｜大戶 81.92%｜中實戶 706人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2886.html">2886 兆豐金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">40.00</td>
   <td><div class="price-entry">進 39.67</div><div class="price-target">目 42.23</div><div class="price-stop">初停 37.29</div><div class="price-support">支撐 38.90</div><div class="price-rr rr-bad">R:R 1:1.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 81.92%｜中實戶 706人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -18,647張｜主力5日 -17,082張｜股權 2026-05-22｜大戶 81.92%｜中實戶 706人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5328,12 +5342,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="2891 中信金 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 81.95%｜中實戶 1357人 個股查詢 未入籃">
+<tr data-search="2891 中信金 未入籃 法人 2025-12-31｜外資5日 +75,523張｜主力5日 +1,234張｜股權 2026-05-22｜大戶 81.95%｜中實戶 1357人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/2891.html">2891 中信金</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">60.50</td>
   <td><div class="price-entry">進 55.48</div><div class="price-target">目 62.63</div><div class="price-stop">初停 52.15</div><div class="price-support">支撐 38.90</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 81.95%｜中實戶 1357人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +75,523張｜主力5日 +1,234張｜股權 2026-05-22｜大戶 81.95%｜中實戶 1357人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5589,30 +5603,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3005 神基 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 73.20%｜中實戶 79人 個股查詢 未入籃">
+<tr data-search="3005 神基 未入籃 法人 2025-12-31｜外資5日 -2,018張｜主力5日 -2,390張｜股權 2026-05-22｜大戶 73.20%｜中實戶 79人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3005.html">3005 神基</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">104.00</td>
   <td><div class="price-entry">進 99.80</div><div class="price-target">目 126.99</div><div class="price-stop">初停 93.81</div><div class="price-support">支撐 96.91</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 73.20%｜中實戶 79人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -2,018張｜主力5日 -2,390張｜股權 2026-05-22｜大戶 73.20%｜中實戶 79人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3006 晶豪科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 56.66%｜中實戶 36人 個股查詢 未入籃">
+<tr data-search="3006 晶豪科 未入籃 法人 2025-12-31｜外資5日 +24,847張｜主力5日 +27,779張｜股權 2026-05-22｜大戶 56.66%｜中實戶 36人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3006.html">3006 晶豪科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">246.50</td>
   <td><div class="price-entry">進 222.75</div><div class="price-target">目 266.22</div><div class="price-stop">初停 209.38</div><div class="price-support">支撐 131.34</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 56.66%｜中實戶 36人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +24,847張｜主力5日 +27,779張｜股權 2026-05-22｜大戶 56.66%｜中實戶 36人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3008 大立光 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 57.31%｜中實戶 40人 個股查詢 未入籃">
+<tr data-search="3008 大立光 未入籃 法人 2025-12-31｜外資5日 -723張｜主力5日 +998張｜股權 2026-05-22｜大戶 57.31%｜中實戶 40人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3008.html">3008 大立光</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">3515.00</td>
   <td><div class="price-entry">進 2903.75</div><div class="price-target">目 3952.50</div><div class="price-stop">初停 2729.52</div><div class="price-support">支撐 2427.80</div><div class="price-rr rr-good">R:R 1:6.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 57.31%｜中實戶 40人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -723張｜主力5日 +998張｜股權 2026-05-22｜大戶 57.31%｜中實戶 40人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5634,12 +5648,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3013 晟銘電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 45.74%｜中實戶 25人 個股查詢 未入籃">
+<tr data-search="3013 晟銘電 未入籃 法人 2025-12-31｜外資5日 -3,999張｜主力5日 -4,045張｜股權 2026-05-22｜大戶 45.74%｜中實戶 25人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3013.html">3013 晟銘電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">122.00</td>
   <td><div class="price-entry">進 104.90</div><div class="price-target">目 128.52</div><div class="price-stop">初停 98.61</div><div class="price-support">支撐 89.05</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 45.74%｜中實戶 25人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,999張｜主力5日 -4,045張｜股權 2026-05-22｜大戶 45.74%｜中實戶 25人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5670,12 +5684,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3017 奇鋐 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 65.84%｜中實戶 104人 個股查詢 未入籃">
+<tr data-search="3017 奇鋐 未入籃 法人 2025-12-31｜外資5日 +2,107張｜主力5日 +2,058張｜股權 2026-05-22｜大戶 65.84%｜中實戶 104人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3017.html">3017 奇鋐</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">2665.00</td>
   <td><div class="price-entry">進 2433.75</div><div class="price-target">目 2891.70</div><div class="price-stop">初停 2232.80</div><div class="price-support">支撐 497.50</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 65.84%｜中實戶 104人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +2,107張｜主力5日 +2,058張｜股權 2026-05-22｜大戶 65.84%｜中實戶 104人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5688,12 +5702,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3019 亞光 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 37.44%｜中實戶 31人 個股查詢 未入籃">
+<tr data-search="3019 亞光 未入籃 法人 2025-12-31｜外資5日 +234張｜主力5日 +329張｜股權 2026-05-22｜大戶 37.44%｜中實戶 31人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3019.html">3019 亞光</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">154.00</td>
   <td><div class="price-entry">進 144.50</div><div class="price-target">目 162.69</div><div class="price-stop">初停 135.83</div><div class="price-support">支撐 119.40</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 37.44%｜中實戶 31人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +234張｜主力5日 +329張｜股權 2026-05-22｜大戶 37.44%｜中實戶 31人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5769,12 +5783,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>5 次</td>
 </tr>
-<tr data-search="3029 零壹 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 42.51%｜中實戶 26人 個股查詢 未入籃">
+<tr data-search="3029 零壹 未入籃 法人 2025-12-31｜外資5日 -388張｜主力5日 +111張｜股權 2026-05-22｜大戶 42.51%｜中實戶 26人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3029.html">3029 零壹</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">96.20</td>
   <td><div class="price-entry">進 95.50</div><div class="price-target">目 126.48</div><div class="price-stop">初停 91.64</div><div class="price-support">支撐 91.64</div><div class="price-rr rr-good">R:R 1:8.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 42.51%｜中實戶 26人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -388張｜主力5日 +111張｜股權 2026-05-22｜大戶 42.51%｜中實戶 26人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5814,30 +5828,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>5 次</td>
 </tr>
-<tr data-search="3034 聯詠 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 70.05%｜中實戶 125人 個股查詢 未入籃">
+<tr data-search="3034 聯詠 未入籃 法人 2025-12-31｜外資5日 +6,175張｜主力5日 -1,024張｜股權 2026-05-22｜大戶 70.05%｜中實戶 125人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3034.html">3034 聯詠</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">477.00</td>
   <td><div class="price-entry">進 468.88</div><div class="price-target">目 513.06</div><div class="price-stop">初停 440.74</div><div class="price-support">支撐 351.73</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 70.05%｜中實戶 125人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +6,175張｜主力5日 -1,024張｜股權 2026-05-22｜大戶 70.05%｜中實戶 125人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3035 智原 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 33.19%｜中實戶 18人 個股查詢 未入籃">
+<tr data-search="3035 智原 未入籃 法人 2025-12-31｜外資5日 +419張｜主力5日 +655張｜股權 2026-05-22｜大戶 33.19%｜中實戶 18人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3035.html">3035 智原</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">207.00</td>
   <td><div class="price-entry">進 190.50</div><div class="price-target">目 235.62</div><div class="price-stop">初停 179.07</div><div class="price-support">支撐 138.31</div><div class="price-rr rr-good">R:R 1:3.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 33.19%｜中實戶 18人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +419張｜主力5日 +655張｜股權 2026-05-22｜大戶 33.19%｜中實戶 18人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3036 文曄 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 89.07%｜中實戶 99人 個股查詢 未入籃">
+<tr data-search="3036 文曄 未入籃 法人 2025-12-31｜外資5日 -13,446張｜主力5日 -10,069張｜股權 2026-05-22｜大戶 89.07%｜中實戶 99人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3036.html">3036 文曄</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">288.50</td>
   <td><div class="price-entry">進 270.88</div><div class="price-target">目 314.16</div><div class="price-stop">初停 250.05</div><div class="price-support">支撐 99.50</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 89.07%｜中實戶 99人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -13,446張｜主力5日 -10,069張｜股權 2026-05-22｜大戶 89.07%｜中實戶 99人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -5895,21 +5909,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3044 健鼎 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 80.99%｜中實戶 89人 個股查詢 未入籃">
+<tr data-search="3044 健鼎 未入籃 法人 2025-12-31｜外資5日 +4,949張｜主力5日 +466張｜股權 2026-05-22｜大戶 80.99%｜中實戶 89人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3044.html">3044 健鼎</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">521.00</td>
   <td><div class="price-entry">進 476.00</div><div class="price-target">目 552.84</div><div class="price-stop">初停 447.44</div><div class="price-support">支撐 335.31</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 80.99%｜中實戶 89人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +4,949張｜主力5日 +466張｜股權 2026-05-22｜大戶 80.99%｜中實戶 89人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3045 台灣大 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 91.95%｜中實戶 143人 個股查詢 未入籃">
+<tr data-search="3045 台灣大 未入籃 法人 2025-12-31｜外資5日 -33,246張｜主力5日 +24,094張｜股權 2026-05-22｜大戶 91.95%｜中實戶 143人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3045.html">3045 台灣大</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">111.50</td>
   <td><div class="price-entry">進 111.50</div><div class="price-target">目 119.85</div><div class="price-stop">初停 104.81</div><div class="price-support">支撐 108.95</div><div class="price-rr rr-bad">R:R 1:1.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 91.95%｜中實戶 143人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -33,246張｜主力5日 +24,094張｜股權 2026-05-22｜大戶 91.95%｜中實戶 143人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6021,12 +6035,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3059 華晶科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 24.65%｜中實戶 47人 個股查詢 未入籃">
+<tr data-search="3059 華晶科 未入籃 法人 2025-12-31｜外資5日 -749張｜主力5日 -771張｜股權 2026-05-22｜大戶 24.65%｜中實戶 47人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3059.html">3059 華晶科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">42.35</td>
   <td><div class="price-entry">進 40.20</div><div class="price-target">目 46.21</div><div class="price-stop">初停 37.79</div><div class="price-support">支撐 34.83</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 24.65%｜中實戶 47人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -749張｜主力5日 -771張｜股權 2026-05-22｜大戶 24.65%｜中實戶 47人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6255,12 +6269,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3131 弘塑 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 45.24%｜中實戶 18人 個股查詢 未入籃">
+<tr data-search="3131 弘塑 未入籃 法人 2025-12-31｜外資5日 +53張｜主力5日 +236張｜股權 2026-05-22｜大戶 45.24%｜中實戶 18人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3131.html">3131 弘塑</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">3450.00</td>
   <td><div class="price-entry">進 2878.75</div><div class="price-target">目 3942.30</div><div class="price-stop">初停 2706.02</div><div class="price-support">支撐 1671.60</div><div class="price-rr rr-good">R:R 1:6.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 45.24%｜中實戶 18人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +53張｜主力5日 +236張｜股權 2026-05-22｜大戶 45.24%｜中實戶 18人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6291,12 +6305,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>2 次</td>
 </tr>
-<tr data-search="3147 大綜 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 53.45%｜中實戶 7人 個股查詢 未入籃">
+<tr data-search="3147 大綜 未入籃 法人 2025-12-31｜外資5日 +26張｜主力5日 +14張｜股權 2026-05-22｜大戶 53.45%｜中實戶 7人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3147.html">3147 大綜</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">182.50</td>
   <td><div class="price-entry">進 174.50</div><div class="price-target">目 214.20</div><div class="price-stop">初停 167.16</div><div class="price-support">支撐 167.16</div><div class="price-rr rr-good">R:R 1:5.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 53.45%｜中實戶 7人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +26張｜主力5日 +14張｜股權 2026-05-22｜大戶 53.45%｜中實戶 7人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6426,12 +6440,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3189 景碩 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 72.01%｜中實戶 64人 個股查詢 未入籃">
+<tr data-search="3189 景碩 未入籃 法人 2025-12-31｜外資5日 +7,572張｜主力5日 +10,795張｜股權 2026-05-22｜大戶 72.01%｜中實戶 64人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3189.html">3189 景碩</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">729.00</td>
   <td><div class="price-entry">進 536.00</div><div class="price-target">目 779.28</div><div class="price-stop">初停 502.00</div><div class="price-support">支撐 261.19</div><div class="price-rr rr-good">R:R 1:7.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 72.01%｜中實戶 64人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +7,572張｜主力5日 +10,795張｜股權 2026-05-22｜大戶 72.01%｜中實戶 64人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6480,12 +6494,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>4 次</td>
 </tr>
-<tr data-search="3211 順達 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 48.79%｜中實戶 15人 個股查詢 未入籃">
+<tr data-search="3211 順達 未入籃 法人 2025-12-31｜外資5日 +1,140張｜主力5日 +1,042張｜股權 2026-05-22｜大戶 48.79%｜中實戶 15人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3211.html">3211 順達</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">436.00</td>
   <td><div class="price-entry">進 380.38</div><div class="price-target">目 502.35</div><div class="price-stop">初停 366.93</div><div class="price-support">支撐 164.67</div><div class="price-rr rr-good">R:R 1:9.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 48.79%｜中實戶 15人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,140張｜主力5日 +1,042張｜股權 2026-05-22｜大戶 48.79%｜中實戶 15人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6498,12 +6512,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3217 優群 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 48.54%｜中實戶 22人 個股查詢 未入籃">
+<tr data-search="3217 優群 未入籃 法人 2025-12-31｜外資5日 -42張｜主力5日 -6張｜股權 2026-05-22｜大戶 48.54%｜中實戶 22人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3217.html">3217 優群</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">190.50</td>
   <td><div class="price-entry">進 186.50</div><div class="price-target">目 216.24</div><div class="price-stop">初停 175.31</div><div class="price-support">支撐 144.77</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 48.54%｜中實戶 22人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -42張｜主力5日 -6張｜股權 2026-05-22｜大戶 48.54%｜中實戶 22人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6552,12 +6566,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3227 原相 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 38.96%｜中實戶 39人 個股查詢 未入籃">
+<tr data-search="3227 原相 未入籃 法人 2025-12-31｜外資5日 -24張｜主力5日 -86張｜股權 2026-05-22｜大戶 38.96%｜中實戶 39人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3227.html">3227 原相</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">227.50</td>
   <td><div class="price-entry">進 220.25</div><div class="price-target">目 245.31</div><div class="price-stop">初停 207.03</div><div class="price-support">支撐 175.62</div><div class="price-rr rr-mid">R:R 1:1.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 38.96%｜中實戶 39人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -24張｜主力5日 -86張｜股權 2026-05-22｜大戶 38.96%｜中實戶 39人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6588,12 +6602,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3231 緯創 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 61.11%｜中實戶 279人 個股查詢 未入籃">
+<tr data-search="3231 緯創 未入籃 法人 2025-12-31｜外資5日 +41,626張｜主力5日 +46,164張｜股權 2026-05-22｜大戶 61.11%｜中實戶 279人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3231.html">3231 緯創</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">158.50</td>
   <td><div class="price-entry">進 138.62</div><div class="price-target">目 161.67</div><div class="price-stop">初停 130.31</div><div class="price-support">支撐 121.89</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 61.11%｜中實戶 279人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +41,626張｜主力5日 +46,164張｜股權 2026-05-22｜大戶 61.11%｜中實戶 279人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6651,12 +6665,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3260 威剛 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 34.99%｜中實戶 58人 個股查詢 未入籃">
+<tr data-search="3260 威剛 未入籃 法人 2025-12-31｜外資5日 +15,279張｜主力5日 +24,319張｜股權 2026-05-22｜大戶 34.99%｜中實戶 58人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3260.html">3260 威剛</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">415.00</td>
   <td><div class="price-entry">進 404.88</div><div class="price-target">目 503.88</div><div class="price-stop">初停 374.99</div><div class="price-support">支撐 82.29</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 34.99%｜中實戶 58人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +15,279張｜主力5日 +24,319張｜股權 2026-05-22｜大戶 34.99%｜中實戶 58人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6768,12 +6782,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3293 鈊象 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 50.95%｜中實戶 67人 個股查詢 未入籃">
+<tr data-search="3293 鈊象 未入籃 法人 2025-12-31｜外資5日 +739張｜主力5日 +768張｜股權 2026-05-22｜大戶 50.95%｜中實戶 67人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3293.html">3293 鈊象</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">754.00</td>
   <td><div class="price-entry">進 724.25</div><div class="price-target">目 821.10</div><div class="price-stop">初停 666.65</div><div class="price-support">支撐 666.65</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 50.95%｜中實戶 67人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +739張｜主力5日 +768張｜股權 2026-05-22｜大戶 50.95%｜中實戶 67人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -6912,12 +6926,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3324 雙鴻 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 46.70%｜中實戶 20人 個股查詢 未入籃">
+<tr data-search="3324 雙鴻 未入籃 法人 2025-12-31｜外資5日 +229張｜主力5日 +647張｜股權 2026-05-22｜大戶 46.70%｜中實戶 20人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3324.html">3324 雙鴻</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1065.00</td>
   <td><div class="price-entry">進 975.75</div><div class="price-target">目 1162.80</div><div class="price-stop">初停 917.20</div><div class="price-support">支撐 609.93</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 46.70%｜中實戶 20人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +229張｜主力5日 +647張｜股權 2026-05-22｜大戶 46.70%｜中實戶 20人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7110,12 +7124,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3406 玉晶光 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 55.65%｜中實戶 32人 個股查詢 未入籃">
+<tr data-search="3406 玉晶光 未入籃 法人 2025-12-31｜外資5日 +1,156張｜主力5日 +1,890張｜股權 2026-05-22｜大戶 55.65%｜中實戶 32人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3406.html">3406 玉晶光</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">603.00</td>
   <td><div class="price-entry">進 529.25</div><div class="price-target">目 626.28</div><div class="price-stop">初停 497.49</div><div class="price-support">支撐 384.07</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 55.65%｜中實戶 32人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +1,156張｜主力5日 +1,890張｜股權 2026-05-22｜大戶 55.65%｜中實戶 32人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7236,12 +7250,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3450 聯鈞 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 48.74%｜中實戶 22人 個股查詢 未入籃">
+<tr data-search="3450 聯鈞 未入籃 法人 2025-12-31｜外資5日 -479張｜主力5日 -331張｜股權 2026-05-22｜大戶 48.74%｜中實戶 22人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3450.html">3450 聯鈞</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">490.50</td>
   <td><div class="price-entry">進 419.88</div><div class="price-target">目 548.76</div><div class="price-stop">初停 394.68</div><div class="price-support">支撐 235.81</div><div class="price-rr rr-good">R:R 1:5.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 48.74%｜中實戶 22人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -479張｜主力5日 -331張｜股權 2026-05-22｜大戶 48.74%｜中實戶 22人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7290,21 +7304,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3481 群創 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 52.44%｜中實戶 1255人 個股查詢 未入籃">
+<tr data-search="3481 群創 未入籃 法人 2025-12-31｜外資5日 -60,911張｜主力5日 -43,287張｜股權 2026-05-22｜大戶 52.44%｜中實戶 1255人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3481.html">3481 群創</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">51.00</td>
   <td><div class="price-entry">進 38.25</div><div class="price-target">目 53.24</div><div class="price-stop">初停 35.95</div><div class="price-support">支撐 22.84</div><div class="price-rr rr-good">R:R 1:6.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 52.44%｜中實戶 1255人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -60,911張｜主力5日 -43,287張｜股權 2026-05-22｜大戶 52.44%｜中實戶 1255人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3483 力致 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 20.84%｜中實戶 17人 個股查詢 未入籃">
+<tr data-search="3483 力致 未入籃 法人 2025-12-31｜外資5日 +252張｜主力5日 +407張｜股權 2026-05-22｜大戶 20.84%｜中實戶 17人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3483.html">3483 力致</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">95.00</td>
   <td><div class="price-entry">進 88.88</div><div class="price-target">目 153.51</div><div class="price-stop">初停 84.08</div><div class="price-support">支撐 84.08</div><div class="price-rr rr-good">R:R 1:13.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 20.84%｜中實戶 17人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +252張｜主力5日 +407張｜股權 2026-05-22｜大戶 20.84%｜中實戶 17人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7524,12 +7538,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3529 力旺 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.37%｜中實戶 33人 個股查詢 未入籃">
+<tr data-search="3529 力旺 未入籃 法人 2025-12-31｜外資5日 -288張｜主力5日 -272張｜股權 2026-05-22｜大戶 51.37%｜中實戶 33人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3529.html">3529 力旺</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">3410.00</td>
   <td><div class="price-entry">進 3522.50</div><div class="price-target">目 4880.70</div><div class="price-stop">初停 3210.00</div><div class="price-support">支撐 2139.25</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.37%｜中實戶 33人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -288張｜主力5日 -272張｜股權 2026-05-22｜大戶 51.37%｜中實戶 33人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7560,12 +7574,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>5 次</td>
 </tr>
-<tr data-search="3533 嘉澤 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 62.08%｜中實戶 39人 個股查詢 未入籃">
+<tr data-search="3533 嘉澤 未入籃 法人 2025-12-31｜外資5日 +360張｜主力5日 +206張｜股權 2026-05-22｜大戶 62.08%｜中實戶 39人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3533.html">3533 嘉澤</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">2650.00</td>
   <td><div class="price-entry">進 2395.00</div><div class="price-target">目 3014.10</div><div class="price-stop">初停 2251.30</div><div class="price-support">支撐 1422.85</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 62.08%｜中實戶 39人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +360張｜主力5日 +206張｜股權 2026-05-22｜大戶 62.08%｜中實戶 39人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -7632,12 +7646,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3548 兆利 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 34.95%｜中實戶 12人 個股查詢 未入籃">
+<tr data-search="3548 兆利 未入籃 法人 2025-12-31｜外資5日 +7張｜主力5日 +8張｜股權 2026-05-22｜大戶 34.95%｜中實戶 12人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3548.html">3548 兆利</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">94.90</td>
   <td><div class="price-entry">進 93.07</div><div class="price-target">目 126.48</div><div class="price-stop">初停 87.49</div><div class="price-support">支撐 75.82</div><div class="price-rr rr-good">R:R 1:6.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 34.95%｜中實戶 12人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +7張｜主力5日 +8張｜股權 2026-05-22｜大戶 34.95%｜中實戶 12人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8019,21 +8033,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3653 健策 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 68.85%｜中實戶 37人 個股查詢 未入籃">
+<tr data-search="3653 健策 未入籃 法人 2025-12-31｜外資5日 -1,004張｜主力5日 -968張｜股權 2026-05-22｜大戶 68.85%｜中實戶 37人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3653.html">3653 健策</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">3545.00</td>
   <td><div class="price-entry">進 3137.50</div><div class="price-target">目 4233.00</div><div class="price-stop">初停 2949.25</div><div class="price-support">支撐 1159.17</div><div class="price-rr rr-good">R:R 1:5.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 68.85%｜中實戶 37人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,004張｜主力5日 -968張｜股權 2026-05-22｜大戶 68.85%｜中實戶 37人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3661 世芯-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 38.83%｜中實戶 33人 個股查詢 未入籃">
+<tr data-search="3661 世芯-ky 未入籃 法人 2025-12-31｜外資5日 +444張｜主力5日 +726張｜股權 2026-05-22｜大戶 38.83%｜中實戶 33人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3661.html">3661 世芯-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">4415.00</td>
   <td><div class="price-entry">進 4582.50</div><div class="price-target">目 5752.80</div><div class="price-stop">初停 4307.55</div><div class="price-support">支撐 2467.60</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 38.83%｜中實戶 33人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +444張｜主力5日 +726張｜股權 2026-05-22｜大戶 38.83%｜中實戶 33人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8163,12 +8177,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3689 湧德 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 23.12%｜中實戶 26人 個股查詢 未入籃">
+<tr data-search="3689 湧德 未入籃 法人 2025-12-31｜外資5日 +5,789張｜主力5日 +6,572張｜股權 2026-05-22｜大戶 23.12%｜中實戶 26人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3689.html">3689 湧德</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">138.00</td>
   <td><div class="price-entry">進 120.75</div><div class="price-target">目 142.29</div><div class="price-stop">初停 113.50</div><div class="price-support">支撐 87.86</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 23.12%｜中實戶 26人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +5,789張｜主力5日 +6,572張｜股權 2026-05-22｜大戶 23.12%｜中實戶 26人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8181,21 +8195,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3693 營邦 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 46.34%｜中實戶 9人 個股查詢 未入籃">
+<tr data-search="3693 營邦 未入籃 法人 2025-12-31｜外資5日 +111張｜主力5日 -46張｜股權 2026-05-22｜大戶 46.34%｜中實戶 9人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3693.html">3693 營邦</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">581.00</td>
   <td><div class="price-entry">進 536.75</div><div class="price-target">目 714.00</div><div class="price-stop">初停 504.54</div><div class="price-support">支撐 334.82</div><div class="price-rr rr-good">R:R 1:5.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 46.34%｜中實戶 9人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +111張｜主力5日 -46張｜股權 2026-05-22｜大戶 46.34%｜中實戶 9人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3694 海華 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 61.36%｜中實戶 24人 個股查詢 未入籃">
+<tr data-search="3694 海華 未入籃 法人 2025-12-31｜外資5日 +114張｜主力5日 +23張｜股權 2026-05-22｜大戶 61.36%｜中實戶 24人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3694.html">3694 海華</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">69.50</td>
   <td><div class="price-entry">進 59.62</div><div class="price-target">目 74.36</div><div class="price-stop">初停 52.93</div><div class="price-support">支撐 52.93</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 61.36%｜中實戶 24人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +114張｜主力5日 +23張｜股權 2026-05-22｜大戶 61.36%｜中實戶 24人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8208,12 +8222,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3702 大聯大 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 85.52%｜中實戶 142人 個股查詢 未入籃">
+<tr data-search="3702 大聯大 未入籃 法人 2025-12-31｜外資5日 -24,495張｜主力5日 -24,197張｜股權 2026-05-22｜大戶 85.52%｜中實戶 142人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3702.html">3702 大聯大</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">117.50</td>
   <td><div class="price-entry">進 112.88</div><div class="price-target">目 130.05</div><div class="price-stop">初停 106.10</div><div class="price-support">支撐 64.48</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 85.52%｜中實戶 142人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -24,495張｜主力5日 -24,197張｜股權 2026-05-22｜大戶 85.52%｜中實戶 142人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8244,12 +8258,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3706 神達 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.45%｜中實戶 117人 個股查詢 未入籃">
+<tr data-search="3706 神達 未入籃 法人 2025-12-31｜外資5日 +7,117張｜主力5日 +5,015張｜股權 2026-05-22｜大戶 51.45%｜中實戶 117人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3706.html">3706 神達</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">88.80</td>
   <td><div class="price-entry">進 80.97</div><div class="price-target">目 92.31</div><div class="price-stop">初停 73.33</div><div class="price-support">支撐 73.33</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.45%｜中實戶 117人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +7,117張｜主力5日 +5,015張｜股權 2026-05-22｜大戶 51.45%｜中實戶 117人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8289,12 +8303,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="3711 日月光投控 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 87.90%｜中實戶 338人 個股查詢 未入籃">
+<tr data-search="3711 日月光投控 未入籃 法人 2025-12-31｜外資5日 +10,491張｜主力5日 -11,651張｜股權 2026-05-22｜大戶 87.90%｜中實戶 338人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3711.html">3711 日月光投控</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">611.00</td>
   <td><div class="price-entry">進 516.00</div><div class="price-target">目 682.38</div><div class="price-stop">初停 495.05</div><div class="price-support">支撐 152.23</div><div class="price-rr rr-good">R:R 1:7.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 87.90%｜中實戶 338人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +10,491張｜主力5日 -11,651張｜股權 2026-05-22｜大戶 87.90%｜中實戶 338人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -8325,12 +8339,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>90.0</td>
   <td>3 次</td>
 </tr>
-<tr data-search="3715 定穎投控 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 32.25%｜中實戶 49人 個股查詢 未入籃">
+<tr data-search="3715 定穎投控 未入籃 法人 2025-12-31｜外資5日 +2,425張｜主力5日 -2,682張｜股權 2026-05-22｜大戶 32.25%｜中實戶 49人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/3715.html">3715 定穎投控</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">173.50</td>
   <td><div class="price-entry">進 167.00</div><div class="price-target">目 195.84</div><div class="price-stop">初停 157.67</div><div class="price-support">支撐 54.23</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 32.25%｜中實戶 49人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +2,425張｜主力5日 -2,682張｜股權 2026-05-22｜大戶 32.25%｜中實戶 49人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -9063,12 +9077,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4510 高鋒 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 39.57%｜中實戶 15人 個股查詢 未入籃">
+<tr data-search="4510 高鋒 未入籃 法人 2025-12-31｜外資5日 +117張｜主力5日 +109張｜股權 2026-05-22｜大戶 39.57%｜中實戶 15人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4510.html">4510 高鋒</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">50.40</td>
   <td><div class="price-entry">進 47.35</div><div class="price-target">目 53.96</div><div class="price-stop">初停 44.51</div><div class="price-support">支撐 38.51</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 39.57%｜中實戶 15人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +117張｜主力5日 +109張｜股權 2026-05-22｜大戶 39.57%｜中實戶 15人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -9405,12 +9419,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4576 大銀微系統 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 67.77%｜中實戶 22人 個股查詢 未入籃">
+<tr data-search="4576 大銀微系統 未入籃 法人 2025-12-31｜外資5日 -28張｜主力5日 -23張｜股權 2026-05-22｜大戶 67.77%｜中實戶 22人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4576.html">4576 大銀微系統</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">266.50</td>
   <td><div class="price-entry">進 246.38</div><div class="price-target">目 296.82</div><div class="price-stop">初停 231.59</div><div class="price-support">支撐 105.97</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 67.77%｜中實戶 22人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -28張｜主力5日 -23張｜股權 2026-05-22｜大戶 67.77%｜中實戶 22人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -9450,12 +9464,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4583 台灣精銳 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 87.96%｜中實戶 9人 個股查詢 未入籃">
+<tr data-search="4583 台灣精銳 未入籃 法人 2025-12-31｜外資5日 -5張｜主力5日 +1張｜股權 2026-05-22｜大戶 87.96%｜中實戶 9人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4583.html">4583 台灣精銳</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">719.00</td>
   <td><div class="price-entry">進 706.25</div><div class="price-target">目 836.40</div><div class="price-stop">初停 663.88</div><div class="price-support">支撐 589.04</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 87.96%｜中實戶 9人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -5張｜主力5日 +1張｜股權 2026-05-22｜大戶 87.96%｜中實戶 9人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -9738,12 +9752,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4763 材料*-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 59.79%｜中實戶 117人 個股查詢 未入籃">
+<tr data-search="4763 材料*-ky 未入籃 法人 2025-12-31｜外資5日 +3,147張｜主力5日 -1,420張｜股權 2026-05-22｜大戶 59.79%｜中實戶 117人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4763.html">4763 材料*-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">40.90</td>
   <td><div class="price-entry">進 41.20</div><div class="price-target">目 1173.00</div><div class="price-stop">初停 38.73</div><div class="price-support">支撐 40.00</div><div class="price-rr rr-good">R:R 1:457.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 59.79%｜中實戶 117人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +3,147張｜主力5日 -1,420張｜股權 2026-05-22｜大戶 59.79%｜中實戶 117人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -9972,12 +9986,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4931 新盛力 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 31.48%｜中實戶 14人 個股查詢 未入籃">
+<tr data-search="4931 新盛力 未入籃 法人 2025-12-31｜外資5日 +98張｜主力5日 +720張｜股權 2026-05-22｜大戶 31.48%｜中實戶 14人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4931.html">4931 新盛力</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">229.50</td>
   <td><div class="price-entry">進 191.12</div><div class="price-target">目 242.76</div><div class="price-stop">初停 179.66</div><div class="price-support">支撐 118.41</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 31.48%｜中實戶 14人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +98張｜主力5日 +720張｜股權 2026-05-22｜大戶 31.48%｜中實戶 14人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10008,12 +10022,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4938 和碩 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 77.74%｜中實戶 213人 個股查詢 未入籃">
+<tr data-search="4938 和碩 未入籃 法人 2025-12-31｜外資5日 +16,408張｜主力5日 -8,397張｜股權 2026-05-22｜大戶 77.74%｜中實戶 213人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4938.html">4938 和碩</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">88.50</td>
   <td><div class="price-entry">進 79.20</div><div class="price-target">目 91.19</div><div class="price-stop">初停 74.45</div><div class="price-support">支撐 67.56</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 77.74%｜中實戶 213人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +16,408張｜主力5日 -8,397張｜股權 2026-05-22｜大戶 77.74%｜中實戶 213人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10134,12 +10148,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4966 譜瑞-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 45.20%｜中實戶 28人 個股查詢 未入籃">
+<tr data-search="4966 譜瑞-ky 未入籃 法人 2025-12-31｜外資5日 -2,535張｜主力5日 -770張｜股權 2026-05-22｜大戶 45.20%｜中實戶 28人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4966.html">4966 譜瑞-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">834.00</td>
   <td><div class="price-entry">進 759.50</div><div class="price-target">目 947.58</div><div class="price-stop">初停 713.93</div><div class="price-support">支撐 461.18</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 45.20%｜中實戶 28人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -2,535張｜主力5日 -770張｜股權 2026-05-22｜大戶 45.20%｜中實戶 28人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10206,12 +10220,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="4977 眾達-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 17.52%｜中實戶 18人 個股查詢 未入籃">
+<tr data-search="4977 眾達-ky 未入籃 法人 2025-12-31｜外資5日 +470張｜主力5日 +300張｜股權 2026-05-22｜大戶 17.52%｜中實戶 18人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/4977.html">4977 眾達-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">210.50</td>
   <td><div class="price-entry">進 219.00</div><div class="price-target">目 278.46</div><div class="price-stop">初停 197.15</div><div class="price-support">支撐 197.15</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 17.52%｜中實戶 18人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +470張｜主力5日 +300張｜股權 2026-05-22｜大戶 17.52%｜中實戶 18人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10512,12 +10526,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5236 凌陽創新 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 64.65%｜中實戶 5人 個股查詢 未入籃">
+<tr data-search="5236 凌陽創新 未入籃 法人 2025-12-31｜外資5日 +0張｜主力5日 +0張｜股權 2026-05-22｜大戶 64.65%｜中實戶 5人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5236.html">5236 凌陽創新</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">182.50</td>
   <td><div class="price-entry">進 166.25</div><div class="price-target">目 197.88</div><div class="price-stop">初停 156.27</div><div class="price-support">支撐 122.39</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 64.65%｜中實戶 5人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +0張｜主力5日 +0張｜股權 2026-05-22｜大戶 64.65%｜中實戶 5人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10575,12 +10589,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5269 祥碩 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 54.68%｜中實戶 8人 個股查詢 未入籃">
+<tr data-search="5269 祥碩 未入籃 法人 2025-12-31｜外資5日 +158張｜主力5日 +303張｜股權 2026-05-22｜大戶 54.68%｜中實戶 8人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5269.html">5269 祥碩</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1465.00</td>
   <td><div class="price-entry">進 1406.25</div><div class="price-target">目 2091.00</div><div class="price-stop">初停 1268.62</div><div class="price-support">支撐 1268.62</div><div class="price-rr rr-good">R:R 1:5.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 54.68%｜中實戶 8人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +158張｜主力5日 +303張｜股權 2026-05-22｜大戶 54.68%｜中實戶 8人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10602,12 +10616,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5274 信驊 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 34.85%｜中實戶 17人 個股查詢 未入籃">
+<tr data-search="5274 信驊 未入籃 法人 2025-12-31｜外資5日 -117張｜主力5日 -106張｜股權 2026-05-22｜大戶 34.85%｜中實戶 17人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5274.html">5274 信驊</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">18950.00</td>
   <td><div class="price-entry">進 16232.50</div><div class="price-target">目 19900.20</div><div class="price-stop">初停 15258.55</div><div class="price-support">支撐 8611.73</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 34.85%｜中實戶 17人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -117張｜主力5日 -106張｜股權 2026-05-22｜大戶 34.85%｜中實戶 17人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10836,12 +10850,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5347 世界 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 85.77%｜中實戶 126人 個股查詢 未入籃">
+<tr data-search="5347 世界 未入籃 法人 2025-12-31｜外資5日 +20,497張｜主力5日 -3,108張｜股權 2026-05-22｜大戶 85.77%｜中實戶 126人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5347.html">5347 世界</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">168.00</td>
   <td><div class="price-entry">進 160.25</div><div class="price-target">目 189.21</div><div class="price-stop">初停 152.50</div><div class="price-support">支撐 104.47</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 85.77%｜中實戶 126人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +20,497張｜主力5日 -3,108張｜股權 2026-05-22｜大戶 85.77%｜中實戶 126人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10899,12 +10913,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5371 中光電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 43.25%｜中實戶 36人 個股查詢 未入籃">
+<tr data-search="5371 中光電 未入籃 法人 2025-12-31｜外資5日 -6,285張｜主力5日 -7,174張｜股權 2026-05-22｜大戶 43.25%｜中實戶 36人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5371.html">5371 中光電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">72.60</td>
   <td><div class="price-entry">進 69.33</div><div class="price-target">目 85.78</div><div class="price-stop">初停 67.06</div><div class="price-support">支撐 67.06</div><div class="price-rr rr-good">R:R 1:7.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 43.25%｜中實戶 36人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -6,285張｜主力5日 -7,174張｜股權 2026-05-22｜大戶 43.25%｜中實戶 36人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -10971,12 +10985,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5425 台半 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 46.40%｜中實戶 31人 個股查詢 未入籃">
+<tr data-search="5425 台半 未入籃 法人 2025-12-31｜外資5日 -1,007張｜主力5日 -1,026張｜股權 2026-05-22｜大戶 46.40%｜中實戶 31人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5425.html">5425 台半</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">116.50</td>
   <td><div class="price-entry">進 83.50</div><div class="price-target">目 128.01</div><div class="price-stop">初停 78.49</div><div class="price-support">支撐 51.54</div><div class="price-rr rr-good">R:R 1:8.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 46.40%｜中實戶 31人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,007張｜主力5日 -1,026張｜股權 2026-05-22｜大戶 46.40%｜中實戶 31人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11160,12 +11174,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5483 中美晶 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 60.18%｜中實戶 66人 個股查詢 未入籃">
+<tr data-search="5483 中美晶 未入籃 法人 2025-12-31｜外資5日 -1,783張｜主力5日 +1,659張｜股權 2026-05-22｜大戶 60.18%｜中實戶 66人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5483.html">5483 中美晶</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">172.00</td>
   <td><div class="price-entry">進 143.50</div><div class="price-target">目 178.50</div><div class="price-stop">初停 134.89</div><div class="price-support">支撐 103.98</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 60.18%｜中實戶 66人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,783張｜主力5日 +1,659張｜股權 2026-05-22｜大戶 60.18%｜中實戶 66人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11304,12 +11318,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="5521 工信 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 58.74%｜中實戶 90人 個股查詢 未入籃">
+<tr data-search="5521 工信 未入籃 法人 2025-12-31｜外資5日 -4,655張｜主力5日 -3,210張｜股權 2026-05-22｜大戶 58.74%｜中實戶 90人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5521.html">5521 工信</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">10.35</td>
   <td><div class="price-entry">進 10.59</div><div class="price-target">目 12.50</div><div class="price-stop">初停 10.05</div><div class="price-support">支撐 10.05</div><div class="price-rr rr-good">R:R 1:3.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 58.74%｜中實戶 90人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -4,655張｜主力5日 -3,210張｜股權 2026-05-22｜大戶 58.74%｜中實戶 90人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11538,12 +11552,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>60.0</td>
   <td>1 次</td>
 </tr>
-<tr data-search="5871 中租-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 67.57%｜中實戶 257人 個股查詢 未入籃">
+<tr data-search="5871 中租-ky 未入籃 法人 2025-12-31｜外資5日 +25,427張｜主力5日 -2,886張｜股權 2026-05-22｜大戶 67.57%｜中實戶 257人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/5871.html">5871 中租-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">107.50</td>
   <td><div class="price-entry">進 107.88</div><div class="price-target">目 125.46</div><div class="price-stop">初停 96.61</div><div class="price-support">支撐 96.61</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 67.57%｜中實戶 257人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +25,427張｜主力5日 -2,886張｜股權 2026-05-22｜大戶 67.57%｜中實戶 257人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11835,12 +11849,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6121 新普 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 67.36%｜中實戶 43人 個股查詢 未入籃">
+<tr data-search="6121 新普 未入籃 法人 2025-12-31｜外資5日 +2,472張｜主力5日 -201張｜股權 2026-05-22｜大戶 67.36%｜中實戶 43人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6121.html">6121 新普</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">393.00</td>
   <td><div class="price-entry">進 370.38</div><div class="price-target">目 408.00</div><div class="price-stop">初停 348.15</div><div class="price-support">支撐 301.49</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 67.36%｜中實戶 43人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +2,472張｜主力5日 -201張｜股權 2026-05-22｜大戶 67.36%｜中實戶 43人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11871,12 +11885,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6125 廣運 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 36.48%｜中實戶 25人 個股查詢 未入籃">
+<tr data-search="6125 廣運 未入籃 法人 2025-12-31｜外資5日 -3,254張｜主力5日 -3,168張｜股權 2026-05-22｜大戶 36.48%｜中實戶 25人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6125.html">6125 廣運</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">66.70</td>
   <td><div class="price-entry">進 58.92</div><div class="price-target">目 73.03</div><div class="price-stop">初停 55.39</div><div class="price-support">支撐 51.24</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 36.48%｜中實戶 25人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,254張｜主力5日 -3,168張｜股權 2026-05-22｜大戶 36.48%｜中實戶 25人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -11941,7 +11955,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="price-entry">進 31.25</div><div class="price-target">目 36.52</div><div class="price-stop">初停 29.45</div><div class="price-support">支撐 29.45</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
   <td><div class="chip-line">法人 2026-05-28｜外資5日 +1,327張｜主力5日 +1,321張｜股權 2026-05-22｜大戶 57.82%｜中實戶 8人</div></td>
   <td>100.0</td>
-  <td>6 次</td>
+  <td>7 次</td>
 </tr>
 <tr data-search="6136 富爾特 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 43.54%｜中實戶 25人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6136.html">6136 富爾特</a><div class="signal-dates">2026-05-29</div></td>
@@ -11961,12 +11975,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6139 亞翔 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 70.35%｜中實戶 42人 個股查詢 未入籃">
+<tr data-search="6139 亞翔 未入籃 法人 2025-12-31｜外資5日 -2,401張｜主力5日 -3,686張｜股權 2026-05-22｜大戶 70.35%｜中實戶 42人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6139.html">6139 亞翔</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">784.00</td>
   <td><div class="price-entry">進 710.50</div><div class="price-target">目 870.06</div><div class="price-stop">初停 667.87</div><div class="price-support">支撐 475.11</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 70.35%｜中實戶 42人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -2,401張｜主力5日 -3,686張｜股權 2026-05-22｜大戶 70.35%｜中實戶 42人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12240,12 +12254,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6176 瑞儀 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 58.03%｜中實戶 70人 個股查詢 未入籃">
+<tr data-search="6176 瑞儀 未入籃 法人 2025-12-31｜外資5日 +10,878張｜主力5日 -1,152張｜股權 2026-05-22｜大戶 58.03%｜中實戶 70人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6176.html">6176 瑞儀</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">106.50</td>
   <td><div class="price-entry">進 101.47</div><div class="price-target">目 205.02</div><div class="price-stop">初停 98.31</div><div class="price-support">支撐 98.31</div><div class="price-rr rr-good">R:R 1:32.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 58.03%｜中實戶 70人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +10,878張｜主力5日 -1,152張｜股權 2026-05-22｜大戶 58.03%｜中實戶 70人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12330,12 +12344,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6188 廣明 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 44.99%｜中實戶 26人 個股查詢 未入籃">
+<tr data-search="6188 廣明 未入籃 法人 2025-12-31｜外資5日 -3,381張｜主力5日 +3,042張｜股權 2026-05-22｜大戶 44.99%｜中實戶 26人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6188.html">6188 廣明</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">84.60</td>
   <td><div class="price-entry">進 82.28</div><div class="price-target">目 110.16</div><div class="price-stop">初停 79.80</div><div class="price-support">支撐 79.80</div><div class="price-rr rr-good">R:R 1:11.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 44.99%｜中實戶 26人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,381張｜主力5日 +3,042張｜股權 2026-05-22｜大戶 44.99%｜中實戶 26人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12357,12 +12371,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6191 精成科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 54.69%｜中實戶 48人 個股查詢 未入籃">
+<tr data-search="6191 精成科 未入籃 法人 2025-12-31｜外資5日 -1,777張｜主力5日 -4,481張｜股權 2026-05-22｜大戶 54.69%｜中實戶 48人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6191.html">6191 精成科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">97.00</td>
   <td><div class="price-entry">進 92.60</div><div class="price-target">目 118.32</div><div class="price-stop">初停 87.66</div><div class="price-support">支撐 87.66</div><div class="price-rr rr-good">R:R 1:5.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 54.69%｜中實戶 48人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,777張｜主力5日 -4,481張｜股權 2026-05-22｜大戶 54.69%｜中實戶 48人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12537,21 +12551,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>95.0</td>
   <td>3 次</td>
 </tr>
-<tr data-search="6214 精誠 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 55.57%｜中實戶 40人 個股查詢 未入籃">
+<tr data-search="6214 精誠 未入籃 法人 2025-12-31｜外資5日 -2,363張｜主力5日 -2,692張｜股權 2026-05-22｜大戶 55.57%｜中實戶 40人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6214.html">6214 精誠</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">131.00</td>
   <td><div class="price-entry">進 123.88</div><div class="price-target">目 135.15</div><div class="price-stop">初停 116.44</div><div class="price-support">支撐 103.98</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 55.57%｜中實戶 40人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -2,363張｜主力5日 -2,692張｜股權 2026-05-22｜大戶 55.57%｜中實戶 40人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6215 和椿 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 35.63%｜中實戶 10人 個股查詢 未入籃">
+<tr data-search="6215 和椿 未入籃 法人 2025-12-31｜外資5日 -19張｜主力5日 -15張｜股權 2026-05-22｜大戶 35.63%｜中實戶 10人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6215.html">6215 和椿</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">127.50</td>
   <td><div class="price-entry">進 120.75</div><div class="price-target">目 140.76</div><div class="price-stop">初停 113.50</div><div class="price-support">支撐 92.63</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 35.63%｜中實戶 10人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -19張｜主力5日 -15張｜股權 2026-05-22｜大戶 35.63%｜中實戶 10人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12618,12 +12632,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6223 旺矽 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 54.71%｜中實戶 42人 個股查詢 未入籃">
+<tr data-search="6223 旺矽 未入籃 法人 2025-12-31｜外資5日 -219張｜主力5日 -364張｜股權 2026-05-22｜大戶 54.71%｜中實戶 42人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6223.html">6223 旺矽</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">5960.00</td>
   <td><div class="price-entry">進 5603.75</div><div class="price-target">目 6798.30</div><div class="price-stop">初停 5267.52</div><div class="price-support">支撐 2626.80</div><div class="price-rr rr-good">R:R 1:3.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 54.71%｜中實戶 42人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -219張｜主力5日 -364張｜股權 2026-05-22｜大戶 54.71%｜中實戶 42人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12690,12 +12704,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6231 系微 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 33.08%｜中實戶 12人 個股查詢 未入籃">
+<tr data-search="6231 系微 未入籃 法人 2025-12-31｜外資5日 +18張｜主力5日 +6張｜股權 2026-05-22｜大戶 33.08%｜中實戶 12人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6231.html">6231 系微</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">284.50</td>
   <td><div class="price-entry">進 288.00</div><div class="price-target">目 380.46</div><div class="price-stop">初停 270.72</div><div class="price-support">支撐 177.61</div><div class="price-rr rr-good">R:R 1:5.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 33.08%｜中實戶 12人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +18張｜主力5日 +6張｜股權 2026-05-22｜大戶 33.08%｜中實戶 12人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12744,12 +12758,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6239 力成 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 74.63%｜中實戶 82人 個股查詢 未入籃">
+<tr data-search="6239 力成 未入籃 法人 2025-12-31｜外資5日 +4,093張｜主力5日 -570張｜股權 2026-05-22｜大戶 74.63%｜中實戶 82人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6239.html">6239 力成</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">379.00</td>
   <td><div class="price-entry">進 261.00</div><div class="price-target">目 394.74</div><div class="price-stop">初停 248.90</div><div class="price-support">支撐 120.89</div><div class="price-rr rr-good">R:R 1:11.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 74.63%｜中實戶 82人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +4,093張｜主力5日 -570張｜股權 2026-05-22｜大戶 74.63%｜中實戶 82人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -12798,12 +12812,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6245 立端 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 44.48%｜中實戶 40人 個股查詢 未入籃">
+<tr data-search="6245 立端 未入籃 法人 2025-12-31｜外資5日 -160張｜主力5日 -82張｜股權 2026-05-22｜大戶 44.48%｜中實戶 40人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6245.html">6245 立端</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">87.20</td>
   <td><div class="price-entry">進 82.83</div><div class="price-target">目 96.19</div><div class="price-stop">初停 77.86</div><div class="price-support">支撐 60.00</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 44.48%｜中實戶 40人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -160張｜主力5日 -82張｜股權 2026-05-22｜大戶 44.48%｜中實戶 40人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13014,12 +13028,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6285 啟碁 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 68.00%｜中實戶 69人 個股查詢 未入籃">
+<tr data-search="6285 啟碁 未入籃 法人 2025-12-31｜外資5日 -3,471張｜主力5日 -3,192張｜股權 2026-05-22｜大戶 68.00%｜中實戶 69人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6285.html">6285 啟碁</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">319.00</td>
   <td><div class="price-entry">進 274.62</div><div class="price-target">目 343.23</div><div class="price-stop">初停 258.15</div><div class="price-support">支撐 148.75</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 68.00%｜中實戶 69人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,471張｜主力5日 -3,192張｜股權 2026-05-22｜大戶 68.00%｜中實戶 69人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13113,12 +13127,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6415 矽力*-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 79.85%｜中實戶 96人 個股查詢 未入籃">
+<tr data-search="6415 矽力*-ky 未入籃 法人 2025-12-31｜外資5日 -20張｜主力5日 -65張｜股權 2026-05-22｜大戶 79.85%｜中實戶 96人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6415.html">6415 矽力*-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">600.00</td>
   <td><div class="price-entry">進 513.75</div><div class="price-target">目 706.86</div><div class="price-stop">初停 482.92</div><div class="price-support">支撐 226.36</div><div class="price-rr rr-good">R:R 1:6.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 79.85%｜中實戶 96人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -20張｜主力5日 -65張｜股權 2026-05-22｜大戶 79.85%｜中實戶 96人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13239,12 +13253,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6442 光聖 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 57.50%｜中實戶 20人 個股查詢 未入籃">
+<tr data-search="6442 光聖 未入籃 法人 2025-12-31｜外資5日 -484張｜主力5日 +6張｜股權 2026-05-22｜大戶 57.50%｜中實戶 20人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6442.html">6442 光聖</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1845.00</td>
   <td><div class="price-entry">進 1843.75</div><div class="price-target">目 2509.20</div><div class="price-stop">初停 1733.12</div><div class="price-support">支撐 1606.92</div><div class="price-rr rr-good">R:R 1:6.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 57.50%｜中實戶 20人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -484張｜主力5日 +6張｜股權 2026-05-22｜大戶 57.50%｜中實戶 20人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13275,12 +13289,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6451 訊芯-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 75.94%｜中實戶 8人 個股查詢 未入籃">
+<tr data-search="6451 訊芯-ky 未入籃 法人 2025-12-31｜外資5日 +64張｜主力5日 -12張｜股權 2026-05-22｜大戶 75.94%｜中實戶 8人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6451.html">6451 訊芯-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">570.00</td>
   <td><div class="price-entry">進 495.88</div><div class="price-target">目 666.06</div><div class="price-stop">初停 466.12</div><div class="price-support">支撐 166.66</div><div class="price-rr rr-good">R:R 1:5.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 75.94%｜中實戶 8人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +64張｜主力5日 -12張｜股權 2026-05-22｜大戶 75.94%｜中實戶 8人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13401,12 +13415,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6488 環球晶 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 80.33%｜中實戶 68人 個股查詢 未入籃">
+<tr data-search="6488 環球晶 未入籃 法人 2025-12-31｜外資5日 -3,744張｜主力5日 +1,268張｜股權 2026-05-22｜大戶 80.33%｜中實戶 68人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6488.html">6488 環球晶</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1015.00</td>
   <td><div class="price-entry">進 727.50</div><div class="price-target">目 1040.40</div><div class="price-stop">初停 683.85</div><div class="price-support">支撐 404.96</div><div class="price-rr rr-good">R:R 1:7.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 80.33%｜中實戶 68人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -3,744張｜主力5日 +1,268張｜股權 2026-05-22｜大戶 80.33%｜中實戶 68人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13509,12 +13523,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6510 精測 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.94%｜中實戶 9人 個股查詢 未入籃">
+<tr data-search="6510 精測 未入籃 法人 2025-12-31｜外資5日 -139張｜主力5日 -184張｜股權 2026-05-22｜大戶 51.94%｜中實戶 9人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6510.html">6510 精測</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">3140.00</td>
   <td><div class="price-entry">進 3378.75</div><div class="price-target">目 4284.00</div><div class="price-stop">初停 3185.00</div><div class="price-support">支撐 670.63</div><div class="price-rr rr-good">R:R 1:4.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.94%｜中實戶 9人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -139張｜主力5日 -184張｜股權 2026-05-22｜大戶 51.94%｜中實戶 9人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13527,12 +13541,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6515 穎崴 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 53.51%｜中實戶 13人 個股查詢 未入籃">
+<tr data-search="6515 穎崴 未入籃 法人 2025-12-31｜外資5日 -23張｜主力5日 +461張｜股權 2026-05-22｜大戶 53.51%｜中實戶 13人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6515.html">6515 穎崴</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">8665.00</td>
   <td><div class="price-entry">進 9155.00</div><div class="price-target">目 10990.50</div><div class="price-stop">初停 8285.75</div><div class="price-support">支撐 1149.22</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 53.51%｜中實戶 13人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -23張｜主力5日 +461張｜股權 2026-05-22｜大戶 53.51%｜中實戶 13人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13572,12 +13586,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6526 達發 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 77.81%｜中實戶 22人 個股查詢 未入籃">
+<tr data-search="6526 達發 未入籃 法人 2025-12-31｜外資5日 -99張｜主力5日 -91張｜股權 2026-05-22｜大戶 77.81%｜中實戶 22人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6526.html">6526 達發</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">659.00</td>
   <td><div class="price-entry">進 667.50</div><div class="price-target">目 802.74</div><div class="price-stop">初停 598.99</div><div class="price-support">支撐 598.99</div><div class="price-rr rr-mid">R:R 1:2.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 77.81%｜中實戶 22人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -99張｜主力5日 -91張｜股權 2026-05-22｜大戶 77.81%｜中實戶 22人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -13617,12 +13631,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6533 晶心科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 20.96%｜中實戶 14人 個股查詢 未入籃">
+<tr data-search="6533 晶心科 未入籃 法人 2025-12-31｜外資5日 -303張｜主力5日 -315張｜股權 2026-05-22｜大戶 20.96%｜中實戶 14人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6533.html">6533 晶心科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">219.00</td>
   <td><div class="price-entry">進 222.88</div><div class="price-target">目 405.96</div><div class="price-stop">初停 211.94</div><div class="price-support">支撐 211.94</div><div class="price-rr rr-good">R:R 1:16.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 20.96%｜中實戶 14人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -303張｜主力5日 -315張｜股權 2026-05-22｜大戶 20.96%｜中實戶 14人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14112,12 +14126,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6643 m31 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 37.80%｜中實戶 5人 個股查詢 未入籃">
+<tr data-search="6643 m31 未入籃 法人 2025-12-31｜外資5日 -133張｜主力5日 -143張｜股權 2026-05-22｜大戶 37.80%｜中實戶 5人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6643.html">6643 M31</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">580.00</td>
   <td><div class="price-entry">進 594.25</div><div class="price-target">目 777.24</div><div class="price-stop">初停 546.25</div><div class="price-support">支撐 546.25</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 37.80%｜中實戶 5人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -133張｜主力5日 -143張｜股權 2026-05-22｜大戶 37.80%｜中實戶 5人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14220,12 +14234,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6667 信紘科 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.52%｜中實戶 4人 個股查詢 未入籃">
+<tr data-search="6667 信紘科 未入籃 法人 2025-12-31｜外資5日 -118張｜主力5日 -123張｜股權 2026-05-22｜大戶 51.52%｜中實戶 4人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6667.html">6667 信紘科</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">287.00</td>
   <td><div class="price-entry">進 253.62</div><div class="price-target">目 294.27</div><div class="price-stop">初停 238.41</div><div class="price-support">支撐 179.60</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.52%｜中實戶 4人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -118張｜主力5日 -123張｜股權 2026-05-22｜大戶 51.52%｜中實戶 4人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14238,12 +14252,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6669 緯穎 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 64.81%｜中實戶 54人 個股查詢 未入籃">
+<tr data-search="6669 緯穎 未入籃 法人 2025-12-31｜外資5日 +208張｜主力5日 +259張｜股權 2026-05-22｜大戶 64.81%｜中實戶 54人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6669.html">6669 緯穎</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">5445.00</td>
   <td><div class="price-entry">進 5051.25</div><div class="price-target">目 5997.60</div><div class="price-stop">初停 4855.00</div><div class="price-support">支撐 3273.55</div><div class="price-rr rr-good">R:R 1:4.8</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 64.81%｜中實戶 54人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +208張｜主力5日 +259張｜股權 2026-05-22｜大戶 64.81%｜中實戶 54人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14283,12 +14297,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6679 鈺太 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 61.64%｜中實戶 16人 個股查詢 未入籃">
+<tr data-search="6679 鈺太 未入籃 法人 2025-12-31｜外資5日 +30張｜主力5日 +26張｜股權 2026-05-22｜大戶 61.64%｜中實戶 16人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6679.html">6679 鈺太</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">314.50</td>
   <td><div class="price-entry">進 306.75</div><div class="price-target">目 359.55</div><div class="price-stop">初停 288.34</div><div class="price-support">支撐 204.97</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 61.64%｜中實戶 16人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +30張｜主力5日 +26張｜股權 2026-05-22｜大戶 61.64%｜中實戶 16人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14319,12 +14333,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6689 伊雲谷 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 47.90%｜中實戶 12人 個股查詢 未入籃">
+<tr data-search="6689 伊雲谷 未入籃 法人 2025-12-31｜外資5日 +286張｜主力5日 -67張｜股權 2026-05-22｜大戶 47.90%｜中實戶 12人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6689.html">6689 伊雲谷</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">65.00</td>
   <td><div class="price-entry">進 65.40</div><div class="price-target">目 90.27</div><div class="price-stop">初停 61.48</div><div class="price-support">支撐 63.58</div><div class="price-rr rr-good">R:R 1:6.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 47.90%｜中實戶 12人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +286張｜主力5日 -67張｜股權 2026-05-22｜大戶 47.90%｜中實戶 12人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14364,12 +14378,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6695 芯鼎 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 42.59%｜中實戶 20人 個股查詢 未入籃">
+<tr data-search="6695 芯鼎 未入籃 法人 2025-12-31｜外資5日 -66張｜主力5日 -68張｜股權 2026-05-22｜大戶 42.59%｜中實戶 20人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6695.html">6695 芯鼎</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">58.20</td>
   <td><div class="price-entry">進 53.78</div><div class="price-target">目 69.77</div><div class="price-stop">初停 50.55</div><div class="price-support">支撐 47.06</div><div class="price-rr rr-good">R:R 1:5.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 42.59%｜中實戶 20人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -66張｜主力5日 -68張｜股權 2026-05-22｜大戶 42.59%｜中實戶 20人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14445,12 +14459,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6719 力智 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 50.24%｜中實戶 20人 個股查詢 未入籃">
+<tr data-search="6719 力智 未入籃 法人 2025-12-31｜外資5日 -137張｜主力5日 -128張｜股權 2026-05-22｜大戶 50.24%｜中實戶 20人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6719.html">6719 力智</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">247.00</td>
   <td><div class="price-entry">進 214.00</div><div class="price-target">目 291.72</div><div class="price-stop">初停 201.16</div><div class="price-support">支撐 156.22</div><div class="price-rr rr-good">R:R 1:6.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 50.24%｜中實戶 20人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -137張｜主力5日 -128張｜股權 2026-05-22｜大戶 50.24%｜中實戶 20人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14616,21 +14630,21 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6756 威鋒電子 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 61.69%｜中實戶 6人 個股查詢 未入籃">
+<tr data-search="6756 威鋒電子 未入籃 法人 2025-12-31｜外資5日 +42張｜主力5日 +42張｜股權 2026-05-22｜大戶 61.69%｜中實戶 6人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6756.html">6756 威鋒電子</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">100.00</td>
   <td><div class="price-entry">進 97.72</div><div class="price-target">目 117.81</div><div class="price-stop">初停 92.00</div><div class="price-support">支撐 69.65</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 61.69%｜中實戶 6人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +42張｜主力5日 +42張｜股權 2026-05-22｜大戶 61.69%｜中實戶 6人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6757 台灣虎航 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 77.61%｜中實戶 19人 個股查詢 未入籃">
+<tr data-search="6757 台灣虎航 未入籃 法人 2025-12-31｜外資5日 -1,506張｜主力5日 -2,413張｜股權 2026-05-22｜大戶 77.61%｜中實戶 19人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6757.html">6757 台灣虎航</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">56.70</td>
   <td><div class="price-entry">進 52.35</div><div class="price-target">目 92.31</div><div class="price-stop">初停 50.65</div><div class="price-support">支撐 50.65</div><div class="price-rr rr-good">R:R 1:23.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 77.61%｜中實戶 19人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,506張｜主力5日 -2,413張｜股權 2026-05-22｜大戶 77.61%｜中實戶 19人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14679,12 +14693,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6770 力積電 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 43.87%｜中實戶 542人 個股查詢 未入籃">
+<tr data-search="6770 力積電 未入籃 法人 2025-12-31｜外資5日 -71,777張｜主力5日 -70,400張｜股權 2026-05-22｜大戶 43.87%｜中實戶 542人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6770.html">6770 力積電</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">88.70</td>
   <td><div class="price-entry">進 64.62</div><div class="price-target">目 90.47</div><div class="price-stop">初停 58.65</div><div class="price-support">支撐 17.06</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 43.87%｜中實戶 542人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -71,777張｜主力5日 -70,400張｜股權 2026-05-22｜大戶 43.87%｜中實戶 542人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14706,12 +14720,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6781 aes-ky 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 71.65%｜中實戶 10人 個股查詢 未入籃">
+<tr data-search="6781 aes-ky 未入籃 法人 2025-12-31｜外資5日 -308張｜主力5日 -686張｜股權 2026-05-22｜大戶 71.65%｜中實戶 10人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6781.html">6781 AES-KY</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1160.00</td>
   <td><div class="price-entry">進 1152.50</div><div class="price-target">目 1397.40</div><div class="price-stop">初停 1083.35</div><div class="price-support">支撐 899.48</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 71.65%｜中實戶 10人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -308張｜主力5日 -686張｜股權 2026-05-22｜大戶 71.65%｜中實戶 10人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14796,12 +14810,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6799 來頡 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 36.09%｜中實戶 11人 個股查詢 未入籃">
+<tr data-search="6799 來頡 未入籃 法人 2025-12-31｜外資5日 +52張｜主力5日 +53張｜股權 2026-05-22｜大戶 36.09%｜中實戶 11人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6799.html">6799 來頡</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">110.00</td>
   <td><div class="price-entry">進 97.22</div><div class="price-target">目 122.91</div><div class="price-stop">初停 86.56</div><div class="price-support">支撐 86.56</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 36.09%｜中實戶 11人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +52張｜主力5日 +53張｜股權 2026-05-22｜大戶 36.09%｜中實戶 11人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -14823,12 +14837,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="6805 富世達 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 58.18%｜中實戶 17人 個股查詢 未入籃">
+<tr data-search="6805 富世達 未入籃 法人 2025-12-31｜外資5日 -283張｜主力5日 +119張｜股權 2026-05-22｜大戶 58.18%｜中實戶 17人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/6805.html">6805 富世達</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1930.00</td>
   <td><div class="price-entry">進 1742.50</div><div class="price-target">目 2320.50</div><div class="price-stop">初停 1601.95</div><div class="price-support">支撐 1601.95</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 58.18%｜中實戶 17人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -283張｜主力5日 +119張｜股權 2026-05-22｜大戶 58.18%｜中實戶 17人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -16281,12 +16295,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8033 雷虎 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 33.21%｜中實戶 27人 個股查詢 未入籃">
+<tr data-search="8033 雷虎 未入籃 法人 2025-12-31｜外資5日 -823張｜主力5日 -1,064張｜股權 2026-05-22｜大戶 33.21%｜中實戶 27人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8033.html">8033 雷虎</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">143.00</td>
   <td><div class="price-entry">進 135.12</div><div class="price-target">目 167.79</div><div class="price-stop">初停 127.86</div><div class="price-support">支撐 127.86</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 33.21%｜中實戶 27人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -823張｜主力5日 -1,064張｜股權 2026-05-22｜大戶 33.21%｜中實戶 27人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -16407,12 +16421,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8054 安國 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 35.28%｜中實戶 15人 個股查詢 未入籃">
+<tr data-search="8054 安國 未入籃 法人 2025-12-31｜外資5日 -1,985張｜主力5日 -2,117張｜股權 2026-05-22｜大戶 35.28%｜中實戶 15人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8054.html">8054 安國</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">102.50</td>
   <td><div class="price-entry">進 104.28</div><div class="price-target">目 132.60</div><div class="price-stop">初停 98.02</div><div class="price-support">支撐 89.55</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 35.28%｜中實戶 15人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -1,985張｜主力5日 -2,117張｜股權 2026-05-22｜大戶 35.28%｜中實戶 15人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -16461,12 +16475,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8069 元太 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 78.43%｜中實戶 168人 個股查詢 未入籃">
+<tr data-search="8069 元太 未入籃 法人 2025-12-31｜外資5日 -6,017張｜主力5日 +678張｜股權 2026-05-22｜大戶 78.43%｜中實戶 168人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8069.html">8069 元太</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">220.00</td>
   <td><div class="price-entry">進 204.12</div><div class="price-target">目 256.02</div><div class="price-stop">初停 191.88</div><div class="price-support">支撐 134.32</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 78.43%｜中實戶 168人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -6,017張｜主力5日 +678張｜股權 2026-05-22｜大戶 78.43%｜中實戶 168人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -16866,12 +16880,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8210 勤誠 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 73.20%｜中實戶 21人 個股查詢 未入籃">
+<tr data-search="8210 勤誠 未入籃 法人 2025-12-31｜外資5日 -353張｜主力5日 +890張｜股權 2026-05-22｜大戶 73.20%｜中實戶 21人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8210.html">8210 勤誠</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">1365.00</td>
   <td><div class="price-entry">進 1350.00</div><div class="price-target">目 1621.80</div><div class="price-stop">初停 1240.00</div><div class="price-support">支撐 822.87</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 73.20%｜中實戶 21人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -353張｜主力5日 +890張｜股權 2026-05-22｜大戶 73.20%｜中實戶 21人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -16911,12 +16925,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8234 新漢 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 52.78%｜中實戶 25人 個股查詢 未入籃">
+<tr data-search="8234 新漢 未入籃 法人 2025-12-31｜外資5日 -298張｜主力5日 -350張｜股權 2026-05-22｜大戶 52.78%｜中實戶 25人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8234.html">8234 新漢</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">71.90</td>
   <td><div class="price-entry">進 67.88</div><div class="price-target">目 79.97</div><div class="price-stop">初停 63.80</div><div class="price-support">支撐 57.91</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 52.78%｜中實戶 25人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -298張｜主力5日 -350張｜股權 2026-05-22｜大戶 52.78%｜中實戶 25人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -17019,12 +17033,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="8299 群聯 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 51.02%｜中實戶 46人 個股查詢 未入籃">
+<tr data-search="8299 群聯 未入籃 法人 2025-12-31｜外資5日 +3,872張｜主力5日 +2,215張｜股權 2026-05-22｜大戶 51.02%｜中實戶 46人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8299.html">8299 群聯</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">2575.00</td>
   <td><div class="price-entry">進 2407.50</div><div class="price-target">目 2937.60</div><div class="price-stop">初停 2263.05</div><div class="price-support">支撐 1467.62</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 51.02%｜中實戶 46人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +3,872張｜主力5日 +2,215張｜股權 2026-05-22｜大戶 51.02%｜中實戶 46人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -17068,10 +17082,10 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/8358.html">8358 金居</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag-green">行進籃</span></td>
   <td class="price-main">608.00</td>
-  <td><div class="price-entry">進 428.00</div><div class="price-target">目 577.32</div><div class="price-stop">初停 385.00</div><div class="price-support">支撐 338.30</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
+  <td><div class="price-entry">進 428.00</div><div class="price-target">目 424.32</div><div class="price-stop">初停 385.00</div><div class="price-support">支撐 222.88</div><div class="price-rr ">R:R ─</div></td>
   <td><div class="chip-line">法人 2026-05-27｜外資5日 +6,035張｜主力5日 +6,426張｜股權 2026-05-22｜大戶 60.40%｜中實戶 39人</div></td>
-  <td>100.0</td>
-  <td>3 次</td>
+  <td>85.0</td>
+  <td>2 次</td>
 </tr>
 <tr data-search="8367 建新國際 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 70.08%｜中實戶 24人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/8367.html">8367 建新國際</a><div class="signal-dates">2026-05-29</div></td>
@@ -17739,12 +17753,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="9105 泰金寶-dr 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 32.46%｜中實戶 684人 個股查詢 未入籃">
+<tr data-search="9105 泰金寶-dr 未入籃 法人 2025-12-31｜外資5日 -6,210張｜主力5日 -6,229張｜股權 2026-05-22｜大戶 32.46%｜中實戶 684人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/9105.html">9105 泰金寶-DR</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">8.80</td>
   <td><div class="price-entry">進 6.47</div><div class="price-target">目 9.44</div><div class="price-stop">初停 6.09</div><div class="price-support">支撐 5.23</div><div class="price-rr rr-good">R:R 1:7.6</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 32.46%｜中實戶 684人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -6,210張｜主力5日 -6,229張｜股權 2026-05-22｜大戶 32.46%｜中實戶 684人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -17784,12 +17798,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="9904 寶成 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 75.14%｜中實戶 321人 個股查詢 未入籃">
+<tr data-search="9904 寶成 未入籃 法人 2025-12-31｜外資5日 -6,669張｜主力5日 -10,452張｜股權 2026-05-22｜大戶 75.14%｜中實戶 321人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/9904.html">9904 寶成</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">25.45</td>
   <td><div class="price-entry">進 25.50</div><div class="price-target">目 39.58</div><div class="price-stop">初停 23.97</div><div class="price-support">支撐 24.97</div><div class="price-rr rr-good">R:R 1:9.2</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 75.14%｜中實戶 321人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -6,669張｜主力5日 -10,452張｜股權 2026-05-22｜大戶 75.14%｜中實戶 321人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -18072,12 +18086,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="9945 潤泰新 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 64.48%｜中實戶 413人 個股查詢 未入籃">
+<tr data-search="9945 潤泰新 未入籃 法人 2025-12-31｜外資5日 +8,725張｜主力5日 -1,582張｜股權 2026-05-22｜大戶 64.48%｜中實戶 413人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/9945.html">9945 潤泰新</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">23.30</td>
   <td><div class="price-entry">進 23.29</div><div class="price-target">目 43.55</div><div class="price-stop">初停 21.89</div><div class="price-support">支撐 22.79</div><div class="price-rr rr-good">R:R 1:14.5</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 64.48%｜中實戶 413人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 +8,725張｜主力5日 -1,582張｜股權 2026-05-22｜大戶 64.48%｜中實戶 413人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>
@@ -18126,12 +18140,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>─</td>
   <td>0 次</td>
 </tr>
-<tr data-search="9958 世紀鋼 未入籃 法人尚無快取｜股權 2026-05-22｜大戶 55.58%｜中實戶 33人 個股查詢 未入籃">
+<tr data-search="9958 世紀鋼 未入籃 法人 2025-12-31｜外資5日 -113張｜主力5日 -86張｜股權 2026-05-22｜大戶 55.58%｜中實戶 33人 個股查詢 未入籃">
   <td><a class="stock-link" href="stocks/9958.html">9958 世紀鋼</a><div class="signal-dates">2026-05-29</div></td>
   <td><span class="tag">未入籃</span></td>
   <td class="price-main">103.50</td>
   <td><div class="price-entry">進 104.00</div><div class="price-target">目 198.90</div><div class="price-stop">初停 100.00</div><div class="price-support">支撐 100.00</div><div class="price-rr rr-good">R:R 1:23.7</div></td>
-  <td><div class="chip-line">法人尚無快取｜股權 2026-05-22｜大戶 55.58%｜中實戶 33人</div></td>
+  <td><div class="chip-line">法人 2025-12-31｜外資5日 -113張｜主力5日 -86張｜股權 2026-05-22｜大戶 55.58%｜中實戶 33人</div></td>
   <td>─</td>
   <td>0 次</td>
 </tr>

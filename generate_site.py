@@ -39,6 +39,7 @@ LOCAL_HOLDING_DIR = LOCAL_DATA_DIR / "holding_shares"
 LOCAL_FOREIGN_SHAREHOLDING_DIR = LOCAL_DATA_DIR / "foreign_shareholding"
 LOCAL_MARGIN_DIR = LOCAL_DATA_DIR / "margin"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
+SFZ_ALL_PATH = LOCAL_DATA_DIR / "sfz_all.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
@@ -716,6 +717,18 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .carybot-line{font-size:12px;color:#8b949e;line-height:1.55;white-space:nowrap}
 .carybot-line strong{color:#e6edf3}
 .carybot-missing{font-size:12px;color:#6e7681}
+.sfz-control-bar{position:sticky;top:46px;z-index:22;display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;background:rgba(13,17,23,.96);border:1px solid #30363d;border-radius:8px;padding:10px;margin:12px 0;backdrop-filter:blur(8px)}
+.sfz-control{display:flex;flex-direction:column;gap:4px}
+.sfz-control label{font-size:11px;color:#8b949e;font-weight:800}
+.sfz-control select,.sfz-control input{background:#0d1117;border:1px solid #30363d;border-radius:6px;color:#e6edf3;padding:7px 9px;font-size:13px}
+.sfz-actions{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.sfz-actions button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:7px 10px;cursor:pointer;font-weight:800}
+.sfz-actions button:hover{border-color:#58a6ff;color:#58a6ff}
+.sfz-count-line{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;color:#8b949e;font-size:12px;margin:8px 0 10px}
+.sfz-pager{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin-top:10px;color:#8b949e;font-size:12px}
+.sfz-pager button{background:#21262d;border:1px solid #30363d;color:#e6edf3;border-radius:6px;padding:6px 10px;cursor:pointer}
+.sfz-pager button:disabled{opacity:.45;cursor:not-allowed}
+.sfz-bull-note{display:none;color:#d2a520;font-weight:800}
 
 /* Status badges */
 .badge{display:inline-block;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:700}
@@ -802,6 +815,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
   .stock-table .hide-mobile{display:none}
+  .sfz-control-bar{position:static;grid-template-columns:1fr}
+  .sfz-count-line{display:grid}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -1244,6 +1259,204 @@ def build_stock_table(
 <tbody>{rows}</tbody>
 </table>
 </div>"""
+
+
+def load_sfz_all_payload(path: Path | str = SFZ_ALL_PATH) -> dict:
+    path = Path(path)
+    if not path.exists():
+        return {"date": "", "count": 0, "default_limit": 20, "stocks": []}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {"date": "", "count": 0, "default_limit": 20, "stocks": []}
+    if not isinstance(payload, dict):
+        return {"date": "", "count": 0, "default_limit": 20, "stocks": []}
+    stocks = payload.get("stocks")
+    if not isinstance(stocks, list):
+        payload["stocks"] = []
+    payload["count"] = len(payload.get("stocks", []))
+    payload.setdefault("default_limit", 20)
+    payload.setdefault("date", "")
+    return payload
+
+
+def _sfz_fmt(value, digits: int = 1, suffix: str = "") -> str:
+    value = _num_or_none(value)
+    if value is None:
+        return "-"
+    return f"{value:.{digits}f}{suffix}"
+
+
+def _sfz_money(value) -> str:
+    value = _num_or_none(value)
+    if value is None:
+        return "-"
+    if value >= 100_000_000:
+        return f"{value / 100_000_000:.1f} 億"
+    if value >= 10_000:
+        return f"{value / 10_000:.0f} 萬"
+    return f"{value:.0f}"
+
+
+def _sfz_market_cap_label(bucket: str) -> str:
+    return {
+        "large": "大型股",
+        "mid": "中型股",
+        "small": "小型股",
+        "unknown": "未分類",
+    }.get(str(bucket or "unknown"), "未分類")
+
+
+def _sfz_tag_class(row: dict) -> str:
+    text = f"{row.get('basket', '')} {row.get('status', '')}"
+    if "風險" in text or "過熱" in text:
+        return "tag-red"
+    if "盤整" in text:
+        return "tag-blue"
+    return "tag-green"
+
+
+def build_sfz_all_controls(payload: dict) -> str:
+    stocks = payload.get("stocks") or []
+    date_str = payload.get("date") or "-"
+    total = len(stocks)
+    if not stocks:
+        return """
+<div class="card">
+  <div class="section-label">SFZ 全量候選</div>
+  <div class="strategy-note">尚未找到 <code>data/sfz_all.json</code>；請先執行 <code>python run_screener.py</code> 產生全量候選資料。</div>
+</div>"""
+
+    carybot_map = latest_carybot_markers_by_stock()
+    rows_html = ""
+    for row in stocks:
+        sid = str(row.get("stock_id") or row.get("id") or "")
+        name = row.get("name") or sid
+        basket_text = row.get("basket") or row.get("rank_basket") or row.get("status") or "-"
+        tag_cls = _sfz_tag_class(row)
+        score = _num_or_none(row.get("score"))
+        close = _num_or_none(row.get("close"))
+        gain = _num_or_none(row.get("gain_6w"))
+        turnover = _num_or_none(row.get("turnover_value")) or 0
+        cap_bucket = str(row.get("market_cap_bucket") or "unknown")
+        has_carybot = "1" if sid in carybot_map else "0"
+        search = f"{sid} {name} {basket_text} {row.get('sector', '')}".lower()
+        rows_html += f"""
+<tr data-sfz-row data-rank="{esc(row.get('rank') or 0)}" data-code="{esc(sid)}" data-name="{esc(name)}" data-score="{esc(score if score is not None else 0)}" data-turnover="{esc(turnover)}" data-gain="{esc(gain if gain is not None else 0)}" data-market-cap="{esc(cap_bucket)}" data-carybot="{has_carybot}" data-bullish="0" data-text="{esc(search)}">
+  <td><strong>#{esc(row.get('rank') or '')}</strong></td>
+  <td><a class="stock-link" href="stocks/{esc(sid)}.html">{esc(sid)} {esc(name)}</a><div class="signal-dates">{esc(row.get('sector') or '-')}</div></td>
+  <td><span class="tag {tag_cls}">{esc(basket_text)}</span><div class="signal-dates">{_sfz_market_cap_label(cap_bucket)}</div></td>
+  <td class="price-main">{_sfz_fmt(close, 2)}</td>
+  <td><span style="color:#58a6ff;font-weight:800">{_sfz_fmt(score, 1)}</span></td>
+  <td class="{('pos' if (gain or 0) >= 0 else 'neg')}">{_sfz_fmt(gain, 1, '%')}</td>
+  <td>{_sfz_money(turnover)}<div class="signal-dates">5日均量 {_sfz_fmt(row.get('vol5_lot'), 0)} 張</div></td>
+  <td>{'<span class="tag tag-green">CaryBot</span>' if has_carybot == '1' else '<span class="tag">待接入</span>'}</td>
+</tr>"""
+
+    return f"""
+<div class="card" data-sfz-table>
+  <div class="section-head">
+    <div>
+      <div class="section-label">SFZ 全量候選</div>
+      <div class="strategy-note">資料日 {esc(date_str)}，保留每日 Top20 體驗；這裡顯示全部 {total} 檔通過 SFZ/M大條件的候選，再用前端做二次篩選。</div>
+    </div>
+    <div class="section-date">共 {total} 檔</div>
+  </div>
+  <div class="sfz-control-bar">
+    <div class="sfz-control"><label for="sfzSearch">搜尋</label><input id="sfzSearch" data-sfz-search placeholder="代號、名稱、產業、籃別"></div>
+    <div class="sfz-control"><label for="sfzBasketFilter">籃別</label><select id="sfzBasketFilter"><option value="all">全部</option><option value="marching">已發動 / 行進</option><option value="consolidation">盤整 / 觀察</option><option value="risk">過熱 / 風險</option></select></div>
+    <div class="sfz-control"><label for="sfzMarketCapFilter">市值</label><select id="sfzMarketCapFilter"><option value="all">全部</option><option value="large">大型股</option><option value="mid">中型股</option><option value="small">小型股</option><option value="unknown">未分類</option></select></div>
+    <div class="sfz-control"><label for="sfzVolumeFilter">成交金額</label><select id="sfzVolumeFilter"><option value="all">全部</option><option value="100000000">&gt; 1億</option><option value="50000000">&gt; 5千萬</option></select></div>
+    <div class="sfz-control"><label for="sfzCarybotFilter">CaryBot</label><select id="sfzCarybotFilter"><option value="all">全部</option><option value="yes">已有 CaryBot 訊號</option><option value="no">尚未接入</option></select></div>
+    <div class="sfz-control"><label for="sfzBullishFilter">大盤情緒</label><select id="sfzBullishFilter" disabled><option value="all">Task 1 接入後啟用</option></select></div>
+    <div class="sfz-control"><label for="sfzSort">排序</label><select id="sfzSort"><option value="rank">預設排名</option><option value="score">分數高到低</option><option value="turnover">成交金額高到低</option><option value="gain">漲幅高到低</option></select></div>
+    <div class="sfz-control"><label for="sfzPageSize">每頁</label><select id="sfzPageSize"><option value="20">20</option><option value="50">50</option><option value="all">全部</option></select></div>
+    <div class="sfz-actions"><button type="button" id="sfzShowAll">顯示全部 {total} 檔</button><button type="button" id="sfzReset">重設</button></div>
+  </div>
+  <div class="sfz-count-line"><span data-sfz-count>目前顯示 Top 20 / {total} 檔</span><span class="sfz-bull-note" data-sfz-bull-note>目前大盤偏多，建議搭配 CaryBot 訊號做二次確認</span></div>
+  <div style="overflow-x:auto">
+    <table class="stock-table">
+      <thead><tr><th>#</th><th>股票</th><th>籃別 / 市值</th><th>收盤</th><th>分數</th><th>6週漲幅</th><th>成交金額</th><th>CaryBot</th></tr></thead>
+      <tbody>{rows_html}</tbody>
+    </table>
+  </div>
+  <div class="sfz-pager"><button type="button" data-sfz-prev>上一頁</button><span data-sfz-page>第 1 / 1 頁</span><button type="button" data-sfz-next>下一頁</button></div>
+</div>
+<script>
+(function(){{
+  function bucketOf(row){{
+    const text=(row.querySelector('td:nth-child(3)')?.textContent||'');
+    if(text.indexOf('風險')>=0 || text.indexOf('過熱')>=0) return 'risk';
+    if(text.indexOf('盤整')>=0 || text.indexOf('觀察')>=0) return 'consolidation';
+    return 'marching';
+  }}
+  function init(){{
+    document.querySelectorAll('[data-sfz-table]').forEach(function(root){{
+      const tbody=root.querySelector('tbody');
+      const rows=Array.from(root.querySelectorAll('[data-sfz-row]'));
+      const q=root.querySelector('[data-sfz-search]');
+      const basket=root.querySelector('#sfzBasketFilter');
+      const cap=root.querySelector('#sfzMarketCapFilter');
+      const volume=root.querySelector('#sfzVolumeFilter');
+      const carybot=root.querySelector('#sfzCarybotFilter');
+      const sort=root.querySelector('#sfzSort');
+      const pageSize=root.querySelector('#sfzPageSize');
+      const count=root.querySelector('[data-sfz-count]');
+      const pageText=root.querySelector('[data-sfz-page]');
+      const prev=root.querySelector('[data-sfz-prev]');
+      const next=root.querySelector('[data-sfz-next]');
+      const showAll=root.querySelector('#sfzShowAll');
+      const reset=root.querySelector('#sfzReset');
+      let page=1;
+      function num(v){{ const n=Number(v); return Number.isFinite(n)?n:0; }}
+      function selected(){{
+        const query=(q&&q.value||'').trim().toLowerCase();
+        const minTurnover=volume&&volume.value!=='all'?Number(volume.value):0;
+        const capValue=cap&&cap.value||'all';
+        const basketValue=basket&&basket.value||'all';
+        const carybotValue=carybot&&carybot.value||'all';
+        return rows.filter(function(row){{
+          let ok=!query || (row.dataset.text||'').indexOf(query)>=0;
+          if(capValue!=='all') ok=ok && row.dataset.marketCap===capValue;
+          if(minTurnover>0) ok=ok && num(row.dataset.turnover)>=minTurnover;
+          if(basketValue!=='all') ok=ok && bucketOf(row)===basketValue;
+          if(carybotValue==='yes') ok=ok && row.dataset.carybot==='1';
+          if(carybotValue==='no') ok=ok && row.dataset.carybot!=='1';
+          return ok;
+        }}).sort(function(a,b){{
+          const key=sort&&sort.value||'rank';
+          if(key==='score') return num(b.dataset.score)-num(a.dataset.score);
+          if(key==='turnover') return num(b.dataset.turnover)-num(a.dataset.turnover);
+          if(key==='gain') return num(b.dataset.gain)-num(a.dataset.gain);
+          return num(a.dataset.rank)-num(b.dataset.rank);
+        }});
+      }}
+      function render(){{
+        const shown=selected();
+        const sizeValue=pageSize&&pageSize.value||'20';
+        const per=sizeValue==='all'?Math.max(shown.length,1):Number(sizeValue||20);
+        const pages=Math.max(1,Math.ceil(shown.length/per));
+        if(page>pages) page=pages;
+        const pageRows=shown.slice((page-1)*per,page*per);
+        rows.forEach(function(row){{ row.style.display='none'; }});
+        shown.forEach(function(row){{ tbody.appendChild(row); }});
+        pageRows.forEach(function(row){{ row.style.display=''; }});
+        if(count) count.textContent='本頁 '+pageRows.length+' 檔 / 篩選 '+shown.length+' 檔 / 全部 '+rows.length+' 檔';
+        if(pageText) pageText.textContent='第 '+page+' / '+pages+' 頁';
+        if(prev) prev.disabled=page<=1;
+        if(next) next.disabled=page>=pages;
+      }}
+      [q,basket,cap,volume,carybot,sort,pageSize].forEach(function(el){{ if(el) el.addEventListener(el===q?'input':'change',function(){{ page=1; render(); }}); }});
+      if(prev) prev.addEventListener('click',function(){{ page=Math.max(1,page-1); render(); }});
+      if(next) next.addEventListener('click',function(){{ page=page+1; render(); }});
+      if(showAll) showAll.addEventListener('click',function(){{ if(pageSize) pageSize.value='all'; page=1; render(); }});
+      if(reset) reset.addEventListener('click',function(){{ if(q) q.value=''; if(basket) basket.value='all'; if(cap) cap.value='all'; if(volume) volume.value='all'; if(carybot) carybot.value='all'; if(sort) sort.value='rank'; if(pageSize) pageSize.value='20'; page=1; render(); }});
+      render();
+    }});
+  }}
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
+}})();
+</script>"""
 
 
 def build_filter_steps(steps: list[dict]) -> str:
@@ -6596,6 +6809,24 @@ def build_baskets_page(reports, section_only=False):
     marching, consolidation, risk = split_baskets(stocks)
     risk_watch = risk or build_risk_watchlist(stocks)
     ledger = build_signal_ledger(reports)
+    sfz_all_payload = load_sfz_all_payload()
+    sfz_all_stocks = sfz_all_payload.get("stocks") or []
+    if sfz_all_stocks:
+        def payload_bucket(row: dict) -> str:
+            text = f"{row.get('basket', '')} {row.get('status', '')}"
+            if "風險" in text or "過熱" in text:
+                return "risk"
+            if "盤整" in text or "觀察" in text:
+                return "consolidation"
+            return "marching"
+
+        marching_count = sum(1 for row in sfz_all_stocks if payload_bucket(row) == "marching")
+        consolidation_count = sum(1 for row in sfz_all_stocks if payload_bucket(row) == "consolidation")
+        risk_count = sum(1 for row in sfz_all_stocks if payload_bucket(row) == "risk")
+    else:
+        marching_count = len(marching)
+        consolidation_count = len(consolidation)
+        risk_count = len(risk)
 
     hero = f"""
 <div class="card">
@@ -6622,12 +6853,15 @@ def build_baskets_page(reports, section_only=False):
   </div>
 </div>"""
 
+    full_listing = build_sfz_all_controls(sfz_all_payload) if sfz_all_stocks else ""
+
     body = (
         '<div class="container">'
         + '<div class="page-title">SFZ 雙籃</div>'
         + f'<div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：{date_str}</div>'
         + hero
         + playbook
+        + full_listing
         + '<div class="grid grid-2">'
         + build_basket_column("行進籃｜SFZ 波段", "已進入較強趨勢的候選；重點是買點可執行、MA20續抱、避免漲停追高。", marching, "marching", ledger)
         + build_basket_column("盤整籃｜MABC 觀察", "尚未完全發動但值得等待；重點是量縮價穩、籌碼不離開、早買型態浮現。", consolidation, "consolidation", ledger)
@@ -7607,8 +7841,7 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
     sell_rows = [r for r in rows if marker_side(r) == "sell"]
 
     def metric_card(label: str, value: str, note: str, color: str) -> str:
-        return f"""
-<div class="metric">
+        return f"""<div class="metric">
   <div class="metric-num" style="color:{color}">{esc(value)}</div>
   <div class="metric-label">{esc(label)}</div>
   <div class="chip-line">{esc(note)}</div>
@@ -7873,7 +8106,7 @@ def build_carybot_validation_page(reports: list[dict], section_only: bool = Fals
       {metric_card("AI_Sell 樣本", str(len(ai_sell)), "偏正式賣點警示", "#f85149")}
     </div>
     <div class="strategy-note" style="margin-top:14px">CaryBot 現階段最適合接在買點雷達後面：SFZ 負責趨勢股、M大負責未發動觀察股，CaryBot 用來檢查 VPA / VAM / QTYR 與顏色狀態是否支持進場或降風險。</div>
-    {stale_note}
+{stale_note}
   </div>
 
   {daily_ai_buy_v51_section().strip()}
