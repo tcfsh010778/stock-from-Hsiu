@@ -93,6 +93,39 @@ class PR3LogicTest(unittest.TestCase):
         self.assertIn('id="sfzBullishFilter"', html)
         self.assertIn('id="sfzSort"', html)
 
+    def test_market_sentiment_panel_renders_score_and_vix(self) -> None:
+        payload = {
+            "score": 68,
+            "regime": "bullish",
+            "updated_at": "2026-05-31T18:00:00+08:00",
+            "indicators": {
+                "taiex_ma": {"label": "TAIEX MA", "signal": "bullish", "display": "3/3"},
+                "us_vix": {"label": "US VIX", "signal": "neutral", "display": "16.2"},
+            },
+        }
+
+        html = generate_site.build_market_sentiment_panel(payload)
+
+        self.assertIn("data-market-sentiment", html)
+        self.assertIn("68", html)
+        self.assertIn("US VIX", html)
+
+    def test_sfz_controls_enable_bullish_filter_when_market_score_is_bullish(self) -> None:
+        payload = {
+            "date": "2026-05-29",
+            "count": 1,
+            "default_limit": 20,
+            "stocks": [{"rank": 1, "stock_id": "2330", "name": "TSMC", "score": 90}],
+        }
+        market = {"score": 68, "regime": "bullish"}
+
+        html = generate_site.build_sfz_all_controls(payload, market)
+
+        self.assertIn('data-market-bullish="1"', html)
+        self.assertIn('data-bullish="1"', html)
+        self.assertIn('<option value="yes">大盤偏多訊號</option>', html)
+        self.assertNotIn("Task 1", html)
+
 
 if __name__ == "__main__":
     unittest.main()

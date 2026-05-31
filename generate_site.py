@@ -40,6 +40,7 @@ LOCAL_FOREIGN_SHAREHOLDING_DIR = LOCAL_DATA_DIR / "foreign_shareholding"
 LOCAL_MARGIN_DIR = LOCAL_DATA_DIR / "margin"
 REPORTS_CACHE_PATH = LOCAL_DATA_DIR / "site_reports.json"
 SFZ_ALL_PATH = LOCAL_DATA_DIR / "sfz_all.json"
+MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
@@ -688,6 +689,26 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+.market-env{border-color:rgba(88,166,255,.25)}
+.market-env-head{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch}
+.market-env-score{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px;min-height:130px}
+.market-env-score .num{font-size:42px;line-height:1;font-weight:900;color:#e6edf3}
+.market-env-score .label{font-size:13px;font-weight:800;margin-top:8px}
+.market-env-score.green{border-color:rgba(63,185,80,.55);background:rgba(63,185,80,.08)}
+.market-env-score.yellow{border-color:rgba(210,153,34,.55);background:rgba(210,153,34,.08)}
+.market-env-score.red{border-color:rgba(248,81,73,.55);background:rgba(248,81,73,.08)}
+.market-env-score.green .label{color:#3fb950}.market-env-score.yellow .label{color:#d2a520}.market-env-score.red .label{color:#f85149}
+.market-env-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.market-env-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px;min-height:78px}
+.market-env-item .k{font-size:11px;color:#8b949e;font-weight:800;display:flex;align-items:center;gap:6px}
+.market-env-item .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:4px}
+.market-env-item .d{font-size:11px;color:#6e7681;line-height:1.45;margin-top:3px}
+.env-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#6e7681;box-shadow:0 0 0 3px rgba(110,118,129,.12)}
+.env-dot.green{background:#3fb950;box-shadow:0 0 0 3px rgba(63,185,80,.16)}
+.env-dot.yellow{background:#d2a520;box-shadow:0 0 0 3px rgba(210,153,34,.16)}
+.env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
+.market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
+.market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
 
 /* Filter steps */
 .filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
@@ -820,7 +841,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.market-env-head,.market-env-grid,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .section-head{display:grid}
   .section-date{width:max-content}
   .telegram-head{display:grid}
@@ -1280,6 +1301,118 @@ def load_sfz_all_payload(path: Path | str = SFZ_ALL_PATH) -> dict:
     return payload
 
 
+def default_market_sentiment_payload() -> dict:
+    return {
+        "score": 50,
+        "regime": "neutral",
+        "regime_label": "中性",
+        "color": "yellow",
+        "updated_at": "",
+        "summary": "市場情緒資料尚未產生，先以中性看待。",
+        "indicators": {},
+        "source_status": ["WARN: market sentiment JSON missing"],
+    }
+
+
+def load_market_sentiment_payload(path: Path | str = MARKET_SENTIMENT_PATH) -> dict:
+    path = Path(path)
+    if not path.exists():
+        return default_market_sentiment_payload()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default_market_sentiment_payload()
+    if not isinstance(payload, dict):
+        return default_market_sentiment_payload()
+    payload.setdefault("score", 50)
+    payload.setdefault("regime", "neutral")
+    payload.setdefault("regime_label", "中性")
+    payload.setdefault("color", "yellow")
+    payload.setdefault("indicators", {})
+    payload.setdefault("source_status", [])
+    return payload
+
+
+def _market_color_class(value: str) -> str:
+    text = str(value or "").lower()
+    if text in {"green", "bullish", "calm"}:
+        return "green"
+    if text in {"red", "bearish", "fear"}:
+        return "red"
+    return "yellow"
+
+
+def _indicator_signal_label(signal: str) -> str:
+    text = str(signal or "").lower()
+    if text in {"bullish", "calm"}:
+        return "偏多"
+    if text in {"bearish", "fear"}:
+        return "偏空"
+    return "中性"
+
+
+def build_market_sentiment_panel(payload: dict | None = None, compact: bool = False) -> str:
+    payload = payload or load_market_sentiment_payload()
+    score_value = _num_or_none(payload.get("score"))
+    score = int(score_value if score_value is not None else 50)
+    color = _market_color_class(payload.get("color") or payload.get("regime"))
+    regime_label = payload.get("regime_label") or {"bullish": "偏多", "bearish": "偏空"}.get(str(payload.get("regime")), "中性")
+    updated_at = payload.get("updated_at") or "-"
+    summary = payload.get("summary") or ""
+    indicators = payload.get("indicators") if isinstance(payload.get("indicators"), dict) else {}
+    order = ["taiex_ma", "margin_weekly", "short_weekly", "foreign_5d", "breadth", "us_vix"]
+    indicator_html = ""
+    for key in order:
+        item = indicators.get(key) or {}
+        label = item.get("label") or key
+        signal = item.get("signal") or "neutral"
+        dot = _market_color_class(signal)
+        display = item.get("display")
+        if display in (None, ""):
+            value = _num_or_none(item.get("score"))
+            display = "-" if value is None else f"{value:.1f}"
+        detail = item.get("detail") or _indicator_signal_label(signal)
+        indicator_html += f"""
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot {dot}"></span>{esc(label)}</div>
+          <div class="v">{esc(display)}</div>
+          <div class="d">{esc(detail)}</div>
+        </div>"""
+    if not indicator_html:
+        indicator_html = """
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot yellow"></span>資料狀態</div>
+          <div class="v">中性</div>
+          <div class="d">尚未產生 market_sentiment.json</div>
+        </div>"""
+    source_notes = payload.get("source_status") or []
+    source_text = "；".join(str(x) for x in source_notes[:3]) if source_notes else "資料源檢查正常"
+    if compact:
+        source_line = ""
+    else:
+        source_line = f'<div class="market-env-updated">最後更新 {esc(updated_at)}｜{esc(source_text)}</div>'
+    return f"""
+<div class="card market-env" data-market-sentiment data-market-regime="{esc(payload.get('regime') or 'neutral')}" data-market-score="{score}">
+  <div class="section-head">
+    <div>
+      <div class="section-label">市場環境燈號</div>
+      <div class="market-env-summary">{esc(summary)}</div>
+    </div>
+    <div class="section-date">{esc(payload.get('date') or '-')}</div>
+  </div>
+  <div class="market-env-head">
+    <div class="market-env-score {color}">
+      <div class="num">{score}</div>
+      <div class="label">{esc(regime_label)}</div>
+    </div>
+    <div>
+      <div class="market-env-grid">{indicator_html}</div>
+      {source_line}
+    </div>
+  </div>
+</div>"""
+
+
 def _sfz_fmt(value, digits: int = 1, suffix: str = "") -> str:
     value = _num_or_none(value)
     if value is None:
@@ -1316,7 +1449,7 @@ def _sfz_tag_class(row: dict) -> str:
     return "tag-green"
 
 
-def build_sfz_all_controls(payload: dict) -> str:
+def build_sfz_all_controls(payload: dict, market_sentiment: dict | None = None) -> str:
     stocks = payload.get("stocks") or []
     date_str = payload.get("date") or "-"
     total = len(stocks)
@@ -1328,6 +1461,12 @@ def build_sfz_all_controls(payload: dict) -> str:
 </div>"""
 
     carybot_map = latest_carybot_markers_by_stock()
+    market_sentiment = market_sentiment or load_market_sentiment_payload()
+    market_score = _num_or_none(market_sentiment.get("score"))
+    market_score = 50 if market_score is None else market_score
+    market_bullish = market_score > 60 or str(market_sentiment.get("regime") or "").lower() == "bullish"
+    market_bullish_attr = "1" if market_bullish else "0"
+    bull_note_style = ' style="display:inline"' if market_bullish else ""
     rows_html = ""
     for row in stocks:
         sid = str(row.get("stock_id") or row.get("id") or "")
@@ -1342,7 +1481,7 @@ def build_sfz_all_controls(payload: dict) -> str:
         has_carybot = "1" if sid in carybot_map else "0"
         search = f"{sid} {name} {basket_text} {row.get('sector', '')}".lower()
         rows_html += f"""
-<tr data-sfz-row data-rank="{esc(row.get('rank') or 0)}" data-code="{esc(sid)}" data-name="{esc(name)}" data-score="{esc(score if score is not None else 0)}" data-turnover="{esc(turnover)}" data-gain="{esc(gain if gain is not None else 0)}" data-market-cap="{esc(cap_bucket)}" data-carybot="{has_carybot}" data-bullish="0" data-text="{esc(search)}">
+<tr data-sfz-row data-rank="{esc(row.get('rank') or 0)}" data-code="{esc(sid)}" data-name="{esc(name)}" data-score="{esc(score if score is not None else 0)}" data-turnover="{esc(turnover)}" data-gain="{esc(gain if gain is not None else 0)}" data-market-cap="{esc(cap_bucket)}" data-carybot="{has_carybot}" data-bullish="{market_bullish_attr}" data-text="{esc(search)}">
   <td><strong>#{esc(row.get('rank') or '')}</strong></td>
   <td><a class="stock-link" href="stocks/{esc(sid)}.html">{esc(sid)} {esc(name)}</a><div class="signal-dates">{esc(row.get('sector') or '-')}</div></td>
   <td><span class="tag {tag_cls}">{esc(basket_text)}</span><div class="signal-dates">{_sfz_market_cap_label(cap_bucket)}</div></td>
@@ -1354,7 +1493,7 @@ def build_sfz_all_controls(payload: dict) -> str:
 </tr>"""
 
     return f"""
-<div class="card" data-sfz-table>
+<div class="card" data-sfz-table data-market-bullish="{market_bullish_attr}">
   <div class="section-head">
     <div>
       <div class="section-label">SFZ 全量候選</div>
@@ -1368,12 +1507,12 @@ def build_sfz_all_controls(payload: dict) -> str:
     <div class="sfz-control"><label for="sfzMarketCapFilter">市值</label><select id="sfzMarketCapFilter"><option value="all">全部</option><option value="large">大型股</option><option value="mid">中型股</option><option value="small">小型股</option><option value="unknown">未分類</option></select></div>
     <div class="sfz-control"><label for="sfzVolumeFilter">成交金額</label><select id="sfzVolumeFilter"><option value="all">全部</option><option value="100000000">&gt; 1億</option><option value="50000000">&gt; 5千萬</option></select></div>
     <div class="sfz-control"><label for="sfzCarybotFilter">CaryBot</label><select id="sfzCarybotFilter"><option value="all">全部</option><option value="yes">已有 CaryBot 訊號</option><option value="no">尚未接入</option></select></div>
-    <div class="sfz-control"><label for="sfzBullishFilter">大盤情緒</label><select id="sfzBullishFilter" disabled><option value="all">Task 1 接入後啟用</option></select></div>
+    <div class="sfz-control"><label for="sfzBullishFilter">大盤情緒</label><select id="sfzBullishFilter"><option value="all">全部</option><option value="yes">大盤偏多訊號</option><option value="no">非偏多環境</option></select></div>
     <div class="sfz-control"><label for="sfzSort">排序</label><select id="sfzSort"><option value="rank">預設排名</option><option value="score">分數高到低</option><option value="turnover">成交金額高到低</option><option value="gain">漲幅高到低</option></select></div>
     <div class="sfz-control"><label for="sfzPageSize">每頁</label><select id="sfzPageSize"><option value="20">20</option><option value="50">50</option><option value="all">全部</option></select></div>
     <div class="sfz-actions"><button type="button" id="sfzShowAll">顯示全部 {total} 檔</button><button type="button" id="sfzReset">重設</button></div>
   </div>
-  <div class="sfz-count-line"><span data-sfz-count>目前顯示 Top 20 / {total} 檔</span><span class="sfz-bull-note" data-sfz-bull-note>目前大盤偏多，建議搭配 CaryBot 訊號做二次確認</span></div>
+  <div class="sfz-count-line"><span data-sfz-count>目前顯示 Top 20 / {total} 檔</span><span class="sfz-bull-note" data-sfz-bull-note{bull_note_style}>目前大盤偏多，共篩出 {total} 檔，建議搭配 CaryBot 訊號做二次確認</span></div>
   <div style="overflow-x:auto">
     <table class="stock-table">
       <thead><tr><th>#</th><th>股票</th><th>籃別 / 市值</th><th>收盤</th><th>分數</th><th>6週漲幅</th><th>成交金額</th><th>CaryBot</th></tr></thead>
@@ -1399,6 +1538,7 @@ def build_sfz_all_controls(payload: dict) -> str:
       const cap=root.querySelector('#sfzMarketCapFilter');
       const volume=root.querySelector('#sfzVolumeFilter');
       const carybot=root.querySelector('#sfzCarybotFilter');
+      const bullish=root.querySelector('#sfzBullishFilter');
       const sort=root.querySelector('#sfzSort');
       const pageSize=root.querySelector('#sfzPageSize');
       const count=root.querySelector('[data-sfz-count]');
@@ -1415,6 +1555,7 @@ def build_sfz_all_controls(payload: dict) -> str:
         const capValue=cap&&cap.value||'all';
         const basketValue=basket&&basket.value||'all';
         const carybotValue=carybot&&carybot.value||'all';
+        const bullishValue=bullish&&bullish.value||'all';
         return rows.filter(function(row){{
           let ok=!query || (row.dataset.text||'').indexOf(query)>=0;
           if(capValue!=='all') ok=ok && row.dataset.marketCap===capValue;
@@ -1422,6 +1563,8 @@ def build_sfz_all_controls(payload: dict) -> str:
           if(basketValue!=='all') ok=ok && bucketOf(row)===basketValue;
           if(carybotValue==='yes') ok=ok && row.dataset.carybot==='1';
           if(carybotValue==='no') ok=ok && row.dataset.carybot!=='1';
+          if(bullishValue==='yes') ok=ok && row.dataset.bullish==='1';
+          if(bullishValue==='no') ok=ok && row.dataset.bullish!=='1';
           return ok;
         }}).sort(function(a,b){{
           const key=sort&&sort.value||'rank';
@@ -1446,11 +1589,11 @@ def build_sfz_all_controls(payload: dict) -> str:
         if(prev) prev.disabled=page<=1;
         if(next) next.disabled=page>=pages;
       }}
-      [q,basket,cap,volume,carybot,sort,pageSize].forEach(function(el){{ if(el) el.addEventListener(el===q?'input':'change',function(){{ page=1; render(); }}); }});
+      [q,basket,cap,volume,carybot,bullish,sort,pageSize].forEach(function(el){{ if(el) el.addEventListener(el===q?'input':'change',function(){{ page=1; render(); }}); }});
       if(prev) prev.addEventListener('click',function(){{ page=Math.max(1,page-1); render(); }});
       if(next) next.addEventListener('click',function(){{ page=page+1; render(); }});
       if(showAll) showAll.addEventListener('click',function(){{ if(pageSize) pageSize.value='all'; page=1; render(); }});
-      if(reset) reset.addEventListener('click',function(){{ if(q) q.value=''; if(basket) basket.value='all'; if(cap) cap.value='all'; if(volume) volume.value='all'; if(carybot) carybot.value='all'; if(sort) sort.value='rank'; if(pageSize) pageSize.value='20'; page=1; render(); }});
+      if(reset) reset.addEventListener('click',function(){{ if(q) q.value=''; if(basket) basket.value='all'; if(cap) cap.value='all'; if(volume) volume.value='all'; if(carybot) carybot.value='all'; if(bullish) bullish.value='all'; if(sort) sort.value='rank'; if(pageSize) pageSize.value='20'; page=1; render(); }});
       render();
     }});
   }}
@@ -4999,6 +5142,7 @@ def build_index_page(reports: list[dict]) -> str:
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
+  {build_market_sentiment_panel(load_market_sentiment_payload())}
   {build_market_light_card(latest, latest_stocks, date_str)}
   {build_sector_heat_widget(latest_stocks)}
   {build_today_action_card(latest_stocks, date_str)}
@@ -6810,6 +6954,7 @@ def build_baskets_page(reports, section_only=False):
     risk_watch = risk or build_risk_watchlist(stocks)
     ledger = build_signal_ledger(reports)
     sfz_all_payload = load_sfz_all_payload()
+    market_sentiment = load_market_sentiment_payload()
     sfz_all_stocks = sfz_all_payload.get("stocks") or []
     if sfz_all_stocks:
         def payload_bucket(row: dict) -> str:
@@ -6853,12 +6998,14 @@ def build_baskets_page(reports, section_only=False):
   </div>
 </div>"""
 
-    full_listing = build_sfz_all_controls(sfz_all_payload) if sfz_all_stocks else ""
+    market_panel = build_market_sentiment_panel(market_sentiment, compact=True)
+    full_listing = build_sfz_all_controls(sfz_all_payload, market_sentiment) if sfz_all_stocks else ""
 
     body = (
         '<div class="container">'
         + '<div class="page-title">SFZ 雙籃</div>'
         + f'<div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：{date_str}</div>'
+        + market_panel
         + hero
         + playbook
         + full_listing

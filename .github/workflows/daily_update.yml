@@ -54,6 +54,9 @@ jobs:
       - name: Generate daily Top20 report
         run: python run_screener.py
 
+      - name: Generate market sentiment data
+        run: python market_sentiment.py
+
       - name: Refresh all-market stock prices
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}

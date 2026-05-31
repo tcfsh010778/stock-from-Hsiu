@@ -167,6 +167,26 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 
 /* Market overview */
 .market-text{font-size:15px;color:#c9d1d9;line-height:1.85}
+.market-env{border-color:rgba(88,166,255,.25)}
+.market-env-head{display:grid;grid-template-columns:150px 1fr;gap:14px;align-items:stretch}
+.market-env-score{display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px;min-height:130px}
+.market-env-score .num{font-size:42px;line-height:1;font-weight:900;color:#e6edf3}
+.market-env-score .label{font-size:13px;font-weight:800;margin-top:8px}
+.market-env-score.green{border-color:rgba(63,185,80,.55);background:rgba(63,185,80,.08)}
+.market-env-score.yellow{border-color:rgba(210,153,34,.55);background:rgba(210,153,34,.08)}
+.market-env-score.red{border-color:rgba(248,81,73,.55);background:rgba(248,81,73,.08)}
+.market-env-score.green .label{color:#3fb950}.market-env-score.yellow .label{color:#d2a520}.market-env-score.red .label{color:#f85149}
+.market-env-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.market-env-item{background:#0d1117;border:1px solid #21262d;border-radius:8px;padding:9px 10px;min-height:78px}
+.market-env-item .k{font-size:11px;color:#8b949e;font-weight:800;display:flex;align-items:center;gap:6px}
+.market-env-item .v{font-size:14px;color:#e6edf3;font-weight:900;margin-top:4px}
+.market-env-item .d{font-size:11px;color:#6e7681;line-height:1.45;margin-top:3px}
+.env-dot{width:9px;height:9px;border-radius:50%;display:inline-block;background:#6e7681;box-shadow:0 0 0 3px rgba(110,118,129,.12)}
+.env-dot.green{background:#3fb950;box-shadow:0 0 0 3px rgba(63,185,80,.16)}
+.env-dot.yellow{background:#d2a520;box-shadow:0 0 0 3px rgba(210,153,34,.16)}
+.env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
+.market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
+.market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
 
 /* Filter steps */
 .filter-steps{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:0}
@@ -299,7 +319,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .filter-steps{flex-direction:column}
   .grid-2,.grid-3,.grid-4{grid-template-columns:1fr}
   .ma-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
+  .detail-hero,.info-grid,.tech-panel,.tech-summary-grid,.telegram-head,.telegram-line,.action-row,.market-light,.market-env-head,.market-env-grid,.check-grid,.alert-row,.diagnosis-head,.diagnosis-list{grid-template-columns:1fr}
   .section-head{display:grid}
   .section-date{width:max-content}
   .telegram-head{display:grid}
@@ -326,6 +346,56 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：2026-05-29</div>
+  
+<div class="card market-env" data-market-sentiment data-market-regime="bullish" data-market-score="86">
+  <div class="section-head">
+    <div>
+      <div class="section-label">市場環境燈號</div>
+      <div class="market-env-summary">市場情緒 86 分，偏多；VIX 與台股均線/籌碼一起納入判斷。</div>
+    </div>
+    <div class="section-date">2026-05-29</div>
+  </div>
+  <div class="market-env-head">
+    <div class="market-env-score green">
+      <div class="num">86</div>
+      <div class="label">偏多</div>
+    </div>
+    <div>
+      <div class="market-env-grid">
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot green"></span>TAIEX 均線</div>
+          <div class="v">3/3</div>
+          <div class="d">收盤 44732.94；MA5 43959.19 / MA20 41932.92 / MA60 37264.19</div>
+        </div>
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot green"></span>融資週變化</div>
+          <div class="v">+0.79%</div>
+          <div class="d">融資餘額 9,309,242；前值 9,236,393</div>
+        </div>
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot green"></span>融券週變化</div>
+          <div class="v">-6.07%</div>
+          <div class="d">融券餘額 241,804；快速增加視為偏空</div>
+        </div>
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot green"></span>外資 5 日</div>
+          <div class="v">+5.10 億股</div>
+          <div class="d">上市外資買賣超彙總，正值代表偏多</div>
+        </div>
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot yellow"></span>上漲/下跌比</div>
+          <div class="v">369/415</div>
+          <div class="d">以站內最新 SFZ 全量清單估算市場廣度</div>
+        </div>
+        <div class="market-env-item">
+          <div class="k"><span class="env-dot green"></span>US VIX</div>
+          <div class="v">15.32</div>
+          <div class="d">5日變化 -8.26%</div>
+        </div></div>
+      <div class="market-env-updated">最後更新 2026-06-01T00:50:19+08:00｜OK: TAIEX - 74 rows；OK: TWSE margin - 6 trading days；OK: TWSE foreign - 5 trading days</div>
+    </div>
+  </div>
+</div>
   
 <div class="card">
   <div class="section-head">

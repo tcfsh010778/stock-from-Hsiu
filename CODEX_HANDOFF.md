@@ -1,6 +1,92 @@
 # Codex Handoff
 
-Last updated: 2026-05-31
+Last updated: 2026-06-01
+
+## 2026-06-01 Market sentiment and US VIX Task 1
+
+### Goal
+
+Add a static GitHub Pages-compatible market environment layer to the homepage
+and SFZ baskets page, using free data sources and no paid AI API.
+
+### Completed
+
+- Added `market_sentiment.py`:
+  - writes `data/market_sentiment.json`.
+  - fetches TAIEX history from TWSE and checks whether close is above 5MA,
+    20MA, and 60MA.
+  - fetches TWSE aggregate margin / short balance data and computes weekly
+    change.
+  - fetches TWSE foreign-investor net buy/sell data and computes the latest
+    five-trading-day cumulative value.
+  - reads local `data/sfz_all.json` to estimate breadth.
+  - fetches official Cboe VIX historical CSV for US VIX.
+  - uses neutral scoring fallbacks when a source is temporarily unavailable so
+    the daily workflow can still generate the site.
+- Updated `generate_site.py`:
+  - added a market environment panel to `docs/index.html`.
+  - added the same panel to `docs/selection.html#sfz-baskets`.
+  - enabled the Task 4 SFZ market-bullish filter and marks rows with
+    `data-bullish="1"` when the market sentiment score is above 60.
+  - shows the bull-market note when score is above 60:
+    `目前大盤偏多，共篩出 XX 檔，建議搭配 CaryBot 訊號做二次確認`.
+- Updated `.github/workflows/daily_update.yml` to run
+  `python market_sentiment.py` before `python generate_site.py`.
+- Added tests for market sentiment scoring/JSON shape and SFZ bullish UI
+  wiring.
+- Regenerated the static site under `docs/`.
+
+### Changed Files
+
+- `market_sentiment.py`
+- `generate_site.py`
+- `.github/workflows/daily_update.yml`
+- `tools/test_market_sentiment.py`
+- `tools/test_pr3_logic.py`
+- `data/market_sentiment.json`
+- regenerated `docs/`
+- `codex_context/logs/2026-06-01-market-sentiment-task1.md`
+- `CODEX_HANDOFF.md`
+
+### Source of Truth
+
+- Market sentiment pipeline: `market_sentiment.py`
+- Generated JSON consumed by the site: `data/market_sentiment.json`
+- Static site generator: `generate_site.py`
+- Visible output: `docs/index.html` and `docs/selection.html#sfz-baskets`
+
+### Rebuild / Run
+
+- `python market_sentiment.py`
+- `python generate_site.py`
+
+### Verification
+
+- `python -m unittest tools.test_market_sentiment tools.test_run_screener_sector_filter tools.test_pr3_logic tools.test_verify_daily_update_artifacts tools.test_refresh_industry_cache -v` OK, 19 tests.
+- `python -m py_compile market_sentiment.py generate_site.py run_screener.py` OK.
+- `python market_sentiment.py` OK:
+  - wrote `data/market_sentiment.json`.
+  - current score: 86, regime: bullish.
+  - TAIEX above MA5/MA20/MA60.
+  - US VIX latest from Cboe: 15.32.
+- `python generate_site.py` OK:
+  - regenerated 2863 files.
+- `python tools/verify_daily_update_artifacts.py` OK:
+  - latest report date `2026-05-29`, report date count `19`.
+- Edge headless DOM checks OK:
+  - `index.html` contains `data-market-sentiment`, score `86`, and `US VIX`.
+  - `selection.html#sfz-baskets` contains the market panel,
+    `data-market-bullish="1"`, enabled `sfzBullishFilter`, and the bull-market
+    CaryBot confirmation note.
+
+### Remaining / Next Notes
+
+- Foreign investor flow currently uses TWSE-listed aggregate data; TPEx or
+  FinMind expansion can be added later for full Taiwan market coverage.
+- The JSON has `future_extensions` placeholders for US / Japan / Korea market
+  rotation.
+- Task 2 should connect CaryBot v50/v51 / thermometer signals through the
+  agreed JSON interface instead of hardcoding formula research into the site.
 
 ## 2026-05-31 SFZ full candidate output and baskets paging
 
