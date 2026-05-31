@@ -83,6 +83,11 @@ static GitHub Pages dashboard.
   - desktop and mobile widths load `backtest_dashboard.html`.
   - dashboard has 39 strategy options, Chart.js equity curve, heatmap cells,
     and `0.44%` cost text.
+- Published to GitHub:
+  - feature commit `71af290da` pushed to `origin/main`.
+  - Pages build `26721234960` completed successfully.
+  - live `backtest_dashboard.html` and `data/backtest_results.json` returned
+    HTTP 200 with 39 strategies and round-trip cost `0.0044`.
 
 ### Remaining / Next Notes
 

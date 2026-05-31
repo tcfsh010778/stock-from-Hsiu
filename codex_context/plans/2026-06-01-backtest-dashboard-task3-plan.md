@@ -28,7 +28,7 @@ Build a unified static `backtest_dashboard.html` page backed by a standard
 - [x] Update GitHub Actions to run the JSON builder.
 - [x] Regenerate `docs/`.
 - [x] Verify tests, generated site freshness, and browser rendering.
-- [ ] Commit, push, and verify GitHub Pages deployment.
+- [x] Commit, push, and verify GitHub Pages deployment.
 
 ## Validation
 

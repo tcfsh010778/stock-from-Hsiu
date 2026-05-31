@@ -58,6 +58,12 @@ overlapping events as executable sequential full-capital trades.
   - Chart.js equity curve present.
   - monthly heatmap present.
   - `0.44%` cost text present.
+- GitHub Pages deployment for feature commit `71af290da` completed
+  successfully in run `26721234960`.
+- Live checks confirmed:
+  - `backtest_dashboard.html` returned HTTP 200 and contained the dashboard.
+  - `data/backtest_results.json` returned HTTP 200 with schema version `1`,
+    `39` strategies, and round-trip cost `0.0044`.
 
 ## Next Notes
 
