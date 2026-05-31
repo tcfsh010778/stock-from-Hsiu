@@ -22,6 +22,8 @@ site without adding a backend server.
 - Added `carybot_signals.py`.
 - Added `data/carybot_signals.json`.
 - Added CaryBot JSON loaders and render helpers to `generate_site.py`.
+- Added `docs/data/carybot_signals.json` publication because GitHub Pages
+  serves from `docs/`.
 - Added SFZ full-list `SFZ + CaryBot` double-confirm labels.
 - Kept double-confirmed rows first for the default frontend sort after JS
   initialization.

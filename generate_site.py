@@ -44,6 +44,11 @@ MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
 CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
+PUBLIC_DATA_FILES = [
+    SFZ_ALL_PATH,
+    MARKET_SENTIMENT_PATH,
+    CARYBOT_SIGNALS_PATH,
+]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
@@ -1340,6 +1345,19 @@ def write_static_assets() -> None:
     js_dir.mkdir(parents=True, exist_ok=True)
     (css_dir / "components.css").write_text(COMPONENTS_CSS.strip() + "\n", encoding="utf-8")
     (js_dir / "auto-expand-placeholder.js").write_text(AUTO_EXPAND_PLACEHOLDER_JS.strip() + "\n", encoding="utf-8")
+
+
+def publish_data_assets(paths: list[Path] | None = None) -> list[str]:
+    public_dir = OUTPUT_DIR / "data"
+    public_dir.mkdir(parents=True, exist_ok=True)
+    published: list[str] = []
+    for source in paths or PUBLIC_DATA_FILES:
+        if not source.exists():
+            continue
+        target = public_dir / source.name
+        shutil.copy2(source, target)
+        published.append(target.name)
+    return published
 
 
 # ──────────────────────────────────────────────
@@ -9771,6 +9789,9 @@ def main():
     (OUTPUT_DIR / "daily").mkdir(parents=True, exist_ok=True)
     write_static_assets()
     print("   [OK] css/components.css, js/auto-expand-placeholder.js", flush=True)
+    public_data = publish_data_assets()
+    if public_data:
+        print(f"   [OK] data/{', data/'.join(public_data)}", flush=True)
     reports = load_reports()
 
     if not reports:

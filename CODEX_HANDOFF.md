@@ -26,6 +26,8 @@ recent CaryBot history on stock-detail pages.
     absent, so GitHub Actions will not wipe the committed bridge data.
 - Updated `generate_site.py`:
   - loads `data/carybot_signals.json` as the first-class CaryBot interface.
+  - publishes the public JSON bridge to `docs/data/carybot_signals.json` so
+    GitHub Pages can serve `/data/carybot_signals.json`.
   - marks SFZ rows with current CaryBot signals as `SFZ + CaryBot` double
     confirmation.
   - displays B1 as a green tag and B2 as a blue tag.
@@ -51,6 +53,7 @@ recent CaryBot history on stock-detail pages.
 
 - `carybot_signals.py`
 - `data/carybot_signals.json`
+- `docs/data/carybot_signals.json`
 - `generate_site.py`
 - `.github/workflows/daily_update.yml`
 - `tools/test_carybot_signals.py`

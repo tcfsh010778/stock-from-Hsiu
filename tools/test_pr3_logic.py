@@ -110,6 +110,24 @@ class PR3LogicTest(unittest.TestCase):
         self.assertIn("68", html)
         self.assertIn("US VIX", html)
 
+    def test_publish_data_assets_copies_public_json_into_docs_data(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "data" / "carybot_signals.json"
+            output = root / "docs"
+            source.parent.mkdir()
+            source.write_text('{"date":"2026-05-12"}\n', encoding="utf-8")
+
+            original_output = generate_site.OUTPUT_DIR
+            try:
+                generate_site.OUTPUT_DIR = output
+                published = generate_site.publish_data_assets([source])
+            finally:
+                generate_site.OUTPUT_DIR = original_output
+
+            self.assertEqual(published, ["carybot_signals.json"])
+            self.assertEqual((output / "data" / "carybot_signals.json").read_text(encoding="utf-8"), source.read_text(encoding="utf-8"))
+
     def test_sfz_controls_enable_bullish_filter_when_market_score_is_bullish(self) -> None:
         payload = {
             "date": "2026-05-29",
