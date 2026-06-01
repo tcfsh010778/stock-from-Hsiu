@@ -1,60 +1,42 @@
 {
   "schema_version": 1,
-  "date": "2026-06-01",
-  "updated_at": "2026-06-01T23:48:56+08:00",
-  "score": 90,
+  "date": "2026-12-18",
+  "updated_at": "2026-06-02T02:41:25+08:00",
+  "score": 65,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 90 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 65 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
-      "label": "TAIEX 均線",
-      "score": 30.0,
+      "label": "TAIEX MA",
+      "score": 15.0,
       "weight": 30,
-      "signal": "bullish",
-      "display": "3/3",
-      "detail": "收盤 45337.91；MA5 44297.89 / MA20 42164.55 / MA60 37472.68",
-      "available": true,
-      "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
-      "date": "2026-06-01",
-      "close": 45337.91,
-      "ma5": 44297.89,
-      "ma20": 42164.55,
-      "ma60": 37472.68,
-      "lights": {
-        "ma5": true,
-        "ma20": true,
-        "ma60": true
-      }
+      "signal": "neutral",
+      "display": "資料不足",
+      "detail": "TAIEX historical closes unavailable",
+      "available": false,
+      "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST"
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 10.69,
+      "score": 7.5,
       "weight": 15,
-      "signal": "bullish",
-      "display": "+1.27%",
-      "detail": "融資餘額 9,391,953；前值 9,273,748",
-      "available": true,
-      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-01",
-      "latest": 9391953.0,
-      "previous": 9273748.0,
-      "weekly_change_pct": 1.27
+      "signal": "neutral",
+      "display": "資料不足",
+      "detail": "TWSE margin balance unavailable",
+      "available": false,
+      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 14.26,
+      "score": 7.5,
       "weight": 15,
       "signal": "neutral",
-      "display": "+0.98%",
-      "detail": "融券餘額 234,867；快速增加視為偏空",
-      "available": true,
-      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-01",
-      "latest": 234867.0,
-      "previous": 232580.0,
-      "weekly_change_pct": 0.98
+      "display": "資料不足",
+      "detail": "TWSE short balance unavailable",
+      "available": false,
+      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
     },
     "foreign_5d": {
       "label": "外資 5 日",
@@ -65,21 +47,21 @@
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-05-29",
+      "date": "2026-12-18",
       "days": 5,
       "cumulative_net_shares": 510228506
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 7.67,
+      "score": 7.66,
       "weight": 10,
       "signal": "bullish",
-      "display": "561/297",
+      "display": "562/298",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 561,
-      "declines": 297,
+      "advances": 562,
+      "declines": 298,
       "ratio": 1.89
     },
     "us_vix": {
@@ -97,10 +79,10 @@
     }
   },
   "source_status": [
-    "OK: TAIEX - 75 rows",
-    "OK: TWSE margin - 6 trading days",
+    "WARN: TAIEX - 0 rows",
+    "WARN: TWSE margin - 0 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 873 SFZ rows",
+    "OK: local breadth - 875 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
