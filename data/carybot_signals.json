@@ -18977,14 +18977,6 @@
     }
   ],
   "sources": {
-    "mode": "local_csv",
-    "source_dir": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\自動交易程式\\回測\\v6_outputs",
-    "current": "carybot_daily_ai_buy_v51.csv",
-    "history": [
-      "carybot_daily_ai_buy_v51_history.csv",
-      "carybot_signal_master_v50.csv"
-    ],
-    "current_count": 20,
-    "history_count": 567
+    "mode": "preserved_existing_json"
   }
 }

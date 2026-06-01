@@ -1,5 +1,474 @@
 [
   {
+    "date": "2026-06-01",
+    "market_overview": "",
+    "filter_summary": [],
+    "stocks": [
+      {
+        "icon": "🟡",
+        "id": "2455",
+        "name": "全新",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "415.5",
+        "gain_6w": "33.82%",
+        "gain_3d": "-0.72%",
+        "rsi": "58.9",
+        "bband_pct": "73.9%",
+        "vol_5d": "4403 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "460",
+        "support": "329",
+        "entry": "407.99",
+        "target": "469.2",
+        "stop": "327.36",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "3030",
+        "name": "德律",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "408",
+        "gain_6w": "20.53%",
+        "gain_3d": "2.13%",
+        "rsi": "50",
+        "bband_pct": "61.1%",
+        "vol_5d": "5135 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "457.5",
+        "support": "338",
+        "entry": "400.11",
+        "target": "466.65",
+        "stop": "336.31",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "3189",
+        "name": "景碩",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "774",
+        "gain_6w": "97.7%",
+        "gain_3d": "10.26%",
+        "rsi": "84",
+        "bband_pct": "102.5%",
+        "vol_5d": "20571 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "775",
+        "support": "445.5",
+        "entry": "705.65",
+        "target": "790.5",
+        "stop": "443.27",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "2312",
+        "name": "金寶",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "40.6",
+        "gain_6w": "65.38%",
+        "gain_3d": "8.7%",
+        "rsi": "76.5",
+        "bband_pct": "97.8%",
+        "vol_5d": "152210 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "42",
+        "support": "26.65",
+        "entry": "38.34",
+        "target": "42.84",
+        "stop": "26.52",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "2301",
+        "name": "光寶科",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "234.5",
+        "gain_6w": "44.75%",
+        "gain_3d": "-4.67%",
+        "rsi": "50",
+        "bband_pct": "77.2%",
+        "vol_5d": "54088 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "262",
+        "support": "168",
+        "entry": "233.44",
+        "target": "267.24",
+        "stop": "167.16",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "2356",
+        "name": "英業達",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "77.2",
+        "gain_6w": "68.74%",
+        "gain_3d": "24.52%",
+        "rsi": "86.6",
+        "bband_pct": "115.9%",
+        "vol_5d": "174169 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "77.2",
+        "support": "45.85",
+        "entry": "66.17",
+        "target": "78.74",
+        "stop": "45.62",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "2357",
+        "name": "華碩",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "837",
+        "gain_6w": "39.73%",
+        "gain_3d": "19.4%",
+        "rsi": "76.1",
+        "bband_pct": "128.3%",
+        "vol_5d": "6300 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "837",
+        "support": "582",
+        "entry": "726.93",
+        "target": "853.74",
+        "stop": "579.09",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "2376",
+        "name": "技嘉",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "387",
+        "gain_6w": "37.48%",
+        "gain_3d": "16.39%",
+        "rsi": "72.4",
+        "bband_pct": "117.9%",
+        "vol_5d": "21917 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "396",
+        "support": "270.5",
+        "entry": "347.31",
+        "target": "403.92",
+        "stop": "269.15",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "6126",
+        "name": "信音",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "37.25",
+        "gain_6w": "12.03%",
+        "gain_3d": "6.13%",
+        "rsi": "73.8",
+        "bband_pct": "99.5%",
+        "vol_5d": "2230 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "37.85",
+        "support": "31.5",
+        "entry": "35.39",
+        "target": "38.61",
+        "stop": "31.34",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "6173",
+        "name": "信昌電",
+        "status": "過熱/風險",
+        "score": 100.0,
+        "price": "237",
+        "gain_6w": "157.05%",
+        "gain_3d": "4.87%",
+        "rsi": "80",
+        "bband_pct": "88%",
+        "vol_5d": "1661 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "256.5",
+        "support": "86.2",
+        "entry": "225.27",
+        "target": "261.63",
+        "stop": "85.77",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "6274",
+        "name": "台燿",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "1705",
+        "gain_6w": "80.23%",
+        "gain_3d": "4.6%",
+        "rsi": "63.2",
+        "bband_pct": "94.8%",
+        "vol_5d": "9079 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "1815",
+        "support": "1060",
+        "entry": "1604.57",
+        "target": "1851.3",
+        "stop": "1054.7",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "1582",
+        "name": "信錦",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "114",
+        "gain_6w": "14.92%",
+        "gain_3d": "3.64%",
+        "rsi": "67.2",
+        "bband_pct": "72.9%",
+        "vol_5d": "12050 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "123",
+        "support": "86.7",
+        "entry": "111.99",
+        "target": "125.46",
+        "stop": "86.27",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "2303",
+        "name": "聯電",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "146",
+        "gain_6w": "100%",
+        "gain_3d": "1.74%",
+        "rsi": "79.3",
+        "bband_pct": "93.1%",
+        "vol_5d": "329246 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "155.5",
+        "support": "79.4",
+        "entry": "139.18",
+        "target": "158.61",
+        "stop": "79",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "3227",
+        "name": "原相",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "233",
+        "gain_6w": "17.68%",
+        "gain_3d": "2.87%",
+        "rsi": "53.8",
+        "bband_pct": "80.3%",
+        "vol_5d": "3028 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "240.5",
+        "support": "205.5",
+        "entry": "226.25",
+        "target": "245.31",
+        "stop": "204.47",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🟡",
+        "id": "3265",
+        "name": "台星科",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "185",
+        "gain_6w": "10.78%",
+        "gain_3d": "-2.37%",
+        "rsi": "56.7",
+        "bband_pct": "56.7%",
+        "vol_5d": "2495 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "204.5",
+        "support": "168.5",
+        "entry": "186.26",
+        "target": "208.59",
+        "stop": "167.66",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "3532",
+        "name": "台勝科",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "350.5",
+        "gain_6w": "85.94%",
+        "gain_3d": "20.65%",
+        "rsi": "68.6",
+        "bband_pct": "112.1%",
+        "vol_5d": "5577 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "350.5",
+        "support": "191.5",
+        "entry": "305.35",
+        "target": "357.51",
+        "stop": "190.54",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "1303",
+        "name": "南亞",
+        "status": "過熱/風險",
+        "score": 100.0,
+        "price": "107.5",
+        "gain_6w": "22.58%",
+        "gain_3d": "12.57%",
+        "rsi": "69.9",
+        "bband_pct": "124.7%",
+        "vol_5d": "115785 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "107.5",
+        "support": "80.4",
+        "entry": "95.03",
+        "target": "109.65",
+        "stop": "80",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "1301",
+        "name": "台塑",
+        "status": "過熱/風險",
+        "score": 70.0,
+        "price": "50",
+        "gain_6w": "-6.37%",
+        "gain_3d": "10.01%",
+        "rsi": "61.6",
+        "bband_pct": "85.8%",
+        "vol_5d": "34497 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "52.2",
+        "support": "44.2",
+        "entry": "45.84",
+        "target": "53.24",
+        "stop": "43.98",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "1326",
+        "name": "台化",
+        "status": "過熱/風險",
+        "score": 70.0,
+        "price": "53.8",
+        "gain_6w": "5.49%",
+        "gain_3d": "18.37%",
+        "rsi": "71.7",
+        "bband_pct": "113.4%",
+        "vol_5d": "41420 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "54.5",
+        "support": "43.65",
+        "entry": "47.09",
+        "target": "55.59",
+        "stop": "43.43",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      },
+      {
+        "icon": "🔴",
+        "id": "4305",
+        "name": "世坤",
+        "status": "過熱/風險",
+        "score": 45.0,
+        "price": "43.95",
+        "gain_6w": "0.57%",
+        "gain_3d": "-0.34%",
+        "rsi": "51.9",
+        "bband_pct": "42.7%",
+        "vol_5d": "9 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "45",
+        "support": "43.35",
+        "entry": "43.35",
+        "target": "45.9",
+        "stop": "43.13",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-06-01"
+      }
+    ],
+    "notes": "",
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-01.md"
+  },
+  {
     "date": "2026-05-29",
     "market_overview": "",
     "filter_summary": [],
@@ -466,7 +935,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-29.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-29.md"
   },
   {
     "date": "2026-05-28",
@@ -935,7 +1404,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-28.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-28.md"
   },
   {
     "date": "2026-05-27",
@@ -1404,7 +1873,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-27.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-27.md"
   },
   {
     "date": "2026-05-26",
@@ -1873,7 +2342,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-26.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-26.md"
   },
   {
     "date": "2026-05-22",
@@ -2342,7 +2811,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-22.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-22.md"
   },
   {
     "date": "2026-05-21",
@@ -2811,7 +3280,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-21.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-21.md"
   },
   {
     "date": "2026-05-20",
@@ -3280,7 +3749,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-20.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-20.md"
   },
   {
     "date": "2026-05-19",
@@ -3749,7 +4218,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-19.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-19.md"
   },
   {
     "date": "2026-05-18",
@@ -4218,7 +4687,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-18.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-18.md"
   },
   {
     "date": "2026-05-15",
@@ -4687,7 +5156,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-15.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-15.md"
   },
   {
     "date": "2026-05-14",
@@ -5156,7 +5625,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-14.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-14.md"
   },
   {
     "date": "2026-05-13",
@@ -5625,7 +6094,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-13.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-13.md"
   },
   {
     "date": "2026-05-12",
@@ -6094,7 +6563,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-12.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-12.md"
   },
   {
     "date": "2026-05-11",
@@ -6563,7 +7032,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-11.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-11.md"
   },
   {
     "date": "2026-05-08",
@@ -7032,7 +7501,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-08.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-08.md"
   },
   {
     "date": "2026-05-07",
@@ -7501,7 +7970,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-07.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-07.md"
   },
   {
     "date": "2026-05-06",
@@ -7970,7 +8439,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-06.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-06.md"
   },
   {
     "date": "2026-05-04",
@@ -8439,7 +8908,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-05-04.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-04.md"
   },
   {
     "date": "2026-04-30",
@@ -8908,7 +9377,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "C:\\Users\\USER\\OneDrive\\桌面\\股票\\選股網站\\reports\\每日選股報告_2026-04-30.md"
+    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-04-30.md"
   },
   {
     "date": "2026-04-29",
