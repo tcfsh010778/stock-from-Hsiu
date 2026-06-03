@@ -379,9 +379,9 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">Buy Radar</div>
     <div class="grid grid-3">
-      <div class="metric"><div class="metric-num" style="color:#3fb950">39</div><div class="metric-label">接近買點：優先確認</div></div>
-      <div class="metric"><div class="metric-num" style="color:#d2a520">28</div><div class="metric-label">稍高：等回測</div></div>
-      <div class="metric"><div class="metric-num" style="color:#f85149">59</div><div class="metric-label">過遠：不追高</div></div>
+      <div class="metric"><div class="metric-num" style="color:#3fb950">34</div><div class="metric-label">接近買點：優先確認</div></div>
+      <div class="metric"><div class="metric-num" style="color:#d2a520">26</div><div class="metric-label">稍高：等回測</div></div>
+      <div class="metric"><div class="metric-num" style="color:#f85149">71</div><div class="metric-label">過遠：不追高</div></div>
     </div>
     <div class="strategy-note" style="margin-top:14px">這頁以 Williams -65~-85 反推價格帶，並搭配 MA20 濾網建立網站版雷達。後續可再把 MABC A/B/C、量價共振分數接進同一張表。</div>
   </div>
@@ -398,7 +398,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       </fieldset>
       <label class="filter-chip">籃別 <select data-filter="basket" data-radar-basket><option value="all">全部</option><option value="盤整籃">盤整籃</option><option value="行進籃">行進籃</option><option value="過熱/風險">過熱/風險</option></select></label>
       <label class="filter-chip">最低 R:R <input type="number" data-filter="min-rr" data-radar-min-rr value="2.0" step="0.1" min="0"></label>
-      <label class="filter-chip">產業 <select data-filter="industry" data-radar-sector><option value="all">全部</option><option value="光電業">光電業</option><option value="其他電子類">其他電子類</option><option value="化學工業">化學工業</option><option value="化學生技醫療">化學生技醫療</option><option value="半導體業">半導體業</option><option value="塑膠工業">塑膠工業</option><option value="建材營造">建材營造</option><option value="數位雲端">數位雲端</option><option value="橡膠工業">橡膠工業</option><option value="汽車工業">汽車工業</option><option value="玻璃陶瓷">玻璃陶瓷</option><option value="紡織纖維">紡織纖維</option><option value="綠能環保">綠能環保</option><option value="綠能環保類">綠能環保類</option><option value="航運業">航運業</option><option value="觀光餐旅">觀光餐旅</option><option value="通信網路業">通信網路業</option><option value="金融業">金融業</option><option value="電器電纜">電器電纜</option><option value="電子工業">電子工業</option><option value="電子通路業">電子通路業</option><option value="電子零組件業">電子零組件業</option><option value="電機機械">電機機械</option><option value="電腦及週邊設備業">電腦及週邊設備業</option></select></label>
+      <label class="filter-chip">產業 <select data-filter="industry" data-radar-sector><option value="all">全部</option><option value="光電業">光電業</option><option value="其他電子類">其他電子類</option><option value="化學工業">化學工業</option><option value="化學生技醫療">化學生技醫療</option><option value="半導體業">半導體業</option><option value="塑膠工業">塑膠工業</option><option value="建材營造">建材營造</option><option value="數位雲端">數位雲端</option><option value="橡膠工業">橡膠工業</option><option value="汽車工業">汽車工業</option><option value="玻璃陶瓷">玻璃陶瓷</option><option value="紡織纖維">紡織纖維</option><option value="綠能環保">綠能環保</option><option value="綠能環保類">綠能環保類</option><option value="航運業">航運業</option><option value="觀光餐旅">觀光餐旅</option><option value="通信網路業">通信網路業</option><option value="金融保險">金融保險</option><option value="金融業">金融業</option><option value="電器電纜">電器電纜</option><option value="電子工業">電子工業</option><option value="電子通路業">電子通路業</option><option value="電子零組件業">電子零組件業</option><option value="電機機械">電機機械</option><option value="電腦及週邊設備業">電腦及週邊設備業</option></select></label>
       <button type="button" id="reset-filter" class="filter-reset" data-radar-reset>重置</button>
       <span class="filter-count" data-radar-count></span>
     </div>
@@ -406,327 +406,299 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
       <table class="stock-table">
         <thead><tr><th>個股</th><th>狀態</th><th>收盤</th><th>距買點</th><th>買點/目標/初停/R:R</th></tr></thead>
         <tbody>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="0.6559325282729535">
-  <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">214.50</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 217.38</div><div class="price-target">目 225.93</div><div class="price-stop">初停 204.33</div><div class="price-support">支撐 145.27</div><div class="price-rr rr-bad">R:R 1:0.7</div></td>
-</tr>
 <tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="電子工業" data-rr="4.225938566552901">
   <td><a class="stock-link" href="stocks/3443.html">3443 創意</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">4535.00</td>
+  <td class="price-main">4605.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 4521.25</div><div class="price-target">目 6069.00</div><div class="price-stop">初停 4155.00</div><div class="price-support">支撐 2830.78</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="其他電子類" data-rr="8.637982195845685">
-  <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="觀光餐旅" data-rr="5.736927492824157">
+  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">45.50</td>
+  <td class="price-main">33.00</td>
   <td>+0.0%</td>
-  <td><div class="price-entry">進 45.62</div><div class="price-target">目 60.18</div><div class="price-stop">初停 43.94</div><div class="price-support">支撐 51.04</div><div class="price-rr rr-good">R:R 1:8.6</div></td>
+  <td><div class="price-entry">進 33.39</div><div class="price-target">目 44.88</div><div class="price-stop">初停 31.38</div><div class="price-support">支撐 33.63</div><div class="price-rr rr-good">R:R 1:5.7</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.4422827496757407">
-  <td><a class="stock-link" href="stocks/2368.html">2368 金像電</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">1275.00</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 1285.00</div><div class="price-target">目 1550.40</div><div class="price-stop">初停 1207.90</div><div class="price-support">支撐 1104.45</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="化學工業" data-rr="3.336690446216253">
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="化學工業" data-rr="2.6069945355191253">
   <td><a class="stock-link" href="stocks/4764.html">4764 雙鍵</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">302.00</td>
+  <td class="price-main">295.50</td>
   <td>+0.0%</td>
-  <td><div class="price-entry">進 297.88</div><div class="price-target">目 357.51</div><div class="price-stop">初停 280.00</div><div class="price-support">支撐 178.60</div><div class="price-rr rr-good">R:R 1:3.3</div></td>
+  <td><div class="price-entry">進 297.88</div><div class="price-target">目 357.51</div><div class="price-stop">初停 275.00</div><div class="price-support">支撐 178.60</div><div class="price-rr rr-good">R:R 1:2.6</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="半導體業" data-rr="5.915893630179334">
-  <td><a class="stock-link" href="stocks/4991.html">4991 環宇-KY</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="綠能環保" data-rr="3.7188811188811144">
+  <td><a class="stock-link" href="stocks/8438.html">8438 昶昕</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">702.00</td>
+  <td class="price-main">87.10</td>
   <td>+0.0%</td>
-  <td><div class="price-entry">進 673.75</div><div class="price-target">目 912.90</div><div class="price-stop">初停 633.32</div><div class="price-support">支撐 534.31</div><div class="price-rr rr-good">R:R 1:5.9</div></td>
+  <td><div class="price-entry">進 87.65</div><div class="price-target">目 114.24</div><div class="price-stop">初停 80.50</div><div class="price-support">支撐 80.50</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="通信網路業" data-rr="2.5271636675235642">
+  <td><a class="stock-link" href="stocks/4908.html">4908 前鼎</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">251.00</td>
+  <td>+0.0%</td>
+  <td><div class="price-entry">進 243.12</div><div class="price-target">目 279.99</div><div class="price-stop">初停 228.54</div><div class="price-support">支撐 146.26</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="3.1292570885474413">
   <td><a class="stock-link" href="stocks/3030.html">3030 德律</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">371.00</td>
+  <td class="price-main">372.50</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 367.88</div><div class="price-target">目 466.65</div><div class="price-stop">初停 336.31</div><div class="price-support">支撐 336.31</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="2.904302228578229">
   <td><a class="stock-link" href="stocks/3714.html">3714 富采</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">69.20</td>
+  <td class="price-main">70.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 69.93</div><div class="price-target">目 82.11</div><div class="price-stop">初停 65.73</div><div class="price-support">支撐 45.22</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="其他電子類" data-rr="5.173611111111101">
   <td><a class="stock-link" href="stocks/1785.html">1785 光洋科</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">144.00</td>
+  <td class="price-main">142.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 144.00</div><div class="price-target">目 188.70</div><div class="price-stop">初停 135.36</div><div class="price-support">支撐 93.03</div><div class="price-rr rr-good">R:R 1:5.2</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="1.4870967741935501">
-  <td><a class="stock-link" href="stocks/2476.html">2476 鉅祥</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電機機械" data-rr="1.56720430107527">
+  <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">119.00</td>
+  <td class="price-main">369.00</td>
   <td>+0.0%</td>
-  <td><div class="price-entry">進 117.75</div><div class="price-target">目 131.58</div><div class="price-stop">初停 108.45</div><div class="price-support">支撐 108.45</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
+  <td><div class="price-entry">進 372.00</div><div class="price-target">目 406.98</div><div class="price-stop">初停 349.68</div><div class="price-support">支撐 286.06</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="1.2231111111111104">
-  <td><a class="stock-link" href="stocks/2345.html">2345 智邦</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="汽車工業" data-rr="2.2935583232891363">
+  <td><a class="stock-link" href="stocks/2233.html">2233 宇隆</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">2425.00</td>
+  <td class="price-main">316.00</td>
   <td>+0.0%</td>
-  <td><div class="price-entry">進 2417.50</div><div class="price-target">目 2555.10</div><div class="price-stop">初停 2305.00</div><div class="price-support">支撐 1567.12</div><div class="price-rr rr-bad">R:R 1:1.2</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="綠能環保" data-rr="2.099871959026889">
-  <td><a class="stock-link" href="stocks/3708.html">3708 上緯投控</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">119.50</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 118.75</div><div class="price-target">目 135.15</div><div class="price-stop">初停 110.94</div><div class="price-support">支撐 110.94</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="3.4685387415496582">
-  <td><a class="stock-link" href="stocks/2342.html">2342 茂矽</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">40.60</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 40.06</div><div class="price-target">目 48.40</div><div class="price-stop">初停 37.66</div><div class="price-support">支撐 32.34</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
+  <td><div class="price-entry">進 311.12</div><div class="price-target">目 353.94</div><div class="price-stop">初停 292.46</div><div class="price-support">支撐 233.33</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="6.486315789473687">
   <td><a class="stock-link" href="stocks/3680.html">3680 家登</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">527.00</td>
+  <td class="price-main">539.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 527.62</div><div class="price-target">目 635.46</div><div class="price-stop">初停 511.00</div><div class="price-support">支撐 443.77</div><div class="price-rr rr-good">R:R 1:6.5</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="盤整籃" data-sector="電子工業" data-rr="4.210150107219444">
-  <td><a class="stock-link" href="stocks/2340.html">2340 台亞（半導體）</a><div class="signal-dates">盤整籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">35.30</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 34.97</div><div class="price-target">目 43.81</div><div class="price-stop">初停 32.88</div><div class="price-support">支撐 23.88</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="盤整籃" data-sector="化學生技醫療" data-rr="4.4740045209528745">
   <td><a class="stock-link" href="stocks/1711.html">1711 永光（化學工業）</a><div class="signal-dates">盤整籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">47.95</td>
+  <td class="price-main">47.40</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 47.92</div><div class="price-target">目 60.79</div><div class="price-stop">初停 45.05</div><div class="price-support">支撐 24.63</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="盤整籃" data-sector="綠能環保" data-rr="5.52830188679246">
   <td><a class="stock-link" href="stocks/6944.html">6944 兆聯實業</a><div class="signal-dates">盤整籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">900.00</td>
+  <td class="price-main">914.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 904.75</div><div class="price-target">目 1065.90</div><div class="price-stop">初停 875.60</div><div class="price-support">支撐 875.60</div><div class="price-rr rr-good">R:R 1:5.5</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="8.088737201365188">
-  <td><a class="stock-link" href="stocks/4960.html">4960 誠美材</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">32.45</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 32.96</div><div class="price-target">目 48.96</div><div class="price-stop">初停 30.98</div><div class="price-support">支撐 19.50</div><div class="price-rr rr-good">R:R 1:8.1</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="盤整籃" data-sector="電子工業" data-rr="0">
-  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">盤整籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">215.00</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 215.00</div><div class="price-target">目 197.88</div><div class="price-stop">初停 202.10</div><div class="price-support">支撐 136.81</div><div class="price-rr ">R:R ─</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="盤整籃" data-sector="電子零組件業" data-rr="4.352339668778479">
   <td><a class="stock-link" href="stocks/5439.html">5439 高技</a><div class="signal-dates">盤整籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">374.00</td>
+  <td class="price-main">375.00</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 374.88</div><div class="price-target">目 472.77</div><div class="price-stop">初停 352.38</div><div class="price-support">支撐 266.66</div><div class="price-rr rr-good">R:R 1:4.4</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電機機械" data-rr="0.5025579295817055">
   <td><a class="stock-link" href="stocks/3162.html">3162 精確</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">83.60</td>
+  <td class="price-main">82.80</td>
   <td>+0.0%</td>
   <td><div class="price-entry">進 83.07</div><div class="price-target">目 85.58</div><div class="price-stop">初停 78.09</div><div class="price-support">支撐 55.32</div><div class="price-rr rr-bad">R:R 1:0.5</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="光電業" data-rr="0.6025369978858351">
-  <td><a class="stock-link" href="stocks/6234.html">6234 高僑</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">47.25</td>
-  <td>+0.0%</td>
-  <td><div class="price-entry">進 47.30</div><div class="price-target">目 49.01</div><div class="price-stop">初停 44.46</div><div class="price-support">支撐 27.46</div><div class="price-rr rr-bad">R:R 1:0.6</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="2.5390956479573283">
-  <td><a class="stock-link" href="stocks/4749.html">4749 新應材</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">1050.00</td>
-  <td>+0.1%</td>
-  <td><div class="price-entry">進 1024.75</div><div class="price-target">目 1234.20</div><div class="price-stop">初停 942.26</div><div class="price-support">支撐 942.26</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="2.2381622128457574">
   <td><a class="stock-link" href="stocks/6789.html">6789 采鈺</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">522.00</td>
-  <td>-0.1%</td>
+  <td class="price-main">540.00</td>
+  <td>+0.0%</td>
   <td><div class="price-entry">進 533.25</div><div class="price-target">目 604.86</div><div class="price-stop">初停 501.25</div><div class="price-support">支撐 298.00</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電機機械" data-rr="1.56720430107527">
-  <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="光電業" data-rr="0.6025369978858351">
+  <td><a class="stock-link" href="stocks/6234.html">6234 高僑</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">364.00</td>
-  <td>-0.2%</td>
-  <td><div class="price-entry">進 372.00</div><div class="price-target">目 406.98</div><div class="price-stop">初停 349.68</div><div class="price-support">支撐 286.06</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
+  <td class="price-main">47.65</td>
+  <td>+0.0%</td>
+  <td><div class="price-entry">進 47.30</div><div class="price-target">目 49.01</div><div class="price-stop">初停 44.46</div><div class="price-support">支撐 27.46</div><div class="price-rr rr-bad">R:R 1:0.6</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="電機機械" data-rr="2.514056224899595">
-  <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="數位雲端" data-rr="2.2852456185789523">
+  <td><a class="stock-link" href="stocks/6165.html">6165 浪凡</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">169.50</td>
-  <td>-0.5%</td>
-  <td><div class="price-entry">進 176.38</div><div class="price-target">目 202.98</div><div class="price-stop">初停 165.79</div><div class="price-support">支撐 101.99</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
+  <td class="price-main">48.20</td>
+  <td>+0.0%</td>
+  <td><div class="price-entry">進 48.26</div><div class="price-target">目 54.88</div><div class="price-stop">初停 45.37</div><div class="price-support">支撐 47.46</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="3.1595528455284545">
-  <td><a class="stock-link" href="stocks/3265.html">3265 台星科</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="化學生技醫療" data-rr="5.016238559196927">
+  <td><a class="stock-link" href="stocks/1721.html">1721 三晃</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">182.50</td>
-  <td>+0.8%</td>
-  <td><div class="price-entry">進 177.50</div><div class="price-target">目 208.59</div><div class="price-stop">初停 167.66</div><div class="price-support">支撐 167.66</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
+  <td class="price-main">27.50</td>
+  <td>-0.1%</td>
+  <td><div class="price-entry">進 28.23</div><div class="price-target">目 36.72</div><div class="price-stop">初停 26.53</div><div class="price-support">支撐 23.88</div><div class="price-rr rr-good">R:R 1:5.0</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="通信網路業" data-rr="4.274202898550726">
-  <td><a class="stock-link" href="stocks/4908.html">4908 前鼎</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="綠能環保" data-rr="2.099871959026889">
+  <td><a class="stock-link" href="stocks/3708.html">3708 上緯投控</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">232.00</td>
-  <td>-0.8%</td>
-  <td><div class="price-entry">進 243.12</div><div class="price-target">目 279.99</div><div class="price-stop">初停 234.50</div><div class="price-support">支撐 146.26</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
+  <td class="price-main">122.00</td>
+  <td>+0.3%</td>
+  <td><div class="price-entry">進 118.75</div><div class="price-target">目 135.15</div><div class="price-stop">初停 110.94</div><div class="price-support">支撐 110.94</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="建材營造" data-rr="0.8776876982728237">
-  <td><a class="stock-link" href="stocks/5511.html">5511 德昌</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="8.088737201365188">
+  <td><a class="stock-link" href="stocks/4960.html">4960 誠美材</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">71.80</td>
-  <td>+0.9%</td>
-  <td><div class="price-entry">進 70.92</div><div class="price-target">目 74.66</div><div class="price-stop">初停 66.67</div><div class="price-support">支撐 68.85</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="綠能環保" data-rr="3.1398773006134935">
-  <td><a class="stock-link" href="stocks/8438.html">8438 昶昕</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">85.70</td>
-  <td>-0.9%</td>
-  <td><div class="price-entry">進 88.65</div><div class="price-target">目 114.24</div><div class="price-stop">初停 80.50</div><div class="price-support">支撐 80.50</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="綠能環保" data-rr="0.891614186277757">
-  <td><a class="stock-link" href="stocks/8341.html">8341 日友</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">76.70</td>
-  <td>+1.2%</td>
-  <td><div class="price-entry">進 75.42</div><div class="price-target">目 79.46</div><div class="price-stop">初停 70.90</div><div class="price-support">支撐 73.23</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="橡膠工業" data-rr="2.291666666666671">
-  <td><a class="stock-link" href="stocks/2103.html">2103 台橡</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">20.25</td>
-  <td>+1.4%</td>
-  <td><div class="price-entry">進 19.60</div><div class="price-target">目 22.90</div><div class="price-stop">初停 18.16</div><div class="price-support">支撐 18.16</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="化學生技醫療" data-rr="3.1442938347179714">
-  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">179.00</td>
-  <td>+1.5%</td>
-  <td><div class="price-entry">進 172.12</div><div class="price-target">目 208.08</div><div class="price-stop">初停 160.69</div><div class="price-support">支撐 160.69</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
+  <td class="price-main">33.90</td>
+  <td>+0.6%</td>
+  <td><div class="price-entry">進 32.96</div><div class="price-target">目 48.96</div><div class="price-stop">初停 30.98</div><div class="price-support">支撐 19.50</div><div class="price-rr rr-good">R:R 1:8.1</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="汽車工業" data-rr="0.9956709956709962">
   <td><a class="stock-link" href="stocks/2236.html">2236 百達-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">139.00</td>
-  <td>+1.6%</td>
+  <td class="price-main">138.50</td>
+  <td>+1.2%</td>
   <td><div class="price-entry">進 134.75</div><div class="price-target">目 142.80</div><div class="price-stop">初停 126.66</div><div class="price-support">支撐 111.94</div><div class="price-rr rr-bad">R:R 1:1.0</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子零組件業" data-rr="2.878653675819309">
+  <td><a class="stock-link" href="stocks/2355.html">2355 敬鵬</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">59.30</td>
+  <td>+1.6%</td>
+  <td><div class="price-entry">進 56.45</div><div class="price-target">目 66.20</div><div class="price-stop">初停 53.06</div><div class="price-support">支撐 49.25</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="綠能環保類" data-rr="2.884705882352939">
+  <td><a class="stock-link" href="stocks/8390.html">8390 金益鼎</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">119.50</td>
+  <td>+1.6%</td>
+  <td><div class="price-entry">進 115.75</div><div class="price-target">目 128.01</div><div class="price-stop">初停 111.50</div><div class="price-support">支撐 81.79</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="建材營造" data-rr="0.8900646678424453">
+  <td><a class="stock-link" href="stocks/5511.html">5511 德昌</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">72.30</td>
+  <td>+1.7%</td>
+  <td><div class="price-entry">進 70.88</div><div class="price-target">目 74.66</div><div class="price-stop">初停 66.62</div><div class="price-support">支撐 68.85</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
 </tr>
 <tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="2.2342917997870027">
   <td><a class="stock-link" href="stocks/6691.html">6691 洋基工程</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">644.00</td>
-  <td>+1.8%</td>
+  <td class="price-main">645.00</td>
+  <td>+1.9%</td>
   <td><div class="price-entry">進 626.00</div><div class="price-target">目 709.92</div><div class="price-stop">初停 588.44</div><div class="price-support">支撐 622.87</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="3.74906246651666">
-  <td><a class="stock-link" href="stocks/3707.html">3707 漢磊</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="2.5390956479573283">
+  <td><a class="stock-link" href="stocks/4749.html">4749 新應材</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">81.90</td>
+  <td class="price-main">1070.00</td>
   <td>+2.0%</td>
-  <td><div class="price-entry">進 77.78</div><div class="price-target">目 95.27</div><div class="price-stop">初停 73.11</div><div class="price-support">支撐 55.22</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
+  <td><div class="price-entry">進 1024.75</div><div class="price-target">目 1234.20</div><div class="price-stop">初停 942.26</div><div class="price-support">支撐 942.26</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="建材營造" data-rr="2.2215320910973007">
-  <td><a class="stock-link" href="stocks/5515.html">5515 建國</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="化學生技醫療" data-rr="3.1442938347179714">
+  <td><a class="stock-link" href="stocks/1773.html">1773 勝一</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">41.20</td>
-  <td>+2.4%</td>
-  <td><div class="price-entry">進 39.83</div><div class="price-target">目 45.19</div><div class="price-stop">初停 37.41</div><div class="price-support">支撐 37.41</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
+  <td class="price-main">180.00</td>
+  <td>+2.1%</td>
+  <td><div class="price-entry">進 172.12</div><div class="price-target">目 208.08</div><div class="price-stop">初停 160.69</div><div class="price-support">支撐 160.69</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="橡膠工業" data-rr="1.477386934673366">
-  <td><a class="stock-link" href="stocks/2107.html">2107 厚生</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子通路業" data-rr="3.0795484379102067">
+  <td><a class="stock-link" href="stocks/3033.html">3033 威健</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">25.60</td>
-  <td>+2.5%</td>
-  <td><div class="price-entry">進 24.88</div><div class="price-target">目 27.08</div><div class="price-stop">初停 23.38</div><div class="price-support">支撐 24.97</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
+  <td class="price-main">49.65</td>
+  <td>+2.1%</td>
+  <td><div class="price-entry">進 47.61</div><div class="price-target">目 56.41</div><div class="price-stop">初停 44.76</div><div class="price-support">支撐 35.37</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
 </tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="化學生技醫療" data-rr="4.4823614110871075">
-  <td><a class="stock-link" href="stocks/1721.html">1721 三晃</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag">跌破買點</span><div class="signal-dates">等重新站回或出現轉強</div></td>
-  <td class="price-main">27.35</td>
-  <td>-2.9%</td>
-  <td><div class="price-entry">進 28.94</div><div class="price-target">目 36.72</div><div class="price-stop">初停 27.20</div><div class="price-support">支撐 23.88</div><div class="price-rr rr-good">R:R 1:4.5</div></td>
-</tr>
-<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="汽車工業" data-rr="2.4781609195402283">
-  <td><a class="stock-link" href="stocks/2233.html">2233 宇隆</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
-  <td class="price-main">329.00</td>
-  <td>+2.9%</td>
-  <td><div class="price-entry">進 308.12</div><div class="price-target">目 353.94</div><div class="price-stop">初停 289.64</div><div class="price-support">支撐 233.33</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子零組件業" data-rr="2.904656319290466">
-  <td><a class="stock-link" href="stocks/2355.html">2355 敬鵬</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">60.10</td>
-  <td>+3.0%</td>
-  <td><div class="price-entry">進 56.38</div><div class="price-target">目 66.20</div><div class="price-stop">初停 52.99</div><div class="price-support">支撐 49.25</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="綠能環保類" data-rr="2.007293946024797">
-  <td><a class="stock-link" href="stocks/8390.html">8390 金益鼎</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">120.00</td>
-  <td>+3.1%</td>
-  <td><div class="price-entry">進 114.25</div><div class="price-target">目 128.01</div><div class="price-stop">初停 107.39</div><div class="price-support">支撐 81.79</div><div class="price-rr rr-good">R:R 1:2.0</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="3.7062250843299536">
-  <td><a class="stock-link" href="stocks/8046.html">8046 南電</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">862.00</td>
-  <td>+3.2%</td>
-  <td><div class="price-entry">進 815.25</div><div class="price-target">目 996.54</div><div class="price-stop">初停 766.33</div><div class="price-support">支撐 519.39</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="玻璃陶瓷" data-rr="2.9482370592648124">
-  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">71.00</td>
-  <td>+3.5%</td>
-  <td><div class="price-entry">進 66.65</div><div class="price-target">目 78.44</div><div class="price-stop">初停 62.65</div><div class="price-support">支撐 57.11</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="4.293333333333334">
-  <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">227.50</td>
-  <td>+3.8%</td>
-  <td><div class="price-entry">進 212.50</div><div class="price-target">目 267.24</div><div class="price-stop">初停 199.75</div><div class="price-support">支撐 167.16</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
-</tr>
-<tr data-radar-row data-status="broken" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="4.020080321285136">
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="4.020080321285136">
   <td><a class="stock-link" href="stocks/1595.html">1595 川寶</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
   <td><span class="tag tag">跌破買點</span><div class="signal-dates">等重新站回或出現轉強</div></td>
-  <td class="price-main">76.40</td>
-  <td>-4.3%</td>
+  <td class="price-main">78.10</td>
+  <td>-2.1%</td>
   <td><div class="price-entry">進 83.00</div><div class="price-target">目 103.02</div><div class="price-stop">初停 78.02</div><div class="price-support">支撐 49.75</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="綠能環保" data-rr="0.8857963331124374">
+  <td><a class="stock-link" href="stocks/8341.html">8341 日友</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">77.50</td>
+  <td>+2.3%</td>
+  <td><div class="price-entry">進 75.45</div><div class="price-target">目 79.46</div><div class="price-stop">初停 70.92</div><div class="price-support">支撐 73.23</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="過熱/風險" data-sector="電機機械" data-rr="2.514056224899595">
+  <td><a class="stock-link" href="stocks/1597.html">1597 直得</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
+  <td><span class="tag tag">跌破買點</span><div class="signal-dates">等重新站回或出現轉強</div></td>
+  <td class="price-main">166.50</td>
+  <td>-2.3%</td>
+  <td><div class="price-entry">進 176.38</div><div class="price-target">目 202.98</div><div class="price-stop">初停 165.79</div><div class="price-support">支撐 101.99</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="電子工業" data-rr="1.4870967741935501">
+  <td><a class="stock-link" href="stocks/2476.html">2476 鉅祥</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">123.00</td>
+  <td>+2.5%</td>
+  <td><div class="price-entry">進 117.75</div><div class="price-target">目 131.58</div><div class="price-stop">初停 108.45</div><div class="price-support">支撐 108.45</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="其他電子類" data-rr="5.8980127484064475">
+  <td><a class="stock-link" href="stocks/8047.html">8047 星雲</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">46.95</td>
+  <td>+2.7%</td>
+  <td><div class="price-entry">進 44.45</div><div class="price-target">目 60.18</div><div class="price-stop">初停 41.78</div><div class="price-support">支撐 51.04</div><div class="price-rr rr-good">R:R 1:5.9</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="半導體業" data-rr="3.142329640819065">
+  <td><a class="stock-link" href="stocks/3264.html">3264 欣銓</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">229.50</td>
+  <td>+2.9%</td>
+  <td><div class="price-entry">進 217.38</div><div class="price-target">目 264.18</div><div class="price-stop">初停 202.48</div><div class="price-support">支撐 202.48</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
+</tr>
+<tr data-radar-row data-status="near" data-basket="行進籃" data-sector="建材營造" data-rr="2.5124153498871284">
+  <td><a class="stock-link" href="stocks/5515.html">5515 建國</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-green">接近買點</span><div class="signal-dates">可優先打開資訊卡確認量價</div></td>
+  <td class="price-main">41.15</td>
+  <td>+3.0%</td>
+  <td><div class="price-entry">進 39.62</div><div class="price-target">目 45.19</div><div class="price-stop">初停 37.41</div><div class="price-support">支撐 37.41</div><div class="price-rr rr-good">R:R 1:2.5</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="橡膠工業" data-rr="1.4319131161236414">
+  <td><a class="stock-link" href="stocks/2107.html">2107 厚生</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">25.90</td>
+  <td>+3.3%</td>
+  <td><div class="price-entry">進 24.94</div><div class="price-target">目 27.08</div><div class="price-stop">初停 23.44</div><div class="price-support">支撐 24.97</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="電子工業" data-rr="4.210150107219444">
+  <td><a class="stock-link" href="stocks/2340.html">2340 台亞（半導體）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">37.10</td>
+  <td>+3.6%</td>
+  <td><div class="price-entry">進 34.97</div><div class="price-target">目 43.81</div><div class="price-stop">初停 32.88</div><div class="price-support">支撐 23.88</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="紡織纖維" data-rr="0.9818181818181854">
+  <td><a class="stock-link" href="stocks/1423.html">1423 利華</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">43.50</td>
+  <td>+3.8%</td>
+  <td><div class="price-entry">進 41.55</div><div class="price-target">目 43.71</div><div class="price-stop">初停 39.35</div><div class="price-support">支撐 39.35</div><div class="price-rr rr-bad">R:R 1:1.0</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="3.1280379371665674">
+  <td><a class="stock-link" href="stocks/2338.html">2338 光罩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">53.00</td>
+  <td>+3.9%</td>
+  <td><div class="price-entry">進 49.44</div><div class="price-target">目 62.63</div><div class="price-stop">初停 45.22</div><div class="price-support">支撐 45.22</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="半導體業" data-rr="5.915893630179334">
+  <td><a class="stock-link" href="stocks/4991.html">4991 環宇-KY</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">731.00</td>
+  <td>+3.9%</td>
+  <td><div class="price-entry">進 673.75</div><div class="price-target">目 912.90</div><div class="price-stop">初停 633.32</div><div class="price-support">支撐 534.31</div><div class="price-rr rr-good">R:R 1:5.9</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子通路業" data-rr="3.44210526315789">
+  <td><a class="stock-link" href="stocks/3028.html">3028 增你強</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">83.40</td>
+  <td>+4.4%</td>
+  <td><div class="price-entry">進 78.62</div><div class="price-target">目 90.07</div><div class="price-stop">初停 75.30</div><div class="price-support">支撐 65.97</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
 </tr>
 <tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="航運業" data-rr="2.28571428571429">
   <td><a class="stock-link" href="stocks/2637.html">2637 慧洋-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
@@ -735,320 +707,334 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>+4.5%</td>
   <td><div class="price-entry">進 72.75</div><div class="price-target">目 79.15</div><div class="price-stop">初停 69.95</div><div class="price-support">支撐 69.95</div><div class="price-rr rr-good">R:R 1:2.3</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="1.436036036036033">
-  <td><a class="stock-link" href="stocks/2351.html">2351 順德</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">200.00</td>
-  <td>+4.5%</td>
-  <td><div class="price-entry">進 185.00</div><div class="price-target">目 200.94</div><div class="price-stop">初停 173.90</div><div class="price-support">支撐 137.81</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="化學生技醫療" data-rr="2.1409395973154317">
-  <td><a class="stock-link" href="stocks/1723.html">1723 中碳</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">83.70</td>
-  <td>+4.5%</td>
-  <td><div class="price-entry">進 79.40</div><div class="price-target">目 85.78</div><div class="price-stop">初停 76.42</div><div class="price-support">支撐 76.42</div><div class="price-rr rr-good">R:R 1:2.1</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子通路業" data-rr="3.639308855291569">
-  <td><a class="stock-link" href="stocks/3033.html">3033 威健</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">49.70</td>
-  <td>+4.6%</td>
-  <td><div class="price-entry">進 46.30</div><div class="price-target">目 56.41</div><div class="price-stop">初停 43.52</div><div class="price-support">支撐 35.37</div><div class="price-rr rr-good">R:R 1:3.6</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="0">
-  <td><a class="stock-link" href="stocks/6531.html">6531 愛普</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">1075.00</td>
-  <td>+4.8%</td>
-  <td><div class="price-entry">進 983.25</div><div class="price-target">目 807.84</div><div class="price-stop">初停 924.25</div><div class="price-support">支撐 437.80</div><div class="price-rr ">R:R ─</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="紡織纖維" data-rr="2.4196078431372583">
-  <td><a class="stock-link" href="stocks/1423.html">1423 利華</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">43.05</td>
-  <td>+4.9%</td>
-  <td><div class="price-entry">進 40.62</div><div class="price-target">目 43.71</div><div class="price-stop">初停 39.35</div><div class="price-support">支撐 39.35</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子通路業" data-rr="3.44210526315789">
-  <td><a class="stock-link" href="stocks/3028.html">3028 增你強</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">84.00</td>
-  <td>+5.1%</td>
-  <td><div class="price-entry">進 78.62</div><div class="price-target">目 90.07</div><div class="price-stop">初停 75.30</div><div class="price-support">支撐 65.97</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="2.647210079712009">
-  <td><a class="stock-link" href="stocks/2455.html">2455 全新</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">399.00</td>
-  <td>+5.3%</td>
-  <td><div class="price-entry">進 366.25</div><div class="price-target">目 469.20</div><div class="price-stop">初停 327.36</div><div class="price-support">支撐 327.36</div><div class="price-rr rr-good">R:R 1:2.6</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="半導體業" data-rr="1.885628291948835">
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="半導體業" data-rr="2.2176991150442458">
   <td><a class="stock-link" href="stocks/3227.html">3227 原相</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">235.00</td>
-  <td>+5.4%</td>
-  <td><div class="price-entry">進 220.25</div><div class="price-target">目 245.31</div><div class="price-stop">初停 206.96</div><div class="price-support">支撐 206.96</div><div class="price-rr rr-mid">R:R 1:1.9</div></td>
+  <td class="price-main">233.00</td>
+  <td>+4.5%</td>
+  <td><div class="price-entry">進 220.25</div><div class="price-target">目 245.31</div><div class="price-stop">初停 208.95</div><div class="price-support">支撐 208.95</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="電子零組件業" data-rr="5.991114595583426">
-  <td><a class="stock-link" href="stocks/2402.html">2402 毅嘉</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.4053275737940925">
+  <td><a class="stock-link" href="stocks/1582.html">1582 信錦</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">68.70</td>
-  <td>+6.0%</td>
-  <td><div class="price-entry">進 63.78</div><div class="price-target">目 86.70</div><div class="price-stop">初停 59.95</div><div class="price-support">支撐 48.61</div><div class="price-rr rr-good">R:R 1:6.0</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="半導體業" data-rr="6.179324894514769">
-  <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">519.00</td>
-  <td>+6.1%</td>
-  <td><div class="price-entry">進 474.00</div><div class="price-target">目 649.74</div><div class="price-stop">初停 445.56</div><div class="price-support">支撐 338.30</div><div class="price-rr rr-good">R:R 1:6.2</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.697066666666667">
-  <td><a class="stock-link" href="stocks/2059.html">2059 川湖</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">5075.00</td>
-  <td>+6.1%</td>
-  <td><div class="price-entry">進 4687.50</div><div class="price-target">目 5727.30</div><div class="price-stop">初停 4406.25</div><div class="price-support">支撐 3875.53</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子通路業" data-rr="0.7583333333333371">
-  <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">91.50</td>
-  <td>+6.5%</td>
-  <td><div class="price-entry">進 84.70</div><div class="price-target">目 89.25</div><div class="price-stop">初停 78.70</div><div class="price-support">支撐 78.70</div><div class="price-rr rr-bad">R:R 1:0.8</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="8.546816479400743">
-  <td><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">2195.00</td>
-  <td>+6.6%</td>
-  <td><div class="price-entry">進 2002.50</div><div class="price-target">目 3029.40</div><div class="price-stop">初停 1882.35</div><div class="price-support">支撐 1985.03</div><div class="price-rr rr-good">R:R 1:8.5</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電機機械" data-rr="0">
-  <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">697.00</td>
-  <td>+6.6%</td>
-  <td><div class="price-entry">進 639.00</div><div class="price-target">目 629.34</div><div class="price-stop">初停 600.66</div><div class="price-support">支撐 498.50</div><div class="price-rr ">R:R ─</div></td>
+  <td class="price-main">111.50</td>
+  <td>+4.5%</td>
+  <td><div class="price-entry">進 104.18</div><div class="price-target">目 125.46</div><div class="price-stop">初停 97.92</div><div class="price-support">支撐 86.27</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
 </tr>
 <tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="2.438991138377637">
   <td><a class="stock-link" href="stocks/2363.html">2363 矽統</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">66.80</td>
-  <td>+6.8%</td>
+  <td class="price-main">65.40</td>
+  <td>+4.5%</td>
   <td><div class="price-entry">進 61.12</div><div class="price-target">目 70.07</div><div class="price-stop">初停 57.46</div><div class="price-support">支撐 50.94</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="3.1280379371665674">
-  <td><a class="stock-link" href="stocks/2338.html">2338 光罩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="玻璃陶瓷" data-rr="2.9482370592648124">
+  <td><a class="stock-link" href="stocks/1802.html">1802 台玻</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">54.50</td>
-  <td>+6.8%</td>
-  <td><div class="price-entry">進 49.44</div><div class="price-target">目 62.63</div><div class="price-stop">初停 45.22</div><div class="price-support">支撐 45.22</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
+  <td class="price-main">71.80</td>
+  <td>+4.7%</td>
+  <td><div class="price-entry">進 66.65</div><div class="price-target">目 78.44</div><div class="price-stop">初停 62.65</div><div class="price-support">支撐 57.11</div><div class="price-rr rr-good">R:R 1:2.9</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="化學生技醫療" data-rr="2.0389610389610406">
+  <td><a class="stock-link" href="stocks/1723.html">1723 中碳</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">84.10</td>
+  <td>+4.8%</td>
+  <td><div class="price-entry">進 79.50</div><div class="price-target">目 85.78</div><div class="price-stop">初停 76.42</div><div class="price-support">支撐 76.42</div><div class="price-rr rr-good">R:R 1:2.0</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="半導體業" data-rr="3.1595528455284545">
+  <td><a class="stock-link" href="stocks/3265.html">3265 台星科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">190.00</td>
+  <td>+4.9%</td>
+  <td><div class="price-entry">進 177.50</div><div class="price-target">目 208.59</div><div class="price-stop">初停 167.66</div><div class="price-support">支撐 167.66</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="半導體業" data-rr="3.74906246651666">
+  <td><a class="stock-link" href="stocks/3707.html">3707 漢磊</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">84.30</td>
+  <td>+4.9%</td>
+  <td><div class="price-entry">進 77.78</div><div class="price-target">目 95.27</div><div class="price-stop">初停 73.11</div><div class="price-support">支撐 55.22</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="電子工業" data-rr="0">
+  <td><a class="stock-link" href="stocks/6257.html">6257 矽格</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">230.00</td>
+  <td>+5.2%</td>
+  <td><div class="price-entry">進 215.00</div><div class="price-target">目 197.88</div><div class="price-stop">初停 202.10</div><div class="price-support">支撐 136.81</div><div class="price-rr ">R:R ─</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="半導體業" data-rr="6.179324894514769">
+  <td><a class="stock-link" href="stocks/3105.html">3105 穩懋</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">515.00</td>
+  <td>+5.3%</td>
+  <td><div class="price-entry">進 474.00</div><div class="price-target">目 649.74</div><div class="price-stop">初停 445.56</div><div class="price-support">支撐 338.30</div><div class="price-rr rr-good">R:R 1:6.2</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="1.2231111111111104">
+  <td><a class="stock-link" href="stocks/2345.html">2345 智邦</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">2585.00</td>
+  <td>+5.3%</td>
+  <td><div class="price-entry">進 2417.50</div><div class="price-target">目 2555.10</div><div class="price-stop">初停 2305.00</div><div class="price-support">支撐 1567.12</div><div class="price-rr rr-bad">R:R 1:1.2</div></td>
 </tr>
 <tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="化學工業" data-rr="0.6456937566754083">
   <td><a class="stock-link" href="stocks/1727.html">1727 中華化</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">95.50</td>
-  <td>+6.9%</td>
+  <td class="price-main">94.20</td>
+  <td>+5.5%</td>
   <td><div class="price-entry">進 85.82</div><div class="price-target">目 89.15</div><div class="price-stop">初停 80.68</div><div class="price-support">支撐 53.13</div><div class="price-rr rr-bad">R:R 1:0.6</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="觀光餐旅" data-rr="5.736927492824157">
-  <td><a class="stock-link" href="stocks/2740.html">2740 華軒</a><div class="signal-dates">行進籃 ｜ 整理/修正</div></td>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.4422827496757407">
+  <td><a class="stock-link" href="stocks/2368.html">2368 金像電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">36.40</td>
-  <td>+7.0%</td>
-  <td><div class="price-entry">進 33.39</div><div class="price-target">目 44.88</div><div class="price-stop">初停 31.38</div><div class="price-support">支撐 33.63</div><div class="price-rr rr-good">R:R 1:5.7</div></td>
+  <td class="price-main">1385.00</td>
+  <td>+5.5%</td>
+  <td><div class="price-entry">進 1285.00</div><div class="price-target">目 1550.40</div><div class="price-stop">初停 1207.90</div><div class="price-support">支撐 1104.45</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="塑膠工業" data-rr="13.020318506315201">
-  <td><a class="stock-link" href="stocks/1309.html">1309 台達化（塑膠工業）</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子通路業" data-rr="0.7583333333333371">
+  <td><a class="stock-link" href="stocks/2347.html">2347 聯強</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">16.55</td>
-  <td>+7.2%</td>
-  <td><div class="price-entry">進 15.18</div><div class="price-target">目 27.03</div><div class="price-stop">初停 14.26</div><div class="price-support">支撐 12.84</div><div class="price-rr rr-good">R:R 1:13.0</div></td>
+  <td class="price-main">91.10</td>
+  <td>+6.0%</td>
+  <td><div class="price-entry">進 84.70</div><div class="price-target">目 89.25</div><div class="price-stop">初停 78.70</div><div class="price-support">支撐 78.70</div><div class="price-rr rr-bad">R:R 1:0.8</div></td>
 </tr>
 <tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="4.828774062816614">
   <td><a class="stock-link" href="stocks/6213.html">6213 聯茂</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">273.00</td>
-  <td>+7.7%</td>
+  <td class="price-main">270.00</td>
+  <td>+6.5%</td>
   <td><div class="price-entry">進 246.75</div><div class="price-target">目 318.24</div><div class="price-stop">初停 231.94</div><div class="price-support">支撐 139.80</div><div class="price-rr rr-good">R:R 1:4.8</div></td>
 </tr>
-<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="電子工業" data-rr="2.77535881309466">
-  <td><a class="stock-link" href="stocks/2401.html">2401 凌陽</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="數位雲端" data-rr="3.16022099447515">
+  <td><a class="stock-link" href="stocks/6689.html">6689 伊雲谷</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
   <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">28.90</td>
-  <td>+7.9%</td>
-  <td><div class="price-entry">進 25.84</div><div class="price-target">目 30.14</div><div class="price-stop">初停 24.29</div><div class="price-support">支撐 22.44</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-</tr>
-<tr data-radar-row data-status="pullback" data-basket="過熱/風險" data-sector="數位雲端" data-rr="3.16022099447515">
-  <td><a class="stock-link" href="stocks/6689.html">6689 伊雲谷</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
-  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
-  <td class="price-main">74.00</td>
-  <td>+8.0%</td>
+  <td class="price-main">73.00</td>
+  <td>+6.5%</td>
   <td><div class="price-entry">進 67.20</div><div class="price-target">目 78.64</div><div class="price-stop">初停 63.58</div><div class="price-support">支撐 63.58</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="4.1082960755091875">
-  <td><a class="stock-link" href="stocks/1582.html">1582 信錦</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">112.00</td>
-  <td>+8.1%</td>
-  <td><div class="price-entry">進 100.65</div><div class="price-target">目 125.46</div><div class="price-stop">初停 94.61</div><div class="price-support">支撐 86.27</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
+<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="電子工業" data-rr="1.2705682782018675">
+  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">162.00</td>
+  <td>+6.8%</td>
+  <td><div class="price-entry">進 147.38</div><div class="price-target">目 158.61</div><div class="price-stop">初停 138.53</div><div class="price-support">支撐 88.36</div><div class="price-rr rr-bad">R:R 1:1.3</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="0.9228235294117654">
-  <td><a class="stock-link" href="stocks/3037.html">3037 欣興</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="pullback" data-basket="盤整籃" data-sector="電子零組件業" data-rr="5.902642197058435">
+  <td><a class="stock-link" href="stocks/2402.html">2402 毅嘉</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">69.70</td>
+  <td>+7.0%</td>
+  <td><div class="price-entry">進 64.03</div><div class="price-target">目 86.70</div><div class="price-stop">初停 60.18</div><div class="price-support">支撐 48.61</div><div class="price-rr rr-good">R:R 1:5.9</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="電子工業" data-rr="0">
+  <td><a class="stock-link" href="stocks/6531.html">6531 愛普</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">1100.00</td>
+  <td>+7.2%</td>
+  <td><div class="price-entry">進 983.25</div><div class="price-target">目 807.84</div><div class="price-stop">初停 924.25</div><div class="price-support">支撐 437.80</div><div class="price-rr ">R:R ─</div></td>
+</tr>
+<tr data-radar-row data-status="pullback" data-basket="行進籃" data-sector="半導體業" data-rr="6.024320457796847">
+  <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-yellow">稍高等回測</span><div class="signal-dates">等 MA5/MA10/箱頂回測</div></td>
+  <td class="price-main">130.50</td>
+  <td>+7.2%</td>
+  <td><div class="price-entry">進 116.50</div><div class="price-target">目 158.61</div><div class="price-stop">初停 109.51</div><div class="price-support">支撐 79.70</div><div class="price-rr rr-good">R:R 1:6.0</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="3.7062250843299536">
+  <td><a class="stock-link" href="stocks/8046.html">8046 南電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">975.00</td>
+  <td class="price-main">904.00</td>
+  <td>+8.2%</td>
+  <td><div class="price-entry">進 815.25</div><div class="price-target">目 996.54</div><div class="price-stop">初停 766.33</div><div class="price-support">支撐 519.39</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="金融保險" data-rr="1.3235059760956205">
+  <td><a class="stock-link" href="stocks/2851.html">2851 中再保</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">36.80</td>
   <td>+8.3%</td>
-  <td><div class="price-entry">進 864.50</div><div class="price-target">目 903.72</div><div class="price-stop">初停 822.00</div><div class="price-support">支撐 442.28</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
+  <td><div class="price-entry">進 33.54</div><div class="price-target">目 37.69</div><div class="price-stop">初停 30.40</div><div class="price-support">支撐 30.40</div><div class="price-rr rr-bad">R:R 1:1.3</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電機機械" data-rr="0">
-  <td><a class="stock-link" href="stocks/8027.html">8027 鈺太</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">277.50</td>
-  <td>+9.1%</td>
-  <td><div class="price-entry">進 247.88</div><div class="price-target">目 162.18</div><div class="price-stop">初停 233.00</div><div class="price-support">支撐 130.34</div><div class="price-rr ">R:R ─</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="3.760925449871467">
-  <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">50.90</td>
-  <td>+9.2%</td>
-  <td><div class="price-entry">進 45.92</div><div class="price-target">目 53.24</div><div class="price-stop">初停 43.98</div><div class="price-support">支撐 43.98</div><div class="price-rr rr-good">R:R 1:3.8</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="通信網路業" data-rr="6.663364850667857">
-  <td><a class="stock-link" href="stocks/4979.html">4979 華星光</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">630.00</td>
-  <td>+9.3%</td>
-  <td><div class="price-entry">進 555.25</div><div class="price-target">目 777.24</div><div class="price-stop">初停 521.93</div><div class="price-support">支撐 431.83</div><div class="price-rr rr-good">R:R 1:6.7</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="1.7415628947843325">
-  <td><a class="stock-link" href="stocks/2395.html">2395 研華</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">515.00</td>
-  <td>+9.4%</td>
-  <td><div class="price-entry">進 461.75</div><div class="price-target">目 510.00</div><div class="price-stop">初停 434.04</div><div class="price-support">支撐 346.26</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="光電業" data-rr="2.3839332290036497">
-  <td><a class="stock-link" href="stocks/2406.html">2406 國碩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">35.80</td>
-  <td>+9.4%</td>
-  <td><div class="price-entry">進 31.95</div><div class="price-target">目 36.52</div><div class="price-stop">初停 30.03</div><div class="price-support">支撐 28.01</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="航運業" data-rr="0.7056994818652809">
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="航運業" data-rr="0.6969072164948442">
   <td><a class="stock-link" href="stocks/2606.html">2606 裕民</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">72.00</td>
-  <td>+9.8%</td>
-  <td><div class="price-entry">進 64.43</div><div class="price-target">目 67.83</div><div class="price-stop">初停 59.60</div><div class="price-support">支撐 59.60</div><div class="price-rr rr-bad">R:R 1:0.7</div></td>
+  <td class="price-main">71.10</td>
+  <td>+8.4%</td>
+  <td><div class="price-entry">進 64.45</div><div class="price-target">目 67.83</div><div class="price-stop">初停 59.60</div><div class="price-support">支撐 59.60</div><div class="price-rr rr-bad">R:R 1:0.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="2.760736196319014">
-  <td><a class="stock-link" href="stocks/2399.html">2399 映泰</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="1.436036036036033">
+  <td><a class="stock-link" href="stocks/2351.html">2351 順德</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">50.10</td>
-  <td>+10.1%</td>
-  <td><div class="price-entry">進 44.45</div><div class="price-target">目 53.45</div><div class="price-stop">初停 41.19</div><div class="price-support">支撐 41.19</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="1.633963396339633">
-  <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">161.00</td>
-  <td>+10.7%</td>
-  <td><div class="price-entry">進 138.88</div><div class="price-target">目 152.49</div><div class="price-stop">初停 130.54</div><div class="price-support">支撐 108.45</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="2.726153846153862">
-  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">94.50</td>
-  <td>+10.9%</td>
-  <td><div class="price-entry">進 83.45</div><div class="price-target">目 92.31</div><div class="price-stop">初停 80.20</div><div class="price-support">支撐 80.20</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="3.4782545454545453">
-  <td><a class="stock-link" href="stocks/8021.html">8021 尖點</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">445.00</td>
-  <td>+10.9%</td>
-  <td><div class="price-entry">進 387.38</div><div class="price-target">目 506.94</div><div class="price-stop">初停 353.00</div><div class="price-support">支撐 345.26</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="化學生技醫療" data-rr="3.855072463768108">
-  <td><a class="stock-link" href="stocks/4722.html">4722 國精化</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">279.00</td>
-  <td>+11.1%</td>
-  <td><div class="price-entry">進 244.38</div><div class="price-target">目 300.90</div><div class="price-stop">初停 229.71</div><div class="price-support">支撐 176.12</div><div class="price-rr rr-good">R:R 1:3.9</div></td>
+  <td class="price-main">207.50</td>
+  <td>+8.4%</td>
+  <td><div class="price-entry">進 185.00</div><div class="price-target">目 200.94</div><div class="price-stop">初停 173.90</div><div class="price-support">支撐 137.81</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="3.037449017426766">
   <td><a class="stock-link" href="stocks/8271.html">8271 宇瞻</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">257.50</td>
-  <td>+11.9%</td>
+  <td class="price-main">250.00</td>
+  <td>+8.7%</td>
   <td><div class="price-entry">進 224.75</div><div class="price-target">目 265.71</div><div class="price-stop">初停 211.26</div><div class="price-support">支撐 149.75</div><div class="price-rr rr-good">R:R 1:3.0</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電機機械" data-rr="4.296091954022988">
-  <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="3.4685387415496582">
+  <td><a class="stock-link" href="stocks/2342.html">2342 茂矽</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">840.00</td>
-  <td>+12.0%</td>
-  <td><div class="price-entry">進 725.00</div><div class="price-target">目 911.88</div><div class="price-stop">初停 681.50</div><div class="price-support">支撐 477.60</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
+  <td class="price-main">44.65</td>
+  <td>+8.8%</td>
+  <td><div class="price-entry">進 40.06</div><div class="price-target">目 48.40</div><div class="price-stop">初停 37.66</div><div class="price-support">支撐 32.34</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.8787878787878802">
-  <td><a class="stock-link" href="stocks/6672.html">6672 騰輝電子-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="1.7415628947843325">
+  <td><a class="stock-link" href="stocks/2395.html">2395 研華</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">215.50</td>
-  <td>+12.1%</td>
-  <td><div class="price-entry">進 187.00</div><div class="price-target">目 230.52</div><div class="price-stop">初停 175.78</div><div class="price-support">支撐 121.89</div><div class="price-rr rr-good">R:R 1:3.9</div></td>
+  <td class="price-main">513.00</td>
+  <td>+9.0%</td>
+  <td><div class="price-entry">進 461.75</div><div class="price-target">目 510.00</div><div class="price-stop">初停 434.04</div><div class="price-support">支撐 346.26</div><div class="price-rr rr-mid">R:R 1:1.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.154043645699627">
-  <td><a class="stock-link" href="stocks/6126.html">6126 信音</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="橡膠工業" data-rr="2.4410163339382986">
+  <td><a class="stock-link" href="stocks/2103.html">2103 台橡</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">38.80</td>
-  <td>+12.5%</td>
-  <td><div class="price-entry">進 33.79</div><div class="price-target">目 39.93</div><div class="price-stop">初停 31.84</div><div class="price-support">支撐 31.84</div><div class="price-rr rr-good">R:R 1:3.2</div></td>
+  <td class="price-main">21.70</td>
+  <td>+9.1%</td>
+  <td><div class="price-entry">進 19.54</div><div class="price-target">目 22.90</div><div class="price-stop">初停 18.16</div><div class="price-support">支撐 18.16</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="2.647210079712009">
+  <td><a class="stock-link" href="stocks/2455.html">2455 全新</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">414.00</td>
+  <td>+9.3%</td>
+  <td><div class="price-entry">進 366.25</div><div class="price-target">目 469.20</div><div class="price-stop">初停 327.36</div><div class="price-support">支撐 327.36</div><div class="price-rr rr-good">R:R 1:2.6</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子通路業" data-rr="6.394755003450653">
+  <td><a class="stock-link" href="stocks/3048.html">3048 益登</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">69.20</td>
+  <td>+9.4%</td>
+  <td><div class="price-entry">進 60.38</div><div class="price-target">目 83.54</div><div class="price-stop">初停 56.75</div><div class="price-support">支撐 37.91</div><div class="price-rr rr-good">R:R 1:6.4</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="2.77535881309466">
+  <td><a class="stock-link" href="stocks/2401.html">2401 凌陽</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">29.35</td>
+  <td>+9.5%</td>
+  <td><div class="price-entry">進 25.84</div><div class="price-target">目 30.14</div><div class="price-stop">初停 24.29</div><div class="price-support">支撐 22.44</div><div class="price-rr rr-good">R:R 1:2.8</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="2.2178477690288707">
+  <td><a class="stock-link" href="stocks/2399.html">2399 映泰</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">50.70</td>
+  <td>+9.6%</td>
+  <td><div class="price-entry">進 45.00</div><div class="price-target">目 53.45</div><div class="price-stop">初停 41.19</div><div class="price-support">支撐 41.19</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="1.0034045772649887">
+  <td><a class="stock-link" href="stocks/2379.html">2379 瑞昱</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">646.00</td>
+  <td>+9.6%</td>
+  <td><div class="price-entry">進 574.25</div><div class="price-target">目 627.30</div><div class="price-stop">初停 521.38</div><div class="price-support">支撐 521.38</div><div class="price-rr rr-bad">R:R 1:1.0</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="2.674603174603172">
+  <td><a class="stock-link" href="stocks/1301.html">1301 台塑</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">52.00</td>
+  <td>+9.7%</td>
+  <td><div class="price-entry">進 46.50</div><div class="price-target">目 53.24</div><div class="price-stop">初停 43.98</div><div class="price-support">支撐 43.98</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="1.2093750000000016">
   <td><a class="stock-link" href="stocks/6134.html">6134 萬旭</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">38.15</td>
-  <td>+12.6%</td>
+  <td class="price-main">37.25</td>
+  <td>+10.0%</td>
   <td><div class="price-entry">進 32.65</div><div class="price-target">目 36.52</div><div class="price-stop">初停 29.45</div><div class="price-support">支撐 29.45</div><div class="price-rr rr-bad">R:R 1:1.2</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="2.442321302193916">
-  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="通信網路業" data-rr="6.663364850667857">
+  <td><a class="stock-link" href="stocks/4979.html">4979 華星光</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">54.40</td>
-  <td>+12.7%</td>
-  <td><div class="price-entry">進 46.96</div><div class="price-target">目 55.59</div><div class="price-stop">初停 43.43</div><div class="price-support">支撐 43.43</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
+  <td class="price-main">637.00</td>
+  <td>+10.5%</td>
+  <td><div class="price-entry">進 555.25</div><div class="price-target">目 777.24</div><div class="price-stop">初停 521.93</div><div class="price-support">支撐 431.83</div><div class="price-rr rr-good">R:R 1:6.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="4.153745502126261">
-  <td><a class="stock-link" href="stocks/6217.html">6217 中探針</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="化學生技醫療" data-rr="3.855072463768108">
+  <td><a class="stock-link" href="stocks/4722.html">4722 國精化</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">305.00</td>
-  <td>+12.9%</td>
-  <td><div class="price-entry">進 254.75</div><div class="price-target">目 318.24</div><div class="price-stop">初停 239.46</div><div class="price-support">支撐 186.06</div><div class="price-rr rr-good">R:R 1:4.2</div></td>
+  <td class="price-main">278.00</td>
+  <td>+10.7%</td>
+  <td><div class="price-entry">進 244.38</div><div class="price-target">目 300.90</div><div class="price-stop">初停 229.71</div><div class="price-support">支撐 176.12</div><div class="price-rr rr-good">R:R 1:3.9</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="6.252553389043632">
-  <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="2.726153846153862">
+  <td><a class="stock-link" href="stocks/8112.html">8112 至上</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">1590.00</td>
-  <td>+12.9%</td>
-  <td><div class="price-entry">進 1346.25</div><div class="price-target">目 1851.30</div><div class="price-stop">初停 1265.47</div><div class="price-support">支撐 1054.70</div><div class="price-rr rr-good">R:R 1:6.3</div></td>
+  <td class="price-main">94.40</td>
+  <td>+10.8%</td>
+  <td><div class="price-entry">進 83.45</div><div class="price-target">目 92.31</div><div class="price-stop">初停 80.20</div><div class="price-support">支撐 80.20</div><div class="price-rr rr-good">R:R 1:2.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="1.4144062001367665">
-  <td><a class="stock-link" href="stocks/2379.html">2379 瑞昱</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融保險" data-rr="2.388567758509956">
+  <td><a class="stock-link" href="stocks/2881.html">2881 富邦金</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">653.00</td>
-  <td>+13.2%</td>
-  <td><div class="price-entry">進 565.25</div><div class="price-target">目 627.30</div><div class="price-stop">初停 521.38</div><div class="price-support">支撐 521.38</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
+  <td class="price-main">113.00</td>
+  <td>+10.9%</td>
+  <td><div class="price-entry">進 99.72</div><div class="price-target">目 118.32</div><div class="price-stop">初停 91.94</div><div class="price-support">支撐 91.94</div><div class="price-rr rr-good">R:R 1:2.4</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="0.9228235294117654">
+  <td><a class="stock-link" href="stocks/3037.html">3037 欣興</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">1000.00</td>
+  <td>+11.1%</td>
+  <td><div class="price-entry">進 864.50</div><div class="price-target">目 903.72</div><div class="price-stop">初停 822.00</div><div class="price-support">支撐 442.28</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="半導體業" data-rr="4.751773049645391">
   <td><a class="stock-link" href="stocks/3141.html">3141 晶宏</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">77.30</td>
-  <td>+13.5%</td>
+  <td class="price-main">75.70</td>
+  <td>+11.2%</td>
   <td><div class="price-entry">進 65.80</div><div class="price-target">目 84.56</div><div class="price-stop">初停 61.85</div><div class="price-support">支撐 45.97</div><div class="price-rr rr-good">R:R 1:4.8</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電機機械" data-rr="0">
+  <td><a class="stock-link" href="stocks/1560.html">1560 中砂</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">727.00</td>
+  <td>+11.2%</td>
+  <td><div class="price-entry">進 639.00</div><div class="price-target">目 629.34</div><div class="price-stop">初停 600.66</div><div class="price-support">支撐 498.50</div><div class="price-rr ">R:R ─</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="8.546816479400743">
+  <td><a class="stock-link" href="stocks/3665.html">3665 貿聯-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">2305.00</td>
+  <td>+11.9%</td>
+  <td><div class="price-entry">進 2002.50</div><div class="price-target">目 3029.40</div><div class="price-stop">初停 1882.35</div><div class="price-support">支撐 1985.03</div><div class="price-rr rr-good">R:R 1:8.5</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.72425456163774">
+  <td><a class="stock-link" href="stocks/2059.html">2059 川湖</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">5350.00</td>
+  <td>+12.1%</td>
+  <td><div class="price-entry">進 4681.25</div><div class="price-target">目 5727.30</div><div class="price-stop">初停 4400.38</div><div class="price-support">支撐 3875.53</div><div class="price-rr rr-good">R:R 1:3.7</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="汽車工業" data-rr="5.28227256382595">
+  <td><a class="stock-link" href="stocks/2243.html">2243 宏旭-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">27.00</td>
+  <td>+12.1%</td>
+  <td><div class="price-entry">進 23.18</div><div class="price-target">目 30.52</div><div class="price-stop">初停 21.78</div><div class="price-support">支撐 24.53</div><div class="price-rr rr-good">R:R 1:5.3</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="塑膠工業" data-rr="12.58658008658007">
+  <td><a class="stock-link" href="stocks/1309.html">1309 台達化（塑膠工業）</a><div class="signal-dates">行進籃 ｜ 短線轉強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">17.70</td>
+  <td>+12.3%</td>
+  <td><div class="price-entry">進 15.40</div><div class="price-target">目 27.03</div><div class="price-stop">初停 14.48</div><div class="price-support">支撐 13.08</div><div class="price-rr rr-good">R:R 1:12.6</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="3.8787878787878802">
+  <td><a class="stock-link" href="stocks/6672.html">6672 騰輝電子-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">217.00</td>
+  <td>+12.9%</td>
+  <td><div class="price-entry">進 187.00</div><div class="price-target">目 230.52</div><div class="price-stop">初停 175.78</div><div class="price-support">支撐 121.89</div><div class="price-rr rr-good">R:R 1:3.9</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="4.293333333333334">
+  <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">250.00</td>
+  <td>+14.1%</td>
+  <td><div class="price-entry">進 212.50</div><div class="price-target">目 267.24</div><div class="price-stop">初停 199.75</div><div class="price-support">支撐 172.63</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子通路業" data-rr="5.014603174603176">
   <td><a class="stock-link" href="stocks/3209.html">3209 全科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
@@ -1057,257 +1043,299 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td>+14.4%</td>
   <td><div class="price-entry">進 65.62</div><div class="price-target">目 85.37</div><div class="price-stop">初停 61.69</div><div class="price-support">支撐 50.25</div><div class="price-rr rr-good">R:R 1:5.0</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="1.835341365461847">
-  <td><a class="stock-link" href="stocks/2317.html">2317 鴻海</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電機機械" data-rr="0">
+  <td><a class="stock-link" href="stocks/8027.html">8027 鈺太</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">301.50</td>
-  <td>+15.0%</td>
-  <td><div class="price-entry">進 255.75</div><div class="price-target">目 310.59</div><div class="price-stop">初停 225.87</div><div class="price-support">支撐 225.87</div><div class="price-rr rr-mid">R:R 1:1.8</div></td>
+  <td class="price-main">291.00</td>
+  <td>+14.4%</td>
+  <td><div class="price-entry">進 247.88</div><div class="price-target">目 162.18</div><div class="price-stop">初停 233.00</div><div class="price-support">支撐 130.34</div><div class="price-rr ">R:R ─</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子工業" data-rr="1.2705682782018675">
-  <td><a class="stock-link" href="stocks/2337.html">2337 旺宏（半導體）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="1.633963396339633">
+  <td><a class="stock-link" href="stocks/2316.html">2316 楠梓電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">175.50</td>
-  <td>+15.7%</td>
-  <td><div class="price-entry">進 147.38</div><div class="price-target">目 158.61</div><div class="price-stop">初停 138.53</div><div class="price-support">支撐 88.36</div><div class="price-rr rr-bad">R:R 1:1.3</div></td>
+  <td class="price-main">166.50</td>
+  <td>+14.5%</td>
+  <td><div class="price-entry">進 138.88</div><div class="price-target">目 152.49</div><div class="price-stop">初停 130.54</div><div class="price-support">支撐 108.45</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="汽車工業" data-rr="5.28227256382595">
-  <td><a class="stock-link" href="stocks/2243.html">2243 宏旭-KY</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="5.093333333333334">
+  <td><a class="stock-link" href="stocks/6217.html">6217 中探針</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">28.00</td>
-  <td>+16.3%</td>
-  <td><div class="price-entry">進 23.18</div><div class="price-target">目 30.52</div><div class="price-stop">初停 21.78</div><div class="price-support">支撐 24.53</div><div class="price-rr rr-good">R:R 1:5.3</div></td>
+  <td class="price-main">292.00</td>
+  <td>+14.6%</td>
+  <td><div class="price-entry">進 243.75</div><div class="price-target">目 318.24</div><div class="price-stop">初停 229.12</div><div class="price-support">支撐 186.06</div><div class="price-rr rr-good">R:R 1:5.1</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電腦及週邊設備業" data-rr="4.1111111111111125">
-  <td><a class="stock-link" href="stocks/2376.html">2376 技嘉</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="光電業" data-rr="2.228689690854999">
+  <td><a class="stock-link" href="stocks/2406.html">2406 國碩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">390.50</td>
-  <td>+17.1%</td>
-  <td><div class="price-entry">進 324.00</div><div class="price-target">目 403.92</div><div class="price-stop">初停 304.56</div><div class="price-support">支撐 274.12</div><div class="price-rr rr-good">R:R 1:4.1</div></td>
+  <td class="price-main">38.00</td>
+  <td>+14.9%</td>
+  <td><div class="price-entry">進 32.21</div><div class="price-target">目 36.52</div><div class="price-stop">初停 30.28</div><div class="price-support">支撐 28.01</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="0">
   <td><a class="stock-link" href="stocks/4958.html">4958 臻鼎-KY</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">520.00</td>
-  <td>+18.0%</td>
+  <td class="price-main">510.00</td>
+  <td>+15.8%</td>
   <td><div class="price-entry">進 421.00</div><div class="price-target">目 365.67</div><div class="price-stop">初停 395.74</div><div class="price-support">支撐 205.47</div><div class="price-rr ">R:R ─</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子零組件業" data-rr="3.38321859722638">
-  <td><a class="stock-link" href="stocks/2484.html">2484 希華</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="2.2361942781104465">
+  <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">過熱/風險 ｜ 短線轉強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">51.90</td>
-  <td>+18.1%</td>
-  <td><div class="price-entry">進 41.76</div><div class="price-target">目 50.24</div><div class="price-stop">初停 39.26</div><div class="price-support">支撐 27.96</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
+  <td class="price-main">56.50</td>
+  <td>+16.2%</td>
+  <td><div class="price-entry">進 47.19</div><div class="price-target">目 55.59</div><div class="price-stop">初停 43.43</div><div class="price-support">支撐 43.43</div><div class="price-rr rr-good">R:R 1:2.2</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="半導體業" data-rr="6.732315409013788">
-  <td><a class="stock-link" href="stocks/2303.html">2303 聯電</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="3.1351828499369487">
+  <td><a class="stock-link" href="stocks/2317.html">2317 鴻海</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">141.50</td>
-  <td>+19.3%</td>
-  <td><div class="price-entry">進 112.97</div><div class="price-target">目 158.61</div><div class="price-stop">初停 106.20</div><div class="price-support">支撐 79.70</div><div class="price-rr rr-good">R:R 1:6.7</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="2.0255102040816295">
-  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">112.50</td>
-  <td>+20.2%</td>
-  <td><div class="price-entry">進 89.80</div><div class="price-target">目 109.65</div><div class="price-stop">初停 80.00</div><div class="price-support">支撐 80.00</div><div class="price-rr rr-good">R:R 1:2.0</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="通信網路業" data-rr="3.5142118863049068">
-  <td><a class="stock-link" href="stocks/3221.html">3221 台嘉碩（通信網路）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">57.30</td>
-  <td>+20.4%</td>
-  <td><div class="price-entry">進 45.15</div><div class="price-target">目 54.67</div><div class="price-stop">初停 42.44</div><div class="price-support">支撐 27.01</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="1.2874723887661728">
-  <td><a class="stock-link" href="stocks/2382.html">2382 廣達</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">400.50</td>
-  <td>+21.1%</td>
-  <td><div class="price-entry">進 318.75</div><div class="price-target">目 359.55</div><div class="price-stop">初停 287.06</div><div class="price-support">支撐 287.06</div><div class="price-rr rr-bad">R:R 1:1.3</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="7.659693165969319">
-  <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">231.50</td>
-  <td>+22.1%</td>
-  <td><div class="price-entry">進 179.25</div><div class="price-target">目 261.63</div><div class="price-stop">初停 168.50</div><div class="price-support">支撐 89.85</div><div class="price-rr rr-good">R:R 1:7.7</div></td>
+  <td class="price-main">309.00</td>
+  <td>+16.4%</td>
+  <td><div class="price-entry">進 258.12</div><div class="price-target">目 320.28</div><div class="price-stop">初停 238.30</div><div class="price-support">支撐 238.30</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電機機械" data-rr="1.382306477093205">
   <td><a class="stock-link" href="stocks/1570.html">1570 力肯</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">54.80</td>
-  <td>+24.2%</td>
+  <td class="price-main">51.80</td>
+  <td>+17.4%</td>
   <td><div class="price-entry">進 42.20</div><div class="price-target">目 45.70</div><div class="price-stop">初停 39.67</div><div class="price-support">支撐 32.49</div><div class="price-rr rr-bad">R:R 1:1.4</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="玻璃陶瓷" data-rr="1.5850025680534139">
-  <td><a class="stock-link" href="stocks/1809.html">1809 中釉</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="3.985910931174089">
+  <td><a class="stock-link" href="stocks/8021.html">8021 尖點</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">52.60</td>
-  <td>+24.7%</td>
-  <td><div class="price-entry">進 40.56</div><div class="price-target">目 44.42</div><div class="price-stop">初停 38.13</div><div class="price-support">支撐 24.38</div><div class="price-rr rr-mid">R:R 1:1.6</div></td>
+  <td class="price-main">470.00</td>
+  <td>+18.6%</td>
+  <td><div class="price-entry">進 383.88</div><div class="price-target">目 506.94</div><div class="price-stop">初停 353.00</div><div class="price-support">支撐 345.26</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="3.1229868228404074">
-  <td><a class="stock-link" href="stocks/6015.html">6015 宏遠證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="4.328725038402452">
+  <td><a class="stock-link" href="stocks/2376.html">2376 技嘉</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">20.85</td>
-  <td>+24.9%</td>
-  <td><div class="price-entry">進 16.04</div><div class="price-target">目 21.37</div><div class="price-stop">初停 14.33</div><div class="price-support">支撐 14.33</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
+  <td class="price-main">399.00</td>
+  <td>+18.9%</td>
+  <td><div class="price-entry">進 325.50</div><div class="price-target">目 410.04</div><div class="price-stop">初停 305.97</div><div class="price-support">支撐 281.58</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="半導體業" data-rr="8.448191078328056">
-  <td><a class="stock-link" href="stocks/3532.html">3532 台勝科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="1.8662533215234778">
+  <td><a class="stock-link" href="stocks/6126.html">6126 信音</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">315.50</td>
-  <td>+25.0%</td>
-  <td><div class="price-entry">進 237.25</div><div class="price-target">目 357.51</div><div class="price-stop">初停 223.01</div><div class="price-support">支撐 198.50</div><div class="price-rr rr-good">R:R 1:8.4</div></td>
+  <td class="price-main">42.65</td>
+  <td>+19.4%</td>
+  <td><div class="price-entry">進 34.66</div><div class="price-target">目 39.93</div><div class="price-stop">初停 31.84</div><div class="price-support">支撐 31.84</div><div class="price-rr rr-mid">R:R 1:1.9</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子工業" data-rr="1.536727186424586">
-  <td><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="0.6569960713206403">
+  <td><a class="stock-link" href="stocks/2464.html">2464 盟立</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">92.00</td>
-  <td>+25.1%</td>
-  <td><div class="price-entry">進 70.22</div><div class="price-target">目 76.70</div><div class="price-stop">初停 66.01</div><div class="price-support">支撐 42.98</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
+  <td class="price-main">175.50</td>
+  <td>+19.9%</td>
+  <td><div class="price-entry">進 137.88</div><div class="price-target">目 143.31</div><div class="price-stop">初停 129.60</div><div class="price-support">支撐 83.38</div><div class="price-rr rr-bad">R:R 1:0.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="半導體業" data-rr="8.622842563409861">
-  <td><a class="stock-link" href="stocks/3675.html">3675 德微</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="6.252553389043632">
+  <td><a class="stock-link" href="stocks/6274.html">6274 台燿</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">370.50</td>
-  <td>+25.3%</td>
-  <td><div class="price-entry">進 277.62</div><div class="price-target">目 421.26</div><div class="price-stop">初停 260.97</div><div class="price-support">支撐 207.96</div><div class="price-rr rr-good">R:R 1:8.6</div></td>
+  <td class="price-main">1695.00</td>
+  <td>+20.3%</td>
+  <td><div class="price-entry">進 1346.25</div><div class="price-target">目 1851.30</div><div class="price-stop">初停 1265.47</div><div class="price-support">支撐 1054.70</div><div class="price-rr rr-good">R:R 1:6.3</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="1.98740554156171">
+  <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">113.00</td>
+  <td>+20.6%</td>
+  <td><div class="price-entry">進 89.93</div><div class="price-target">目 109.65</div><div class="price-stop">初停 80.00</div><div class="price-support">支撐 80.00</div><div class="price-rr rr-mid">R:R 1:2.0</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="7.659693165969319">
+  <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">230.50</td>
+  <td>+21.6%</td>
+  <td><div class="price-entry">進 179.25</div><div class="price-target">目 261.63</div><div class="price-stop">初停 168.50</div><div class="price-support">支撐 89.85</div><div class="price-rr rr-good">R:R 1:7.7</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電機機械" data-rr="4.252810277586599">
+  <td><a class="stock-link" href="stocks/3167.html">3167 大量</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">920.00</td>
+  <td>+22.3%</td>
+  <td><div class="price-entry">進 726.50</div><div class="price-target">目 911.88</div><div class="price-stop">初停 682.91</div><div class="price-support">支撐 477.60</div><div class="price-rr rr-good">R:R 1:4.3</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="0.8675769676671393">
+  <td><a class="stock-link" href="stocks/2382.html">2382 廣達</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">417.00</td>
+  <td>+22.4%</td>
+  <td><div class="price-entry">進 325.88</div><div class="price-target">目 359.55</div><div class="price-stop">初停 287.06</div><div class="price-support">支撐 287.06</div><div class="price-rr rr-bad">R:R 1:0.9</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="通信網路業" data-rr="3.5142118863049068">
+  <td><a class="stock-link" href="stocks/3221.html">3221 台嘉碩（通信網路）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">58.30</td>
+  <td>+22.5%</td>
+  <td><div class="price-entry">進 45.15</div><div class="price-target">目 54.67</div><div class="price-stop">初停 42.44</div><div class="price-support">支撐 27.01</div><div class="price-rr rr-good">R:R 1:3.5</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="半導體業" data-rr="0">
   <td><a class="stock-link" href="stocks/6147.html">6147 頎邦</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">281.00</td>
-  <td>+25.4%</td>
+  <td class="price-main">275.00</td>
+  <td>+22.7%</td>
   <td><div class="price-entry">進 210.38</div><div class="price-target">目 154.53</div><div class="price-stop">初停 195.00</div><div class="price-support">支撐 68.85</div><div class="price-rr ">R:R ─</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="5.255389189763195">
-  <td><a class="stock-link" href="stocks/2495.html">2495 普安</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子零組件業" data-rr="3.38321859722638">
+  <td><a class="stock-link" href="stocks/2484.html">2484 希華</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">51.60</td>
-  <td>+25.6%</td>
-  <td><div class="price-entry">進 39.24</div><div class="price-target">目 51.61</div><div class="price-stop">初停 36.88</div><div class="price-support">支撐 34.48</div><div class="price-rr rr-good">R:R 1:5.3</div></td>
+  <td class="price-main">54.50</td>
+  <td>+24.1%</td>
+  <td><div class="price-entry">進 41.76</div><div class="price-target">目 50.24</div><div class="price-stop">初停 39.26</div><div class="price-support">支撐 27.96</div><div class="price-rr rr-good">R:R 1:3.4</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電腦及週邊設備業" data-rr="5.788466140224923">
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="半導體業" data-rr="8.448191078328056">
+  <td><a class="stock-link" href="stocks/3532.html">3532 台勝科</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">314.50</td>
+  <td>+24.6%</td>
+  <td><div class="price-entry">進 237.25</div><div class="price-target">目 357.51</div><div class="price-stop">初停 223.01</div><div class="price-support">支撐 198.50</div><div class="price-rr rr-good">R:R 1:8.4</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子工業" data-rr="1.2811512811512835">
+  <td><a class="stock-link" href="stocks/3673.html">3673 TPK-KY</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">94.00</td>
+  <td>+25.5%</td>
+  <td><div class="price-entry">進 71.22</div><div class="price-target">目 76.70</div><div class="price-stop">初停 66.95</div><div class="price-support">支撐 42.98</div><div class="price-rr rr-bad">R:R 1:1.3</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="半導體業" data-rr="8.622842563409861">
+  <td><a class="stock-link" href="stocks/3675.html">3675 德微</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">371.00</td>
+  <td>+25.5%</td>
+  <td><div class="price-entry">進 277.62</div><div class="price-target">目 421.26</div><div class="price-stop">初停 260.97</div><div class="price-support">支撐 207.96</div><div class="price-rr rr-good">R:R 1:8.6</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電腦及週邊設備業" data-rr="6.496584216725552">
   <td><a class="stock-link" href="stocks/2357.html">2357 華碩</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">920.00</td>
-  <td>+26.7%</td>
-  <td><div class="price-entry">進 696.50</div><div class="price-target">目 938.40</div><div class="price-stop">初停 654.71</div><div class="price-support">支撐 585.06</div><div class="price-rr rr-good">R:R 1:5.8</div></td>
+  <td class="price-main">931.00</td>
+  <td>+25.5%</td>
+  <td><div class="price-entry">進 707.50</div><div class="price-target">目 983.28</div><div class="price-stop">初停 665.05</div><div class="price-support">支撐 593.02</div><div class="price-rr rr-good">R:R 1:6.5</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="7.2944511948157045">
-  <td><a class="stock-link" href="stocks/2312.html">2312 金寶</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="1.4580970384373018">
+  <td><a class="stock-link" href="stocks/2344.html">2344 華邦電</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">41.30</td>
-  <td>+26.9%</td>
-  <td><div class="price-entry">進 30.86</div><div class="price-target">目 44.37</div><div class="price-stop">初停 29.01</div><div class="price-support">支撐 26.52</div><div class="price-rr rr-good">R:R 1:7.3</div></td>
+  <td class="price-main">177.50</td>
+  <td>+26.5%</td>
+  <td><div class="price-entry">進 132.25</div><div class="price-target">目 143.82</div><div class="price-stop">初停 124.31</div><div class="price-support">支撐 88.36</div><div class="price-rr rr-mid">R:R 1:1.5</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子通路業" data-rr="8.454367764245967">
-  <td><a class="stock-link" href="stocks/3048.html">3048 益登</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電腦及週邊設備業" data-rr="5.144215530903326">
+  <td><a class="stock-link" href="stocks/2495.html">2495 普安</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">75.20</td>
-  <td>+27.6%</td>
-  <td><div class="price-entry">進 55.42</div><div class="price-target">目 83.54</div><div class="price-stop">初停 52.10</div><div class="price-support">支撐 37.91</div><div class="price-rr rr-good">R:R 1:8.5</div></td>
+  <td class="price-main">52.80</td>
+  <td>+27.7%</td>
+  <td><div class="price-entry">進 39.44</div><div class="price-target">目 51.61</div><div class="price-stop">初停 37.07</div><div class="price-support">支撐 34.48</div><div class="price-rr rr-good">R:R 1:5.1</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="6.374871266735319">
-  <td><a class="stock-link" href="stocks/6016.html">6016 康和證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="玻璃陶瓷" data-rr="1.0182143923559293">
+  <td><a class="stock-link" href="stocks/1809.html">1809 中釉</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">32.50</td>
+  <td class="price-main">56.20</td>
   <td>+27.8%</td>
-  <td><div class="price-entry">進 24.27</div><div class="price-target">目 33.56</div><div class="price-stop">初停 22.82</div><div class="price-support">支撐 19.75</div><div class="price-rr rr-good">R:R 1:6.4</div></td>
+  <td><div class="price-entry">進 41.86</div><div class="price-target">目 44.42</div><div class="price-stop">初停 39.35</div><div class="price-support">支撐 24.38</div><div class="price-rr rr-bad">R:R 1:1.0</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="6.691394658753703">
-  <td><a class="stock-link" href="stocks/5864.html">5864 致和證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="0.061666666666667425">
+  <td><a class="stock-link" href="stocks/2478.html">2478 大毅</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">45.40</td>
-  <td>+28.3%</td>
-  <td><div class="price-entry">進 33.70</div><div class="price-target">目 47.23</div><div class="price-stop">初停 31.68</div><div class="price-support">支撐 29.35</div><div class="price-rr rr-good">R:R 1:6.7</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="0.5313385826771655">
-  <td><a class="stock-link" href="stocks/2464.html">2464 盟立</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">185.00</td>
-  <td>+28.6%</td>
-  <td><div class="price-entry">進 134.88</div><div class="price-target">目 143.31</div><div class="price-stop">初停 119.00</div><div class="price-support">支撐 83.38</div><div class="price-rr rr-bad">R:R 1:0.5</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="6.7749333333333315">
-  <td><a class="stock-link" href="stocks/3189.html">3189 景碩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">743.00</td>
-  <td>+30.1%</td>
-  <td><div class="price-entry">進 539.50</div><div class="price-target">目 793.56</div><div class="price-stop">初停 502.00</div><div class="price-support">支撐 443.27</div><div class="price-rr rr-good">R:R 1:6.8</div></td>
-</tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電腦及週邊設備業" data-rr="7.619047619047608">
-  <td><a class="stock-link" href="stocks/2356.html">2356 英業達</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
-  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">80.60</td>
-  <td>+30.4%</td>
-  <td><div class="price-entry">進 58.45</div><div class="price-target">目 85.17</div><div class="price-stop">初停 54.94</div><div class="price-support">支撐 46.07</div><div class="price-rr rr-good">R:R 1:7.6</div></td>
+  <td class="price-main">137.00</td>
+  <td>+28.0%</td>
+  <td><div class="price-entry">進 100.00</div><div class="price-target">目 100.37</div><div class="price-stop">初停 94.00</div><div class="price-support">支撐 62.69</div><div class="price-rr rr-bad">R:R 1:0.1</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子零組件業" data-rr="0">
   <td><a class="stock-link" href="stocks/8358.html">8358 金居</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">627.00</td>
-  <td>+30.7%</td>
+  <td class="price-main">615.00</td>
+  <td>+28.2%</td>
   <td><div class="price-entry">進 447.75</div><div class="price-target">目 424.32</div><div class="price-stop">初停 420.88</div><div class="price-support">支撐 222.88</div><div class="price-rr ">R:R ─</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="6.645105648986625">
+<tr data-radar-row data-status="far" data-basket="盤整籃" data-sector="電子零組件業" data-rr="0">
+  <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">盤整籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">74.60</td>
+  <td>+28.8%</td>
+  <td><div class="price-entry">進 54.29</div><div class="price-target">目 52.33</div><div class="price-stop">初停 51.03</div><div class="price-support">支撐 33.13</div><div class="price-rr ">R:R ─</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="6.7749333333333315">
+  <td><a class="stock-link" href="stocks/3189.html">3189 景碩</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">739.00</td>
+  <td>+29.4%</td>
+  <td><div class="price-entry">進 539.50</div><div class="price-target">目 793.56</div><div class="price-stop">初停 502.00</div><div class="price-support">支撐 443.27</div><div class="price-rr rr-good">R:R 1:6.8</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="6.5201229537493735">
   <td><a class="stock-link" href="stocks/8042.html">8042 金山電</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
   <td class="price-main">162.00</td>
-  <td>+31.6%</td>
-  <td><div class="price-entry">進 115.95</div><div class="price-target">目 162.18</div><div class="price-stop">初停 108.99</div><div class="price-support">支撐 57.91</div><div class="price-rr rr-good">R:R 1:6.6</div></td>
+  <td>+30.7%</td>
+  <td><div class="price-entry">進 116.58</div><div class="price-target">目 162.18</div><div class="price-stop">初停 109.58</div><div class="price-support">支撐 57.91</div><div class="price-rr rr-good">R:R 1:6.5</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子工業" data-rr="1.7540826128722364">
-  <td><a class="stock-link" href="stocks/2344.html">2344 華邦電</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="數位雲端" data-rr="12.881509433962261">
+  <td><a class="stock-link" href="stocks/8454.html">8454 富邦媒</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">184.50</td>
+  <td class="price-main">292.00</td>
+  <td>+30.9%</td>
+  <td><div class="price-entry">進 212.50</div><div class="price-target">目 297.84</div><div class="price-stop">初停 205.88</div><div class="price-support">支撐 177.61</div><div class="price-rr rr-good">R:R 1:12.9</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="6.893595562279374">
+  <td><a class="stock-link" href="stocks/6015.html">6015 宏遠證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">22.90</td>
+  <td>+31.8%</td>
+  <td><div class="price-entry">進 16.52</div><div class="price-target">目 23.36</div><div class="price-stop">初停 15.53</div><div class="price-support">支撐 14.33</div><div class="price-rr rr-good">R:R 1:6.9</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電子工業" data-rr="7.614260822945973">
+  <td><a class="stock-link" href="stocks/2312.html">2312 金寶</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">43.40</td>
+  <td>+32.1%</td>
+  <td><div class="price-entry">進 31.09</div><div class="price-target">目 45.29</div><div class="price-stop">初停 29.22</div><div class="price-support">支撐 26.52</div><div class="price-rr rr-good">R:R 1:7.6</div></td>
+</tr>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電腦及週邊設備業" data-rr="8.551695269987441">
+  <td><a class="stock-link" href="stocks/2356.html">2356 英業達</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">85.40</td>
   <td>+34.3%</td>
-  <td><div class="price-entry">進 130.12</div><div class="price-target">目 143.82</div><div class="price-stop">初停 122.32</div><div class="price-support">支撐 88.36</div><div class="price-rr rr-mid">R:R 1:1.8</div></td>
+  <td><div class="price-entry">進 59.73</div><div class="price-target">目 90.37</div><div class="price-stop">初停 56.14</div><div class="price-support">支撐 46.91</div><div class="price-rr rr-good">R:R 1:8.6</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="0.18807724601175566">
-  <td><a class="stock-link" href="stocks/2478.html">2478 大毅</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="7.658829414707355">
+  <td><a class="stock-link" href="stocks/6016.html">6016 康和證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">143.00</td>
-  <td>+34.5%</td>
-  <td><div class="price-entry">進 99.25</div><div class="price-target">目 100.37</div><div class="price-stop">初停 93.30</div><div class="price-support">支撐 62.69</div><div class="price-rr rr-bad">R:R 1:0.2</div></td>
+  <td class="price-main">35.75</td>
+  <td>+35.3%</td>
+  <td><div class="price-entry">進 24.99</div><div class="price-target">目 36.47</div><div class="price-stop">初停 23.49</div><div class="price-support">支撐 19.75</div><div class="price-rr rr-good">R:R 1:7.7</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電器電纜" data-rr="0">
-  <td><a class="stock-link" href="stocks/2061.html">2061 風青</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="金融業" data-rr="7.851637764932559">
+  <td><a class="stock-link" href="stocks/5864.html">5864 致和證</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">38.65</td>
-  <td>+36.4%</td>
-  <td><div class="price-entry">進 26.10</div><div class="price-target">目 23.71</div><div class="price-stop">初停 24.53</div><div class="price-support">支撐 14.93</div><div class="price-rr ">R:R ─</div></td>
+  <td class="price-main">49.90</td>
+  <td>+36.2%</td>
+  <td><div class="price-entry">進 34.60</div><div class="price-target">目 50.90</div><div class="price-stop">初停 32.52</div><div class="price-support">支撐 29.35</div><div class="price-rr rr-good">R:R 1:7.9</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="0">
-  <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="綠能環保" data-rr="3.093759242827561">
+  <td><a class="stock-link" href="stocks/7610.html">7610 聯友金屬-創</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">81.40</td>
-  <td>+40.6%</td>
-  <td><div class="price-entry">進 54.29</div><div class="price-target">目 52.33</div><div class="price-stop">初停 51.03</div><div class="price-support">支撐 33.13</div><div class="price-rr ">R:R ─</div></td>
+  <td class="price-main">1660.00</td>
+  <td>+37.5%</td>
+  <td><div class="price-entry">進 1127.00</div><div class="price-target">目 1336.20</div><div class="price-stop">初停 1059.38</div><div class="price-support">支撐 526.36</div><div class="price-rr rr-good">R:R 1:3.1</div></td>
 </tr>
 <tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="電子零組件業" data-rr="9.638882545482236">
   <td><a class="stock-link" href="stocks/2327.html">2327 國巨*</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">846.00</td>
-  <td>+44.0%</td>
+  <td class="price-main">820.00</td>
+  <td>+39.6%</td>
   <td><div class="price-entry">進 547.38</div><div class="price-target">目 863.94</div><div class="price-stop">初停 514.53</div><div class="price-support">支撐 329.34</div><div class="price-rr rr-good">R:R 1:9.6</div></td>
 </tr>
-<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="綠能環保" data-rr="3.987170569595793">
-  <td><a class="stock-link" href="stocks/7610.html">7610 聯友金屬-創</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+<tr data-radar-row data-status="far" data-basket="行進籃" data-sector="電器電纜" data-rr="0">
+  <td><a class="stock-link" href="stocks/2061.html">2061 風青</a><div class="signal-dates">行進籃 ｜ 長多偏強</div></td>
   <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
-  <td class="price-main">1685.00</td>
-  <td>+44.6%</td>
-  <td><div class="price-entry">進 1078.25</div><div class="price-target">目 1336.20</div><div class="price-stop">初停 1013.55</div><div class="price-support">支撐 526.36</div><div class="price-rr rr-good">R:R 1:4.0</div></td>
+  <td class="price-main">41.55</td>
+  <td>+45.6%</td>
+  <td><div class="price-entry">進 26.33</div><div class="price-target">目 23.71</div><div class="price-stop">初停 24.75</div><div class="price-support">支撐 14.93</div><div class="price-rr ">R:R ─</div></td>
 </tr>
-<tr data-radar-row data-status="broken" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="51.33333333333328">
-  <td><a class="stock-link" href="stocks/4305.html">4305 世坤</a><div class="signal-dates">過熱/風險 ｜ 整理/修正</div></td>
-  <td><span class="tag tag">跌破買點</span><div class="signal-dates">等重新站回或出現轉強</div></td>
-  <td class="price-main">0.00</td>
-  <td>-100.0%</td>
-  <td><div class="price-entry">進 11.25</div><div class="price-target">目 45.90</div><div class="price-stop">初停 10.57</div><div class="price-support">支撐 43.13</div><div class="price-rr rr-good">R:R 1:51.3</div></td>
+<tr data-radar-row data-status="far" data-basket="過熱/風險" data-sector="塑膠工業" data-rr="52.02020202020199">
+  <td><a class="stock-link" href="stocks/4305.html">4305 世坤</a><div class="signal-dates">過熱/風險 ｜ 長多偏強</div></td>
+  <td><span class="tag tag-red">離買點過遠</span><div class="signal-dates">不追高，等整理</div></td>
+  <td class="price-main">44.00</td>
+  <td>+182.2%</td>
+  <td><div class="price-entry">進 11.14</div><div class="price-target">目 45.90</div><div class="price-stop">初停 10.47</div><div class="price-support">支撐 43.13</div><div class="price-rr rr-good">R:R 1:52.0</div></td>
 </tr></tbody>
       </table>
     </div>
@@ -1476,7 +1504,7 @@ document.addEventListener('DOMContentLoaded',function(){initPlaceholders();initR
 <script>initTabs('timing-tabs')</script>
 
 <footer>
-  <p class="site-freshness">資料更新：2026-06-02 收盤後</p>
+  <p class="site-freshness">資料更新：2026-06-03 收盤後</p>
   <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
