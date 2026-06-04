@@ -1,12 +1,12 @@
 {
-  "date": "2026-06-03",
+  "date": "2026-06-04",
   "universe_count": 1968,
   "include_etf": false,
-  "price_start": "2026-06-03",
+  "price_start": "2026-06-04",
   "price_months": 15,
-  "holding_start": "2026-01-14",
+  "holding_start": "2026-01-15",
   "price": {
-    "dataset_rows": 41873,
+    "dataset_rows": 41993,
     "matched_stocks": 1968,
     "written_files": 1968,
     "fallback": false
