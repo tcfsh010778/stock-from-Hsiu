@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "date": "2026-06-18",
-  "updated_at": "2026-06-15T23:34:34+08:00",
+  "date": "2026-06-15",
+  "updated_at": "2026-06-16T01:42:51+08:00",
   "score": 95,
   "regime": "bullish",
   "regime_label": "偏多",
@@ -65,7 +65,7 @@
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-06-18",
+      "date": "2026-06-15",
       "days": 5,
       "cumulative_net_shares": 935153951
     },
@@ -74,13 +74,13 @@
       "score": 10.0,
       "weight": 10,
       "signal": "bullish",
-      "display": "418/134",
+      "display": "708/265",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 418,
-      "declines": 134,
-      "ratio": 3.12
+      "advances": 708,
+      "declines": 265,
+      "ratio": 2.67
     },
     "us_vix": {
       "label": "US VIX",
@@ -100,7 +100,7 @@
     "OK: TAIEX - 85 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 566 SFZ rows",
+    "OK: local breadth - 994 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
