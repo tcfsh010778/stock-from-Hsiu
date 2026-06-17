@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-06-17",
-  "updated_at": "2026-06-17T21:11:03+08:00",
+  "updated_at": "2026-06-18T00:26:48+08:00",
   "score": 96,
   "regime": "bullish",
   "regime_label": "偏多",
@@ -71,14 +71,14 @@
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 7.27,
+      "score": 7.29,
       "weight": 10,
       "signal": "bullish",
-      "display": "615/350",
+      "display": "617/350",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 615,
+      "advances": 617,
       "declines": 350,
       "ratio": 1.76
     },
@@ -100,7 +100,7 @@
     "OK: TAIEX - 87 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 994 SFZ rows",
+    "OK: local breadth - 996 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
