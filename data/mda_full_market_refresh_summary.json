@@ -1,23 +1,23 @@
 {
-  "date": "2026-06-19",
+  "date": "2026-06-22",
   "universe_count": 1082,
   "include_etf": false,
-  "price_start": "2026-06-19",
+  "price_start": "2026-06-22",
   "price_months": 15,
-  "holding_start": "2026-01-30",
+  "holding_start": "2026-02-02",
   "price": {
-    "dataset_rows": 0,
-    "matched_stocks": 0,
-    "written_files": 0,
+    "dataset_rows": 40752,
+    "matched_stocks": 1082,
+    "written_files": 1082,
     "fallback": false
   },
   "holding": {
-    "query_dates": 21,
-    "dataset_rows": 1075590,
+    "query_dates": 20,
+    "dataset_rows": 1009086,
     "matched_stocks": 1082,
     "written_files": 1082,
     "fallback_count": 0,
     "fallback_dates": []
   },
-  "candidate_count": 361
+  "candidate_count": 360
 }
