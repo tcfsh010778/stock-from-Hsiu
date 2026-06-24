@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-06-24",
-  "updated_at": "2026-06-24T20:18:02+08:00",
+  "updated_at": "2026-06-24T23:31:42+08:00",
   "score": 63,
   "regime": "bullish",
   "regime_label": "偏多",
@@ -10,77 +10,77 @@
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
-      "score": 15.0,
+      "score": 20.0,
       "weight": 30,
-      "signal": "bearish",
-      "display": "1/3",
-      "detail": "收盤 46043.60；MA5 46645.67 / MA20 45195.74 / MA60 0.00",
-      "available": false,
+      "signal": "bullish",
+      "display": "2/3",
+      "detail": "收盤 46043.60；MA5 46645.67 / MA20 45195.74 / MA60 40669.79",
+      "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
       "date": "2026-06-24",
       "close": 46043.6,
       "ma5": 46645.67,
       "ma20": 45195.74,
-      "ma60": null,
+      "ma60": 40669.79,
       "lights": {
         "ma5": false,
         "ma20": true,
-        "ma60": false
+        "ma60": true
       }
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 3.23,
-      "weight": 15,
-      "signal": "bearish",
-      "display": "-1.71%",
-      "detail": "融資餘額 9,300,664；前值 9,462,366",
-      "available": true,
-      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-23",
-      "latest": 9300664.0,
-      "previous": 9462366.0,
-      "weekly_change_pct": -1.71
-    },
-    "short_weekly": {
-      "label": "融券週變化",
-      "score": 14.26,
-      "weight": 15,
-      "signal": "neutral",
-      "display": "+0.98%",
-      "detail": "融券餘額 204,255；快速增加視為偏空",
-      "available": true,
-      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-23",
-      "latest": 204255.0,
-      "previous": 202267.0,
-      "weekly_change_pct": 0.98
-    },
-    "foreign_5d": {
-      "label": "外資 5 日",
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "+23.72 億股",
+      "display": "+3.14%",
+      "detail": "融資餘額 9,469,030；前值 9,180,710",
+      "available": true,
+      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
+      "date": "2026-06-24",
+      "latest": 9469030.0,
+      "previous": 9180710.0,
+      "weekly_change_pct": 3.14
+    },
+    "short_weekly": {
+      "label": "融券週變化",
+      "score": 12.04,
+      "weight": 15,
+      "signal": "neutral",
+      "display": "+3.94%",
+      "detail": "融券餘額 202,194；快速增加視為偏空",
+      "available": true,
+      "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
+      "date": "2026-06-24",
+      "latest": 202194.0,
+      "previous": 194525.0,
+      "weekly_change_pct": 3.94
+    },
+    "foreign_5d": {
+      "label": "外資 5 日",
+      "score": 0.0,
+      "weight": 15,
+      "signal": "bearish",
+      "display": "-8.25 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-06-18",
-      "days": 3,
-      "cumulative_net_shares": 2372034319
+      "date": "2026-06-24",
+      "days": 5,
+      "cumulative_net_shares": -825413215
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 3.61,
+      "score": 3.6,
       "weight": 10,
       "signal": "bearish",
-      "display": "336/628",
+      "display": "336/630",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
       "advances": 336,
-      "declines": 628,
-      "ratio": 0.54
+      "declines": 630,
+      "ratio": 0.53
     },
     "us_vix": {
       "label": "US VIX",
@@ -97,10 +97,10 @@
     }
   },
   "source_status": [
-    "OK: TAIEX - 57 rows",
-    "OK: TWSE margin - 2 trading days",
-    "OK: TWSE foreign - 3 trading days",
-    "OK: local breadth - 989 SFZ rows",
+    "OK: TAIEX - 91 rows",
+    "OK: TWSE margin - 6 trading days",
+    "OK: TWSE foreign - 5 trading days",
+    "OK: local breadth - 991 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
