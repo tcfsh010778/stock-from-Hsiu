@@ -19,12 +19,12 @@
     "deduct240_gap_pct": 46.52509652509656,
     "range60_pct": 46.52777777777779,
     "volume20_vs_120_pct": -21.911526382177136,
-    "major_4w_pctpt": 2.4600000000000044,
-    "major_8w_pctpt": -4.849999999999998,
-    "retail_4w_pctpt": -3.4100000000000037,
-    "retail_8w_pctpt": 4.559999999999995,
-    "people_4w": -3623,
-    "people_8w": 7187,
+    "major_4w_pctpt": 1.7199999999999989,
+    "major_8w_pctpt": 0.05000000000000071,
+    "retail_4w_pctpt": -2.1199999999999974,
+    "retail_8w_pctpt": -0.9299999999999926,
+    "people_4w": -2403,
+    "people_8w": -1180,
     "major_accumulating": true,
     "retail_or_people_support": true,
     "base_mda_watch": true,
@@ -193,7 +193,7 @@
   },
   {
     "stock_id": "5536",
-    "name": "聖暉*",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 100,
@@ -225,7 +225,7 @@
   },
   {
     "stock_id": "6222",
-    "name": "立軒",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 100,
@@ -321,7 +321,7 @@
   },
   {
     "stock_id": "8096",
-    "name": "擎亞",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 100,
@@ -353,7 +353,7 @@
   },
   {
     "stock_id": "9960",
-    "name": "邁達康",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 100,
@@ -723,12 +723,12 @@
     "deduct240_gap_pct": 989.3300248138959,
     "range60_pct": 178.63961813842485,
     "volume20_vs_120_pct": 25.458573137672722,
-    "major_4w_pctpt": -0.5800000000000125,
-    "major_8w_pctpt": 7.4399999999999835,
-    "retail_4w_pctpt": 1.410000000000002,
-    "retail_8w_pctpt": -3.669999999999998,
-    "people_4w": 81116,
-    "people_8w": -22677,
+    "major_4w_pctpt": 4.849999999999994,
+    "major_8w_pctpt": 10.059999999999988,
+    "retail_4w_pctpt": -2.549999999999999,
+    "retail_8w_pctpt": -5.580000000000004,
+    "people_4w": -14815,
+    "people_8w": -64725,
     "major_accumulating": true,
     "retail_or_people_support": true,
     "base_mda_watch": true,
@@ -1017,38 +1017,6 @@
     "retail_8w_pctpt": -1.1600000000000001,
     "people_4w": -85,
     "people_8w": -1391,
-    "major_accumulating": true,
-    "retail_or_people_support": true,
-    "base_mda_watch": true,
-    "no_new_low": true,
-    "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
-  },
-  {
-    "stock_id": "2472",
-    "name": "立隆電",
-    "basket": "已發動籃",
-    "original_basket": "",
-    "score": 90,
-    "date": "2026-06-25",
-    "close": 397.0,
-    "gain_6w": 70.02141327623126,
-    "gain_3d": 0.8894536213468918,
-    "rsi_14": 57.142857142857146,
-    "percent_b": 88.37270031341562,
-    "ma120": 184.025,
-    "ma240": 137.26374999999996,
-    "ma120_slope_pct": 31.294033710871318,
-    "ma240_slope_pct": 21.627518884712813,
-    "one_year_high_gap_pct": -8.208092485549134,
-    "deduct240_gap_pct": 422.3684210526316,
-    "range60_pct": 251.6260162601626,
-    "volume20_vs_120_pct": 33.932693926900726,
-    "major_4w_pctpt": 2.5,
-    "major_8w_pctpt": 0.5899999999999963,
-    "retail_4w_pctpt": -1.3000000000000007,
-    "retail_8w_pctpt": 1.4299999999999997,
-    "people_4w": 6096,
-    "people_8w": 12420,
     "major_accumulating": true,
     "retail_or_people_support": true,
     "base_mda_watch": true,
@@ -1697,7 +1665,7 @@
   },
   {
     "stock_id": "3071",
-    "name": "協禧",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1729,7 +1697,7 @@
   },
   {
     "stock_id": "3088",
-    "name": "艾訊",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1761,7 +1729,7 @@
   },
   {
     "stock_id": "3093",
-    "name": "港建*",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1793,7 +1761,7 @@
   },
   {
     "stock_id": "3147",
-    "name": "大綜",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1857,7 +1825,7 @@
   },
   {
     "stock_id": "3234",
-    "name": "光環",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1889,7 +1857,7 @@
   },
   {
     "stock_id": "3236",
-    "name": "千如",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -1921,7 +1889,7 @@
   },
   {
     "stock_id": "3290",
-    "name": "東浦",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2145,7 +2113,7 @@
   },
   {
     "stock_id": "4556",
-    "name": "旭然",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2177,7 +2145,7 @@
   },
   {
     "stock_id": "4707",
-    "name": "磐亞",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2209,7 +2177,7 @@
   },
   {
     "stock_id": "4931",
-    "name": "新盛力",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2305,7 +2273,7 @@
   },
   {
     "stock_id": "5493",
-    "name": "三聯",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2369,7 +2337,7 @@
   },
   {
     "stock_id": "6121",
-    "name": "新普",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2497,7 +2465,7 @@
   },
   {
     "stock_id": "6170",
-    "name": "統振",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2625,7 +2593,7 @@
   },
   {
     "stock_id": "6229",
-    "name": "研通",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2721,7 +2689,7 @@
   },
   {
     "stock_id": "6432",
-    "name": "今展科",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2849,7 +2817,7 @@
   },
   {
     "stock_id": "6509",
-    "name": "聚和",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2881,7 +2849,7 @@
   },
   {
     "stock_id": "6538",
-    "name": "倉和",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -2913,7 +2881,7 @@
   },
   {
     "stock_id": "6651",
-    "name": "全宇昕",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 90,
@@ -3297,7 +3265,7 @@
   },
   {
     "stock_id": "3217",
-    "name": "優群",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3393,7 +3361,7 @@
   },
   {
     "stock_id": "5425",
-    "name": "台半",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3425,7 +3393,7 @@
   },
   {
     "stock_id": "6127",
-    "name": "九豪",
+    "name": "九豪（電子零組件）",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3457,7 +3425,7 @@
   },
   {
     "stock_id": "6175",
-    "name": "立敦",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3489,7 +3457,7 @@
   },
   {
     "stock_id": "6270",
-    "name": "倍微",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3553,7 +3521,7 @@
   },
   {
     "stock_id": "8040",
-    "name": "九暘",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3585,7 +3553,7 @@
   },
   {
     "stock_id": "8088",
-    "name": "品安",
+    "name": "",
     "basket": "已發動籃",
     "original_basket": "",
     "score": 70,
@@ -3777,7 +3745,7 @@
   },
   {
     "stock_id": "3122",
-    "name": "笙泉",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -3809,7 +3777,7 @@
   },
   {
     "stock_id": "3171",
-    "name": "炎洲流通",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -3905,7 +3873,7 @@
   },
   {
     "stock_id": "3498",
-    "name": "陽程",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4001,7 +3969,7 @@
   },
   {
     "stock_id": "3631",
-    "name": "晟楠",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4033,7 +4001,7 @@
   },
   {
     "stock_id": "3709",
-    "name": "鑫聯大投控",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4161,7 +4129,7 @@
   },
   {
     "stock_id": "5291",
-    "name": "邑昇",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4193,7 +4161,7 @@
   },
   {
     "stock_id": "5543",
-    "name": "桓鼎-KY",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4257,7 +4225,7 @@
   },
   {
     "stock_id": "6417",
-    "name": "韋僑",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4321,7 +4289,7 @@
   },
   {
     "stock_id": "6530",
-    "name": "創威",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4417,7 +4385,7 @@
   },
   {
     "stock_id": "6761",
-    "name": "穩得",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4449,7 +4417,7 @@
   },
   {
     "stock_id": "6877",
-    "name": "鏵友益",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4545,7 +4513,7 @@
   },
   {
     "stock_id": "8048",
-    "name": "德勝",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -4641,7 +4609,7 @@
   },
   {
     "stock_id": "8240",
-    "name": "華宏",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 100,
@@ -5761,7 +5729,7 @@
   },
   {
     "stock_id": "3211",
-    "name": "順達",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -5857,7 +5825,7 @@
   },
   {
     "stock_id": "3228",
-    "name": "金麗科",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -5921,7 +5889,7 @@
   },
   {
     "stock_id": "3285",
-    "name": "微端",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6017,7 +5985,7 @@
   },
   {
     "stock_id": "3339",
-    "name": "泰谷",
+    "name": "3339",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6113,7 +6081,7 @@
   },
   {
     "stock_id": "3537",
-    "name": "堡達",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6177,7 +6145,7 @@
   },
   {
     "stock_id": "3580",
-    "name": "友威科",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6337,7 +6305,7 @@
   },
   {
     "stock_id": "4534",
-    "name": "慶騰",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6369,7 +6337,7 @@
   },
   {
     "stock_id": "4541",
-    "name": "晟田",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6433,7 +6401,7 @@
   },
   {
     "stock_id": "4721",
-    "name": "美琪瑪",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6465,7 +6433,7 @@
   },
   {
     "stock_id": "4729",
-    "name": "熒茂",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6529,7 +6497,7 @@
   },
   {
     "stock_id": "4741",
-    "name": "泓瀚",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6657,7 +6625,7 @@
   },
   {
     "stock_id": "4953",
-    "name": "緯軟",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6689,7 +6657,7 @@
   },
   {
     "stock_id": "4966",
-    "name": "譜瑞-KY",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6753,7 +6721,7 @@
   },
   {
     "stock_id": "5309",
-    "name": "系統電",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6785,7 +6753,7 @@
   },
   {
     "stock_id": "5490",
-    "name": "同亨",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6817,7 +6785,7 @@
   },
   {
     "stock_id": "6113",
-    "name": "亞矽",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -6913,7 +6881,7 @@
   },
   {
     "stock_id": "6151",
-    "name": "晉倫",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7073,7 +7041,7 @@
   },
   {
     "stock_id": "6227",
-    "name": "茂綸",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7105,7 +7073,7 @@
   },
   {
     "stock_id": "6237",
-    "name": "驊訊",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7137,7 +7105,7 @@
   },
   {
     "stock_id": "6245",
-    "name": "立端",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7201,7 +7169,7 @@
   },
   {
     "stock_id": "6284",
-    "name": "佳邦",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7297,7 +7265,7 @@
   },
   {
     "stock_id": "6548",
-    "name": "長科*",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7393,7 +7361,7 @@
   },
   {
     "stock_id": "6870",
-    "name": "騰雲",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7425,7 +7393,7 @@
   },
   {
     "stock_id": "8121",
-    "name": "越峰",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7489,7 +7457,7 @@
   },
   {
     "stock_id": "8182",
-    "name": "加高",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7571,12 +7539,12 @@
     "deduct240_gap_pct": 25.8364312267658,
     "range60_pct": 177.97619047619045,
     "volume20_vs_120_pct": 227.26890090075983,
-    "major_4w_pctpt": 3.3700000000000045,
-    "major_8w_pctpt": 3.1799999999999926,
-    "retail_4w_pctpt": -1.8899999999999988,
-    "retail_8w_pctpt": -1.959999999999999,
-    "people_4w": -859,
-    "people_8w": -1932,
+    "major_4w_pctpt": 2.740000000000009,
+    "major_8w_pctpt": 3.8499999999999943,
+    "retail_4w_pctpt": -1.8599999999999994,
+    "retail_8w_pctpt": -2.1099999999999994,
+    "people_4w": -1067,
+    "people_8w": -2176,
     "major_accumulating": true,
     "retail_or_people_support": true,
     "base_mda_watch": true,
@@ -7617,7 +7585,7 @@
   },
   {
     "stock_id": "8935",
-    "name": "邦泰",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 90,
@@ -7649,7 +7617,7 @@
   },
   {
     "stock_id": "2065",
-    "name": "世豐",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 85,
@@ -7713,7 +7681,7 @@
   },
   {
     "stock_id": "8942",
-    "name": "森鉅",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 85,
@@ -7841,7 +7809,7 @@
   },
   {
     "stock_id": "3555",
-    "name": "博士旺",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 80,
@@ -7905,7 +7873,7 @@
   },
   {
     "stock_id": "6532",
-    "name": "瑞耘",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 80,
@@ -7937,7 +7905,7 @@
   },
   {
     "stock_id": "6679",
-    "name": "鈺太",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 80,
@@ -8001,7 +7969,7 @@
   },
   {
     "stock_id": "1259",
-    "name": "安心",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8417,7 +8385,7 @@
   },
   {
     "stock_id": "3293",
-    "name": "鈊象",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8449,7 +8417,7 @@
   },
   {
     "stock_id": "3546",
-    "name": "宇峻",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8481,7 +8449,7 @@
   },
   {
     "stock_id": "4168",
-    "name": "醣聯",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8513,7 +8481,7 @@
   },
   {
     "stock_id": "4198",
-    "name": "欣大健康",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8577,7 +8545,7 @@
   },
   {
     "stock_id": "4933",
-    "name": "友輝",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8737,7 +8705,7 @@
   },
   {
     "stock_id": "6546",
-    "name": "正基",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8769,7 +8737,7 @@
   },
   {
     "stock_id": "6569",
-    "name": "醫揚",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8801,7 +8769,7 @@
   },
   {
     "stock_id": "6609",
-    "name": "瀧澤科",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 75,
@@ -8993,7 +8961,7 @@
   },
   {
     "stock_id": "3288",
-    "name": "點晶",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9025,7 +8993,7 @@
   },
   {
     "stock_id": "3289",
-    "name": "宜特",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9153,7 +9121,7 @@
   },
   {
     "stock_id": "3511",
-    "name": "矽瑪",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9185,7 +9153,7 @@
   },
   {
     "stock_id": "3526",
-    "name": "凡甲",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9217,7 +9185,7 @@
   },
   {
     "stock_id": "3577",
-    "name": "泓格",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9249,7 +9217,7 @@
   },
   {
     "stock_id": "4111",
-    "name": "濟生",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9281,7 +9249,7 @@
   },
   {
     "stock_id": "4939",
-    "name": "亞電",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9345,7 +9313,7 @@
   },
   {
     "stock_id": "5381",
-    "name": "光譜",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9505,7 +9473,7 @@
   },
   {
     "stock_id": "6654",
-    "name": "天正國際",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9537,7 +9505,7 @@
   },
   {
     "stock_id": "6683",
-    "name": "雍智科技",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9569,7 +9537,7 @@
   },
   {
     "stock_id": "6716",
-    "name": "應廣",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9601,7 +9569,7 @@
   },
   {
     "stock_id": "8064",
-    "name": "東捷",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9665,7 +9633,7 @@
   },
   {
     "stock_id": "8289",
-    "name": "泰藝",
+    "name": "",
     "basket": "空轉多觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9857,7 +9825,7 @@
   },
   {
     "stock_id": "3354",
-    "name": "律勝",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9889,7 +9857,7 @@
   },
   {
     "stock_id": "4533",
-    "name": "協易機",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9953,7 +9921,7 @@
   },
   {
     "stock_id": "5263",
-    "name": "智崴",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -9985,7 +9953,7 @@
   },
   {
     "stock_id": "5310",
-    "name": "天剛",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -10017,7 +9985,7 @@
   },
   {
     "stock_id": "5498",
-    "name": "凱崴",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -10081,7 +10049,7 @@
   },
   {
     "stock_id": "6823",
-    "name": "濾能",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 70,
@@ -10369,7 +10337,7 @@
   },
   {
     "stock_id": "3483",
-    "name": "力致",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10401,7 +10369,7 @@
   },
   {
     "stock_id": "3689",
-    "name": "湧德",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10433,7 +10401,7 @@
   },
   {
     "stock_id": "5392",
-    "name": "能率",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10465,7 +10433,7 @@
   },
   {
     "stock_id": "6104",
-    "name": "創惟",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10529,7 +10497,7 @@
   },
   {
     "stock_id": "6576",
-    "name": "逸達",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10593,7 +10561,7 @@
   },
   {
     "stock_id": "8069",
-    "name": "元太",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10625,7 +10593,7 @@
   },
   {
     "stock_id": "8084",
-    "name": "巨虹",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10657,7 +10625,7 @@
   },
   {
     "stock_id": "8183",
-    "name": "精星",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 60,
@@ -10753,7 +10721,7 @@
   },
   {
     "stock_id": "6492",
-    "name": "生華科",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 55,
@@ -10785,7 +10753,7 @@
   },
   {
     "stock_id": "6762",
-    "name": "達亞",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 55,
@@ -10849,7 +10817,7 @@
   },
   {
     "stock_id": "9949",
-    "name": "琉園",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 50,
@@ -11009,7 +10977,7 @@
   },
   {
     "stock_id": "3484",
-    "name": "崧騰",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 45,
@@ -11105,7 +11073,7 @@
   },
   {
     "stock_id": "4744",
-    "name": "皇將",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 45,
@@ -11233,7 +11201,7 @@
   },
   {
     "stock_id": "6856",
-    "name": "鑫傳",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 45,
@@ -11393,7 +11361,7 @@
   },
   {
     "stock_id": "3491",
-    "name": "昇達科",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11425,7 +11393,7 @@
   },
   {
     "stock_id": "6111",
-    "name": "光聚晶電",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11457,7 +11425,7 @@
   },
   {
     "stock_id": "6150",
-    "name": "撼訊",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11489,7 +11457,7 @@
   },
   {
     "stock_id": "6561",
-    "name": "是方",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11520,8 +11488,40 @@
     "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
   },
   {
+    "stock_id": "6689",
+    "name": "伊雲谷",
+    "basket": "未發動觀察籃",
+    "original_basket": "",
+    "score": 40,
+    "date": "2026-06-25",
+    "close": 65.7,
+    "gain_6w": -0.7552870090634434,
+    "gain_3d": -1.9402985074626788,
+    "rsi_14": 12.931034482758534,
+    "percent_b": 24.317465539333895,
+    "ma120": 67.75416666666673,
+    "ma240": 70.6841666666666,
+    "ma120_slope_pct": 1.371485568231412,
+    "ma240_slope_pct": -1.687017901746124,
+    "one_year_high_gap_pct": -28.196721311475404,
+    "deduct240_gap_pct": -17.35849056603773,
+    "range60_pct": 22.065727699530523,
+    "volume20_vs_120_pct": -29.249725362937884,
+    "major_4w_pctpt": 0.13000000000000256,
+    "major_8w_pctpt": 1.1799999999999997,
+    "retail_4w_pctpt": 0.0400000000000027,
+    "retail_8w_pctpt": -0.8799999999999955,
+    "people_4w": -91,
+    "people_8w": -466,
+    "major_accumulating": true,
+    "retail_or_people_support": true,
+    "base_mda_watch": false,
+    "no_new_low": true,
+    "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
+  },
+  {
     "stock_id": "6720",
-    "name": "久昌",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11553,7 +11553,7 @@
   },
   {
     "stock_id": "7751",
-    "name": "竑騰",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11617,7 +11617,7 @@
   },
   {
     "stock_id": "8436",
-    "name": "大江",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11649,7 +11649,7 @@
   },
   {
     "stock_id": "8936",
-    "name": "國統",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 40,
@@ -11681,7 +11681,7 @@
   },
   {
     "stock_id": "6913",
-    "name": "鴻呈",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 35,
@@ -12001,7 +12001,7 @@
   },
   {
     "stock_id": "3232",
-    "name": "昱捷",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 30,
@@ -12033,7 +12033,7 @@
   },
   {
     "stock_id": "4174",
-    "name": "浩鼎",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 30,
@@ -12129,7 +12129,7 @@
   },
   {
     "stock_id": "4974",
-    "name": "亞泰",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 30,
@@ -12257,7 +12257,7 @@
   },
   {
     "stock_id": "6767",
-    "name": "台微醫",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 30,
@@ -12352,40 +12352,8 @@
     "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
   },
   {
-    "stock_id": "7839",
-    "name": "達人網",
-    "basket": "未發動觀察籃",
-    "original_basket": "",
-    "score": 25,
-    "date": "2026-06-25",
-    "close": 45.8,
-    "gain_6w": null,
-    "gain_3d": -0.32644178454843686,
-    "rsi_14": 17.33870967741936,
-    "percent_b": 18.27476442125682,
-    "ma120": 45.923333333333304,
-    "ma240": 44.851249999999986,
-    "ma120_slope_pct": 2.9324965445104434,
-    "ma240_slope_pct": -2.3220994174334653,
-    "one_year_high_gap_pct": -45.926800472255024,
-    "deduct240_gap_pct": -38.6058981233244,
-    "range60_pct": null,
-    "volume20_vs_120_pct": 426.3512355761205,
-    "major_4w_pctpt": 1.2000000000000028,
-    "major_8w_pctpt": 1.190000000000012,
-    "retail_4w_pctpt": 0.17000000000000004,
-    "retail_8w_pctpt": 0.28000000000000014,
-    "people_4w": 61,
-    "people_8w": 67,
-    "major_accumulating": true,
-    "retail_or_people_support": false,
-    "base_mda_watch": false,
-    "no_new_low": true,
-    "reason": "大戶4/8週累積、近20日未破60日低位區"
-  },
-  {
     "stock_id": "4549",
-    "name": "桓達",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 10,
@@ -12417,7 +12385,7 @@
   },
   {
     "stock_id": "6708",
-    "name": "天擎",
+    "name": "",
     "basket": "未發動觀察籃",
     "original_basket": "",
     "score": 10,
@@ -12737,7 +12705,7 @@
   },
   {
     "stock_id": "3624",
-    "name": "光頡",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "空轉多觀察籃",
     "score": 90,
@@ -12769,7 +12737,7 @@
   },
   {
     "stock_id": "4716",
-    "name": "大立",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "已發動籃",
     "score": 90,
@@ -12801,7 +12769,7 @@
   },
   {
     "stock_id": "5011",
-    "name": "久陽",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "已發動籃",
     "score": 90,
@@ -12865,7 +12833,7 @@
   },
   {
     "stock_id": "5328",
-    "name": "華容",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "已發動籃",
     "score": 90,
@@ -12897,7 +12865,7 @@
   },
   {
     "stock_id": "5464",
-    "name": "霖宏",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "已發動籃",
     "score": 90,
@@ -13121,7 +13089,7 @@
   },
   {
     "stock_id": "6207",
-    "name": "雷科",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "空轉多觀察籃",
     "score": 70,
@@ -13185,7 +13153,7 @@
   },
   {
     "stock_id": "8043",
-    "name": "蜜望實",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "空轉多觀察籃",
     "score": 70,
@@ -13313,7 +13281,7 @@
   },
   {
     "stock_id": "5321",
-    "name": "美而快",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 60,
@@ -13441,7 +13409,7 @@
   },
   {
     "stock_id": "6620",
-    "name": "漢達",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 45,
@@ -13473,7 +13441,7 @@
   },
   {
     "stock_id": "6712",
-    "name": "長聖",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 45,
@@ -13569,7 +13537,7 @@
   },
   {
     "stock_id": "3479",
-    "name": "安勤",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 40,
@@ -13601,7 +13569,7 @@
   },
   {
     "stock_id": "5347",
-    "name": "世界",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 40,
@@ -13633,7 +13601,7 @@
   },
   {
     "stock_id": "5489",
-    "name": "彩富",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 40,
@@ -13729,7 +13697,7 @@
   },
   {
     "stock_id": "8938",
-    "name": "明安",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 40,
@@ -13761,7 +13729,7 @@
   },
   {
     "stock_id": "8932",
-    "name": "智通*",
+    "name": "",
     "basket": "過熱/風險",
     "original_basket": "未入籃",
     "score": 30,
@@ -14081,7 +14049,7 @@
   },
   {
     "stock_id": "2640",
-    "name": "大車隊",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14113,7 +14081,7 @@
   },
   {
     "stock_id": "3219",
-    "name": "倚強科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14145,7 +14113,7 @@
   },
   {
     "stock_id": "3226",
-    "name": "龍鋒",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14241,7 +14209,7 @@
   },
   {
     "stock_id": "4130",
-    "name": "健亞",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14305,7 +14273,7 @@
   },
   {
     "stock_id": "5272",
-    "name": "笙科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14337,7 +14305,7 @@
   },
   {
     "stock_id": "5340",
-    "name": "建榮",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14369,7 +14337,7 @@
   },
   {
     "stock_id": "5455",
-    "name": "昇益",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14401,7 +14369,7 @@
   },
   {
     "stock_id": "5523",
-    "name": "豐謙",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14433,7 +14401,7 @@
   },
   {
     "stock_id": "6233",
-    "name": "旺玖",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14497,7 +14465,7 @@
   },
   {
     "stock_id": "6485",
-    "name": "點序",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14529,7 +14497,7 @@
   },
   {
     "stock_id": "6739",
-    "name": "竹陞科技",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14561,7 +14529,7 @@
   },
   {
     "stock_id": "6967",
-    "name": "汎瑋材料",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -14593,7 +14561,7 @@
   },
   {
     "stock_id": "8074",
-    "name": "鉅橡",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 70,
@@ -15425,7 +15393,7 @@
   },
   {
     "stock_id": "3176",
-    "name": "基亞",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15457,7 +15425,7 @@
   },
   {
     "stock_id": "3205",
-    "name": "佰研",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15489,7 +15457,7 @@
   },
   {
     "stock_id": "3206",
-    "name": "志豐",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15617,7 +15585,7 @@
   },
   {
     "stock_id": "4163",
-    "name": "鐿鈦",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15681,7 +15649,7 @@
   },
   {
     "stock_id": "4543",
-    "name": "萬在",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15841,7 +15809,7 @@
   },
   {
     "stock_id": "5227",
-    "name": "立凱-KY",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15873,7 +15841,7 @@
   },
   {
     "stock_id": "5236",
-    "name": "凌陽創新",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15905,7 +15873,7 @@
   },
   {
     "stock_id": "5468",
-    "name": "凱鈺",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -15969,7 +15937,7 @@
   },
   {
     "stock_id": "5904",
-    "name": "寶雅",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16065,7 +16033,7 @@
   },
   {
     "stock_id": "6220",
-    "name": "岳豐",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16097,7 +16065,7 @@
   },
   {
     "stock_id": "6231",
-    "name": "系微",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16129,7 +16097,7 @@
   },
   {
     "stock_id": "6265",
-    "name": "方土昶",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16225,7 +16193,7 @@
   },
   {
     "stock_id": "6494",
-    "name": "九齊",
+    "name": "6494",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16289,7 +16257,7 @@
   },
   {
     "stock_id": "6613",
-    "name": "朋億*",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16353,7 +16321,7 @@
   },
   {
     "stock_id": "6693",
-    "name": "廣閎科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16417,7 +16385,7 @@
   },
   {
     "stock_id": "7713",
-    "name": "威力德生醫",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16449,7 +16417,7 @@
   },
   {
     "stock_id": "8054",
-    "name": "安國",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16481,7 +16449,7 @@
   },
   {
     "stock_id": "8109",
-    "name": "博大",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16545,7 +16513,7 @@
   },
   {
     "stock_id": "8383",
-    "name": "千附",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16577,7 +16545,7 @@
   },
   {
     "stock_id": "8416",
-    "name": "實威",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 60,
@@ -16769,7 +16737,7 @@
   },
   {
     "stock_id": "3224",
-    "name": "三顧",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -16865,7 +16833,7 @@
   },
   {
     "stock_id": "4131",
-    "name": "浩泰",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -16929,7 +16897,7 @@
   },
   {
     "stock_id": "4728",
-    "name": "雙美",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -16961,7 +16929,7 @@
   },
   {
     "stock_id": "5314",
-    "name": "世紀*",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -16993,7 +16961,7 @@
   },
   {
     "stock_id": "5371",
-    "name": "中光電",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17025,7 +16993,7 @@
   },
   {
     "stock_id": "6418",
-    "name": "詠昇",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17057,7 +17025,7 @@
   },
   {
     "stock_id": "6470",
-    "name": "宇智",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17089,7 +17057,7 @@
   },
   {
     "stock_id": "6542",
-    "name": "隆中",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17153,7 +17121,7 @@
   },
   {
     "stock_id": "6649",
-    "name": "台生材",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17185,7 +17153,7 @@
   },
   {
     "stock_id": "6751",
-    "name": "智聯服務",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17313,7 +17281,7 @@
   },
   {
     "stock_id": "7805",
-    "name": "威聯通",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17345,7 +17313,7 @@
   },
   {
     "stock_id": "8034",
-    "name": "榮群",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17377,7 +17345,7 @@
   },
   {
     "stock_id": "8038",
-    "name": "長園科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17409,7 +17377,7 @@
   },
   {
     "stock_id": "8111",
-    "name": "立碁",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 55,
@@ -17505,7 +17473,7 @@
   },
   {
     "stock_id": "1815",
-    "name": "富喬",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -17953,7 +17921,7 @@
   },
   {
     "stock_id": "3455",
-    "name": "由田",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -17985,7 +17953,7 @@
   },
   {
     "stock_id": "3490",
-    "name": "單井",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18017,7 +17985,7 @@
   },
   {
     "stock_id": "3529",
-    "name": "力旺",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18049,7 +18017,7 @@
   },
   {
     "stock_id": "3581",
-    "name": "博磊",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18113,7 +18081,7 @@
   },
   {
     "stock_id": "3663",
-    "name": "鑫科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18305,7 +18273,7 @@
   },
   {
     "stock_id": "4973",
-    "name": "廣穎",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18465,7 +18433,7 @@
   },
   {
     "stock_id": "5443",
-    "name": "均豪",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18497,7 +18465,7 @@
   },
   {
     "stock_id": "6163",
-    "name": "華電網",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18529,7 +18497,7 @@
   },
   {
     "stock_id": "6190",
-    "name": "萬泰科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18689,7 +18657,7 @@
   },
   {
     "stock_id": "6290",
-    "name": "良維",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18725,20 +18693,20 @@
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
-    "date": "2026-06-24",
-    "close": 30.3,
-    "gain_6w": -17.774762550881952,
-    "gain_3d": -4.113924050632911,
-    "rsi_14": 34.14634146341464,
-    "percent_b": 31.351952341153584,
-    "ma120": 26.650833333333324,
-    "ma240": 22.575416666666694,
-    "ma120_slope_pct": 8.5942275042445,
-    "ma240_slope_pct": 5.289648069336761,
-    "one_year_high_gap_pct": -56.52797704447633,
-    "deduct240_gap_pct": 67.40331491712706,
-    "range60_pct": 258.3547557840617,
-    "volume20_vs_120_pct": -54.45452063092997,
+    "date": "2026-06-25",
+    "close": 30.2,
+    "gain_6w": -12.71676300578035,
+    "gain_3d": -4.430379746835444,
+    "rsi_14": 34.355828220858896,
+    "percent_b": 31.143076118483354,
+    "ma120": 26.74624999999999,
+    "ma240": 22.626041666666694,
+    "ma120_slope_pct": 8.379482677112172,
+    "ma240_slope_pct": 5.165051176031987,
+    "one_year_high_gap_pct": -56.67144906743186,
+    "deduct240_gap_pct": 67.3130193905817,
+    "range60_pct": 230.33175355450237,
+    "volume20_vs_120_pct": -59.694401001496765,
     "major_4w_pctpt": -11.030000000000001,
     "major_8w_pctpt": -13.759999999999998,
     "retail_4w_pctpt": 11.23,
@@ -18753,7 +18721,7 @@
   },
   {
     "stock_id": "6640",
-    "name": "均華",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18785,7 +18753,7 @@
   },
   {
     "stock_id": "6725",
-    "name": "矽科宏晟",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18881,7 +18849,7 @@
   },
   {
     "stock_id": "7709",
-    "name": "榮田",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -18913,7 +18881,7 @@
   },
   {
     "stock_id": "7734",
-    "name": "印能科技",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19009,7 +18977,7 @@
   },
   {
     "stock_id": "8027",
-    "name": "鈦昇",
+    "name": "鈺太",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19105,7 +19073,7 @@
   },
   {
     "stock_id": "8083",
-    "name": "瑞穎",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19137,7 +19105,7 @@
   },
   {
     "stock_id": "8086",
-    "name": "宏捷科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19201,7 +19169,7 @@
   },
   {
     "stock_id": "8147",
-    "name": "正淩",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19233,7 +19201,7 @@
   },
   {
     "stock_id": "8155",
-    "name": "博智",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 50,
@@ -19521,7 +19489,7 @@
   },
   {
     "stock_id": "3287",
-    "name": "廣寰科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19553,7 +19521,7 @@
   },
   {
     "stock_id": "3323",
-    "name": "加百裕",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19681,7 +19649,7 @@
   },
   {
     "stock_id": "5009",
-    "name": "榮剛",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19713,7 +19681,7 @@
   },
   {
     "stock_id": "5230",
-    "name": "雷笛克光學",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19745,7 +19713,7 @@
   },
   {
     "stock_id": "5356",
-    "name": "協益",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19809,7 +19777,7 @@
   },
   {
     "stock_id": "5478",
-    "name": "智冠",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19841,7 +19809,7 @@
   },
   {
     "stock_id": "5487",
-    "name": "通泰",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19905,7 +19873,7 @@
   },
   {
     "stock_id": "6874",
-    "name": "倍力",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -19969,7 +19937,7 @@
   },
   {
     "stock_id": "6895",
-    "name": "宏碩系統",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -20001,7 +19969,7 @@
   },
   {
     "stock_id": "8049",
-    "name": "晶采",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -20065,7 +20033,7 @@
   },
   {
     "stock_id": "8941",
-    "name": "關中",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 45,
@@ -20289,7 +20257,7 @@
   },
   {
     "stock_id": "1586",
-    "name": "和勤",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -20577,7 +20545,7 @@
   },
   {
     "stock_id": "2070",
-    "name": "精湛",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -20609,7 +20577,7 @@
   },
   {
     "stock_id": "2230",
-    "name": "泰茂",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21120,6 +21088,38 @@
     "reason": "MA120上彎且收盤站上、近20日未破60日低位區、240扣抵偏有利"
   },
   {
+    "stock_id": "2472",
+    "name": "立隆電",
+    "basket": "未入籃",
+    "original_basket": "",
+    "score": 40,
+    "date": "2026-06-25",
+    "close": 397.0,
+    "gain_6w": 70.02141327623126,
+    "gain_3d": 0.8894536213468918,
+    "rsi_14": 57.142857142857146,
+    "percent_b": 88.37270031341562,
+    "ma120": 184.025,
+    "ma240": 137.26374999999996,
+    "ma120_slope_pct": 31.294033710871318,
+    "ma240_slope_pct": 21.627518884712813,
+    "one_year_high_gap_pct": -8.208092485549134,
+    "deduct240_gap_pct": 422.3684210526316,
+    "range60_pct": 251.6260162601626,
+    "volume20_vs_120_pct": 33.932693926900726,
+    "major_4w_pctpt": -1.279999999999994,
+    "major_8w_pctpt": -2.8800000000000026,
+    "retail_4w_pctpt": 1.1999999999999993,
+    "retail_8w_pctpt": 3.09,
+    "people_4w": 8857,
+    "people_8w": 15103,
+    "major_accumulating": false,
+    "retail_or_people_support": false,
+    "base_mda_watch": false,
+    "no_new_low": true,
+    "reason": "MA120上彎且收盤站上、近20日未破60日低位區、240扣抵偏有利"
+  },
+  {
     "stock_id": "2489",
     "name": "瑞軒",
     "basket": "未入籃",
@@ -21505,7 +21505,7 @@
   },
   {
     "stock_id": "3081",
-    "name": "聯亞",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21601,7 +21601,7 @@
   },
   {
     "stock_id": "3163",
-    "name": "波若威",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21633,7 +21633,7 @@
   },
   {
     "stock_id": "3221",
-    "name": "台嘉碩",
+    "name": "台嘉碩（通信網路）",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21697,7 +21697,7 @@
   },
   {
     "stock_id": "3268",
-    "name": "海德威",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21729,7 +21729,7 @@
   },
   {
     "stock_id": "3317",
-    "name": "尼克森",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21761,7 +21761,7 @@
   },
   {
     "stock_id": "3324",
-    "name": "雙鴻",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21825,7 +21825,7 @@
   },
   {
     "stock_id": "3363",
-    "name": "上詮",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21857,7 +21857,7 @@
   },
   {
     "stock_id": "3388",
-    "name": "崇越電",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -21953,7 +21953,7 @@
   },
   {
     "stock_id": "3444",
-    "name": "利機",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22049,7 +22049,7 @@
   },
   {
     "stock_id": "3551",
-    "name": "世禾",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22081,7 +22081,7 @@
   },
   {
     "stock_id": "3556",
-    "name": "禾瑞亞",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22145,7 +22145,7 @@
   },
   {
     "stock_id": "3615",
-    "name": "安可",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22177,7 +22177,7 @@
   },
   {
     "stock_id": "3630",
-    "name": "新鉅科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22273,7 +22273,7 @@
   },
   {
     "stock_id": "3666",
-    "name": "光耀",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22337,7 +22337,7 @@
   },
   {
     "stock_id": "3691",
-    "name": "碩禾",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22433,7 +22433,7 @@
   },
   {
     "stock_id": "4161",
-    "name": "聿新科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22465,7 +22465,7 @@
   },
   {
     "stock_id": "4303",
-    "name": "信立",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22721,7 +22721,7 @@
   },
   {
     "stock_id": "4760",
-    "name": "勤凱",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22881,7 +22881,7 @@
   },
   {
     "stock_id": "5015",
-    "name": "華祺",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -22913,7 +22913,7 @@
   },
   {
     "stock_id": "5201",
-    "name": "凱衛",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23009,7 +23009,7 @@
   },
   {
     "stock_id": "5278",
-    "name": "尚凡*",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23041,7 +23041,7 @@
   },
   {
     "stock_id": "5289",
-    "name": "宜鼎",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23073,7 +23073,7 @@
   },
   {
     "stock_id": "5353",
-    "name": "台林",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23105,7 +23105,7 @@
   },
   {
     "stock_id": "5426",
-    "name": "振發",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23169,7 +23169,7 @@
   },
   {
     "stock_id": "5452",
-    "name": "佶優",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23233,7 +23233,7 @@
   },
   {
     "stock_id": "5475",
-    "name": "德宏",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23297,7 +23297,7 @@
   },
   {
     "stock_id": "5704",
-    "name": "老爺知",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23393,7 +23393,7 @@
   },
   {
     "stock_id": "6101",
-    "name": "寬魚國際",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23425,7 +23425,7 @@
   },
   {
     "stock_id": "6138",
-    "name": "茂達",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23521,7 +23521,7 @@
   },
   {
     "stock_id": "6187",
-    "name": "萬潤",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23553,7 +23553,7 @@
   },
   {
     "stock_id": "6194",
-    "name": "育富",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23617,7 +23617,7 @@
   },
   {
     "stock_id": "6198",
-    "name": "瑞築",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23649,7 +23649,7 @@
   },
   {
     "stock_id": "6203",
-    "name": "海韻電",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23745,7 +23745,7 @@
   },
   {
     "stock_id": "6223",
-    "name": "旺矽",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23809,7 +23809,7 @@
   },
   {
     "stock_id": "6261",
-    "name": "久元",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23873,7 +23873,7 @@
   },
   {
     "stock_id": "6292",
-    "name": "迅德",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23905,7 +23905,7 @@
   },
   {
     "stock_id": "6411",
-    "name": "晶焱",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -23969,7 +23969,7 @@
   },
   {
     "stock_id": "6423",
-    "name": "億而得",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24065,7 +24065,7 @@
   },
   {
     "stock_id": "6462",
-    "name": "神盾",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24097,7 +24097,7 @@
   },
   {
     "stock_id": "6508",
-    "name": "惠光",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24161,7 +24161,7 @@
   },
   {
     "stock_id": "6584",
-    "name": "南俊國際",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24193,7 +24193,7 @@
   },
   {
     "stock_id": "6590",
-    "name": "普鴻",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24217,38 +24217,6 @@
     "retail_8w_pctpt": -0.26000000000000156,
     "people_4w": -22,
     "people_8w": -72,
-    "major_accumulating": false,
-    "retail_or_people_support": true,
-    "base_mda_watch": false,
-    "no_new_low": true,
-    "reason": "散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
-  },
-  {
-    "stock_id": "6689",
-    "name": "伊雲谷",
-    "basket": "未入籃",
-    "original_basket": "",
-    "score": 40,
-    "date": "2026-06-25",
-    "close": 65.7,
-    "gain_6w": -0.7552870090634434,
-    "gain_3d": -1.9402985074626788,
-    "rsi_14": 12.931034482758534,
-    "percent_b": 24.317465539333895,
-    "ma120": 67.75416666666669,
-    "ma240": 70.68416666666658,
-    "ma120_slope_pct": 1.3714855682313898,
-    "ma240_slope_pct": -1.687017901746124,
-    "one_year_high_gap_pct": -28.196721311475404,
-    "deduct240_gap_pct": -17.35849056603773,
-    "range60_pct": 22.065727699530523,
-    "volume20_vs_120_pct": -29.249725362937884,
-    "major_4w_pctpt": 0.240000000000002,
-    "major_8w_pctpt": 0.5200000000000031,
-    "retail_4w_pctpt": -0.18999999999999773,
-    "retail_8w_pctpt": -0.7799999999999976,
-    "people_4w": -99,
-    "people_8w": -481,
     "major_accumulating": false,
     "retail_or_people_support": true,
     "base_mda_watch": false,
@@ -24353,7 +24321,7 @@
   },
   {
     "stock_id": "6727",
-    "name": "亞泰金屬",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24449,7 +24417,7 @@
   },
   {
     "stock_id": "6785",
-    "name": "昱展新藥",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24613,20 +24581,20 @@
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
-    "date": "2026-06-24",
-    "close": 106.0,
-    "gain_6w": -6.607929515418498,
-    "gain_3d": -3.6363636363636376,
+    "date": "2026-06-25",
+    "close": 102.5,
+    "gain_6w": -6.818181818181824,
+    "gain_3d": -8.482142857142861,
     "rsi_14": 40.94202898550725,
-    "percent_b": 36.01643644093196,
-    "ma120": 62.689166666666665,
-    "ma240": 45.64999999999998,
-    "ma120_slope_pct": 26.225093334451934,
-    "ma240_slope_pct": 21.03803705381302,
-    "one_year_high_gap_pct": -24.28571428571429,
-    "deduct240_gap_pct": 616.2162162162161,
+    "percent_b": 27.226847504429912,
+    "ma120": 63.27041666666666,
+    "ma240": 46.01374999999997,
+    "ma120_slope_pct": 25.468081238742045,
+    "ma240_slope_pct": 20.586372570430168,
+    "one_year_high_gap_pct": -26.785714285714292,
+    "deduct240_gap_pct": 574.3421052631579,
     "range60_pct": 276.8506056527591,
-    "volume20_vs_120_pct": 8.22101862866782,
+    "volume20_vs_120_pct": -3.555497886885284,
     "major_4w_pctpt": -10.930000000000007,
     "major_8w_pctpt": -11.439999999999998,
     "retail_4w_pctpt": 5.530000000000001,
@@ -24673,7 +24641,7 @@
   },
   {
     "stock_id": "6983",
-    "name": "華洋精機",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24705,7 +24673,7 @@
   },
   {
     "stock_id": "7584",
-    "name": "樂意",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24737,7 +24705,7 @@
   },
   {
     "stock_id": "7716",
-    "name": "昱臺國際",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24801,7 +24769,7 @@
   },
   {
     "stock_id": "7743",
-    "name": "金利食安",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24833,7 +24801,7 @@
   },
   {
     "stock_id": "7744",
-    "name": "崴寶",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24897,7 +24865,7 @@
   },
   {
     "stock_id": "7811",
-    "name": "民盛",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24929,7 +24897,7 @@
   },
   {
     "stock_id": "7820",
-    "name": "立盈",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -24961,7 +24929,7 @@
   },
   {
     "stock_id": "8076",
-    "name": "伍豐",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25025,7 +24993,7 @@
   },
   {
     "stock_id": "8091",
-    "name": "翔名",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25153,7 +25121,7 @@
   },
   {
     "stock_id": "8227",
-    "name": "巨有科技",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25185,7 +25153,7 @@
   },
   {
     "stock_id": "8255",
-    "name": "朋程",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25249,7 +25217,7 @@
   },
   {
     "stock_id": "8299",
-    "name": "群聯",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25281,7 +25249,7 @@
   },
   {
     "stock_id": "8401",
-    "name": "白紗科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25313,7 +25281,7 @@
   },
   {
     "stock_id": "8433",
-    "name": "弘帆",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25345,7 +25313,7 @@
   },
   {
     "stock_id": "8489",
-    "name": "三貝德",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25409,7 +25377,7 @@
   },
   {
     "stock_id": "8927",
-    "name": "北基",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25441,7 +25409,7 @@
   },
   {
     "stock_id": "8930",
-    "name": "青鋼",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 40,
@@ -25537,7 +25505,7 @@
   },
   {
     "stock_id": "4442",
-    "name": "竣邦-KY",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 35,
@@ -25729,7 +25697,7 @@
   },
   {
     "stock_id": "1295",
-    "name": "生合",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -25985,7 +25953,7 @@
   },
   {
     "stock_id": "1565",
-    "name": "精華",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26401,7 +26369,7 @@
   },
   {
     "stock_id": "2596",
-    "name": "綠意",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26433,7 +26401,7 @@
   },
   {
     "stock_id": "2718",
-    "name": "全心投控",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26465,7 +26433,7 @@
   },
   {
     "stock_id": "2732",
-    "name": "六角",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26625,7 +26593,7 @@
   },
   {
     "stock_id": "3083",
-    "name": "網龍",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26657,7 +26625,7 @@
   },
   {
     "stock_id": "3086",
-    "name": "華義*",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26689,7 +26657,7 @@
   },
   {
     "stock_id": "3218",
-    "name": "大學光",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26753,7 +26721,7 @@
   },
   {
     "stock_id": "3492",
-    "name": "長盛",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26785,7 +26753,7 @@
   },
   {
     "stock_id": "3541",
-    "name": "西柏",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26817,7 +26785,7 @@
   },
   {
     "stock_id": "3552",
-    "name": "同致",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26881,7 +26849,7 @@
   },
   {
     "stock_id": "3646",
-    "name": "艾恩特",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -26977,7 +26945,7 @@
   },
   {
     "stock_id": "4107",
-    "name": "邦特",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27041,7 +27009,7 @@
   },
   {
     "stock_id": "4120",
-    "name": "友華",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27073,7 +27041,7 @@
   },
   {
     "stock_id": "4129",
-    "name": "聯合",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27105,7 +27073,7 @@
   },
   {
     "stock_id": "4153",
-    "name": "鈺緯",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27137,7 +27105,7 @@
   },
   {
     "stock_id": "4162",
-    "name": "智擎",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27169,7 +27137,7 @@
   },
   {
     "stock_id": "4192",
-    "name": "杏國",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27233,7 +27201,7 @@
   },
   {
     "stock_id": "4503",
-    "name": "金雨",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27265,7 +27233,7 @@
   },
   {
     "stock_id": "4527",
-    "name": "方土霖",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27457,7 +27425,7 @@
   },
   {
     "stock_id": "4747",
-    "name": "強生",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27681,7 +27649,7 @@
   },
   {
     "stock_id": "5287",
-    "name": "數字",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27713,7 +27681,7 @@
   },
   {
     "stock_id": "5403",
-    "name": "中菲",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27745,7 +27713,7 @@
   },
   {
     "stock_id": "5481",
-    "name": "新華",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27777,7 +27745,7 @@
   },
   {
     "stock_id": "6114",
-    "name": "久威",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27809,7 +27777,7 @@
   },
   {
     "stock_id": "6125",
-    "name": "廣運",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27841,7 +27809,7 @@
   },
   {
     "stock_id": "6130",
-    "name": "上亞科技",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27873,7 +27841,7 @@
   },
   {
     "stock_id": "6140",
-    "name": "訊達",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27905,7 +27873,7 @@
   },
   {
     "stock_id": "6171",
-    "name": "大城地產",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -27937,7 +27905,7 @@
   },
   {
     "stock_id": "6179",
-    "name": "亞通",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28001,7 +27969,7 @@
   },
   {
     "stock_id": "6469",
-    "name": "大樹",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28033,7 +28001,7 @@
   },
   {
     "stock_id": "6527",
-    "name": "明達醫",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28129,7 +28097,7 @@
   },
   {
     "stock_id": "6617",
-    "name": "共信-KY",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28225,7 +28193,7 @@
   },
   {
     "stock_id": "6692",
-    "name": "進能服",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28257,7 +28225,7 @@
   },
   {
     "stock_id": "6732",
-    "name": "昇佳電子",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28289,7 +28257,7 @@
   },
   {
     "stock_id": "6733",
-    "name": "博晟生醫",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28321,7 +28289,7 @@
   },
   {
     "stock_id": "6741",
-    "name": "91APP*-KY",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28385,7 +28353,7 @@
   },
   {
     "stock_id": "6841",
-    "name": "長佳智能",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28417,7 +28385,7 @@
   },
   {
     "stock_id": "6844",
-    "name": "諾貝兒",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28449,7 +28417,7 @@
   },
   {
     "stock_id": "6865",
-    "name": "偉康科技",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28609,7 +28577,7 @@
   },
   {
     "stock_id": "7723",
-    "name": "築間",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28673,7 +28641,7 @@
   },
   {
     "stock_id": "7782",
-    "name": "光速火箭",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28737,7 +28705,7 @@
   },
   {
     "stock_id": "7842",
-    "name": "天能綠電",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28769,7 +28737,7 @@
   },
   {
     "stock_id": "8087",
-    "name": "麗升能源",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28801,7 +28769,7 @@
   },
   {
     "stock_id": "8097",
-    "name": "常珵",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28833,7 +28801,7 @@
   },
   {
     "stock_id": "8099",
-    "name": "大世科",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28865,7 +28833,7 @@
   },
   {
     "stock_id": "8171",
-    "name": "天宇",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28929,7 +28897,7 @@
   },
   {
     "stock_id": "8349",
-    "name": "恒耀",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -28993,7 +28961,7 @@
   },
   {
     "stock_id": "8435",
-    "name": "鉅邁",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29025,7 +28993,7 @@
   },
   {
     "stock_id": "8440",
-    "name": "綠電",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29057,7 +29025,7 @@
   },
   {
     "stock_id": "8446",
-    "name": "華研",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29089,7 +29057,7 @@
   },
   {
     "stock_id": "8906",
-    "name": "花王",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29121,7 +29089,7 @@
   },
   {
     "stock_id": "8916",
-    "name": "光隆",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29153,7 +29121,7 @@
   },
   {
     "stock_id": "8924",
-    "name": "大田",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29185,7 +29153,7 @@
   },
   {
     "stock_id": "8937",
-    "name": "合騏*",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29409,7 +29377,7 @@
   },
   {
     "stock_id": "9951",
-    "name": "皇田",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 30,
@@ -29729,7 +29697,7 @@
   },
   {
     "stock_id": "3294",
-    "name": "英濟",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -29793,7 +29761,7 @@
   },
   {
     "stock_id": "3489",
-    "name": "森寶",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -29889,7 +29857,7 @@
   },
   {
     "stock_id": "4561",
-    "name": "健椿",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -29921,7 +29889,7 @@
   },
   {
     "stock_id": "4995",
-    "name": "晶達",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -30048,6 +30016,38 @@
     "reason": "MA120上彎且收盤站上、近20日未破60日低位區、240扣抵偏有利"
   },
   {
+    "stock_id": "7839",
+    "name": "達人網",
+    "basket": "未入籃",
+    "original_basket": "",
+    "score": 25,
+    "date": "2026-06-25",
+    "close": 45.8,
+    "gain_6w": null,
+    "gain_3d": -0.32644178454843686,
+    "rsi_14": 17.33870967741936,
+    "percent_b": 18.27476442125682,
+    "ma120": 45.923333333333304,
+    "ma240": 44.851249999999986,
+    "ma120_slope_pct": 2.9324965445104434,
+    "ma240_slope_pct": -2.3220994174334653,
+    "one_year_high_gap_pct": -45.926800472255024,
+    "deduct240_gap_pct": -38.6058981233244,
+    "range60_pct": null,
+    "volume20_vs_120_pct": 426.3512355761205,
+    "major_4w_pctpt": -14.220000000000013,
+    "major_8w_pctpt": -14.230000000000004,
+    "retail_4w_pctpt": 4.05,
+    "retail_8w_pctpt": 4.02,
+    "people_4w": 474,
+    "people_8w": 471,
+    "major_accumulating": false,
+    "retail_or_people_support": false,
+    "base_mda_watch": false,
+    "no_new_low": true,
+    "reason": "近20日未破60日低位區"
+  },
+  {
     "stock_id": "8284",
     "name": "三竹",
     "basket": "未入籃",
@@ -30081,7 +30081,7 @@
   },
   {
     "stock_id": "8432",
-    "name": "東生華",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -30113,7 +30113,7 @@
   },
   {
     "stock_id": "8908",
-    "name": "欣雄",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 25,
@@ -30145,7 +30145,7 @@
   },
   {
     "stock_id": "1569",
-    "name": "濱川",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 20,
@@ -30177,7 +30177,7 @@
   },
   {
     "stock_id": "3466",
-    "name": "德晉",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 20,
@@ -30209,7 +30209,7 @@
   },
   {
     "stock_id": "6441",
-    "name": "廣錠",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 20,
@@ -30273,7 +30273,7 @@
   },
   {
     "stock_id": "7770",
-    "name": "君曜",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 20,
@@ -30305,7 +30305,7 @@
   },
   {
     "stock_id": "8905",
-    "name": "裕國",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 20,
@@ -30625,7 +30625,7 @@
   },
   {
     "stock_id": "3128",
-    "name": "昇銳",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30689,7 +30689,7 @@
   },
   {
     "stock_id": "3188",
-    "name": "鑫龍騰",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30721,7 +30721,7 @@
   },
   {
     "stock_id": "3207",
-    "name": "耀勝",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30753,7 +30753,7 @@
   },
   {
     "stock_id": "3310",
-    "name": "佳穎",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30785,7 +30785,7 @@
   },
   {
     "stock_id": "3434",
-    "name": "哲固",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30817,7 +30817,7 @@
   },
   {
     "stock_id": "3465",
-    "name": "進泰電子",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30849,7 +30849,7 @@
   },
   {
     "stock_id": "3548",
-    "name": "兆利",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30881,7 +30881,7 @@
   },
   {
     "stock_id": "3609",
-    "name": "三一東林",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30913,7 +30913,7 @@
   },
   {
     "stock_id": "4417",
-    "name": "金洲",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -30945,7 +30945,7 @@
   },
   {
     "stock_id": "4510",
-    "name": "高鋒",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31041,7 +31041,7 @@
   },
   {
     "stock_id": "4946",
-    "name": "辣椒",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31105,7 +31105,7 @@
   },
   {
     "stock_id": "5457",
-    "name": "宣德",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31137,7 +31137,7 @@
   },
   {
     "stock_id": "5530",
-    "name": "龍巖",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31233,7 +31233,7 @@
   },
   {
     "stock_id": "6148",
-    "name": "驊宏資",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31283,12 +31283,12 @@
     "deduct240_gap_pct": -15.989399293286223,
     "range60_pct": 23.873873873873876,
     "volume20_vs_120_pct": -16.733131582852558,
-    "major_4w_pctpt": -0.30999999999999517,
-    "major_8w_pctpt": -0.4399999999999977,
-    "retail_4w_pctpt": 0.8900000000000006,
-    "retail_8w_pctpt": 1.2100000000000009,
-    "people_4w": 378,
-    "people_8w": 11,
+    "major_4w_pctpt": -0.3400000000000034,
+    "major_8w_pctpt": -0.980000000000004,
+    "retail_4w_pctpt": 0.5199999999999996,
+    "retail_8w_pctpt": 1.870000000000001,
+    "people_4w": 266,
+    "people_8w": 578,
     "major_accumulating": false,
     "retail_or_people_support": false,
     "base_mda_watch": false,
@@ -31329,7 +31329,7 @@
   },
   {
     "stock_id": "6180",
-    "name": "橘子",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31393,7 +31393,7 @@
   },
   {
     "stock_id": "6221",
-    "name": "晉泰",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31553,7 +31553,7 @@
   },
   {
     "stock_id": "6593",
-    "name": "台灣銘板",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31585,7 +31585,7 @@
   },
   {
     "stock_id": "7717",
-    "name": "萊德光電-KY",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31649,7 +31649,7 @@
   },
   {
     "stock_id": "8089",
-    "name": "康全電訊",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
@@ -31681,7 +31681,7 @@
   },
   {
     "stock_id": "8234",
-    "name": "新漢",
+    "name": "",
     "basket": "未入籃",
     "original_basket": "",
     "score": 10,
