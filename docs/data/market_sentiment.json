@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-06-26",
-  "updated_at": "2026-06-26T20:06:41+08:00",
-  "score": 49,
+  "updated_at": "2026-06-26T23:21:57+08:00",
+  "score": 47,
   "regime": "neutral",
   "regime_label": "中性",
   "color": "yellow",
-  "summary": "市場情緒 49 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 47 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,57 +30,57 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 13.04,
+      "score": 7.05,
       "weight": 15,
-      "signal": "bullish",
-      "display": "+2.22%",
-      "detail": "融資餘額 9,512,447；前值 9,306,162",
+      "signal": "neutral",
+      "display": "-0.18%",
+      "detail": "融資餘額 9,328,374；前值 9,345,247",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-25",
-      "latest": 9512447.0,
-      "previous": 9306162.0,
-      "weekly_change_pct": 2.22
+      "date": "2026-06-26",
+      "latest": 9328374.0,
+      "previous": 9345247.0,
+      "weekly_change_pct": -0.18
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 11.95,
+      "score": 15.0,
       "weight": 15,
-      "signal": "neutral",
-      "display": "+4.07%",
-      "detail": "融券餘額 199,161；快速增加視為偏空",
+      "signal": "bullish",
+      "display": "-0.21%",
+      "detail": "融券餘額 203,932；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-25",
-      "latest": 199161.0,
-      "previous": 191375.0,
-      "weekly_change_pct": 4.07
+      "date": "2026-06-26",
+      "latest": 203932.0,
+      "previous": 204357.0,
+      "weekly_change_pct": -0.21
     },
     "foreign_5d": {
       "label": "外資 5 日",
       "score": 0.0,
       "weight": 15,
       "signal": "bearish",
-      "display": "-28.89 億股",
+      "display": "-9.44 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
       "date": "2026-06-26",
       "days": 5,
-      "cumulative_net_shares": -2888613409
+      "cumulative_net_shares": -944251695
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 2.49,
+      "score": 2.55,
       "weight": 10,
       "signal": "bearish",
-      "display": "78/476",
+      "display": "151/827",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 78,
-      "declines": 476,
-      "ratio": 0.16
+      "advances": 151,
+      "declines": 827,
+      "ratio": 0.18
     },
     "us_vix": {
       "label": "US VIX",
@@ -97,10 +97,10 @@
     }
   },
   "source_status": [
-    "OK: TAIEX - 93 rows",
+    "OK: TAIEX - 102 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 560 SFZ rows",
+    "OK: local breadth - 990 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
