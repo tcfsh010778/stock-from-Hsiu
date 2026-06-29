@@ -1,31 +1,31 @@
 {
   "schema_version": 1,
   "date": "2026-06-29",
-  "updated_at": "2026-06-29T22:08:31+08:00",
-  "score": 54,
+  "updated_at": "2026-06-30T00:40:31+08:00",
+  "score": 44,
   "regime": "neutral",
   "regime_label": "中性",
   "color": "yellow",
-  "summary": "市場情緒 54 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 44 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
-      "score": 5.0,
+      "score": 10.0,
       "weight": 30,
       "signal": "bearish",
-      "display": "0/3",
-      "detail": "收盤 44999.90；MA5 45794.23 / MA20 45355.77 / MA60 0.00",
-      "available": false,
+      "display": "1/3",
+      "detail": "收盤 44999.90；MA5 45794.23 / MA20 45355.77 / MA60 41311.01",
+      "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
       "date": "2026-06-29",
       "close": 44999.9,
       "ma5": 45794.23,
       "ma20": 45355.77,
-      "ma60": null,
+      "ma60": 41311.01,
       "lights": {
         "ma5": false,
         "ma20": false,
-        "ma60": false
+        "ma60": true
       }
     },
     "margin_weekly": {
@@ -58,29 +58,29 @@
     },
     "foreign_5d": {
       "label": "外資 5 日",
-      "score": 15.0,
+      "score": 0.0,
       "weight": 15,
-      "signal": "bullish",
-      "display": "+3.49 億股",
+      "signal": "bearish",
+      "display": "-28.21 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
       "date": "2026-06-29",
       "days": 5,
-      "cumulative_net_shares": 349326598
+      "cumulative_net_shares": -2820956672
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 2.62,
+      "score": 2.74,
       "weight": 10,
       "signal": "bearish",
-      "display": "47/226",
+      "display": "96/387",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 47,
-      "declines": 226,
-      "ratio": 0.21
+      "advances": 96,
+      "declines": 387,
+      "ratio": 0.25
     },
     "us_vix": {
       "label": "US VIX",
@@ -97,10 +97,10 @@
     }
   },
   "source_status": [
-    "OK: TAIEX - 52 rows",
+    "OK: TAIEX - 94 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 280 SFZ rows",
+    "OK: local breadth - 494 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
