@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-07-01",
-  "updated_at": "2026-07-01T20:35:25+08:00",
-  "score": 80,
+  "updated_at": "2026-07-01T23:36:40+08:00",
+  "score": 75,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 80 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 75 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,44 +30,44 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 11.12,
+      "score": 6.07,
       "weight": 15,
-      "signal": "bullish",
-      "display": "+1.45%",
-      "detail": "融資餘額 9,435,456；前值 9,300,664",
+      "signal": "neutral",
+      "display": "-0.57%",
+      "detail": "融資餘額 9,414,925；前值 9,469,030",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-30",
-      "latest": 9435456.0,
-      "previous": 9300664.0,
-      "weekly_change_pct": 1.45
+      "date": "2026-07-01",
+      "latest": 9414925.0,
+      "previous": 9469030.0,
+      "weekly_change_pct": -0.57
     },
     "short_weekly": {
       "label": "融券週變化",
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "-4.59%",
-      "detail": "融券餘額 194,887；快速增加視為偏空",
+      "display": "-2.87%",
+      "detail": "融券餘額 196,392；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-06-30",
-      "latest": 194887.0,
-      "previous": 204255.0,
-      "weekly_change_pct": -4.59
+      "date": "2026-07-01",
+      "latest": 196392.0,
+      "previous": 202194.0,
+      "weekly_change_pct": -2.87
     },
     "foreign_5d": {
       "label": "外資 5 日",
       "score": 0.0,
       "weight": 15,
       "signal": "bearish",
-      "display": "-13.20 億股",
+      "display": "-18.35 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-07-01",
+      "date": "2026-06-30",
       "days": 5,
-      "cumulative_net_shares": -1319963042
+      "cumulative_net_shares": -1835037792
     },
     "breadth": {
       "label": "上漲/下跌比",
