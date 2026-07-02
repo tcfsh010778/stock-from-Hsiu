@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-07-02",
-  "updated_at": "2026-07-02T20:10:53+08:00",
-  "score": 75,
+  "updated_at": "2026-07-02T23:09:52+08:00",
+  "score": 77,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 75 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 77 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,44 +30,44 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 6.07,
+      "score": 7.96,
       "weight": 15,
-      "signal": "neutral",
-      "display": "-0.57%",
-      "detail": "融資餘額 9,414,925；前值 9,469,030",
+      "signal": "bullish",
+      "display": "+0.18%",
+      "detail": "融資餘額 9,529,998；前值 9,512,447",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-07-01",
-      "latest": 9414925.0,
-      "previous": 9469030.0,
-      "weekly_change_pct": -0.57
+      "date": "2026-07-02",
+      "latest": 9529998.0,
+      "previous": 9512447.0,
+      "weekly_change_pct": 0.18
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 15.0,
+      "score": 14.58,
       "weight": 15,
-      "signal": "bullish",
-      "display": "-2.87%",
-      "detail": "融券餘額 196,392；快速增加視為偏空",
+      "signal": "neutral",
+      "display": "+0.56%",
+      "detail": "融券餘額 200,271；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-07-01",
-      "latest": 196392.0,
-      "previous": 202194.0,
-      "weekly_change_pct": -2.87
+      "date": "2026-07-02",
+      "latest": 200271.0,
+      "previous": 199161.0,
+      "weekly_change_pct": 0.56
     },
     "foreign_5d": {
       "label": "外資 5 日",
       "score": 0.0,
       "weight": 15,
       "signal": "bearish",
-      "display": "-15.84 億股",
+      "display": "-18.21 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
       "date": "2026-07-02",
       "days": 5,
-      "cumulative_net_shares": -1583715314
+      "cumulative_net_shares": -1820590073
     },
     "breadth": {
       "label": "上漲/下跌比",
