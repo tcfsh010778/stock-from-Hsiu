@@ -1,7 +1,7 @@
 {
   "date": "2026-07-07",
   "source": "data/mda_universe_scan.json",
-  "count": 486,
+  "count": 491,
   "default_limit": 20,
   "filters": {
     "page_sizes": [
@@ -9564,296 +9564,6 @@
     },
     {
       "rank": 330,
-      "stock_id": "1342",
-      "name": "八貫",
-      "date": "2026-07-07",
-      "basket": "已發動籃",
-      "rank_basket": "已發動籃",
-      "status": "強勢追蹤",
-      "icon": "🟡",
-      "score": 90.0,
-      "close": 113.0,
-      "gain_6w": 21.114683815648448,
-      "gain_3d": -0.4405286343612369,
-      "rsi": 43.39622641509434,
-      "bb_pct": 45.11882580282639,
-      "vol5_lot": 799.0538,
-      "latest_volume": 638661.0,
-      "turnover_value": 72168693.0,
-      "turnover_million": 72.168693,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 111.502,
-      "target": 124.44,
-      "stop": 100.495,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
-    },
-    {
-      "rank": 331,
-      "stock_id": "4556",
-      "name": "旭然",
-      "date": "2026-07-07",
-      "basket": "過熱/風險",
-      "rank_basket": "已發動籃",
-      "status": "過熱/風險",
-      "icon": "🔴",
-      "score": 90.0,
-      "close": 84.3,
-      "gain_6w": 114.50381679389312,
-      "gain_3d": 4.590570719602982,
-      "rsi": 66.30036630036629,
-      "bb_pct": 83.51547940657156,
-      "vol5_lot": 806.4348,
-      "latest_volume": 1034015.0,
-      "turnover_value": 87167464.5,
-      "turnover_million": 87.1674645,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 80.6518,
-      "target": 96.696,
-      "stop": 40.795,
-      "reason": "強制過熱排除：近6週 +114.50% (門檻 100%)、MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
-    },
-    {
-      "rank": 332,
-      "stock_id": "5284",
-      "name": "jpp-KY",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 100.0,
-      "close": 347.5,
-      "gain_6w": -14.932680538555687,
-      "gain_3d": -8.912188728702485,
-      "rsi": 38.24451410658307,
-      "bb_pct": 2.39263424496019,
-      "vol5_lot": 642.6454,
-      "latest_volume": 889584.0,
-      "turnover_value": 309130440.0,
-      "turnover_million": 309.13044,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 361.9875,
-      "target": 429.42,
-      "stop": 338.3,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
-    },
-    {
-      "rank": 333,
-      "stock_id": "4541",
-      "name": "晟田",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 90.0,
-      "close": 61.1,
-      "gain_6w": 38.54875283446712,
-      "gain_3d": 10.688405797101442,
-      "rsi": 68.60795454545453,
-      "bb_pct": 93.38932988045971,
-      "vol5_lot": 9483.0598,
-      "latest_volume": 10610394.0,
-      "turnover_value": 648295073.4,
-      "turnover_million": 648.2950734,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 59.1788,
-      "target": 68.748,
-      "stop": 43.2825,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
-    },
-    {
-      "rank": 334,
-      "stock_id": "8935",
-      "name": "邦泰",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 90.0,
-      "close": 22.65,
-      "gain_6w": 12.128712871287117,
-      "gain_3d": -6.9815195071868725,
-      "rsi": 52.577319587628864,
-      "bb_pct": 64.69783063337556,
-      "vol5_lot": 1801.8283999999999,
-      "latest_volume": 647829.0,
-      "turnover_value": 14673326.85,
-      "turnover_million": 14.67332685,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 23.019449999999996,
-      "target": 25.5,
-      "stop": 19.85025,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
-    },
-    {
-      "rank": 335,
-      "stock_id": "5871",
-      "name": "中租-KY",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 75.0,
-      "close": 114.0,
-      "gain_6w": 4.587155963302747,
-      "gain_3d": -1.2987012987012991,
-      "rsi": 45.283018867924525,
-      "bb_pct": 25.37097122011175,
-      "vol5_lot": 6697.4547999999995,
-      "latest_volume": 5706484.0,
-      "turnover_value": 650539176.0,
-      "turnover_million": 650.539176,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 113.472,
-      "target": 125.46000000000001,
-      "stop": 111.44,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
-    },
-    {
-      "rank": 336,
-      "stock_id": "6464",
-      "name": "台數科",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 75.0,
-      "close": 78.0,
-      "gain_6w": 0.0,
-      "gain_3d": 0.7751937984496138,
-      "rsi": 50.0,
-      "bb_pct": 65.18610026272027,
-      "vol5_lot": 55.030199999999994,
-      "latest_volume": 128284.0,
-      "turnover_value": 10006152.0,
-      "turnover_million": 10.006152,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 76.1996,
-      "target": 79.968,
-      "stop": 75.42099999999999,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
-    },
-    {
-      "rank": 337,
-      "stock_id": "8481",
-      "name": "政伸",
-      "date": "2026-07-07",
-      "basket": "空轉多觀察籃",
-      "rank_basket": "空轉多觀察籃",
-      "status": "健康整理",
-      "icon": "🟢",
-      "score": 75.0,
-      "close": 42.2,
-      "gain_6w": 4.975124378109452,
-      "gain_3d": 1.1990407673860837,
-      "rsi": 51.42857142857155,
-      "bb_pct": 75.84442394916138,
-      "vol5_lot": 30.113,
-      "latest_volume": 32300.0,
-      "turnover_value": 1363060.0,
-      "turnover_million": 1.36306,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 41.3306,
-      "target": 43.35,
-      "stop": 40.496500000000005,
-      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
-    },
-    {
-      "rank": 338,
-      "stock_id": "5481",
-      "name": "新華",
-      "date": "2026-07-07",
-      "basket": "未入籃",
-      "rank_basket": "未入籃",
-      "status": "過熱/風險",
-      "icon": "🔴",
-      "score": 30.0,
-      "close": 20.6,
-      "gain_6w": 5.102040816326525,
-      "gain_3d": -4.1860465116279055,
-      "rsi": 40.84507042253524,
-      "bb_pct": 38.69781640708847,
-      "vol5_lot": 250.001,
-      "latest_volume": 145401.0,
-      "turnover_value": 2995260.6,
-      "turnover_million": 2.9952606,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 20.71455,
-      "target": 24.174,
-      "stop": 18.05925,
-      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
-    },
-    {
-      "rank": 339,
-      "stock_id": "8916",
-      "name": "光隆",
-      "date": "2026-07-07",
-      "basket": "未入籃",
-      "rank_basket": "未入籃",
-      "status": "過熱/風險",
-      "icon": "🔴",
-      "score": 30.0,
-      "close": 44.25,
-      "gain_6w": -2.7472527472527486,
-      "gain_3d": 1.9585253456221308,
-      "rsi": 43.478260869565204,
-      "bb_pct": 57.168510873069,
-      "vol5_lot": 96.8416,
-      "latest_volume": 63893.0,
-      "turnover_value": 2827265.25,
-      "turnover_million": 2.82726525,
-      "market_cap_bucket": "unknown",
-      "sector": "其他",
-      "sector_rank": 14.0,
-      "sector_flow_score": 93.27426645249835,
-      "sector_turnover_billion": 17.991659116,
-      "entry": 43.13315,
-      "target": 46.205999999999996,
-      "stop": 42.2875,
-      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
-    },
-    {
-      "rank": 340,
       "stock_id": "2103",
       "name": "台橡",
       "date": "2026-07-07",
@@ -9873,7 +9583,7 @@
       "turnover_million": 240.70273905,
       "market_cap_bucket": "unknown",
       "sector": "橡膠工業",
-      "sector_rank": 15.0,
+      "sector_rank": 14.0,
       "sector_flow_score": 91.23313685352994,
       "sector_turnover_billion": 7.025315072,
       "entry": 22.526949999999996,
@@ -9882,7 +9592,7 @@
       "reason": "強制過熱排除：%B 113.2% (門檻 110%)、MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 341,
+      "rank": 331,
       "stock_id": "2107",
       "name": "厚生",
       "date": "2026-07-07",
@@ -9902,7 +9612,7 @@
       "turnover_million": 9.27296235,
       "market_cap_bucket": "unknown",
       "sector": "橡膠工業",
-      "sector_rank": 15.0,
+      "sector_rank": 14.0,
       "sector_flow_score": 91.23313685352994,
       "sector_turnover_billion": 7.025315072,
       "entry": 25.3736,
@@ -9911,7 +9621,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 342,
+      "rank": 332,
       "stock_id": "2105",
       "name": "正新",
       "date": "2026-07-07",
@@ -9931,7 +9641,7 @@
       "turnover_million": 445.1640919,
       "market_cap_bucket": "unknown",
       "sector": "橡膠工業",
-      "sector_rank": 15.0,
+      "sector_rank": 14.0,
       "sector_flow_score": 91.23313685352994,
       "sector_turnover_billion": 7.025315072,
       "entry": 31.31315,
@@ -9940,7 +9650,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 343,
+      "rank": 333,
       "stock_id": "2114",
       "name": "鑫永銓",
       "date": "2026-07-07",
@@ -9960,7 +9670,7 @@
       "turnover_million": 7.391713899999999,
       "market_cap_bucket": "unknown",
       "sector": "橡膠工業",
-      "sector_rank": 15.0,
+      "sector_rank": 14.0,
       "sector_flow_score": 91.23313685352994,
       "sector_turnover_billion": 7.025315072,
       "entry": 88.53179999999999,
@@ -9969,7 +9679,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 344,
+      "rank": 334,
       "stock_id": "4532",
       "name": "瑞智",
       "date": "2026-07-07",
@@ -9989,7 +9699,7 @@
       "turnover_million": 103.3029327,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 28.14145,
@@ -9998,7 +9708,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 345,
+      "rank": 335,
       "stock_id": "5288",
       "name": "豐祥-KY",
       "date": "2026-07-07",
@@ -10018,7 +9728,7 @@
       "turnover_million": 38.707691,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 181.24,
@@ -10027,7 +9737,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 346,
+      "rank": 336,
       "stock_id": "6606",
       "name": "建德工業",
       "date": "2026-07-07",
@@ -10047,7 +9757,7 @@
       "turnover_million": 6.9126372,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 24.605299999999996,
@@ -10056,7 +9766,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 347,
+      "rank": 337,
       "stock_id": "1570",
       "name": "力肯",
       "date": "2026-07-07",
@@ -10076,7 +9786,7 @@
       "turnover_million": 4.342005,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 40.916900000000005,
@@ -10085,7 +9795,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 348,
+      "rank": 338,
       "stock_id": "2049",
       "name": "上銀",
       "date": "2026-07-07",
@@ -10105,7 +9815,7 @@
       "turnover_million": 1317.6708155,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 346.523,
@@ -10114,7 +9824,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 349,
+      "rank": 339,
       "stock_id": "1514",
       "name": "亞力",
       "date": "2026-07-07",
@@ -10134,7 +9844,7 @@
       "turnover_million": 847.773069,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 121.6475,
@@ -10143,7 +9853,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 350,
+      "rank": 340,
       "stock_id": "4526",
       "name": "東台",
       "date": "2026-07-07",
@@ -10163,7 +9873,7 @@
       "turnover_million": 148.757505,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 40.31605,
@@ -10172,7 +9882,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 351,
+      "rank": 341,
       "stock_id": "4534",
       "name": "慶騰",
       "date": "2026-07-07",
@@ -10192,7 +9902,7 @@
       "turnover_million": 71.7294683,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 33.1748,
@@ -10201,7 +9911,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 352,
+      "rank": 342,
       "stock_id": "4555",
       "name": "氣立",
       "date": "2026-07-07",
@@ -10221,7 +9931,7 @@
       "turnover_million": 37.979576,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 48.86585,
@@ -10230,7 +9940,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 353,
+      "rank": 343,
       "stock_id": "1527",
       "name": "鑽全",
       "date": "2026-07-07",
@@ -10250,7 +9960,7 @@
       "turnover_million": 6.6952095,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 33.14525,
@@ -10259,7 +9969,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 354,
+      "rank": 344,
       "stock_id": "5381",
       "name": "光譜",
       "date": "2026-07-07",
@@ -10279,7 +9989,7 @@
       "turnover_million": 37.69059719999999,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 29.047649999999997,
@@ -10288,7 +9998,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 355,
+      "rank": 345,
       "stock_id": "4533",
       "name": "協易機",
       "date": "2026-07-07",
@@ -10308,7 +10018,7 @@
       "turnover_million": 40.81716,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 29.8061,
@@ -10317,7 +10027,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 356,
+      "rank": 346,
       "stock_id": "4571",
       "name": "鈞興-KY",
       "date": "2026-07-07",
@@ -10337,7 +10047,7 @@
       "turnover_million": 73.33755,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 170.5035,
@@ -10346,7 +10056,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 357,
+      "rank": 347,
       "stock_id": "6609",
       "name": "瀧澤科",
       "date": "2026-07-07",
@@ -10366,7 +10076,7 @@
       "turnover_million": 16.988555,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 40.296350000000004,
@@ -10375,7 +10085,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 358,
+      "rank": 348,
       "stock_id": "1540",
       "name": "喬福",
       "date": "2026-07-07",
@@ -10395,7 +10105,7 @@
       "turnover_million": 9.005150800000001,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 22.329949999999997,
@@ -10404,7 +10114,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 359,
+      "rank": 349,
       "stock_id": "4549",
       "name": "桓達",
       "date": "2026-07-07",
@@ -10424,7 +10134,7 @@
       "turnover_million": 12.1591935,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 99.78049999999999,
@@ -10433,7 +10143,7 @@
       "reason": "大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 360,
+      "rank": 350,
       "stock_id": "1532",
       "name": "勤美",
       "date": "2026-07-07",
@@ -10453,7 +10163,7 @@
       "turnover_million": 9.312310799999999,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 22.88155,
@@ -10462,7 +10172,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 361,
+      "rank": 351,
       "stock_id": "8222",
       "name": "寶一",
       "date": "2026-07-07",
@@ -10482,7 +10192,7 @@
       "turnover_million": 112.40464085,
       "market_cap_bucket": "unknown",
       "sector": "電機機械",
-      "sector_rank": 16.0,
+      "sector_rank": 15.0,
       "sector_flow_score": 89.55050513302476,
       "sector_turnover_billion": 28.9558606735,
       "entry": 41.635949999999994,
@@ -10491,7 +10201,355 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
+      "rank": 352,
+      "stock_id": "1342",
+      "name": "八貫",
+      "date": "2026-07-07",
+      "basket": "已發動籃",
+      "rank_basket": "已發動籃",
+      "status": "強勢追蹤",
+      "icon": "🟡",
+      "score": 90.0,
+      "close": 113.0,
+      "gain_6w": 21.114683815648448,
+      "gain_3d": -0.4405286343612369,
+      "rsi": 43.39622641509434,
+      "bb_pct": 45.11882580282639,
+      "vol5_lot": 799.0538,
+      "latest_volume": 638661.0,
+      "turnover_value": 72168693.0,
+      "turnover_million": 72.168693,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 111.502,
+      "target": 124.44,
+      "stop": 100.495,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
+    },
+    {
+      "rank": 353,
+      "stock_id": "4556",
+      "name": "旭然",
+      "date": "2026-07-07",
+      "basket": "過熱/風險",
+      "rank_basket": "已發動籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 90.0,
+      "close": 84.3,
+      "gain_6w": 114.50381679389312,
+      "gain_3d": 4.590570719602982,
+      "rsi": 66.30036630036629,
+      "bb_pct": 83.51547940657156,
+      "vol5_lot": 806.4348,
+      "latest_volume": 1034015.0,
+      "turnover_value": 87167464.5,
+      "turnover_million": 87.1674645,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 80.6518,
+      "target": 96.696,
+      "stop": 40.795,
+      "reason": "強制過熱排除：近6週 +114.50% (門檻 100%)、MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
+    },
+    {
+      "rank": 354,
+      "stock_id": "5284",
+      "name": "jpp-KY",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 100.0,
+      "close": 347.5,
+      "gain_6w": -14.932680538555687,
+      "gain_3d": -8.912188728702485,
+      "rsi": 38.24451410658307,
+      "bb_pct": 2.39263424496019,
+      "vol5_lot": 642.6454,
+      "latest_volume": 889584.0,
+      "turnover_value": 309130440.0,
+      "turnover_million": 309.13044,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 361.9875,
+      "target": 429.42,
+      "stop": 338.3,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
+    },
+    {
+      "rank": 355,
+      "stock_id": "4541",
+      "name": "晟田",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 90.0,
+      "close": 61.1,
+      "gain_6w": 38.54875283446712,
+      "gain_3d": 10.688405797101442,
+      "rsi": 68.60795454545453,
+      "bb_pct": 93.38932988045971,
+      "vol5_lot": 9483.0598,
+      "latest_volume": 10610394.0,
+      "turnover_value": 648295073.4,
+      "turnover_million": 648.2950734,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 59.1788,
+      "target": 68.748,
+      "stop": 43.2825,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
+    },
+    {
+      "rank": 356,
+      "stock_id": "8935",
+      "name": "邦泰",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 90.0,
+      "close": 22.65,
+      "gain_6w": 12.128712871287117,
+      "gain_3d": -6.9815195071868725,
+      "rsi": 52.577319587628864,
+      "bb_pct": 64.69783063337556,
+      "vol5_lot": 1801.8283999999999,
+      "latest_volume": 647829.0,
+      "turnover_value": 14673326.85,
+      "turnover_million": 14.67332685,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 23.019449999999996,
+      "target": 25.5,
+      "stop": 19.85025,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
+    },
+    {
+      "rank": 357,
+      "stock_id": "8942",
+      "name": "森鉅",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 85.0,
+      "close": 40.35,
+      "gain_6w": -1.8248175182481785,
+      "gain_3d": -1.1029411764705732,
+      "rsi": 39.56043956043962,
+      "bb_pct": 11.481887816110847,
+      "vol5_lot": 214.8568,
+      "latest_volume": 208489.0,
+      "turnover_value": 8412531.15,
+      "turnover_million": 8.41253115,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 40.2865,
+      "target": 43.656,
+      "stop": 38.805,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
+    },
+    {
+      "rank": 358,
+      "stock_id": "5871",
+      "name": "中租-KY",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 75.0,
+      "close": 114.0,
+      "gain_6w": 4.587155963302747,
+      "gain_3d": -1.2987012987012991,
+      "rsi": 45.283018867924525,
+      "bb_pct": 25.37097122011175,
+      "vol5_lot": 6697.4547999999995,
+      "latest_volume": 5706484.0,
+      "turnover_value": 650539176.0,
+      "turnover_million": 650.539176,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 113.472,
+      "target": 125.46000000000001,
+      "stop": 111.44,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 359,
+      "stock_id": "6464",
+      "name": "台數科",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 75.0,
+      "close": 78.0,
+      "gain_6w": 0.0,
+      "gain_3d": 0.7751937984496138,
+      "rsi": 50.0,
+      "bb_pct": 65.18610026272027,
+      "vol5_lot": 55.030199999999994,
+      "latest_volume": 128284.0,
+      "turnover_value": 10006152.0,
+      "turnover_million": 10.006152,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 76.1996,
+      "target": 79.968,
+      "stop": 75.42099999999999,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 360,
+      "stock_id": "8481",
+      "name": "政伸",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 75.0,
+      "close": 42.2,
+      "gain_6w": 4.975124378109452,
+      "gain_3d": 1.1990407673860837,
+      "rsi": 51.42857142857155,
+      "bb_pct": 75.84442394916138,
+      "vol5_lot": 30.113,
+      "latest_volume": 32300.0,
+      "turnover_value": 1363060.0,
+      "turnover_million": 1.36306,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 41.3306,
+      "target": 43.35,
+      "stop": 40.496500000000005,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 361,
+      "stock_id": "8936",
+      "name": "國統",
+      "date": "2026-07-07",
+      "basket": "空轉多觀察籃",
+      "rank_basket": "空轉多觀察籃",
+      "status": "健康整理",
+      "icon": "🟢",
+      "score": 70.0,
+      "close": 55.9,
+      "gain_6w": 11.576846307385225,
+      "gain_3d": -4.607508532423211,
+      "rsi": 50.0,
+      "bb_pct": 27.60044686371702,
+      "vol5_lot": 6928.298400000001,
+      "latest_volume": 3413589.0,
+      "turnover_value": 190819625.1,
+      "turnover_million": 190.8196251,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 56.933,
+      "target": 66.504,
+      "stop": 53.6305,
+      "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
+    },
+    {
       "rank": 362,
+      "stock_id": "5481",
+      "name": "新華",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 30.0,
+      "close": 20.6,
+      "gain_6w": 5.102040816326525,
+      "gain_3d": -4.1860465116279055,
+      "rsi": 40.84507042253524,
+      "bb_pct": 38.69781640708847,
+      "vol5_lot": 250.001,
+      "latest_volume": 145401.0,
+      "turnover_value": 2995260.6,
+      "turnover_million": 2.9952606,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 20.71455,
+      "target": 24.174,
+      "stop": 18.05925,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 363,
+      "stock_id": "8916",
+      "name": "光隆",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 30.0,
+      "close": 44.25,
+      "gain_6w": -2.7472527472527486,
+      "gain_3d": 1.9585253456221308,
+      "rsi": 43.478260869565204,
+      "bb_pct": 57.168510873069,
+      "vol5_lot": 96.8416,
+      "latest_volume": 63893.0,
+      "turnover_value": 2827265.25,
+      "turnover_million": 2.82726525,
+      "market_cap_bucket": "unknown",
+      "sector": "其他",
+      "sector_rank": 16.0,
+      "sector_flow_score": 87.58601650886713,
+      "sector_turnover_billion": 19.9839806785,
+      "entry": 43.13315,
+      "target": 46.205999999999996,
+      "stop": 42.2875,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 364,
       "stock_id": "1563",
       "name": "巧新",
       "date": "2026-07-07",
@@ -10520,7 +10578,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 363,
+      "rank": 365,
       "stock_id": "2497",
       "name": "怡利電",
       "date": "2026-07-07",
@@ -10549,7 +10607,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 364,
+      "rank": 366,
       "stock_id": "1568",
       "name": "倉佑",
       "date": "2026-07-07",
@@ -10578,7 +10636,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 365,
+      "rank": 367,
       "stock_id": "2241",
       "name": "艾姆勒",
       "date": "2026-07-07",
@@ -10607,7 +10665,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 366,
+      "rank": 368,
       "stock_id": "2243",
       "name": "宏旭-KY",
       "date": "2026-07-07",
@@ -10636,7 +10694,7 @@
       "reason": "強制過熱排除：近6週 +152.77% (門檻 100%)、MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 367,
+      "rank": 369,
       "stock_id": "2206",
       "name": "三陽工業",
       "date": "2026-07-07",
@@ -10665,7 +10723,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 368,
+      "rank": 370,
       "stock_id": "2254",
       "name": "巨鎧精密-創",
       "date": "2026-07-07",
@@ -10694,7 +10752,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 369,
+      "rank": 371,
       "stock_id": "2204",
       "name": "中華",
       "date": "2026-07-07",
@@ -10723,7 +10781,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 370,
+      "rank": 372,
       "stock_id": "4557",
       "name": "永新-KY",
       "date": "2026-07-07",
@@ -10752,7 +10810,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 371,
+      "rank": 373,
       "stock_id": "1319",
       "name": "東陽",
       "date": "2026-07-07",
@@ -10781,7 +10839,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 372,
+      "rank": 374,
       "stock_id": "6870",
       "name": "騰雲",
       "date": "2026-07-07",
@@ -10810,7 +10868,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 373,
+      "rank": 375,
       "stock_id": "6741",
       "name": "91APP*-KY",
       "date": "2026-07-07",
@@ -10839,7 +10897,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 374,
+      "rank": 376,
       "stock_id": "6865",
       "name": "偉康科技",
       "date": "2026-07-07",
@@ -10868,7 +10926,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 375,
+      "rank": 377,
       "stock_id": "8932",
       "name": "智通*",
       "date": "2026-07-07",
@@ -10897,7 +10955,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 376,
+      "rank": 378,
       "stock_id": "1904",
       "name": "正隆",
       "date": "2026-07-07",
@@ -10926,7 +10984,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 377,
+      "rank": 379,
       "stock_id": "6534",
       "name": "正瀚-創",
       "date": "2026-07-07",
@@ -10955,7 +11013,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 378,
+      "rank": 380,
       "stock_id": "8162",
       "name": "微矽電子-創",
       "date": "2026-07-07",
@@ -10984,7 +11042,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 379,
+      "rank": 381,
       "stock_id": "4590",
       "name": "富田-創",
       "date": "2026-07-07",
@@ -11013,7 +11071,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 380,
+      "rank": 382,
       "stock_id": "1709",
       "name": "和益",
       "date": "2026-07-07",
@@ -11042,7 +11100,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 381,
+      "rank": 383,
       "stock_id": "1721",
       "name": "三晃",
       "date": "2026-07-07",
@@ -11071,7 +11129,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 382,
+      "rank": 384,
       "stock_id": "4722",
       "name": "國精化",
       "date": "2026-07-07",
@@ -11100,7 +11158,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 383,
+      "rank": 385,
       "stock_id": "4739",
       "name": "康普",
       "date": "2026-07-07",
@@ -11129,7 +11187,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 384,
+      "rank": 386,
       "stock_id": "4766",
       "name": "南寶",
       "date": "2026-07-07",
@@ -11158,7 +11216,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 385,
+      "rank": 387,
       "stock_id": "1723",
       "name": "中碳",
       "date": "2026-07-07",
@@ -11187,7 +11245,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 386,
+      "rank": 388,
       "stock_id": "1722",
       "name": "台肥",
       "date": "2026-07-07",
@@ -11216,7 +11274,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 387,
+      "rank": 389,
       "stock_id": "1735",
       "name": "日勝化",
       "date": "2026-07-07",
@@ -11245,7 +11303,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 388,
+      "rank": 390,
       "stock_id": "4755",
       "name": "三福化",
       "date": "2026-07-07",
@@ -11274,7 +11332,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 389,
+      "rank": 391,
       "stock_id": "6934",
       "name": "心誠鎂",
       "date": "2026-07-07",
@@ -11303,7 +11361,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 390,
+      "rank": 392,
       "stock_id": "6885",
       "name": "全福生技",
       "date": "2026-07-07",
@@ -11332,7 +11390,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 391,
+      "rank": 393,
       "stock_id": "8096",
       "name": "擎亞",
       "date": "2026-07-07",
@@ -11361,7 +11419,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 392,
+      "rank": 394,
       "stock_id": "3033",
       "name": "威健",
       "date": "2026-07-07",
@@ -11390,7 +11448,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 393,
+      "rank": 395,
       "stock_id": "2414",
       "name": "精技",
       "date": "2026-07-07",
@@ -11419,7 +11477,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 394,
+      "rank": 396,
       "stock_id": "3209",
       "name": "全科",
       "date": "2026-07-07",
@@ -11448,7 +11506,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 395,
+      "rank": 397,
       "stock_id": "6227",
       "name": "茂綸",
       "date": "2026-07-07",
@@ -11477,7 +11535,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 396,
+      "rank": 398,
       "stock_id": "3528",
       "name": "安馳",
       "date": "2026-07-07",
@@ -11506,7 +11564,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 397,
+      "rank": 399,
       "stock_id": "6113",
       "name": "亞矽",
       "date": "2026-07-07",
@@ -11535,7 +11593,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 398,
+      "rank": 400,
       "stock_id": "3312",
       "name": "弘憶股",
       "date": "2026-07-07",
@@ -11564,7 +11622,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 399,
+      "rank": 401,
       "stock_id": "6270",
       "name": "倍微",
       "date": "2026-07-07",
@@ -11593,7 +11651,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 400,
+      "rank": 402,
       "stock_id": "3232",
       "name": "昱捷",
       "date": "2026-07-07",
@@ -11622,7 +11680,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 401,
+      "rank": 403,
       "stock_id": "8084",
       "name": "巨虹",
       "date": "2026-07-07",
@@ -11651,7 +11709,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 402,
+      "rank": 404,
       "stock_id": "2527",
       "name": "宏璟",
       "date": "2026-07-07",
@@ -11672,15 +11730,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 40.99570000000001,
       "target": 44.268,
       "stop": 33.7305,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 403,
+      "rank": 405,
       "stock_id": "2535",
       "name": "達欣工",
       "date": "2026-07-07",
@@ -11701,15 +11759,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 87.6847,
       "target": 100.572,
       "stop": 79.799,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 404,
+      "rank": 406,
       "stock_id": "2542",
       "name": "興富發",
       "date": "2026-07-07",
@@ -11730,15 +11788,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 42.9657,
       "target": 48.042,
       "stop": 40.994,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 405,
+      "rank": 407,
       "stock_id": "5511",
       "name": "德昌",
       "date": "2026-07-07",
@@ -11759,15 +11817,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 78.74090000000001,
       "target": 82.62,
       "stop": 71.3415,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 406,
+      "rank": 408,
       "stock_id": "2501",
       "name": "國建",
       "date": "2026-07-07",
@@ -11788,15 +11846,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 23.896099999999997,
       "target": 28.968,
       "stop": 23.13375,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 407,
+      "rank": 409,
       "stock_id": "2597",
       "name": "潤弘",
       "date": "2026-07-07",
@@ -11817,15 +11875,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 167.05599999999998,
       "target": 209.1,
       "stop": 159.6975,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 408,
+      "rank": 410,
       "stock_id": "5543",
       "name": "桓鼎-KY",
       "date": "2026-07-07",
@@ -11846,15 +11904,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 28.190699999999996,
       "target": 31.62,
       "stop": 27.86,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 409,
+      "rank": 411,
       "stock_id": "2520",
       "name": "冠德",
       "date": "2026-07-07",
@@ -11875,15 +11933,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 34.2189,
       "target": 38.097,
       "stop": 30.845,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 410,
+      "rank": 412,
       "stock_id": "5522",
       "name": "遠雄",
       "date": "2026-07-07",
@@ -11904,15 +11962,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 63.335499999999996,
       "target": 85.578,
       "stop": 62.884,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 411,
+      "rank": 413,
       "stock_id": "1808",
       "name": "潤隆",
       "date": "2026-07-07",
@@ -11933,15 +11991,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 29.894750000000002,
       "target": 33.813,
       "stop": 29.452,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 412,
+      "rank": 414,
       "stock_id": "2718",
       "name": "全心投控",
       "date": "2026-07-07",
@@ -11962,15 +12020,15 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 51.1609,
       "target": 54.06,
       "stop": 44.377,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 413,
+      "rank": 415,
       "stock_id": "2596",
       "name": "綠意",
       "date": "2026-07-07",
@@ -11991,15 +12049,44 @@
       "market_cap_bucket": "unknown",
       "sector": "建材營造",
       "sector_rank": 23.0,
-      "sector_flow_score": 56.74096941731381,
-      "sector_turnover_billion": 7.891788752500001,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
       "entry": 31.0472,
       "target": 33.354000000000006,
       "stop": 27.462,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 414,
+      "rank": 416,
+      "stock_id": "9906",
+      "name": "欣巴巴",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 30.0,
+      "close": 41.7,
+      "gain_6w": 23.73887240356083,
+      "gain_3d": -0.4773269689737347,
+      "rsi": 44.80519480519482,
+      "bb_pct": 31.689788254943796,
+      "vol5_lot": 141.2904,
+      "latest_volume": 252071.0,
+      "turnover_value": 10511360.700000001,
+      "turnover_million": 10.511360700000001,
+      "market_cap_bucket": "unknown",
+      "sector": "建材營造",
+      "sector_rank": 23.0,
+      "sector_flow_score": 57.25236085713417,
+      "sector_turnover_billion": 7.996902359500001,
+      "entry": 41.43895,
+      "target": 52.428,
+      "stop": 39.402,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 417,
       "stock_id": "8476",
       "name": "台境*",
       "date": "2026-07-07",
@@ -12028,7 +12115,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 415,
+      "rank": 418,
       "stock_id": "6944",
       "name": "兆聯實業",
       "date": "2026-07-07",
@@ -12057,7 +12144,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 416,
+      "rank": 419,
       "stock_id": "8438",
       "name": "昶昕",
       "date": "2026-07-07",
@@ -12086,7 +12173,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 417,
+      "rank": 420,
       "stock_id": "8473",
       "name": "山林水",
       "date": "2026-07-07",
@@ -12115,7 +12202,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 418,
+      "rank": 421,
       "stock_id": "6873",
       "name": "泓德能源",
       "date": "2026-07-07",
@@ -12144,7 +12231,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 419,
+      "rank": 422,
       "stock_id": "6923",
       "name": "中台",
       "date": "2026-07-07",
@@ -12173,7 +12260,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 420,
+      "rank": 423,
       "stock_id": "2072",
       "name": "世紀風電",
       "date": "2026-07-07",
@@ -12202,7 +12289,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 421,
+      "rank": 424,
       "stock_id": "6856",
       "name": "鑫傳",
       "date": "2026-07-07",
@@ -12231,7 +12318,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 422,
+      "rank": 425,
       "stock_id": "3293",
       "name": "鈊象",
       "date": "2026-07-07",
@@ -12260,7 +12347,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 423,
+      "rank": 426,
       "stock_id": "5263",
       "name": "智崴",
       "date": "2026-07-07",
@@ -12289,7 +12376,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 424,
+      "rank": 427,
       "stock_id": "3546",
       "name": "宇峻",
       "date": "2026-07-07",
@@ -12318,7 +12405,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 425,
+      "rank": 428,
       "stock_id": "3086",
       "name": "華義*",
       "date": "2026-07-07",
@@ -12347,7 +12434,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 426,
+      "rank": 429,
       "stock_id": "6111",
       "name": "光聚晶電",
       "date": "2026-07-07",
@@ -12376,7 +12463,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 427,
+      "rank": 430,
       "stock_id": "7584",
       "name": "樂意",
       "date": "2026-07-07",
@@ -12405,7 +12492,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 428,
+      "rank": 431,
       "stock_id": "8446",
       "name": "華研",
       "date": "2026-07-07",
@@ -12434,7 +12521,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 429,
+      "rank": 432,
       "stock_id": "1210",
       "name": "大成",
       "date": "2026-07-07",
@@ -12463,7 +12550,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 430,
+      "rank": 433,
       "stock_id": "1737",
       "name": "臺鹽",
       "date": "2026-07-07",
@@ -12492,7 +12579,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 431,
+      "rank": 434,
       "stock_id": "1233",
       "name": "天仁",
       "date": "2026-07-07",
@@ -12521,7 +12608,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 432,
+      "rank": 435,
       "stock_id": "2027",
       "name": "大成鋼",
       "date": "2026-07-07",
@@ -12550,7 +12637,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 433,
+      "rank": 436,
       "stock_id": "5011",
       "name": "久陽",
       "date": "2026-07-07",
@@ -12579,7 +12666,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 434,
+      "rank": 437,
       "stock_id": "2065",
       "name": "世豐",
       "date": "2026-07-07",
@@ -12608,7 +12695,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 435,
+      "rank": 438,
       "stock_id": "2031",
       "name": "新光鋼",
       "date": "2026-07-07",
@@ -12637,7 +12724,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 436,
+      "rank": 439,
       "stock_id": "5015",
       "name": "華祺",
       "date": "2026-07-07",
@@ -12666,7 +12753,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 437,
+      "rank": 440,
       "stock_id": "8349",
       "name": "恒耀",
       "date": "2026-07-07",
@@ -12695,7 +12782,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 438,
+      "rank": 441,
       "stock_id": "8930",
       "name": "青鋼",
       "date": "2026-07-07",
@@ -12724,7 +12811,7 @@
       "reason": "強制過熱排除：%B 138.2% (門檻 110%)、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 439,
+      "rank": 442,
       "stock_id": "1617",
       "name": "榮星",
       "date": "2026-07-07",
@@ -12753,7 +12840,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 440,
+      "rank": 443,
       "stock_id": "1605",
       "name": "華新",
       "date": "2026-07-07",
@@ -12782,7 +12869,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 441,
+      "rank": 444,
       "stock_id": "1618",
       "name": "合機",
       "date": "2026-07-07",
@@ -12811,7 +12898,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 442,
+      "rank": 445,
       "stock_id": "5283",
       "name": "禾聯碩",
       "date": "2026-07-07",
@@ -12840,36 +12927,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 443,
-      "stock_id": "8927",
-      "name": "北基",
-      "date": "2026-07-07",
-      "basket": "未入籃",
-      "rank_basket": "未入籃",
-      "status": "過熱/風險",
-      "icon": "🔴",
-      "score": 40.0,
-      "close": 22.05,
-      "gain_6w": 16.666666666666675,
-      "gain_3d": 2.7972027972028135,
-      "rsi": 70.3703703703704,
-      "bb_pct": 97.35382051149703,
-      "vol5_lot": 488.24920000000003,
-      "latest_volume": 318920.0,
-      "turnover_value": 7032186.0,
-      "turnover_million": 7.032186,
-      "market_cap_bucket": "unknown",
-      "sector": "油電燃氣業",
-      "sector_rank": 29.0,
-      "sector_flow_score": 39.16201204506306,
-      "sector_turnover_billion": 0.07032186,
-      "entry": 21.4336,
-      "target": 22.797,
-      "stop": 19.203500000000002,
-      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
-    },
-    {
-      "rank": 444,
+      "rank": 446,
       "stock_id": "2762",
       "name": "世界健身-KY",
       "date": "2026-07-07",
@@ -12889,16 +12947,16 @@
       "turnover_million": 15.079014599999999,
       "market_cap_bucket": "unknown",
       "sector": "運動休閒",
-      "sector_rank": 30.0,
-      "sector_flow_score": 36.087143708261465,
-      "sector_turnover_billion": 2.566858098,
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
       "entry": 81.43979999999999,
       "target": 92.616,
       "stop": 80.19699999999999,
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 445,
+      "rank": 447,
       "stock_id": "6670",
       "name": "復盛應用",
       "date": "2026-07-07",
@@ -12918,16 +12976,45 @@
       "turnover_million": 88.8622185,
       "market_cap_bucket": "unknown",
       "sector": "運動休閒",
-      "sector_rank": 30.0,
-      "sector_flow_score": 36.087143708261465,
-      "sector_turnover_billion": 2.566858098,
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
       "entry": 252.751,
       "target": 310.59000000000003,
       "stop": 240.2925,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 446,
+      "rank": 448,
+      "stock_id": "9802",
+      "name": "鈺齊-KY",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 40.0,
+      "close": 73.6,
+      "gain_6w": -0.27100271002710175,
+      "gain_3d": 1.098901098901095,
+      "rsi": 32.47863247863245,
+      "bb_pct": 29.09327993338222,
+      "vol5_lot": 540.9026,
+      "latest_volume": 499730.0,
+      "turnover_value": 36780128.0,
+      "turnover_million": 36.780128,
+      "market_cap_bucket": "unknown",
+      "sector": "運動休閒",
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
+      "entry": 72.496,
+      "target": 84.558,
+      "stop": 71.64,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
+    },
+    {
+      "rank": 449,
       "stock_id": "6768",
       "name": "志強-KY",
       "date": "2026-07-07",
@@ -12947,16 +13034,16 @@
       "turnover_million": 30.1824942,
       "market_cap_bucket": "unknown",
       "sector": "運動休閒",
-      "sector_rank": 30.0,
-      "sector_flow_score": 36.087143708261465,
-      "sector_turnover_billion": 2.566858098,
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
       "entry": 71.8656,
       "target": 99.45,
       "stop": 71.1425,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 447,
+      "rank": 450,
       "stock_id": "6890",
       "name": "來億-KY",
       "date": "2026-07-07",
@@ -12976,16 +13063,74 @@
       "turnover_million": 122.5620825,
       "market_cap_bucket": "unknown",
       "sector": "運動休閒",
-      "sector_rank": 30.0,
-      "sector_flow_score": 36.087143708261465,
-      "sector_turnover_billion": 2.566858098,
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
       "entry": 204.3875,
       "target": 291.21,
       "stop": 189.54749999999999,
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 448,
+      "rank": 451,
+      "stock_id": "9914",
+      "name": "美利達",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 30.0,
+      "close": 75.0,
+      "gain_6w": 9.97067448680351,
+      "gain_3d": 0.2673796791443861,
+      "rsi": 52.380952380952394,
+      "bb_pct": 61.088490158781674,
+      "vol5_lot": 1708.1828,
+      "latest_volume": 1125520.0,
+      "turnover_value": 84414000.0,
+      "turnover_million": 84.414,
+      "market_cap_bucket": "unknown",
+      "sector": "運動休閒",
+      "sector_rank": 29.0,
+      "sector_flow_score": 40.314102394302,
+      "sector_turnover_billion": 3.778799378,
+      "entry": 74.86,
+      "target": 82.518,
+      "stop": 64.675,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
+    },
+    {
+      "rank": 452,
+      "stock_id": "8927",
+      "name": "北基",
+      "date": "2026-07-07",
+      "basket": "未入籃",
+      "rank_basket": "未入籃",
+      "status": "過熱/風險",
+      "icon": "🔴",
+      "score": 40.0,
+      "close": 22.05,
+      "gain_6w": 16.666666666666675,
+      "gain_3d": 2.7972027972028135,
+      "rsi": 70.3703703703704,
+      "bb_pct": 97.35382051149703,
+      "vol5_lot": 488.24920000000003,
+      "latest_volume": 318920.0,
+      "turnover_value": 7032186.0,
+      "turnover_million": 7.032186,
+      "market_cap_bucket": "unknown",
+      "sector": "油電燃氣業",
+      "sector_rank": 30.0,
+      "sector_flow_score": 39.16201204506306,
+      "sector_turnover_billion": 0.07032186,
+      "entry": 21.4336,
+      "target": 22.797,
+      "stop": 19.203500000000002,
+      "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
+    },
+    {
+      "rank": 453,
       "stock_id": "2727",
       "name": "王品",
       "date": "2026-07-07",
@@ -13014,7 +13159,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 449,
+      "rank": 454,
       "stock_id": "1259",
       "name": "安心",
       "date": "2026-07-07",
@@ -13043,7 +13188,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 450,
+      "rank": 455,
       "stock_id": "5704",
       "name": "老爺知",
       "date": "2026-07-07",
@@ -13072,7 +13217,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 451,
+      "rank": 456,
       "stock_id": "2732",
       "name": "六角",
       "date": "2026-07-07",
@@ -13101,7 +13246,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 452,
+      "rank": 457,
       "stock_id": "7811",
       "name": "民盛",
       "date": "2026-07-07",
@@ -13130,7 +13275,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 453,
+      "rank": 458,
       "stock_id": "8924",
       "name": "大田",
       "date": "2026-07-07",
@@ -13159,7 +13304,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 454,
+      "rank": 459,
       "stock_id": "6170",
       "name": "統振",
       "date": "2026-07-07",
@@ -13188,7 +13333,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 455,
+      "rank": 460,
       "stock_id": "4906",
       "name": "正文",
       "date": "2026-07-07",
@@ -13217,7 +13362,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 456,
+      "rank": 461,
       "stock_id": "6245",
       "name": "立端",
       "date": "2026-07-07",
@@ -13246,7 +13391,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 457,
+      "rank": 462,
       "stock_id": "6417",
       "name": "韋僑",
       "date": "2026-07-07",
@@ -13275,7 +13420,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 458,
+      "rank": 463,
       "stock_id": "8048",
       "name": "德勝",
       "date": "2026-07-07",
@@ -13304,7 +13449,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 459,
+      "rank": 464,
       "stock_id": "3152",
       "name": "璟德",
       "date": "2026-07-07",
@@ -13333,7 +13478,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 460,
+      "rank": 465,
       "stock_id": "3234",
       "name": "光環",
       "date": "2026-07-07",
@@ -13362,7 +13507,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 461,
+      "rank": 466,
       "stock_id": "6530",
       "name": "創威",
       "date": "2026-07-07",
@@ -13391,7 +13536,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 462,
+      "rank": 467,
       "stock_id": "3491",
       "name": "昇達科",
       "date": "2026-07-07",
@@ -13420,7 +13565,7 @@
       "reason": "大戶4/8週累積、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 463,
+      "rank": 468,
       "stock_id": "6546",
       "name": "正基",
       "date": "2026-07-07",
@@ -13449,7 +13594,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 464,
+      "rank": 469,
       "stock_id": "6561",
       "name": "是方",
       "date": "2026-07-07",
@@ -13478,7 +13623,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 465,
+      "rank": 470,
       "stock_id": "8034",
       "name": "榮群",
       "date": "2026-07-07",
@@ -13507,7 +13652,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 466,
+      "rank": 471,
       "stock_id": "3447",
       "name": "展達",
       "date": "2026-07-07",
@@ -13536,7 +13681,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 467,
+      "rank": 472,
       "stock_id": "5210",
       "name": "寶碩",
       "date": "2026-07-07",
@@ -13565,7 +13710,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 468,
+      "rank": 473,
       "stock_id": "5410",
       "name": "國眾",
       "date": "2026-07-07",
@@ -13594,7 +13739,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 469,
+      "rank": 474,
       "stock_id": "3147",
       "name": "大綜",
       "date": "2026-07-07",
@@ -13623,7 +13768,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 470,
+      "rank": 475,
       "stock_id": "4953",
       "name": "緯軟",
       "date": "2026-07-07",
@@ -13652,7 +13797,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 471,
+      "rank": 476,
       "stock_id": "5310",
       "name": "天剛",
       "date": "2026-07-07",
@@ -13681,7 +13826,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 472,
+      "rank": 477,
       "stock_id": "5201",
       "name": "凱衛",
       "date": "2026-07-07",
@@ -13710,7 +13855,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 473,
+      "rank": 478,
       "stock_id": "5403",
       "name": "中菲",
       "date": "2026-07-07",
@@ -13739,7 +13884,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 474,
+      "rank": 479,
       "stock_id": "6140",
       "name": "訊達",
       "date": "2026-07-07",
@@ -13768,7 +13913,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 475,
+      "rank": 480,
       "stock_id": "5203",
       "name": "訊連",
       "date": "2026-07-07",
@@ -13797,7 +13942,7 @@
       "reason": "大戶4/8週累積、近20日未破60日低位區"
     },
     {
-      "rank": 476,
+      "rank": 481,
       "stock_id": "6671",
       "name": "三能-KY",
       "date": "2026-07-07",
@@ -13826,7 +13971,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區"
     },
     {
-      "rank": 477,
+      "rank": 482,
       "stock_id": "2903",
       "name": "遠百",
       "date": "2026-07-07",
@@ -13855,7 +14000,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 478,
+      "rank": 483,
       "stock_id": "3171",
       "name": "炎洲流通",
       "date": "2026-07-07",
@@ -13884,7 +14029,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 479,
+      "rank": 484,
       "stock_id": "2230",
       "name": "泰茂",
       "date": "2026-07-07",
@@ -13913,7 +14058,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 480,
+      "rank": 485,
       "stock_id": "7782",
       "name": "光速火箭",
       "date": "2026-07-07",
@@ -13942,7 +14087,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 481,
+      "rank": 486,
       "stock_id": "8390",
       "name": "金益鼎",
       "date": "2026-07-07",
@@ -13971,7 +14116,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利"
     },
     {
-      "rank": 482,
+      "rank": 487,
       "stock_id": "6624",
       "name": "萬年清",
       "date": "2026-07-07",
@@ -14000,7 +14145,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 483,
+      "rank": 488,
       "stock_id": "6692",
       "name": "進能服",
       "date": "2026-07-07",
@@ -14029,7 +14174,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 484,
+      "rank": 489,
       "stock_id": "7842",
       "name": "天能綠電",
       "date": "2026-07-07",
@@ -14058,7 +14203,7 @@
       "reason": "大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量"
     },
     {
-      "rank": 485,
+      "rank": 490,
       "stock_id": "8454",
       "name": "富邦媒",
       "date": "2026-07-07",
@@ -14087,7 +14232,7 @@
       "reason": "MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利"
     },
     {
-      "rank": 486,
+      "rank": 491,
       "stock_id": "6689",
       "name": "伊雲谷",
       "date": "2026-07-07",
