@@ -1,16 +1,16 @@
 {
-  "date": "2026-07-07",
+  "date": "2026-07-08",
   "universe_count": 1971,
   "include_etf": false,
-  "price_start": "2026-07-07",
+  "price_start": "2026-07-08",
   "price_months": 15,
-  "holding_start": "2026-02-17",
+  "holding_start": "2026-02-18",
   "price": {
     "dataset_rows": 0,
     "matched_stocks": 0,
     "written_files": 0,
     "fallback": true,
-    "cache_date": "2026-07-07",
+    "cache_date": "2026-07-08",
     "cached_files": 1986,
     "error": "TaiwanStockPrice HTTP 400: Your level is register. Please update your user level. Detail information:https://finmindtrade.com/analysis/#/Sponsor/sponsor"
   },
