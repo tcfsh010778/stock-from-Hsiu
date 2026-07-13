@@ -1,27 +1,26 @@
 {
-  "date": "2026-07-10",
-  "universe_count": 1971,
+  "date": "2026-07-13",
+  "universe_count": 889,
   "include_etf": false,
-  "price_start": "2026-07-10",
+  "price_start": "2026-07-13",
   "price_months": 15,
-  "holding_start": "2026-02-20",
+  "holding_start": "2026-02-23",
   "price": {
     "dataset_rows": 0,
     "matched_stocks": 0,
     "written_files": 0,
     "fallback": true,
-    "cache_date": "2026-07-09",
+    "cache_date": "2026-07-13",
     "cached_files": 1986,
     "error": "TaiwanStockPrice HTTP 400: Your level is register. Please update your user level. Detail information:https://finmindtrade.com/analysis/#/Sponsor/sponsor"
   },
   "holding": {
-    "query_dates": 21,
+    "query_dates": 20,
     "dataset_rows": 0,
     "matched_stocks": 0,
     "written_files": 0,
-    "fallback_count": 21,
+    "fallback_count": 20,
     "fallback_dates": [
-      "2026-02-20",
       "2026-02-27",
       "2026-03-06",
       "2026-03-13",
@@ -44,5 +43,5 @@
       "2026-07-10"
     ]
   },
-  "candidate_count": 621
+  "candidate_count": 266
 }
