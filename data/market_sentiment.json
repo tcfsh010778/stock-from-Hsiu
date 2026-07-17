@@ -1,31 +1,31 @@
 {
   "schema_version": 1,
-  "date": "2026-07-16",
-  "updated_at": "2026-07-16T22:54:51+08:00",
-  "score": 56,
-  "regime": "neutral",
-  "regime_label": "中性",
-  "color": "yellow",
-  "summary": "市場情緒 56 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
+  "date": "2026-07-17",
+  "updated_at": "2026-07-17T19:26:46+08:00",
+  "score": 35,
+  "regime": "bearish",
+  "regime_label": "偏空",
+  "color": "red",
+  "summary": "市場情緒 35 分，偏空；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
-      "score": 20.0,
+      "score": 0.0,
       "weight": 30,
-      "signal": "bullish",
-      "display": "2/3",
-      "detail": "收盤 45624.98；MA5 45345.93 / MA20 46011.23 / MA60 43440.69",
+      "signal": "bearish",
+      "display": "0/3",
+      "detail": "收盤 42671.27；MA5 44809.26 / MA20 45850.92 / MA60 43525.13",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
-      "date": "2026-07-16",
-      "close": 45624.98,
-      "ma5": 45345.93,
-      "ma20": 46011.23,
-      "ma60": 43440.69,
+      "date": "2026-07-17",
+      "close": 42671.27,
+      "ma5": 44809.26,
+      "ma20": 45850.92,
+      "ma60": 43525.13,
       "lights": {
-        "ma5": true,
+        "ma5": false,
         "ma20": false,
-        "ma60": true
+        "ma60": false
       }
     },
     "margin_weekly": {
@@ -61,46 +61,46 @@
       "score": 0.0,
       "weight": 15,
       "signal": "bearish",
-      "display": "-2.03 億股",
+      "display": "-16.03 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-07-16",
+      "date": "2026-07-17",
       "days": 5,
-      "cumulative_net_shares": -202540479
+      "cumulative_net_shares": -1602589061
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 3.61,
+      "score": 2.65,
       "weight": 10,
       "signal": "bearish",
-      "display": "163/303",
+      "display": "86/394",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 163,
-      "declines": 303,
-      "ratio": 0.54
+      "advances": 86,
+      "declines": 394,
+      "ratio": 0.22
     },
     "us_vix": {
       "label": "US VIX",
       "score": 12.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "15.67",
-      "detail": "5日變化 -7.28%",
+      "display": "16.73",
+      "detail": "5日變化 +5.62%",
       "available": true,
       "source": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "date": "2026-07-15",
-      "latest": 15.67,
-      "change_5d_pct": -7.28
+      "date": "2026-07-16",
+      "latest": 16.73,
+      "change_5d_pct": 5.62
     }
   },
   "source_status": [
-    "OK: TAIEX - 94 rows",
+    "OK: TAIEX - 95 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 483 SFZ rows",
+    "OK: local breadth - 484 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
