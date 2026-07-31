@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-07-31",
-  "updated_at": "2026-07-31T20:00:40+08:00",
-  "score": 56,
+  "updated_at": "2026-07-31T23:18:08+08:00",
+  "score": 58,
   "regime": "neutral",
   "regime_label": "中性",
   "color": "yellow",
-  "summary": "市場情緒 56 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 58 分，中性；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,31 +30,31 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 0.0,
+      "score": 1.88,
       "weight": 15,
       "signal": "bearish",
-      "display": "-6.94%",
-      "detail": "融資餘額 8,701,432；前值 9,349,915",
+      "display": "-2.25%",
+      "detail": "融資餘額 9,144,379；前值 9,354,810",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-07-30",
-      "latest": 8701432.0,
-      "previous": 9349915.0,
-      "weekly_change_pct": -6.94
+      "date": "2026-07-31",
+      "latest": 9144379.0,
+      "previous": 9354810.0,
+      "weekly_change_pct": -2.25
     },
     "short_weekly": {
       "label": "融券週變化",
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "-2.12%",
-      "detail": "融券餘額 204,214；快速增加視為偏空",
+      "display": "-8.02%",
+      "detail": "融券餘額 188,324；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-07-30",
-      "latest": 204214.0,
-      "previous": 208647.0,
-      "weekly_change_pct": -2.12
+      "date": "2026-07-31",
+      "latest": 188324.0,
+      "previous": 204754.0,
+      "weekly_change_pct": -8.02
     },
     "foreign_5d": {
       "label": "外資 5 日",
@@ -71,15 +71,15 @@
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 3.78,
+      "score": 3.77,
       "weight": 10,
       "signal": "bearish",
-      "display": "171/288",
+      "display": "171/290",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
       "advances": 171,
-      "declines": 288,
+      "declines": 290,
       "ratio": 0.59
     },
     "us_vix": {
@@ -100,7 +100,7 @@
     "OK: TAIEX - 105 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 469 SFZ rows",
+    "OK: local breadth - 472 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
