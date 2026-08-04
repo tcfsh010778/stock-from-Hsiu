@@ -1,0 +1,26 @@
+[
+  {
+    "trading_date": "2026-08-03",
+    "security_id": "2330",
+    "market": "listed",
+    "open": 1000.0,
+    "high": 1010.0,
+    "low": 995.0,
+    "close": 1005.0,
+    "volume": 12345678,
+    "trade_value": 12400000000,
+    "transaction_count": 23456
+  },
+  {
+    "trading_date": "2026-08-03",
+    "security_id": "2317",
+    "market": "listed",
+    "open": 200.0,
+    "high": 204.0,
+    "low": 198.0,
+    "close": 203.0,
+    "volume": 8765432,
+    "trade_value": 1770000000,
+    "transaction_count": 12345
+  }
+]

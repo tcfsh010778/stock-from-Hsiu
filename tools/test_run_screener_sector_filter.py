@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -21,13 +22,93 @@ class SectorFilterTest(unittest.TestCase):
             "Warm": {"rank": 2, "score": 80.0, "turnover_billion": 10.0},
         }
 
-        payload = run_screener.build_sfz_all_payload(rows, {}, sector_scores)
+        payload = run_screener.build_sfz_all_payload(
+            rows,
+            {},
+            sector_scores,
+            pit_eligible_ids={"1111", "2222"},
+        )
 
+        self.assertEqual(payload["dataset_id"], "mda_candidate_pool")
+        self.assertEqual(payload["semantic_role"], "derived_mda_candidate_pool_not_sfz_signal")
+        self.assertEqual(payload["canonical_path"], "data/mda_candidates.json")
+        self.assertEqual(payload["legacy_aliases"], ["data/sfz_all.json"])
         self.assertEqual(payload["date"], "2026-05-29")
         self.assertEqual(payload["count"], 2)
         self.assertEqual([s["stock_id"] for s in payload["stocks"]], ["1111", "2222"])
         self.assertEqual(payload["stocks"][0]["rank"], 1)
         self.assertEqual(payload["stocks"][0]["sector_rank"], 1)
+        self.assertEqual(payload["stocks"][0]["data_date"], "2026-05-29")
+        self.assertEqual(payload["stocks"][0]["mda_score"], 100)
+        self.assertTrue(payload["stocks"][0]["pit_eligible"])
+        self.assertEqual(payload["pit_universe"]["status"], "pass")
+
+    def test_pit_audit_is_visible_without_filtering_or_reordering_candidates(self) -> None:
+        rows = [
+            {"stock_id": "1111", "date": "2026-05-29", "close": 50, "score": 100},
+            {"stock_id": "2222", "date": "2026-05-29", "close": 80, "score": 90},
+        ]
+
+        payload = run_screener.build_mda_candidates_payload(
+            rows,
+            {},
+            {},
+            pit_eligible_ids={"1111"},
+        )
+
+        self.assertEqual(payload["count"], 2)
+        self.assertEqual([s["stock_id"] for s in payload["stocks"]], ["1111", "2222"])
+        self.assertEqual([s["pit_eligible"] for s in payload["stocks"]], [True, False])
+        self.assertEqual(payload["pit_universe"]["status"], "warn")
+        self.assertEqual(payload["pit_universe"]["rejected_count"], 1)
+        self.assertEqual(payload["pit_universe"]["rejected_ids_sample"], ["2222"])
+
+    def test_missing_pit_inputs_do_not_mark_every_candidate_rejected(self) -> None:
+        rows = [{"stock_id": "1111", "date": "2026-05-29", "close": 50, "score": 100}]
+
+        original = run_screener.build_pit_universe_audit
+        try:
+            run_screener.build_pit_universe_audit = lambda *_args, **_kwargs: (
+                {
+                    "status": "unavailable",
+                    "rejected_count": None,
+                    "error": "fixture: missing upstream input",
+                },
+                set(),
+            )
+            payload = run_screener.build_mda_candidates_payload(rows, {}, {})
+        finally:
+            run_screener.build_pit_universe_audit = original
+
+        self.assertIsNone(payload["stocks"][0]["pit_eligible"])
+        self.assertIsNone(payload["pit_universe"]["rejected_count"])
+
+    def test_writer_emits_canonical_file_and_identical_legacy_alias(self) -> None:
+        rows = [{"stock_id": "1111", "date": "2026-05-29", "close": 50, "score": 100}]
+        original_canonical = run_screener.MDA_CANDIDATES_PATH
+        original_legacy = run_screener.SFZ_ALL_PATH
+        original_audit = run_screener.build_pit_universe_audit
+        try:
+            with tempfile.TemporaryDirectory() as tmp:
+                run_screener.MDA_CANDIDATES_PATH = Path(tmp) / "mda_candidates.json"
+                run_screener.SFZ_ALL_PATH = Path(tmp) / "sfz_all.json"
+                run_screener.build_pit_universe_audit = lambda *_args, **_kwargs: (
+                    {"status": "pass", "rejected_count": 0, "error": None},
+                    {"1111"},
+                )
+
+                payload = run_screener.write_mda_candidates_json(rows, {}, {})
+
+                self.assertTrue(run_screener.MDA_CANDIDATES_PATH.exists())
+                self.assertEqual(
+                    run_screener.MDA_CANDIDATES_PATH.read_bytes(),
+                    run_screener.SFZ_ALL_PATH.read_bytes(),
+                )
+                self.assertEqual(payload["dataset_id"], "mda_candidate_pool")
+        finally:
+            run_screener.MDA_CANDIDATES_PATH = original_canonical
+            run_screener.SFZ_ALL_PATH = original_legacy
+            run_screener.build_pit_universe_audit = original_audit
 
     def test_select_top20_still_keeps_daily_report_capped(self) -> None:
         rows = [
