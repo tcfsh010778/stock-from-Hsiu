@@ -174,6 +174,9 @@ class PR3LogicTest(unittest.TestCase):
     def test_freshness_manifest_is_a_public_data_asset(self) -> None:
         self.assertIn(generate_site.FRESHNESS_MANIFEST_PATH, generate_site.PUBLIC_DATA_FILES)
 
+    def test_daily_decisions_is_a_public_data_asset(self) -> None:
+        self.assertIn(generate_site.DAILY_DECISIONS_PATH, generate_site.PUBLIC_DATA_FILES)
+
     def test_sfz_controls_enable_bullish_filter_when_market_score_is_bullish(self) -> None:
         payload = {
             "date": "2026-05-29",
