@@ -42,6 +42,8 @@ Monday-to-Friday assumption cannot produce a publishable freshness state.
 | `financial_statement` | TWSE/TPEx MOPS industry-specific statements | Quarterly/annual as filings arrive | Within 140 calendar days of period end, then track filing publication time | None | Wide, industry-specific official schemas still need a normalizer to canonical long form |
 | `material_event` | TWSE/TPEx MOPS | Event driven | Collector fetch age no more than 6 hours | None | Event cursor/deduplication not yet implemented |
 | `mda_candidate_pool` | Derived local scan | Each production scan | Upstream data current; PIT check executed for the scan date | None | Legacy filename `sfz_all.json` incorrectly suggests an SFZ signal; canonical output is `mda_candidates.json` |
+| `carybot_signals` | Derived local CaryBot CSV bridge | Daily when local exports are available | Max 3 calendar-day lag | Preserved normalized JSON, visibly marked | Local research workspace is absent on GitHub Actions; preserved output must never appear fresh silently |
+| `backtest_results` | Derived local backtest aggregates | On reviewed dashboard rebuild | Max 30 calendar-day lag | Preserved normalized JSON, visibly marked | Raw and large backtest outputs remain local-only; preserved dashboard age must be visible |
 
 ## Freshness statuses
 
@@ -97,6 +99,8 @@ The following owner-operated surfaces were reached and schema-sampled on
 | `refresh_prices.py` | FinMind price plus institutional, holding, foreign-shareholding, and margin caches | Auxiliary default is latest Top20, not full market; failures can leave old files without a unified status |
 | `market_sentiment.py` | TWSE TAIEX, margin, foreign aggregate; neutral fallback | Has source strings and an update timestamp, but no artifact hash/SLA/partition state |
 | `run_screener.py` | Reads `mda_universe_scan.json`; historically writes it as `sfz_all.json` | MDA candidate pool is mislabeled as SFZ and production PIT eligibility was not recorded |
+| `carybot_signals.py` | Normalizes local CaryBot CSV exports; preserves existing JSON when exports are absent | Now manifests exact output bytes and exposes primary/fallback freshness; source CSV completeness is still local-workspace dependent |
+| `backtest_dashboard.py` | Aggregates reviewed local backtest CSV outputs; preserves existing JSON when inputs are absent | Now manifests exact output bytes and exposes primary/fallback freshness; raw backtest reproducibility inputs remain local-only |
 | `.github/workflows/daily_update.yml` | Generates site even when individual optional sources fall back | No contract/manifest validation gate before downstream generation |
 
 ## Missing and fallback rules
@@ -123,3 +127,9 @@ The following owner-operated surfaces were reached and schema-sampled on
 - The production scan records a point-in-time universe audit for its `data_date`.
   This first integration is a data-quality check and does not alter strategy
   scoring, basket order, or exit logic.
+- Issue #6 retains PIT as `audit_only`. `tools/pit_universe.py` depends on complete
+  local price and holding caches, and a missing cache can produce an empty eligible
+  universe. Actual filtering is deferred until cache completeness is enforced,
+  historical survivorship-bias regression coverage exists, and a zero-result path
+  fails closed without silently deleting the candidate pool. The payload records
+  this decision, its requirements, and `filter_applied=false`.

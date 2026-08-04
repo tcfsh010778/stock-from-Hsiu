@@ -10,6 +10,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import generate_site
 import run_screener
+import stock_rules
 
 
 class PR3LogicTest(unittest.TestCase):
@@ -38,6 +39,48 @@ class PR3LogicTest(unittest.TestCase):
         reasons = generate_site.overheat_reasons(stock)
         self.assertTrue(any("近3日 +21.40%" in reason for reason in reasons))
         self.assertEqual(generate_site.classify_basket({**stock, "icon": "🟡", "score": 90}), "risk")
+
+    def test_site_traffic_light_html_consumes_structured_rule_result(self) -> None:
+        original_indicator = generate_site.indicator_snapshot
+        original_sum_recent = generate_site._sum_recent
+        original_evaluator = generate_site.evaluate_traffic_light
+        captured = {}
+        expected = {
+            "state": "WATCH",
+            "css_class": "watch",
+            "light_class": "light-yellow",
+            "icon_entity": "&#128993;",
+            "headline": "WATCH · 等確認",
+            "label": "黃燈",
+            "reason": "結構化結果",
+        }
+        try:
+            generate_site.indicator_snapshot = lambda _daily: {"wr": -40}
+            generate_site._sum_recent = lambda *_args: 0
+
+            def fake_evaluator(stock, tech, decision, indicator, chip_total):
+                captured.update(
+                    stock=stock,
+                    tech=tech,
+                    decision=decision,
+                    indicator=indicator,
+                    chip_total=chip_total,
+                )
+                return expected
+
+            generate_site.evaluate_traffic_light = fake_evaluator
+            html = generate_site.stock_traffic_light("2330", {"id": "2330"}, {}, {}, [], [])
+        finally:
+            generate_site.indicator_snapshot = original_indicator
+            generate_site._sum_recent = original_sum_recent
+            generate_site.evaluate_traffic_light = original_evaluator
+
+        self.assertEqual(captured["indicator"], {"wr": -40})
+        self.assertEqual(captured["chip_total"], 0)
+        self.assertIn("WATCH · 等確認", html)
+        self.assertIn("結構化結果", html)
+        self.assertIn("light-yellow", html)
+        self.assertIs(stock_rules.evaluate_traffic_light, original_evaluator)
 
     def test_rr_warning_banner_uses_pr3_copy(self) -> None:
         html = generate_site.rr_warning_bar({"rr": 0.9969, "rr_text": "1:1.0"})
@@ -127,6 +170,9 @@ class PR3LogicTest(unittest.TestCase):
 
             self.assertEqual(published, ["carybot_signals.json"])
             self.assertEqual((output / "data" / "carybot_signals.json").read_text(encoding="utf-8"), source.read_text(encoding="utf-8"))
+
+    def test_freshness_manifest_is_a_public_data_asset(self) -> None:
+        self.assertIn(generate_site.FRESHNESS_MANIFEST_PATH, generate_site.PUBLIC_DATA_FILES)
 
     def test_sfz_controls_enable_bullish_filter_when_market_score_is_bullish(self) -> None:
         payload = {
@@ -233,6 +279,22 @@ class PR3LogicTest(unittest.TestCase):
         rows = generate_site.carybot_signals_for_stock("2330", carybot)
 
         self.assertEqual(len(rows), 1)
+
+    def test_carybot_history_panel_warns_when_preserved_json_is_stale(self) -> None:
+        carybot = {
+            "date": "2026-05-12",
+            "signals": [{"stock_id": "2330", "signal_type": "B1", "score": 95, "date": "2026-05-12"}],
+            "freshness": {
+                "status": "fallback_stale",
+                "data_date": "2026-05-12",
+                "expected_data_date": "2026-08-04",
+            },
+        }
+
+        html = generate_site.build_carybot_signal_history_panel("2330", carybot)
+
+        self.assertIn('data-artifact-freshness="fallback_stale"', html)
+        self.assertIn("請勿視為最新結果", html)
 
 
 if __name__ == "__main__":

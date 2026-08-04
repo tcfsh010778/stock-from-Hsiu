@@ -11,6 +11,8 @@ from pathlib import Path
 from statistics import mean, pstdev
 from typing import Any
 
+from data_contract import DEFAULT_MANIFEST_PATH, prepare_artifact_manifest, update_manifest_file
+
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 OUTPUT_PATH = DATA_DIR / "backtest_results.json"
@@ -445,10 +447,75 @@ def build_payload(
     }
 
 
-def write_payload(payload: dict[str, Any], output_path: str | Path = OUTPUT_PATH) -> Path:
+def contract_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    data_date = str(payload.get("date") or "")
+    rows: list[dict[str, Any]] = []
+    for strategy in payload.get("strategies") or []:
+        if not isinstance(strategy, dict):
+            continue
+        period = strategy.get("period") if isinstance(strategy.get("period"), dict) else {}
+        metrics = strategy.get("metrics") if isinstance(strategy.get("metrics"), dict) else {}
+        rows.append(
+            {
+                "data_date": data_date,
+                "strategy_name": str(strategy.get("strategy_name") or ""),
+                "category": str(strategy.get("category") or ""),
+                "period_start": period.get("start"),
+                "period_end": period.get("end"),
+                "metrics": metrics,
+            }
+        )
+    return rows
+
+
+def prepare_payload(
+    payload: dict[str, Any],
+    *,
+    now: datetime | None = None,
+    preserved_existing: bool = False,
+) -> tuple[dict[str, Any], dict[str, Any], bytes]:
+    updated = now or datetime.now(TAIPEI_TZ)
+    if updated.tzinfo is None:
+        updated = updated.replace(tzinfo=TAIPEI_TZ)
+    source_id = "backtest_preserved_json" if preserved_existing else "backtest_local_csv_derived"
+    return prepare_artifact_manifest(
+        payload,
+        dataset_id="backtest_results",
+        source_id=source_id,
+        rows=contract_rows(payload),
+        data_date=str(payload.get("date") or ""),
+        expected_data_date=updated.astimezone(TAIPEI_TZ).date().isoformat(),
+        fetched_at=updated.astimezone(TAIPEI_TZ),
+        evaluated_at=updated.astimezone(TAIPEI_TZ),
+        fallback_from_source_id="backtest_local_csv_derived" if preserved_existing else None,
+        fallback_reason=(
+            "Local backtest CSV outputs were unavailable; preserved existing dashboard JSON."
+            if preserved_existing
+            else None
+        ),
+    )
+
+
+def write_payload(
+    payload: dict[str, Any],
+    output_path: str | Path = OUTPUT_PATH,
+    *,
+    now: datetime | None = None,
+    preserved_existing: bool = False,
+    manifest_path: str | Path | None = None,
+) -> Path:
     path = Path(output_path)
+    _, manifest, artifact_bytes = prepare_payload(
+        payload,
+        now=now,
+        preserved_existing=preserved_existing,
+    )
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.write_bytes(artifact_bytes)
+    resolved_manifest_path = Path(manifest_path) if manifest_path else (
+        DEFAULT_MANIFEST_PATH if path.resolve() == OUTPUT_PATH.resolve() else path.parent / "freshness_manifest.json"
+    )
+    update_manifest_file(manifest, resolved_manifest_path)
     return path
 
 
@@ -472,8 +539,10 @@ def main(argv: list[str] | None = None) -> int:
     cost = normalized_cost_model({**DEFAULT_COST_MODEL, "slippage_rate": args.slippage_rate})
     source_dir = args.source_dir or resolve_source_dir()
     if not source_dir or not source_dir.exists():
-        if load_existing_payload(args.output):
-            print(f"[backtest_dashboard] Source directory unavailable; preserved existing {args.output}")
+        existing = load_existing_payload(args.output)
+        if existing:
+            write_payload(existing, args.output, preserved_existing=True)
+            print(f"[backtest_dashboard] Source directory unavailable; preserved existing {args.output} with freshness metadata")
             return 0
         payload = build_payload(source_dir=source_dir or Path("__missing__"), cost_model=cost)
         write_payload(payload, args.output)

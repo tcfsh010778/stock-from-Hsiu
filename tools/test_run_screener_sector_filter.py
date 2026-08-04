@@ -60,6 +60,9 @@ class SectorFilterTest(unittest.TestCase):
         self.assertEqual([s["stock_id"] for s in payload["stocks"]], ["1111", "2222"])
         self.assertEqual([s["pit_eligible"] for s in payload["stocks"]], [True, False])
         self.assertEqual(payload["pit_universe"]["status"], "warn")
+        self.assertEqual(payload["pit_universe"]["policy_decision"], "audit_only")
+        self.assertFalse(payload["pit_universe"]["filter_applied"])
+        self.assertIn("complete local price and holding caches", payload["pit_universe"]["decision_reason"])
         self.assertEqual(payload["pit_universe"]["rejected_count"], 1)
         self.assertEqual(payload["pit_universe"]["rejected_ids_sample"], ["2222"])
 

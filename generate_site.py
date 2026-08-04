@@ -19,6 +19,12 @@ import urllib.request
 from pathlib import Path
 from datetime import datetime, timedelta
 
+from stock_rules import evaluate_traffic_light
+from stock_rules import holding_group as _shared_holding_group
+from stock_rules import is_overheated as _shared_is_overheated
+from stock_rules import overheat_reasons as _shared_overheat_reasons
+from stock_rules import site_basket_assessment
+from stock_rules import site_basket_key
 from tools.pit_universe import get_eligible_universe, is_in_universe  # noqa: F401  # used in next step
 
 # ──────────────────────────────────────────────
@@ -43,6 +49,7 @@ SFZ_ALL_PATH = LOCAL_DATA_DIR / "sfz_all.json"
 MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
 CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
 BACKTEST_DASHBOARD_PATH = LOCAL_DATA_DIR / "backtest_results.json"
+FRESHNESS_MANIFEST_PATH = LOCAL_DATA_DIR / "freshness_manifest.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 PUBLIC_DATA_FILES = [
@@ -50,6 +57,7 @@ PUBLIC_DATA_FILES = [
     MARKET_SENTIMENT_PATH,
     CARYBOT_SIGNALS_PATH,
     BACKTEST_DASHBOARD_PATH,
+    FRESHNESS_MANIFEST_PATH,
 ]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
@@ -1076,6 +1084,7 @@ def default_carybot_signals_payload() -> dict:
         "signals": [],
         "history": [],
         "sources": {"mode": "missing"},
+        "freshness": {"status": "missing", "data_date": None, "expected_data_date": None},
     }
 
 
@@ -1097,6 +1106,7 @@ def load_carybot_signals_payload(path: Path | str = CARYBOT_SIGNALS_PATH) -> dic
     payload.setdefault("history", [])
     payload.setdefault("date", "")
     payload.setdefault("sources", {})
+    payload.setdefault("freshness", {"status": "missing", "data_date": None, "expected_data_date": None})
     if not isinstance(payload.get("signals"), list):
         payload["signals"] = []
     if not isinstance(payload.get("history"), list):
@@ -1171,10 +1181,12 @@ def build_carybot_signal_history_panel(stock_id: str, payload: dict | None = Non
     rows = carybot_signals_for_stock(stock_id, payload)
     payload = payload or load_carybot_signals_payload()
     source_date = payload.get("date") or "-"
+    freshness_warning = artifact_freshness_warning(payload, "CaryBot 訊號")
     if not rows:
         return f"""
 <div class="card" data-carybot-history>
   <div class="section-label">CaryBot 買點歷史</div>
+  {freshness_warning}
   <div class="strategy-note">目前 data/carybot_signals.json 尚無 {esc(stock_id)} 的 B1/B2 買點紀錄；此區只作 timing / confirmation layer，不取代 SFZ 趨勢篩選。</div>
 </div>"""
     body_rows = ""
@@ -1197,6 +1209,7 @@ def build_carybot_signal_history_panel(stock_id: str, payload: dict | None = Non
 </tr>"""
     return f"""
 <div class="card" data-carybot-history>
+  {freshness_warning}
   <div class="section-head">
     <div>
       <div class="section-label">CaryBot 買點歷史</div>
@@ -1934,29 +1947,11 @@ def normalize_report_scores(reports: list[dict]) -> list[dict]:
 
 
 def is_overheated_stock(s: dict) -> bool:
-    return (
-        _to_float(s.get("gain_6w"), 0) >= 100
-        or _to_float(s.get("rsi"), 0) >= 85
-        or _to_float(s.get("bband_pct"), 0) >= 110
-        or _to_float(s.get("gain_3d"), 0) >= 20
-    )
+    return _shared_is_overheated(s)
 
 
 def overheat_reasons(s: dict) -> list[str]:
-    reasons = []
-    gain = _to_float(s.get("gain_6w"), 0)
-    rsi = _to_float(s.get("rsi"), 0)
-    bband = _to_float(s.get("bband_pct"), 0)
-    gain_3d = _to_float(s.get("gain_3d"), 0)
-    if gain >= 100:
-        reasons.append(f"近6週 {gain:+.2f}% (門檻 100%)")
-    if rsi >= 85 or (gain >= 100 and rsi >= 80):
-        reasons.append(f"RSI {rsi:.1f} (門檻 85)")
-    if bband >= 110:
-        reasons.append(f"%B {bband:.1f}% (門檻 110%)")
-    if gain_3d >= 20:
-        reasons.append(f"近3日 {gain_3d:+.2f}% (門檻 20%)")
-    return reasons
+    return _shared_overheat_reasons(s)
 
 
 def coming_soon_block(title: str, body: str, data_check: str = "", ready: bool = False, inline: bool = False) -> str:
@@ -1978,77 +1973,9 @@ def rr_warning_bar(decision: dict) -> str:
 
 def stock_traffic_light(stock_id: str, s: dict, tech: dict, decision: dict, daily: list[dict], chip_series: list[dict]) -> str:
     indicator = indicator_snapshot(daily)
-    volume_price = str(tech.get("volume_price") or "")
-    rr = decision.get("rr")
-    wr = indicator.get("wr")
-    k = indicator.get("k")
-    macd_state = str(indicator.get("macd_state") or "")
-    kd_state = str(indicator.get("kd_state") or "")
-    trend = str(tech.get("trend") or "")
-    basket = basket_label(classify_basket(s))
-    trend_bull = bool(
-        "多" in trend or "轉強" in trend or (
-            tech.get("ma20") and tech.get("ma60") and tech.get("close") and tech["close"] > tech["ma20"] > tech["ma60"]
-        )
-    )
-    trend_bear = bool("空" in trend or "轉弱" in trend or (tech.get("ma20") and tech.get("close") and tech["close"] < tech["ma20"]))
-    volume_ok = volume_price in {"量增價漲", "量縮價漲", "均量上彎"}
-    wr_buy = wr is not None and -85 <= wr <= -65
     chip_total = _sum_recent(chip_series, "total", 5)
-    chip_ok = bool(chip_total is None or chip_total >= 0)
-    rr_low = rr is not None and float(rr) < 1.5
-    forced_overheat = is_overheated_stock(s)
-    basket_risk = basket == "過熱/風險"
-    hard_momentum_break = "賣出" in macd_state and k is not None and k < 20 and not trend_bull
-    no_go = trend_bear or forced_overheat or basket_risk or rr_low or hard_momentum_break
-    green_checks = [
-        trend_bull,
-        volume_ok,
-        rr is not None and rr >= 2.0,
-        wr_buy,
-    ]
-    go = (not no_go) and sum(1 for x in green_checks if x) >= 4 and chip_ok
-    if no_go:
-        level, cls, icon, label = "NO-GO · 暫不建倉", "nogo", "&#128308;", "紅燈"
-    elif go:
-        level, cls, icon, label = "GO · 可建倉", "go", "&#128994;", "綠燈"
-    else:
-        level, cls, icon, label = "WATCH · 等確認", "watch", "&#128993;", "黃燈"
-    if forced_overheat:
-        hot = overheat_reasons(s)
-        reason = f"強制過熱排除：{' + '.join(hot[:3]) or basket} → 等待回測 MA20 後重新評估"
-    elif rr_low:
-        reason = f"R:R {decision.get('rr_text', '─')} 邊際不足 → 等改善至 1:2 以上再評估"
-    elif basket_risk:
-        reason = f"風險籃（{basket}）→ 暫不追價，等待回測或訊號轉強"
-    elif trend_bear:
-        reason = f"趨勢偏空（{trend or '跌破均線'}）→ 暫不建倉，先等站回 MA20"
-    elif hard_momentum_break:
-        reason = f"MACD 賣出區 + KD {fmt_num(k, 1)} 偏弱 → 先等動能止跌"
-    elif go:
-        reason = f"趨勢多方 + {volume_price} + R:R {decision.get('rr_text', '─')} + Williams 在買進區"
-    elif "賣出" in macd_state or "弱" in kd_state:
-        parts = []
-        if trend_bull:
-            parts.append("趨勢多方")
-        if "弱" in kd_state:
-            parts.append("KD 偏弱")
-        if "賣出" in macd_state:
-            parts.append("MACD 仍在賣出區")
-        reason = " + ".join(parts[:3]) + " → 建議小部位試單或等 MACD 翻紅"
-    else:
-        factors = []
-        if trend_bull:
-            factors.append("趨勢偏多")
-        if volume_ok:
-            factors.append(volume_price)
-        if rr is not None:
-            factors.append(f"R:R {decision.get('rr_text', '─')}")
-        if wr is not None:
-            factors.append(f"Williams {fmt_num(wr, 1)}")
-        reason = " + ".join(factors[:3]) + " → 條件未完全同向，先觀察或等回測"
-    light_cls = {"go": "light-green", "watch": "light-yellow", "nogo": "light-red"}.get(cls, "light-yellow")
-    return f'''<div class="traffic-light {cls} signal-light {light_cls}"><div class="signal"><span>{icon}</span><span>{level}</span><span class="signal-label">{label}</span></div><div class="reason">{esc(reason)}</div></div>'''
+    state = evaluate_traffic_light(s, tech, decision, indicator, chip_total)
+    return f'''<div class="traffic-light {state["css_class"]} signal-light {state["light_class"]}"><div class="signal"><span>{state["icon_entity"]}</span><span>{state["headline"]}</span><span class="signal-label">{state["label"]}</span></div><div class="reason">{esc(state["reason"])}</div></div>'''
 
 def build_stock_mda_abc_block(stock_id: str, s: dict, daily: list[dict], tech: dict, chip_series: list[dict], holding: dict) -> str:
     if not daily:
@@ -2067,17 +1994,7 @@ def disclaimer_modal_html() -> str:
 
 
 def classify_basket(s: dict) -> str:
-    gain = _to_float(s.get("gain_6w", "0"))
-    score = _to_float(s.get("score", "0"))
-    icon = s.get("icon", "")
-    status = s.get("status", "")
-    if is_overheated_stock(s):
-        return "risk"
-    if icon == "🔴" or "超買" in status:
-        return "risk"
-    if icon == "🟡" or gain >= 18 or score >= 85:
-        return "marching"
-    return "consolidation"
+    return site_basket_key(s)
 
 
 def basket_label(basket: str) -> str:
@@ -2160,9 +2077,8 @@ def b1_force_status(s: dict, chip_series: list[dict] | None = None, holding: dic
 
 
 def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | None = None, holding: dict | None = None) -> str:
-    basket = classify_basket(s)
-    gain = _to_float(s.get("gain_6w", "0"))
-    score = _to_float(s.get("score", "0"))
+    basket_assessment = site_basket_assessment(s)
+    basket = basket_assessment["basket"]
     status = s.get("status", "")
     icon = s.get("icon", "")
     tech = tech or {}
@@ -2176,10 +2092,10 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
 
     if basket == "marching":
         checks.append("行進籃")
-        if score >= 85:
-            checks.append("評分>=85")
-        if gain >= 18:
-            checks.append("近6週漲幅>=18%")
+        if basket_assessment["score_marching"]:
+            checks.append(basket_assessment["score_label"])
+        if basket_assessment["gain_marching"]:
+            checks.append(basket_assessment["gain_label"])
         if trend and "多" in str(trend):
             checks.append(str(trend))
         checks.append(str(volume_price))
@@ -2197,7 +2113,7 @@ def basket_reason(s: dict, tech: dict | None = None, chip_series: list[dict] | N
             checks.append(reason)
         if icon == "🔴" or "超買" in status:
             checks.append("原報告風險/超買")
-        if gain >= 18:
+        if basket_assessment["gain_marching"]:
             checks.append("漲幅偏大")
         checks.append(str(volume_price))
         checks.append(force_status)
@@ -2621,19 +2537,7 @@ def price_change_pct_by_date(price_rows: list[dict]) -> dict[str, float | None]:
 
 
 def _holding_group(level: str) -> str:
-    text = str(level or "").strip()
-    if text in {"total", "差異數調整（說明4）"} or "差異" in text:
-        return "other"
-    nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", text)]
-    lower = nums[0] if nums else None
-    upper = nums[-1] if nums else None
-    if "more than" in text or (lower is not None and lower > 400_000):
-        return "major"
-    if lower is not None and upper is not None and lower > 200_000 and upper <= 400_000:
-        return "middle"
-    if upper is not None and upper <= 10_000:
-        return "retail"
-    return "other"
+    return _shared_holding_group(level)
 
 
 def read_holding_summary(stock_id: str) -> dict:
@@ -9530,6 +9434,7 @@ def load_backtest_dashboard_payload(path: Path = BACKTEST_DASHBOARD_PATH) -> dic
             "cost_model": {"round_trip_rate": 0.0044},
             "strategies": [],
             "notes": ["data/backtest_results.json is not generated yet."],
+            "freshness": {"status": "missing", "data_date": None, "expected_data_date": None},
         }
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -9540,6 +9445,7 @@ def load_backtest_dashboard_payload(path: Path = BACKTEST_DASHBOARD_PATH) -> dic
             "cost_model": {"round_trip_rate": 0.0044},
             "strategies": [],
             "notes": ["data/backtest_results.json could not be parsed."],
+            "freshness": {"status": "schema_error", "data_date": None, "expected_data_date": None},
         }
     if not isinstance(payload, dict):
         payload = {}
@@ -9547,6 +9453,7 @@ def load_backtest_dashboard_payload(path: Path = BACKTEST_DASHBOARD_PATH) -> dic
     payload.setdefault("cost_model", {"round_trip_rate": 0.0044})
     payload.setdefault("strategies", [])
     payload.setdefault("notes", [])
+    payload.setdefault("freshness", {})
     return payload
 
 
@@ -9566,6 +9473,26 @@ def _dash_num(value, digits: int = 2) -> str:
         return f"{float(value):.{digits}f}"
     except Exception:
         return "N/A"
+
+
+def artifact_freshness_warning(payload: dict, label: str) -> str:
+    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
+    status = str(freshness.get("status") or "")
+    if status not in {"stale", "fallback_fresh", "fallback_stale", "missing", "schema_error"}:
+        return ""
+    data_date = freshness.get("data_date") or payload.get("date") or "未知"
+    expected_date = freshness.get("expected_data_date") or "未知"
+    if status == "fallback_fresh":
+        message = f"{label}目前使用保留的備援資料（資料日 {data_date}）；尚在 freshness SLA 內。"
+    elif status == "fallback_stale":
+        message = f"{label}目前使用已過期的保留資料（資料日 {data_date}，應更新至 {expected_date}），請勿視為最新結果。"
+    elif status == "stale":
+        message = f"{label}資料已過期（資料日 {data_date}，應更新至 {expected_date}）。"
+    elif status == "schema_error":
+        message = f"{label}資料欄位未通過 schema 驗證。"
+    else:
+        message = f"{label}目前沒有可用資料。"
+    return f'<div class="warning-banner" data-artifact-freshness="{esc(status)}">⚠ {esc(message)}</div>'
 
 
 def build_backtest_dashboard_page(payload: dict | None = None, section_only: bool = False) -> str:
@@ -9610,10 +9537,12 @@ def build_backtest_dashboard_page(payload: dict | None = None, section_only: boo
     notes_html = "".join(f"<div class=\"chip-line\">{esc(str(note))}</div>" for note in notes[:4])
     data_json = json.dumps(payload, ensure_ascii=False).replace("</", "<\\/")
     first_name = top.get("strategy_name", "N/A")
+    freshness_warning = artifact_freshness_warning(payload, "回測 Dashboard")
     body = f"""
 <div class="container" data-backtest-dashboard>
   <div class="page-title">回測 Dashboard</div>
   <div class="page-sub">標準化比較 SFZ、TA3、CaryBot timing sidecar 與既有分散回測輸出。資料更新：{esc(str(updated_at))}</div>
+  {freshness_warning}
   <div class="grid grid-4">
     <div class="metric"><div class="metric-num">{len(strategies)}</div><div class="metric-label">策略數</div></div>
     <div class="metric"><div class="metric-num">{_dash_pct(round_trip, 2)}</div><div class="metric-label">台股單趟交易成本</div></div>

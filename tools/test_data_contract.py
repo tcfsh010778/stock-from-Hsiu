@@ -49,6 +49,41 @@ class DataContractTest(unittest.TestCase):
         self.assertTrue(self.registry["sources"]["twse_daily_price"]["official"])
         self.assertFalse(self.registry["sources"]["finmind_normalized_fallback"]["official"])
 
+    def test_signal_and_backtest_artifacts_have_visible_preserved_fallback_routes(self) -> None:
+        carybot = self.registry["datasets"]["carybot_signals"]
+        backtest = self.registry["datasets"]["backtest_results"]
+
+        self.assertEqual(carybot["freshness"]["mode"], "calendar_day")
+        self.assertEqual(carybot["freshness"]["max_lag_calendar_days"], 3)
+        self.assertEqual(carybot["fallback_sources"][0]["source_id"], "carybot_preserved_json")
+        self.assertEqual(backtest["freshness"]["max_lag_calendar_days"], 30)
+        self.assertEqual(backtest["fallback_sources"][0]["source_id"], "backtest_preserved_json")
+
+    def test_calendar_day_mode_marks_old_preserved_signal_stale(self) -> None:
+        rows = [
+            {
+                "data_date": "2026-07-30",
+                "security_id": "2330",
+                "signal_type": "B1",
+                "score": 88,
+                "is_current": True,
+            }
+        ]
+        manifest = data_contract.build_manifest(
+            "carybot_signals",
+            "carybot_preserved_json",
+            rows,
+            data_date="2026-07-30",
+            expected_data_date="2026-08-04",
+            fetched_at="2026-08-04T20:00:00+08:00",
+            fallback_from_source_id="carybot_local_csv_derived",
+            fallback_reason="unit test",
+            registry=self.registry,
+        )
+
+        self.assertEqual(manifest["freshness"]["status"], "fallback_stale")
+        self.assertEqual(manifest["freshness"]["age_calendar_days"], 5)
+
     def test_fresh_primary_manifest_has_required_metadata_hash_and_row_count(self) -> None:
         manifest = self.build_daily()
 

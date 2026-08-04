@@ -5,11 +5,13 @@ import json
 import sys
 import tempfile
 import unittest
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import carybot_signals
+import data_contract
 
 
 class CarybotSignalsTest(unittest.TestCase):
@@ -114,6 +116,67 @@ class CarybotSignalsTest(unittest.TestCase):
 
         self.assertEqual(payload["signals"][0]["stock_id"], "2330")
         self.assertEqual(payload["sources"]["mode"], "preserved_existing_json")
+
+    def test_preserved_payload_exposes_stale_fallback_and_exact_payload_hash(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output_path = root / "carybot_signals.json"
+            manifest_path = root / "freshness_manifest.json"
+            output_path.write_text(
+                json.dumps(
+                    {
+                        "date": "2026-05-12",
+                        "signals": [{"stock_id": "2330", "signal_type": "B1", "score": 88}],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            now = datetime(2026, 8, 4, 20, 0, tzinfo=timezone(timedelta(hours=8)))
+
+            payload = carybot_signals.write_payload(
+                output_path=output_path,
+                source_dir=root / "missing",
+                now=now,
+                manifest_path=manifest_path,
+            )
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))["artifacts"][
+                "carybot_signals:carybot_preserved_json"
+            ]
+            artifact_digest = data_contract.sha256_bytes(output_path.read_bytes())
+
+        self.assertEqual(payload["freshness"]["status"], "fallback_stale")
+        self.assertEqual(payload["freshness"]["source_tier"], "fallback")
+        self.assertTrue(payload["freshness"]["fallback"]["used"])
+        self.assertGreater(payload["freshness"]["age_calendar_days"], 3)
+        self.assertEqual(manifest["sha256"], artifact_digest)
+
+    def test_local_payload_is_primary_and_fresh(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source_dir = root / "source"
+            source_dir.mkdir()
+            self._write_csv(
+                source_dir / carybot_signals.CURRENT_SOURCE_FILE,
+                [
+                    {
+                        "stock": "2330",
+                        "data_date": "2026-08-04",
+                        "signal_type": "AI_Buy",
+                        "candidate_pass": "True",
+                    }
+                ],
+            )
+            now = datetime(2026, 8, 4, 20, 0, tzinfo=timezone(timedelta(hours=8)))
+            payload = carybot_signals.write_payload(
+                output_path=root / "carybot_signals.json",
+                source_dir=source_dir,
+                now=now,
+                manifest_path=root / "freshness_manifest.json",
+            )
+
+        self.assertEqual(payload["freshness"]["status"], "fresh")
+        self.assertEqual(payload["freshness"]["source_id"], "carybot_local_csv_derived")
+        self.assertFalse(payload["freshness"]["fallback"]["used"])
 
     @staticmethod
     def _write_csv(path: Path, rows: list[dict]) -> None:

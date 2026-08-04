@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 import hashlib
 import json
 import re
@@ -178,7 +179,7 @@ def validate_registry(registry: dict[str, Any]) -> None:
             if not source.get("terms_url") and source.get("terms_status") != "owner_openapi_without_explicit_terms_link":
                 raise ContractError(f"official source {source_id} lacks terms_url or explicit review status")
 
-    allowed_modes = {"trading_day", "weekly", "monthly", "quarterly", "event_driven", "annual"}
+    allowed_modes = {"trading_day", "calendar_day", "weekly", "monthly", "quarterly", "event_driven", "annual"}
     for dataset_id, contract in datasets.items():
         if contract.get("dataset_id") != dataset_id:
             raise ContractError(f"dataset key/id mismatch: {dataset_id}")
@@ -279,7 +280,7 @@ def evaluate_freshness(
             base_status = "stale"
         elif lag > 0:
             base_status = "expected_lag"
-    elif mode in {"weekly", "monthly", "quarterly", "annual"}:
+    elif mode in {"calendar_day", "weekly", "monthly", "quarterly", "annual"}:
         max_lag = int(policy.get("max_lag_calendar_days", 0))
         if calendar_lag > max_lag:
             base_status = "stale"
@@ -408,6 +409,75 @@ def build_manifest(
     }
     validate_manifest(manifest, registry=registry, payload=payload_bytes, rows=rows)
     return manifest
+
+
+def prepare_artifact_manifest(
+    payload: dict[str, Any],
+    *,
+    dataset_id: str,
+    source_id: str,
+    rows: Sequence[dict[str, Any]],
+    data_date: str,
+    expected_data_date: str,
+    fetched_at: str | datetime,
+    fallback_from_source_id: str | None = None,
+    fallback_reason: str | None = None,
+    evaluated_at: str | datetime | None = None,
+    registry: dict[str, Any] | None = None,
+) -> tuple[dict[str, Any], dict[str, Any], bytes]:
+    """Attach visible freshness metadata and manifest the exact JSON bytes.
+
+    The returned bytes are the only bytes callers should write for the artifact;
+    this guarantees the manifest SHA-256 covers the published payload including
+    its visible freshness field.
+    """
+
+    registry = registry or load_registry()
+    preview = build_manifest(
+        dataset_id,
+        source_id,
+        rows,
+        data_date=data_date,
+        expected_data_date=expected_data_date,
+        fetched_at=fetched_at,
+        payload=canonical_json_bytes(payload),
+        fallback_from_source_id=fallback_from_source_id,
+        fallback_reason=fallback_reason,
+        evaluated_at=evaluated_at,
+        registry=registry,
+    )
+    prepared = copy.deepcopy(payload)
+    prepared["freshness"] = {
+        "dataset_id": preview["dataset_id"],
+        "dataset_schema_version": preview["dataset_schema_version"],
+        "source_id": preview["source_id"],
+        "source_tier": preview["source_tier"],
+        "status": preview["freshness"]["status"],
+        "data_date": preview["data_date"],
+        "expected_data_date": preview["expected_data_date"],
+        "fetched_at": preview["fetched_at"],
+        "row_count": preview["row_count"],
+        "sla": preview["freshness"]["sla"],
+        "age_trading_days": preview["freshness"].get("age_trading_days"),
+        "age_calendar_days": preview["freshness"].get("age_calendar_days"),
+        "fallback": preview["fallback"],
+        "missing": preview["missing"],
+    }
+    artifact_bytes = (json.dumps(prepared, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    manifest = build_manifest(
+        dataset_id,
+        source_id,
+        rows,
+        data_date=data_date,
+        expected_data_date=expected_data_date,
+        fetched_at=fetched_at,
+        payload=artifact_bytes,
+        fallback_from_source_id=fallback_from_source_id,
+        fallback_reason=fallback_reason,
+        evaluated_at=evaluated_at,
+        registry=registry,
+    )
+    return prepared, manifest, artifact_bytes
 
 
 def validate_manifest(

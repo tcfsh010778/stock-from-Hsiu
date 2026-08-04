@@ -8,6 +8,9 @@ import re
 from collections import defaultdict
 from pathlib import Path
 
+from stock_rules import holding_group
+from stock_rules import is_overheated as _shared_is_overheated
+from stock_rules import overheat_reason_text as _shared_overheat_reason_text
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -104,39 +107,15 @@ def percent_b(values: list[float], window: int = 20) -> float | None:
 
 
 def is_overheated(gain_6w: float | None, rsi_14: float | None, bband_pct: float | None, gain_3d: float | None) -> bool:
-    return (
-        (gain_6w is not None and gain_6w >= 100)
-        or (rsi_14 is not None and rsi_14 >= 85)
-        or (bband_pct is not None and bband_pct >= 110)
-        or (gain_3d is not None and gain_3d >= 20)
+    return _shared_is_overheated(
+        {"gain_6w": gain_6w, "rsi_14": rsi_14, "bband_pct": bband_pct, "gain_3d": gain_3d}
     )
 
 
 def overheat_reason_text(gain_6w: float | None, rsi_14: float | None, bband_pct: float | None, gain_3d: float | None) -> str:
-    reasons: list[str] = []
-    if gain_6w is not None and gain_6w >= 100:
-        reasons.append(f"近6週 {gain_6w:+.2f}% (門檻 100%)")
-    if rsi_14 is not None and (rsi_14 >= 85 or ((gain_6w or 0) >= 100 and rsi_14 >= 80)):
-        reasons.append(f"RSI {rsi_14:.1f} (門檻 85)")
-    if bband_pct is not None and bband_pct >= 110:
-        reasons.append(f"%B {bband_pct:.1f}% (門檻 110%)")
-    if gain_3d is not None and gain_3d >= 20:
-        reasons.append(f"近3日 {gain_3d:+.2f}% (門檻 20%)")
-    return "強制過熱排除：" + " + ".join(reasons) if reasons else ""
-
-
-def holding_group(level: str) -> str:
-    text = str(level or "")
-    if text == "total" or "差異" in text:
-        return "other"
-    nums = [int(x.replace(",", "")) for x in re.findall(r"\d[\d,]*", text)]
-    if "more than" in text or (nums and max(nums) >= 400_001):
-        return "major"
-    if len(nums) >= 2 and nums[0] >= 200_001 and nums[1] <= 400_000:
-        return "middle"
-    if nums and max(nums) <= 10_000:
-        return "retail"
-    return "other"
+    return _shared_overheat_reason_text(
+        {"gain_6w": gain_6w, "rsi_14": rsi_14, "bband_pct": bband_pct, "gain_3d": gain_3d}
+    )
 
 
 def read_holding_series(stock_id: str) -> list[dict]:
