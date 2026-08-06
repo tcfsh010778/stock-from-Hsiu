@@ -54,4 +54,3 @@ entry/no-go states.
   credential, OneDrive data, or generated `docs/` output was committed.
 - MDA candidate rows remain explicitly treated as the current candidate/listing
   source; they are not relabeled as a solved SFZ signal dataset.
-
