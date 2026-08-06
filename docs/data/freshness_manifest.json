@@ -1,0 +1,195 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "generated_at": "2026-08-06T23:13:26+08:00",
+  "artifacts": {
+    "backtest_results:backtest_preserved_json": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "backtest_results",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "backtest_preserved_json",
+      "source_tier": "fallback",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/data/backtest_results.json",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "on backtest dashboard rebuild",
+      "data_date": "2026-06-01",
+      "trading_date": null,
+      "expected_data_date": "2026-08-06",
+      "fetched_at": "2026-08-06T23:13:26+08:00",
+      "row_count": 39,
+      "sha256": "8d5a23ef1f571ff9e3603fd264ae081bc8803ff1b127c349020da9ceb0c92708",
+      "fallback": {
+        "used": true,
+        "from_source_id": "backtest_local_csv_derived",
+        "reason": "Local backtest CSV outputs were unavailable; preserved existing dashboard JSON."
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fallback_stale",
+        "evaluated_at": "2026-08-06T23:13:26+08:00",
+        "expected_data_date": "2026-08-06",
+        "age_trading_days": null,
+        "age_calendar_days": 66,
+        "sla": {
+          "mode": "calendar_day",
+          "frequency": "on backtest dashboard rebuild",
+          "max_lag_calendar_days": 30,
+          "expected_available_by": "when reviewed backtest inputs change"
+        }
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "strategy_name",
+          "category",
+          "period_start",
+          "period_end",
+          "metrics"
+        ],
+        "observed_fields": [
+          "category",
+          "data_date",
+          "metrics",
+          "period_end",
+          "period_start",
+          "strategy_name"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "carybot_signals:carybot_preserved_json": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "carybot_signals",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "carybot_preserved_json",
+      "source_tier": "fallback",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/data/carybot_signals.json",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "daily when local exports are available",
+      "data_date": "2026-05-12",
+      "trading_date": null,
+      "expected_data_date": "2026-08-06",
+      "fetched_at": "2026-08-06T23:13:26+08:00",
+      "row_count": 587,
+      "sha256": "a59d6d5f39eb1daac213989c17567bed1526ac7ae9eb14d0e47d8e66e3262fe3",
+      "fallback": {
+        "used": true,
+        "from_source_id": "carybot_local_csv_derived",
+        "reason": "Local CaryBot CSV exports were unavailable; preserved existing JSON."
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fallback_stale",
+        "evaluated_at": "2026-08-06T23:13:26+08:00",
+        "expected_data_date": "2026-08-06",
+        "age_trading_days": null,
+        "age_calendar_days": 86,
+        "sla": {
+          "mode": "calendar_day",
+          "frequency": "daily when local exports are available",
+          "max_lag_calendar_days": 3,
+          "expected_available_by": "after the daily CaryBot export"
+        }
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "security_id",
+          "signal_type",
+          "score",
+          "is_current"
+        ],
+        "observed_fields": [
+          "data_date",
+          "is_current",
+          "score",
+          "security_id",
+          "signal_type"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "daily_decisions:daily_decisions_derived": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "daily_decisions",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "daily_decisions_derived",
+      "source_tier": "primary",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/daily_decisions.py",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "daily after source artifacts are available",
+      "data_date": "2026-08-06",
+      "trading_date": null,
+      "expected_data_date": "2026-08-06",
+      "fetched_at": "2026-08-06T23:13:26+08:00",
+      "row_count": 481,
+      "sha256": "6e977bd227150f18078f0ea5c41381604961872e8cd7264950bb1989eab45198",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-06T23:13:26+08:00",
+        "expected_data_date": "2026-08-06",
+        "age_trading_days": null,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "calendar_day",
+          "frequency": "daily after source artifacts are available",
+          "max_lag_calendar_days": 1,
+          "expected_available_by": "after the daily candidate and timing artifacts"
+        }
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "security_id",
+          "action_state",
+          "traffic_state",
+          "carybot_signal_type",
+          "data_quality_state",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "action_state",
+          "carybot_signal_type",
+          "data_date",
+          "data_quality_state",
+          "rule_version",
+          "security_id",
+          "traffic_state"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    }
+  }
+}

@@ -18978,5 +18978,34 @@
   ],
   "sources": {
     "mode": "preserved_existing_json"
+  },
+  "freshness": {
+    "dataset_id": "carybot_signals",
+    "dataset_schema_version": "1.0.0",
+    "source_id": "carybot_preserved_json",
+    "source_tier": "fallback",
+    "status": "fallback_stale",
+    "data_date": "2026-05-12",
+    "expected_data_date": "2026-08-06",
+    "fetched_at": "2026-08-06T23:13:26+08:00",
+    "row_count": 587,
+    "sla": {
+      "mode": "calendar_day",
+      "frequency": "daily when local exports are available",
+      "max_lag_calendar_days": 3,
+      "expected_available_by": "after the daily CaryBot export"
+    },
+    "age_trading_days": null,
+    "age_calendar_days": 86,
+    "fallback": {
+      "used": true,
+      "from_source_id": "carybot_local_csv_derived",
+      "reason": "Local CaryBot CSV exports were unavailable; preserved existing JSON."
+    },
+    "missing": {
+      "status": "complete",
+      "missing_fields": [],
+      "missing_partitions": []
+    }
   }
 }
