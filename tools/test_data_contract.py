@@ -62,6 +62,10 @@ class DataContractTest(unittest.TestCase):
         self.assertEqual(daily["freshness"]["mode"], "calendar_day")
         self.assertEqual(daily["freshness"]["max_lag_calendar_days"], 1)
         self.assertEqual(daily["primary_sources"][0]["source_id"], "daily_decisions_derived")
+        self.assertEqual(daily["schema_version"], "1.1.0")
+        self.assertIn("attention_securities", self.registry["datasets"])
+        self.assertIn("disposition_securities", self.registry["datasets"])
+        self.assertIn("near_disposition_risk", self.registry["datasets"])
 
     def test_calendar_day_mode_marks_old_preserved_signal_stale(self) -> None:
         rows = [
@@ -149,6 +153,24 @@ class DataContractTest(unittest.TestCase):
         self.assertEqual(manifest["row_count"], 0)
         self.assertEqual(manifest["missing"]["status"], "missing")
         self.assertEqual(manifest["freshness"]["status"], "missing")
+
+    def test_official_empty_attention_table_is_a_fresh_complete_result(self) -> None:
+        manifest = data_contract.build_manifest(
+            "attention_securities",
+            "twse_attention",
+            [],
+            data_date="2026-08-06",
+            trading_date="2026-08-06",
+            expected_data_date="2026-08-06",
+            fetched_at="2026-08-06T18:00:00+08:00",
+            trading_sessions=["2026-08-06"],
+            calendar_source_ids=["twse_trading_calendar"],
+            registry=self.registry,
+        )
+
+        self.assertEqual(manifest["row_count"], 0)
+        self.assertEqual(manifest["missing"]["status"], "complete")
+        self.assertEqual(manifest["freshness"]["status"], "fresh")
 
     def test_required_field_loss_is_schema_error(self) -> None:
         rows = [dict(self.rows[0])]

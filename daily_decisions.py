@@ -24,11 +24,12 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_DIR = PROJECT_ROOT / "data"
 MDA_CANDIDATES_PATH = DATA_DIR / "mda_candidates.json"
 CARYBOT_SIGNALS_PATH = DATA_DIR / "carybot_signals.json"
+ATTENTION_DISPOSITION_PATH = DATA_DIR / "attention_disposition.json"
 DAILY_DECISIONS_PATH = DATA_DIR / "daily_decisions.json"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 
-SCHEMA_VERSION = "1.0.0"
-RULE_VERSION = "daily_decisions_v1"
+SCHEMA_VERSION = "1.1.0"
+RULE_VERSION = "daily_decisions_v1_1_market_risk"
 ACTION_STATES = {
     "WATCH",
     "SETUP",
@@ -164,6 +165,7 @@ def _source_artifact(
             "source_tier": freshness.get("source_tier"),
             "row_count": freshness.get("row_count"),
             "fallback": freshness.get("fallback"),
+            "missing": freshness.get("missing"),
         },
     }
 
@@ -198,6 +200,9 @@ def _bad_source_warnings(source_artifacts: list[dict[str, Any]]) -> list[str]:
         status = str((artifact.get("freshness") or {}).get("status") or "missing")
         if status in BAD_FRESHNESS_STATUSES:
             warnings.append(f"{artifact.get('dataset_id')} freshness is {status}")
+        missing_status = str(((artifact.get("freshness") or {}).get("missing") or {}).get("status") or "complete")
+        if missing_status in {"partial", "missing"}:
+            warnings.append(f"{artifact.get('dataset_id')} completeness is {missing_status}")
     return warnings
 
 
@@ -212,12 +217,89 @@ def _action_state(traffic: Mapping[str, Any], carybot_signal: Mapping[str, Any] 
     return "WATCH"
 
 
+def _normalized_market(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    if text in {"上市", "twse", "listed"}:
+        return "listed"
+    if text in {"上櫃", "tpex", "otc"}:
+        return "otc"
+    return ""
+
+
+def market_risk_by_stock(payload: Mapping[str, Any] | None) -> dict[str, dict[str, Any]]:
+    result: dict[str, dict[str, Any]] = {}
+    if not isinstance(payload, Mapping):
+        return result
+    priority = {"attention": 1, "near_disposition": 2, "disposition": 3}
+    for row in payload.get("risk_summary") or []:
+        if not isinstance(row, Mapping):
+            continue
+        stock_id = str(row.get("security_id") or row.get("stock_id") or "").strip()
+        if not stock_id:
+            continue
+        current = result.get(stock_id)
+        if current is None or priority.get(str(row.get("risk_level") or ""), 0) >= priority.get(str(current.get("risk_level") or ""), 0):
+            result[stock_id] = dict(row)
+    return result
+
+
+def _market_risk_source_state(payload: Mapping[str, Any] | None, market: str) -> tuple[str, list[str]]:
+    if not isinstance(payload, Mapping):
+        return "unknown", ["attention_disposition_risk artifact is missing"]
+    artifacts = [item for item in payload.get("source_artifacts") or [] if isinstance(item, Mapping)]
+    relevant = [item for item in artifacts if not market or _normalized_market(item.get("market")) == market]
+    required_kinds = {"attention", "disposition", "near_disposition"}
+    present_fresh = {str(item.get("kind") or "") for item in relevant if item.get("status") == "fresh"}
+    bad = [str(item.get("source_id") or "unknown") for item in relevant if item.get("status") != "fresh"]
+    missing_kinds = sorted(required_kinds - present_fresh)
+    if bad or missing_kinds:
+        warnings = [f"{source_id} is not fresh" for source_id in bad]
+        warnings.extend(f"market-risk partition missing: {kind}" for kind in missing_kinds)
+        return "unknown", warnings
+    return "complete", []
+
+
+def market_risk_for_stock(
+    stock: Mapping[str, Any],
+    payload: Mapping[str, Any] | None,
+    risk_map: Mapping[str, Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
+    stock_id = str(stock.get("stock_id") or stock.get("security_id") or stock.get("id") or "").strip()
+    market = _normalized_market(stock.get("market") or stock.get("exchange"))
+    source_state, warnings = _market_risk_source_state(payload, market)
+    row = dict((risk_map or market_risk_by_stock(payload)).get(stock_id) or {})
+    if row:
+        return {
+            "risk_level": str(row.get("risk_level") or "attention"),
+            "source_state": source_state,
+            "market": row.get("market") or market or None,
+            "rule_version": row.get("rule_version") or (payload or {}).get("rule_version"),
+            "effective_end_date": row.get("effective_end_date"),
+            "matching_interval_minutes": row.get("matching_interval_minutes"),
+            "transition_revised": row.get("transition_revised"),
+            "reasons": list(row.get("reasons") or []),
+            "warnings": warnings,
+        }
+    return {
+        "risk_level": "none" if source_state == "complete" else "unknown",
+        "source_state": source_state,
+        "market": market or None,
+        "rule_version": (payload or {}).get("rule_version") if isinstance(payload, Mapping) else None,
+        "effective_end_date": None,
+        "matching_interval_minutes": None,
+        "transition_revised": False,
+        "reasons": [],
+        "warnings": warnings,
+    }
+
+
 def build_decision_for_stock(
     stock: Mapping[str, Any],
     *,
     carybot_signal: Mapping[str, Any] | None = None,
     source_warnings: list[str] | None = None,
     traffic_inputs: Mapping[str, Any] | None = None,
+    market_risk: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     stock_id = str(stock.get("stock_id") or stock.get("security_id") or stock.get("id") or "").strip()
     inputs = dict(traffic_inputs or _traffic_inputs_from_stock(stock))
@@ -232,17 +314,48 @@ def build_decision_for_stock(
     action_state = _action_state(traffic, carybot_signal)
     warnings = list(source_warnings or [])
     conflicts: list[str] = []
+    market_risk = dict(market_risk or {"risk_level": "unknown", "source_state": "unknown"})
+    risk_level = str(market_risk.get("risk_level") or "unknown")
+    warnings.extend(str(item) for item in market_risk.get("warnings") or [] if str(item))
     signal_type = str(carybot_signal.get("signal_type") or "")
     if signal_type == "B1" and traffic.get("state") == "NO-GO":
         conflicts.append("carybot_b1_but_traffic_no_go")
     if signal_type and not traffic.get("armed") and traffic.get("state") == "WATCH":
         conflicts.append("carybot_signal_waiting_for_traffic_confirmation")
 
+    entry_allowed = bool(traffic.get("entry"))
+    if risk_level == "disposition":
+        if action_state != "NO-GO":
+            conflicts.append("market_disposition_overrides_strategy_entry")
+        action_state = "NO-GO"
+        entry_allowed = False
+        warnings.append("official disposition is active; new entry is blocked")
+    elif risk_level == "near_disposition":
+        if action_state != "NO-GO":
+            conflicts.append("official_near_disposition_overrides_strategy_entry")
+        action_state = "NO-GO"
+        entry_allowed = False
+        warnings.append("official exchange warning shows this security is nearing disposition")
+    elif risk_level == "attention":
+        if action_state == "ENTRY_CANDIDATE":
+            action_state = "SETUP"
+            entry_allowed = False
+            conflicts.append("official_attention_downgrades_entry_to_setup")
+        warnings.append("security is on the official attention list")
+    elif risk_level == "unknown":
+        if action_state == "ENTRY_CANDIDATE":
+            action_state = "SETUP"
+            entry_allowed = False
+            conflicts.append("market_risk_unknown_downgrades_entry_to_setup")
+        warnings.append("official attention/disposition coverage is incomplete; no-risk status cannot be asserted")
+
     reason_parts = [str(traffic.get("reason") or "")]
     if signal_type:
         reason_parts.append(f"CaryBot {signal_type} on {carybot_signal.get('date') or '-'}")
     else:
         reason_parts.append("No current CaryBot B1/B2 confirmation")
+    if risk_level != "none":
+        reason_parts.append(f"Official market risk: {risk_level}")
 
     return {
         "data_date": str(stock.get("data_date") or stock.get("date") or ""),
@@ -254,7 +367,7 @@ def build_decision_for_stock(
         "rule_version": RULE_VERSION,
         "candidate": bool(traffic.get("candidate")),
         "armed": bool(traffic.get("armed")),
-        "entry": bool(traffic.get("entry")),
+        "entry": entry_allowed,
         "exit": bool(traffic.get("exit")),
         "traffic_light": {
             "state": traffic.get("state"),
@@ -290,6 +403,7 @@ def build_decision_for_stock(
                 "phase": carybot_signal.get("phase"),
                 "is_current": carybot_signal.get("is_current"),
             },
+            "market_risk": market_risk,
         },
         "conflicts": conflicts,
         "warnings": warnings,
@@ -310,6 +424,7 @@ def build_payload(
     *,
     mda_payload: Mapping[str, Any] | None = None,
     carybot_payload: Mapping[str, Any] | None = None,
+    market_risk_payload: Mapping[str, Any] | None = None,
     freshness_manifest: Mapping[str, Any] | None = None,
     now: datetime | None = None,
     limit: int | None = None,
@@ -318,15 +433,18 @@ def build_payload(
     updated = _iso_now(now)
     mda_payload = mda_payload if isinstance(mda_payload, Mapping) else {}
     carybot_payload = carybot_payload if isinstance(carybot_payload, Mapping) else {}
+    market_risk_payload = market_risk_payload if isinstance(market_risk_payload, Mapping) else {}
     stocks = [dict(row) for row in (mda_payload.get("stocks") or []) if isinstance(row, Mapping)]
     if limit is not None:
         stocks = stocks[: max(0, int(limit))]
     source_artifacts = [
         _source_artifact("mda_candidate_pool", Path("data/mda_candidates.json"), mda_payload, freshness_manifest),
         _source_artifact("carybot_signals", Path("data/carybot_signals.json"), carybot_payload, freshness_manifest),
+        _source_artifact("attention_disposition_risk", Path("data/attention_disposition.json"), market_risk_payload, freshness_manifest),
     ]
     source_warnings = _bad_source_warnings(source_artifacts)
     carybot_map = latest_carybot_by_stock(carybot_payload)
+    market_risk_map = market_risk_by_stock(market_risk_payload)
     traffic_inputs_by_stock = traffic_inputs_by_stock or {}
     decisions = [
         build_decision_for_stock(
@@ -334,6 +452,7 @@ def build_payload(
             carybot_signal=carybot_map.get(str(stock.get("stock_id") or stock.get("security_id") or "")),
             source_warnings=source_warnings,
             traffic_inputs=traffic_inputs_by_stock.get(str(stock.get("stock_id") or stock.get("security_id") or "")),
+            market_risk=market_risk_for_stock(stock, market_risk_payload, market_risk_map),
         )
         for stock in stocks
     ]
@@ -355,6 +474,7 @@ def build_payload(
         "notes": [
             "This artifact structures existing evidence; it does not change strategy thresholds or place orders.",
             "HOLD/RISK_REDUCE/EXIT_CANDIDATE are reserved for future holdings integration.",
+            "Active disposition and official near-disposition warnings block new entries; attention or unknown coverage downgrades an entry candidate to setup.",
         ],
     }
 
@@ -365,6 +485,7 @@ def contract_rows(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
         if not isinstance(item, Mapping):
             continue
         carybot = ((item.get("evidence") or {}).get("carybot") or {}) if isinstance(item.get("evidence"), Mapping) else {}
+        market_risk = ((item.get("evidence") or {}).get("market_risk") or {}) if isinstance(item.get("evidence"), Mapping) else {}
         rows.append(
             {
                 "data_date": str(item.get("data_date") or payload.get("date") or ""),
@@ -373,6 +494,7 @@ def contract_rows(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
                 "traffic_state": str((item.get("traffic_light") or {}).get("state") or ""),
                 "carybot_signal_type": str(carybot.get("signal_type") or ""),
                 "data_quality_state": str((payload.get("data_quality") or {}).get("state") or "unknown"),
+                "market_risk_level": str(market_risk.get("risk_level") or "unknown"),
                 "rule_version": str(item.get("rule_version") or payload.get("rule_version") or ""),
             }
         )
@@ -384,6 +506,7 @@ def write_payload(
     output_path: Path | str = DAILY_DECISIONS_PATH,
     mda_path: Path | str = MDA_CANDIDATES_PATH,
     carybot_path: Path | str = CARYBOT_SIGNALS_PATH,
+    market_risk_path: Path | str = ATTENTION_DISPOSITION_PATH,
     freshness_manifest_path: Path | str = DEFAULT_MANIFEST_PATH,
     manifest_path: Path | str | None = None,
     now: datetime | None = None,
@@ -393,6 +516,7 @@ def write_payload(
     payload = build_payload(
         mda_payload=load_json_payload(mda_path, {"stocks": [], "date": ""}),
         carybot_payload=load_json_payload(carybot_path, {"signals": [], "history": [], "date": ""}),
+        market_risk_payload=load_json_payload(market_risk_path, {"risk_summary": [], "source_artifacts": [], "date": ""}),
         freshness_manifest=load_json_payload(freshness_manifest_path, {"artifacts": {}}),
         now=updated,
     )
@@ -420,12 +544,14 @@ def main() -> int:
     parser.add_argument("--output", type=Path, default=DAILY_DECISIONS_PATH)
     parser.add_argument("--mda", type=Path, default=MDA_CANDIDATES_PATH)
     parser.add_argument("--carybot", type=Path, default=CARYBOT_SIGNALS_PATH)
+    parser.add_argument("--market-risk", type=Path, default=ATTENTION_DISPOSITION_PATH)
     parser.add_argument("--freshness-manifest", type=Path, default=DEFAULT_MANIFEST_PATH)
     args = parser.parse_args()
     payload = write_payload(
         output_path=args.output,
         mda_path=args.mda,
         carybot_path=args.carybot,
+        market_risk_path=args.market_risk,
         freshness_manifest_path=args.freshness_manifest,
     )
     print(f"[daily_decisions] wrote {args.output} decisions={payload.get('count', 0)}")

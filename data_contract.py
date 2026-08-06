@@ -257,7 +257,8 @@ def evaluate_freshness(
         "age_calendar_days": None,
         "sla": policy,
     }
-    if row_count <= 0 or not data_date:
+    empty_result_is_valid = bool(policy.get("empty_result_is_valid"))
+    if not data_date or (row_count <= 0 and not empty_result_is_valid):
         return result
 
     observed = _parse_date(data_date, "data_date")
@@ -350,9 +351,10 @@ def build_manifest(
         for field in required_fields
     }
     field_violations = {field: indexes for field, indexes in field_violations.items() if indexes}
-    absent_required = sorted(field_violations) if rows else required_fields
+    empty_result_is_valid = bool((contract.get("freshness") or {}).get("empty_result_is_valid"))
+    absent_required = sorted(field_violations) if rows else ([] if empty_result_is_valid else required_fields)
     missing_fields_all = sorted(set(missing_fields) | set(absent_required))
-    if row_count == 0:
+    if row_count == 0 and not empty_result_is_valid:
         missing_status = "missing"
     elif missing_fields_all or missing_partitions:
         missing_status = "partial"
@@ -420,9 +422,14 @@ def prepare_artifact_manifest(
     data_date: str,
     expected_data_date: str,
     fetched_at: str | datetime,
+    trading_date: str | None = None,
     fallback_from_source_id: str | None = None,
     fallback_reason: str | None = None,
+    missing_fields: Sequence[str] = (),
+    missing_partitions: Sequence[str] = (),
     evaluated_at: str | datetime | None = None,
+    trading_sessions: Iterable[str | date] | None = None,
+    calendar_source_ids: Sequence[str] = (),
     registry: dict[str, Any] | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any], bytes]:
     """Attach visible freshness metadata and manifest the exact JSON bytes.
@@ -440,10 +447,15 @@ def prepare_artifact_manifest(
         data_date=data_date,
         expected_data_date=expected_data_date,
         fetched_at=fetched_at,
+        trading_date=trading_date,
         payload=canonical_json_bytes(payload),
         fallback_from_source_id=fallback_from_source_id,
         fallback_reason=fallback_reason,
+        missing_fields=missing_fields,
+        missing_partitions=missing_partitions,
         evaluated_at=evaluated_at,
+        trading_sessions=trading_sessions,
+        calendar_source_ids=calendar_source_ids,
         registry=registry,
     )
     prepared = copy.deepcopy(payload)
@@ -460,6 +472,8 @@ def prepare_artifact_manifest(
         "sla": preview["freshness"]["sla"],
         "age_trading_days": preview["freshness"].get("age_trading_days"),
         "age_calendar_days": preview["freshness"].get("age_calendar_days"),
+        "calendar_basis": preview["freshness"].get("calendar_basis"),
+        "calendar_source_ids": preview["freshness"].get("calendar_source_ids") or [],
         "fallback": preview["fallback"],
         "missing": preview["missing"],
     }
@@ -471,10 +485,15 @@ def prepare_artifact_manifest(
         data_date=data_date,
         expected_data_date=expected_data_date,
         fetched_at=fetched_at,
+        trading_date=trading_date,
         payload=artifact_bytes,
         fallback_from_source_id=fallback_from_source_id,
         fallback_reason=fallback_reason,
+        missing_fields=missing_fields,
+        missing_partitions=missing_partitions,
         evaluated_at=evaluated_at,
+        trading_sessions=trading_sessions,
+        calendar_source_ids=calendar_source_ids,
         registry=registry,
     )
     return prepared, manifest, artifact_bytes

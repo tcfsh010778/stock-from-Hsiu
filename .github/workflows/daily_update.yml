@@ -63,6 +63,9 @@ jobs:
       - name: Generate backtest dashboard data
         run: python backtest_dashboard.py
 
+      - name: Collect official attention and disposition risk
+        run: python attention_disposition.py
+
       - name: Generate daily decision contract
         run: python daily_decisions.py
 

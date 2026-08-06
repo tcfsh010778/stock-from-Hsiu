@@ -50,6 +50,7 @@ MARKET_SENTIMENT_PATH = LOCAL_DATA_DIR / "market_sentiment.json"
 CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
 BACKTEST_DASHBOARD_PATH = LOCAL_DATA_DIR / "backtest_results.json"
 DAILY_DECISIONS_PATH = LOCAL_DATA_DIR / "daily_decisions.json"
+ATTENTION_DISPOSITION_PATH = LOCAL_DATA_DIR / "attention_disposition.json"
 FRESHNESS_MANIFEST_PATH = LOCAL_DATA_DIR / "freshness_manifest.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
@@ -59,6 +60,7 @@ PUBLIC_DATA_FILES = [
     CARYBOT_SIGNALS_PATH,
     BACKTEST_DASHBOARD_PATH,
     DAILY_DECISIONS_PATH,
+    ATTENTION_DISPOSITION_PATH,
     FRESHNESS_MANIFEST_PATH,
 ]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"

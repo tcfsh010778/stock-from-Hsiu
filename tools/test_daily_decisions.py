@@ -28,6 +28,20 @@ def _fresh(dataset_id: str) -> dict:
     }
 
 
+def _market_risk(*rows: dict) -> dict:
+    artifacts = []
+    for market, prefix in (("listed", "twse"), ("otc", "tpex")):
+        for kind, suffix in (("attention", "attention"), ("disposition", "disposition"), ("near_disposition", "near_disposition")):
+            artifacts.append({"source_id": f"{prefix}_{suffix}", "market": market, "kind": kind, "status": "fresh"})
+    return {
+        "date": "2026-08-04",
+        "rule_version": "tw_attention_disposition_pre_2026_08_10",
+        "freshness": _fresh("attention_disposition_risk"),
+        "source_artifacts": artifacts,
+        "risk_summary": list(rows),
+    }
+
+
 class DailyDecisionsTest(unittest.TestCase):
     def test_build_payload_maps_existing_evidence_to_action_states(self) -> None:
         mda_payload = {
@@ -97,6 +111,7 @@ class DailyDecisionsTest(unittest.TestCase):
         payload = daily_decisions.build_payload(
             mda_payload=mda_payload,
             carybot_payload=carybot_payload,
+            market_risk_payload=_market_risk(),
             now=datetime(2026, 8, 4, 20, 0, tzinfo=TAIPEI),
             traffic_inputs_by_stock=traffic_inputs,
         )
@@ -132,11 +147,65 @@ class DailyDecisionsTest(unittest.TestCase):
                 },
                 "signals": [],
             },
+            market_risk_payload=_market_risk(),
         )
 
         self.assertEqual(payload["data_quality"]["state"], "warning")
         self.assertIn("carybot_signals freshness is fallback_stale", payload["data_quality"]["warnings"])
         self.assertIn("carybot_signals freshness is fallback_stale", payload["decisions"][0]["warnings"])
+
+    def test_disposition_blocks_entry_and_attention_downgrades_it(self) -> None:
+        stocks = [
+            {"stock_id": "2330", "market": "上市", "date": "2026-08-10", "basket": "已發動籃", "status": "強勢追蹤"},
+            {"stock_id": "2454", "market": "上市", "date": "2026-08-10", "basket": "已發動籃", "status": "強勢追蹤"},
+        ]
+        signal_payload = {
+            "date": "2026-08-10",
+            "freshness": _fresh("carybot_signals"),
+            "signals": [
+                {"stock_id": "2330", "date": "2026-08-10", "signal_type": "B1"},
+                {"stock_id": "2454", "date": "2026-08-10", "signal_type": "B1"},
+            ],
+        }
+        traffic = {
+            stock_id: {
+                "tech": {"trend": "多方", "volume_price": "量增價漲", "close": 120, "ma20": 110, "ma60": 100},
+                "decision": {"rr": 2.5, "rr_text": "1:2.5"},
+                "indicator": {"wr": -75, "k": 55, "macd_state": "買進", "kd_state": "強"},
+                "chip_total_5d": 10,
+            }
+            for stock_id in ("2330", "2454")
+        }
+        risk = _market_risk(
+            {"data_date": "2026-08-10", "market": "listed", "security_id": "2330", "risk_level": "disposition", "rule_version": "tw_attention_disposition_2026_08_10", "effective_end_date": "2026-08-14", "matching_interval_minutes": 2},
+            {"data_date": "2026-08-10", "market": "listed", "security_id": "2454", "risk_level": "attention", "rule_version": "tw_attention_disposition_2026_08_10"},
+        )
+
+        payload = daily_decisions.build_payload(
+            mda_payload={"date": "2026-08-10", "freshness": _fresh("mda_candidate_pool"), "stocks": stocks},
+            carybot_payload=signal_payload,
+            market_risk_payload=risk,
+            traffic_inputs_by_stock=traffic,
+        )
+        by_stock = {row["stock_id"]: row for row in payload["decisions"]}
+
+        self.assertEqual(by_stock["2330"]["action_state"], "NO-GO")
+        self.assertFalse(by_stock["2330"]["entry"])
+        self.assertTrue(by_stock["2330"]["traffic_light"]["entry"])
+        self.assertEqual(by_stock["2330"]["evidence"]["market_risk"]["matching_interval_minutes"], 2)
+        self.assertEqual(by_stock["2454"]["action_state"], "SETUP")
+        self.assertIn("official_attention_downgrades_entry_to_setup", by_stock["2454"]["conflicts"])
+
+    def test_missing_market_partition_never_asserts_no_risk(self) -> None:
+        risk = _market_risk()
+        risk["source_artifacts"] = [
+            row for row in risk["source_artifacts"] if row["source_id"] != "twse_disposition"
+        ]
+        evidence = daily_decisions.market_risk_for_stock({"stock_id": "2330", "market": "上市"}, risk)
+
+        self.assertEqual(evidence["risk_level"], "unknown")
+        self.assertEqual(evidence["source_state"], "unknown")
+        self.assertTrue(any("disposition" in warning for warning in evidence["warnings"]))
 
     def test_write_payload_attaches_freshness_and_hashes_exact_bytes(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
