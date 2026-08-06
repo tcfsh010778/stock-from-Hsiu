@@ -51,6 +51,17 @@ python data_contract.py validate-manifest data/freshness_manifest.json
 `data_date`、`trading_date`、`expected_data_date`、`fetched_at`、`row_count`、
 schema version、SHA-256、fallback 與缺漏狀態。
 
+## 每日決策合約
+
+`daily_decisions.py` 會把既有 MDA candidate pool、CaryBot B1/B2 timing、
+shared traffic light 與 freshness 狀態整理成 `data/daily_decisions.json`。
+這是每日操作建議的結構化證據層，不會改變選股門檻、訊號規則、出場規則，
+也不會自動下單。
+
+```bash
+python daily_decisions.py
+```
+
 ## GitHub Pages 部署步驟
 
 1. 建立 GitHub repo（可設為 Private）

@@ -1641,3 +1641,58 @@ state, and extend artifact freshness to CaryBot/backtest JSON.
 - `python data_contract.py validate-registry` OK: 27 sources, 14 datasets.
 - `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -v` OK: 75 tests.
 - `git diff --check` OK; only the repository's Windows line-ending conversion notices were emitted.
+
+## 2026-08-04 Issue #7 Daily Decisions Contract
+
+### Goal
+
+Create the first source-only daily operation-advice contract that combines the
+existing MDA candidate pool, CaryBot timing signals, shared traffic-light state,
+and freshness evidence into explainable per-stock action states.
+
+### Completed
+
+- Added `daily_decisions.py`.
+- Added the derived source route `daily_decisions_derived` and dataset
+  `daily_decisions` to `contracts/taiwan_stock_data_contracts.json`.
+- Documented `daily_decisions` in `contracts/freshness_matrix.md`.
+- Added workflow generation after CaryBot/backtest artifacts.
+- Added `data/daily_decisions.json` to generated-site public data assets without
+  adding a new rendered UI.
+- Added tests in `tools/test_daily_decisions.py` and extended contract/site
+  tests.
+
+### Decision semantics
+
+- `ENTRY_CANDIDATE`: shared traffic light is entry-ready and current CaryBot B1
+  confirms timing.
+- `SETUP`: candidate is armed/entry-ready or has CaryBot B1/B2, but not all
+  entry conditions are aligned.
+- `NO-GO`: shared traffic light blocks the stock, including overheat/risk.
+- `WATCH`: default conservative observation state.
+- `HOLD`, `RISK_REDUCE`, and `EXIT_CANDIDATE` are reserved for future holdings
+  integration.
+
+### Boundaries
+
+- No selection threshold, ranking, signal, exit, PIT filtering, or automatic
+  order behavior changed.
+- No generated `docs/`, raw CSV, full backtest output, paid source, secrets,
+  browser session, credential, or OneDrive data was committed.
+- This branch is stacked on Draft PR #3, which itself is stacked on Draft PR #2.
+
+### Source of truth
+
+- Daily decision builder: `daily_decisions.py`
+- Contract registry: `contracts/taiwan_stock_data_contracts.json`
+- Public data publication hook: `generate_site.py`
+- Workflow hook: `.github/workflows/daily_update.yml`
+- Detailed log:
+  `codex_context/logs/2026-08-04-issue7-daily-decisions-contract.md`
+
+### Verification
+
+- `python -m py_compile daily_decisions.py generate_site.py data_contract.py stock_rules.py carybot_signals.py backtest_dashboard.py run_screener.py` OK.
+- `python data_contract.py validate-registry` OK: 28 sources, 15 datasets.
+- `python -m unittest tools.test_daily_decisions tools.test_data_contract tools.test_pr3_logic -v` OK: 38 tests.
+- `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -v` OK: 79 tests.

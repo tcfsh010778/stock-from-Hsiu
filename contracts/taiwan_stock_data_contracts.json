@@ -415,6 +415,21 @@
       "use_policy": "fallback_only; age and fallback reason must remain visible",
       "field_map": {}
     },
+    "daily_decisions_derived": {
+      "source_id": "daily_decisions_derived",
+      "provider": "stock-from-Hsiu daily decision builder",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/daily_decisions.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/CODEX_HANDOFF.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-data",
+      "access": "derived from normalized project artifacts; no raw local exports are published",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "daily after source artifacts are available",
+      "use_policy": "publish explainable operation-advice states and evidence only; no automatic orders",
+      "field_map": {}
+    },
     "finmind_normalized_fallback": {
       "source_id": "finmind_normalized_fallback",
       "provider": "FinMind",
@@ -703,6 +718,23 @@
         {"name": "period_start", "type": "date|null", "required": true},
         {"name": "period_end", "type": "date|null", "required": true},
         {"name": "metrics", "type": "object", "required": true}
+      ]
+    },
+    "daily_decisions": {
+      "dataset_id": "daily_decisions",
+      "schema_version": "1.0.0",
+      "semantic_role": "daily explainable operation-advice states derived from existing SFZ/MDA/CaryBot/traffic-light evidence",
+      "primary_sources": [{"source_id": "daily_decisions_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [],
+      "freshness": {"mode": "calendar_day", "frequency": "daily after source artifacts are available", "max_lag_calendar_days": 1, "expected_available_by": "after the daily candidate and timing artifacts"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "action_state", "type": "enum:WATCH|SETUP|ENTRY_CANDIDATE|HOLD|RISK_REDUCE|EXIT_CANDIDATE|NO-GO", "required": true},
+        {"name": "traffic_state", "type": "enum:GO|WATCH|NO-GO", "required": true},
+        {"name": "carybot_signal_type", "type": "string", "required": true},
+        {"name": "data_quality_state", "type": "string", "required": true},
+        {"name": "rule_version", "type": "string", "required": true}
       ]
     }
   }

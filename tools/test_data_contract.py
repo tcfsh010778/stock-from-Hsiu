@@ -52,12 +52,16 @@ class DataContractTest(unittest.TestCase):
     def test_signal_and_backtest_artifacts_have_visible_preserved_fallback_routes(self) -> None:
         carybot = self.registry["datasets"]["carybot_signals"]
         backtest = self.registry["datasets"]["backtest_results"]
+        daily = self.registry["datasets"]["daily_decisions"]
 
         self.assertEqual(carybot["freshness"]["mode"], "calendar_day")
         self.assertEqual(carybot["freshness"]["max_lag_calendar_days"], 3)
         self.assertEqual(carybot["fallback_sources"][0]["source_id"], "carybot_preserved_json")
         self.assertEqual(backtest["freshness"]["max_lag_calendar_days"], 30)
         self.assertEqual(backtest["fallback_sources"][0]["source_id"], "backtest_preserved_json")
+        self.assertEqual(daily["freshness"]["mode"], "calendar_day")
+        self.assertEqual(daily["freshness"]["max_lag_calendar_days"], 1)
+        self.assertEqual(daily["primary_sources"][0]["source_id"], "daily_decisions_derived")
 
     def test_calendar_day_mode_marks_old_preserved_signal_stale(self) -> None:
         rows = [

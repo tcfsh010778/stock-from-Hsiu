@@ -44,6 +44,7 @@ Monday-to-Friday assumption cannot produce a publishable freshness state.
 | `mda_candidate_pool` | Derived local scan | Each production scan | Upstream data current; PIT check executed for the scan date | None | Legacy filename `sfz_all.json` incorrectly suggests an SFZ signal; canonical output is `mda_candidates.json` |
 | `carybot_signals` | Derived local CaryBot CSV bridge | Daily when local exports are available | Max 3 calendar-day lag | Preserved normalized JSON, visibly marked | Local research workspace is absent on GitHub Actions; preserved output must never appear fresh silently |
 | `backtest_results` | Derived local backtest aggregates | On reviewed dashboard rebuild | Max 30 calendar-day lag | Preserved normalized JSON, visibly marked | Raw and large backtest outputs remain local-only; preserved dashboard age must be visible |
+| `daily_decisions` | Derived project artifact | Daily after candidate and timing artifacts are available | Max 1 calendar-day lag for v1; source artifact freshness remains visible | None | v1 structures existing evidence only; it does not change thresholds, place orders, or hide stale source artifacts |
 
 ## Freshness statuses
 
@@ -101,6 +102,7 @@ The following owner-operated surfaces were reached and schema-sampled on
 | `run_screener.py` | Reads `mda_universe_scan.json`; historically writes it as `sfz_all.json` | MDA candidate pool is mislabeled as SFZ and production PIT eligibility was not recorded |
 | `carybot_signals.py` | Normalizes local CaryBot CSV exports; preserves existing JSON when exports are absent | Now manifests exact output bytes and exposes primary/fallback freshness; source CSV completeness is still local-workspace dependent |
 | `backtest_dashboard.py` | Aggregates reviewed local backtest CSV outputs; preserves existing JSON when inputs are absent | Now manifests exact output bytes and exposes primary/fallback freshness; raw backtest reproducibility inputs remain local-only |
+| `daily_decisions.py` | Combines existing MDA candidate rows, CaryBot B1/B2 timing, shared traffic-light state, and source freshness into daily action states | v1 is an explainability/contract layer only; holdings-aware HOLD/RISK_REDUCE/EXIT_CANDIDATE and attention/disposition risk are follow-up inputs |
 | `.github/workflows/daily_update.yml` | Generates site even when individual optional sources fall back | No contract/manifest validation gate before downstream generation |
 
 ## Missing and fallback rules
