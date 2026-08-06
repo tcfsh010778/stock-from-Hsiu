@@ -34,6 +34,23 @@ python generate_site.py
 
 `generate_site.py` 會同步寫入 `data/site_reports.json`。這是 GitHub Actions 的備援資料源，避免雲端 runner 讀不到本機 OneDrive 報告時無法重建網站。
 
+## 資料合約與 freshness
+
+官方免費資料的來源路由、欄位 schema、涵蓋市場、更新頻率與 freshness SLA
+定義在 `contracts/taiwan_stock_data_contracts.json`；人工可讀矩陣在
+`contracts/freshness_matrix.md`。目前官方 primary 只使用 TWSE、TPEx、TDCC
+與 MOPS 的 owner-operated 介面，既有 FinMind 路徑只能作為 manifest 中明確
+揭露的 fallback。
+
+```bash
+python data_contract.py validate-registry
+python data_contract.py validate-manifest data/freshness_manifest.json
+```
+
+交易日型資料的 manifest 必須提供官方交易日清單與來源 ID，並分開記錄
+`data_date`、`trading_date`、`expected_data_date`、`fetched_at`、`row_count`、
+schema version、SHA-256、fallback 與缺漏狀態。
+
 ## GitHub Pages 部署步驟
 
 1. 建立 GitHub repo（可設為 Private）

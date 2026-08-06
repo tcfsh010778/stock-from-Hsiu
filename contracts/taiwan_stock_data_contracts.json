@@ -1,0 +1,618 @@
+{
+  "registry_schema_version": "1.0.0",
+  "manifest_schema_version": "1.0.0",
+  "last_official_audit": "2026-08-04",
+  "timezone": "Asia/Taipei",
+  "policy": {
+    "official_primary_only": true,
+    "fallback_must_be_visible": true,
+    "raw_paid_or_authenticated_exports": "local_only",
+    "raw_official_redistribution": "do_not_publish_by_default; publish source attribution, metadata, hashes, tests, and necessary aggregates",
+    "date_policy": "Normalize source ROC dates to ISO-8601 before manifesting. data_date is the observation/publication date; trading_date is only populated for trading-session facts; fetched_at is timezone-aware collection time.",
+    "calendar_policy": "Trading-day freshness must use the official TWSE/TPEx calendar. Weekday-only logic is allowed only in isolated tests with explicit holidays supplied."
+  },
+  "required_artifact_metadata": [
+    "manifest_schema_version",
+    "dataset_id",
+    "dataset_schema_version",
+    "source_id",
+    "source_tier",
+    "source_url",
+    "market_coverage",
+    "update_frequency",
+    "data_date",
+    "trading_date",
+    "expected_data_date",
+    "fetched_at",
+    "row_count",
+    "sha256",
+    "fallback",
+    "missing",
+    "freshness",
+    "schema_validation"
+  ],
+  "live_audit_samples": {
+    "checked_at": "2026-08-04T19:18:00+08:00",
+    "purpose": "Endpoint reachability and schema evidence only; row counts are not contractual minimums.",
+    "samples": [
+      {"source_id": "twse_daily_price", "data_date": "2026-08-03", "row_count": 1377},
+      {"source_id": "twse_institutional_trading", "data_date": "2026-08-04", "row_count": 1336},
+      {"source_id": "tpex_daily_price", "data_date": "2026-08-04", "row_count": 10227},
+      {"source_id": "tpex_institutional_trading", "data_date": "2026-08-04", "row_count": 890},
+      {"source_id": "tdcc_shareholder_distribution", "data_date": "source-row field", "row_count": 68323},
+      {"source_id": "twse_mops_monthly_revenue", "data_period": "2026-06", "row_count": 1082},
+      {"source_id": "tpex_mops_monthly_revenue", "data_period": "2026-06", "row_count": 891}
+    ]
+  },
+  "sources": {
+    "twse_security_master": {
+      "source_id": "twse_security_master",
+      "provider": "TWSE/MOPS",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/opendata/t187ap03_L",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "daily snapshot",
+      "field_map": {"data_date": "出表日期", "security_id": "公司代號", "name": "公司簡稱", "listing_date": "上市日期", "industry_code": "產業別", "issued_shares": "已發行普通股數或TDR原股發行股數"}
+    },
+    "tpex_security_master": {
+      "source_id": "tpex_security_master",
+      "provider": "TPEx/MOPS",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap03_O",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "daily snapshot",
+      "field_map": {"data_date": "Date", "security_id": "SecuritiesCompanyCode", "name": "CompanyAbbreviation", "listing_date": "DateOfListing", "industry_code": "SecuritiesIndustryCode", "issued_shares": "IssueShares"}
+    },
+    "twse_trading_calendar": {
+      "source_id": "twse_trading_calendar",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/holidaySchedule/holidaySchedule",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "annual schedule plus revisions",
+      "field_map": {}
+    },
+    "tpex_trading_calendar": {
+      "source_id": "tpex_trading_calendar",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/zh-tw/announce/market/holiday.html",
+      "documentation_url": "https://www.tpex.org.tw/zh-tw/announce/market/holiday.html",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_page; automated collection method must remain the owner-provided download/interface",
+      "access": "official_html_or_owner_download",
+      "market_coverage": ["otc", "emerging"],
+      "source_frequency": "annual schedule plus revisions",
+      "field_map": {}
+    },
+    "twse_daily_price": {
+      "source_id": "twse_daily_price",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"trading_date": "Date", "security_id": "Code", "name": "Name", "open": "OpeningPrice", "high": "HighestPrice", "low": "LowestPrice", "close": "ClosingPrice", "volume": "TradeVolume", "trade_value": "TradeValue", "transaction_count": "Transaction"}
+    },
+    "tpex_daily_price": {
+      "source_id": "tpex_daily_price",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "name": "CompanyName", "open": "Open", "high": "High", "low": "Low", "close": "Close", "volume": "TradingShares", "trade_value": "TransactionAmount", "transaction_count": "TransactionNumber"}
+    },
+    "twse_institutional_trading": {
+      "source_id": "twse_institutional_trading",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/fund/T86?response=json&selectType=ALLBUT0999",
+      "documentation_url": "https://www.twse.com.tw/zh/trading/foreign/t86.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_report_interface_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"security_id": "證券代號", "foreign_net": "外陸資買賣超股數(不含外資自營商)", "investment_trust_net": "投信買賣超股數", "dealer_proprietary_net": "自營商買賣超股數(自行買賣)", "dealer_hedge_net": "自營商買賣超股數(避險)", "institutional_total_net": "三大法人買賣超股數"}
+    },
+    "tpex_institutional_trading": {
+      "source_id": "tpex_institutional_trading",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/tpex_3insti_daily_trading",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "foreign_net": "ForeignInvestorsIncludeMainlandAreaInvestors-Difference", "investment_trust_net": "SecuritiesInvestmentTrustCompanies-Difference", "dealer_net": "Dealers-Difference", "institutional_total_net": "TotalDifference"}
+    },
+    "twse_margin_short": {
+      "source_id": "twse_margin_short",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/exchangeReport/MI_MARGN",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"security_id": "股票代號", "margin_buy": "融資買進", "margin_sell": "融資賣出", "margin_balance": "融資今日餘額", "short_buy": "融券買進", "short_sell": "融券賣出", "short_balance": "融券今日餘額"}
+    },
+    "tpex_margin_short": {
+      "source_id": "tpex_margin_short",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "margin_buy": "MarginPurchase", "margin_sell": "MarginSales", "margin_balance": "MarginPurchaseBalance", "short_buy": "ShortConvering", "short_sell": "ShortSale", "short_balance": "ShortSaleBalance"}
+    },
+    "twse_securities_lending": {
+      "source_id": "twse_securities_lending",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/marginTrading/TWT93U?response=json",
+      "documentation_url": "https://www.twse.com.tw/zh/trading/margin/twt93u.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_report_interface_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"security_id": "代號", "sbl_short_sale": "當日賣出", "sbl_return": "當日還券", "sbl_short_balance": "當日餘額", "sbl_available": "次一營業日可限額"}
+    },
+    "tpex_securities_lending": {
+      "source_id": "tpex_securities_lending",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/tpex_margin_sbl",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "sbl_short_sale": "SecuritiesBorrowingSale", "sbl_return": "SecuritiesBorrowingReturn", "sbl_short_balance": "SecuritiesBorrowingBalanceOfTheMarketDay", "sbl_available": "AvailableVolumesForSBLShortSale"}
+    },
+    "tdcc_shareholder_distribution": {
+      "source_id": "tdcc_shareholder_distribution",
+      "provider": "TDCC",
+      "official": true,
+      "endpoint": "https://openapi.tdcc.com.tw/v1/opendata/1-5",
+      "documentation_url": "https://openapi.tdcc.com.tw/swagger-ui/index.html",
+      "terms_url": null,
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "owner_openapi_without_explicit_terms_link",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed", "otc", "emerging", "other_tdcc_custodied_securities"],
+      "source_frequency": "weekly, based on the final business day of each week",
+      "redistribution_policy": "metadata_and_aggregates_only_pending_explicit_license_confirmation",
+      "field_map": {"data_date": "﻿資料日期", "security_id": "證券代號", "holding_level": "持股分級", "holder_count": "人數", "share_count": "股數", "custody_percent": "占集保庫存數比例%"}
+    },
+    "twse_corporate_actions": {
+      "source_id": "twse_corporate_actions",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/exchangeReport/TWT48U_ALL",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "event driven with daily snapshot",
+      "field_map": {}
+    },
+    "tpex_corporate_actions": {
+      "source_id": "tpex_corporate_actions",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/tpex_exright_prepost",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "event driven with daily snapshot",
+      "field_map": {}
+    },
+    "twse_mops_monthly_revenue": {
+      "source_id": "twse_mops_monthly_revenue",
+      "provider": "TWSE/MOPS",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/opendata/t187ap05_L",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "monthly, updated as filings arrive",
+      "field_map": {"data_date": "出表日期", "period": "資料年月", "security_id": "公司代號", "revenue": "營業收入-當月營收", "revenue_yoy_percent": "營業收入-去年同月增減(%)"}
+    },
+    "tpex_mops_monthly_revenue": {
+      "source_id": "tpex_mops_monthly_revenue",
+      "provider": "TPEx/MOPS",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap05_O",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "monthly, updated as filings arrive",
+      "field_map": {"data_date": "出表日期", "period": "資料年月", "security_id": "公司代號", "revenue": "營業收入-當月營收", "revenue_yoy_percent": "營業收入-去年同月增減(%)"}
+    },
+    "twse_mops_financials": {
+      "source_id": "twse_mops_financials",
+      "provider": "TWSE/MOPS",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/opendata/t187ap06_L_ci",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json; use the matching industry-specific t187ap06/t187ap07 endpoint",
+      "market_coverage": ["listed"],
+      "source_frequency": "quarterly and annual, updated as filings arrive",
+      "field_map": {}
+    },
+    "tpex_mops_financials": {
+      "source_id": "tpex_mops_financials",
+      "provider": "TPEx/MOPS",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap06_O_ci",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json; use the matching industry-specific t187ap06/t187ap07 endpoint",
+      "market_coverage": ["otc"],
+      "source_frequency": "quarterly and annual, updated as filings arrive",
+      "field_map": {}
+    },
+    "twse_mops_material_events": {
+      "source_id": "twse_mops_material_events",
+      "provider": "TWSE/MOPS",
+      "official": true,
+      "endpoint": "https://openapi.twse.com.tw/v1/opendata/t187ap04_L",
+      "documentation_url": "https://openapi.twse.com.tw/",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "event driven",
+      "field_map": {}
+    },
+    "tpex_mops_material_events": {
+      "source_id": "tpex_mops_material_events",
+      "provider": "TPEx/MOPS",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/openapi/v1/mopsfin_t187ap04_O",
+      "documentation_url": "https://www.tpex.org.tw/openapi/",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-04",
+      "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["otc"],
+      "source_frequency": "event driven",
+      "field_map": {}
+    },
+    "mda_scan_derived": {
+      "source_id": "mda_scan_derived",
+      "provider": "stock-from-Hsiu",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/mda_universe_scan.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/CODEX_HANDOFF.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-data",
+      "access": "local derived artifact",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "each production scan",
+      "use_policy": "must retain upstream source manifests and PIT audit metadata",
+      "field_map": {}
+    },
+    "finmind_normalized_fallback": {
+      "source_id": "finmind_normalized_fallback",
+      "provider": "FinMind",
+      "official": false,
+      "endpoint": "https://api.finmindtrade.com/api/v4/data",
+      "documentation_url": "https://finmind.github.io/",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "not_reverified_in_this_official-source-audit",
+      "access": "existing normalized fallback; credentials local-only when required",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "dataset dependent",
+      "use_policy": "fallback_only; never presented as official; manifest must expose fallback.used, reason, data date, and source id",
+      "field_map": {}
+    }
+  },
+  "datasets": {
+    "security_master": {
+      "dataset_id": "security_master",
+      "schema_version": "1.0.0",
+      "semantic_role": "point-in-time security identity and market membership",
+      "primary_sources": [
+        {"source_id": "twse_security_master", "coverage": ["listed"]},
+        {"source_id": "tpex_security_master", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "trading_day", "frequency": "daily snapshot", "max_lag_trading_days": 1, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "name", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc|emerging", "required": true},
+        {"name": "security_type", "type": "string", "required": true},
+        {"name": "listing_date", "type": "date|null", "required": false},
+        {"name": "delisting_date", "type": "date|null", "required": false},
+        {"name": "industry_code", "type": "string|null", "required": false},
+        {"name": "issued_shares", "type": "integer|null", "required": false}
+      ]
+    },
+    "trading_calendar": {
+      "dataset_id": "trading_calendar",
+      "schema_version": "1.0.0",
+      "semantic_role": "official market sessions; required to calculate trading-day freshness",
+      "primary_sources": [
+        {"source_id": "twse_trading_calendar", "coverage": ["listed"]},
+        {"source_id": "tpex_trading_calendar", "coverage": ["otc", "emerging"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "annual", "frequency": "annual schedule plus revisions", "max_lag_calendar_days": 370, "expected_available_by": "on official publication/revision"},
+      "canonical_fields": [
+        {"name": "calendar_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc|emerging", "required": true},
+        {"name": "is_trading_day", "type": "boolean", "required": true},
+        {"name": "session_type", "type": "string", "required": true},
+        {"name": "announcement_date", "type": "date|null", "required": false}
+      ]
+    },
+    "daily_price": {
+      "dataset_id": "daily_price",
+      "schema_version": "1.0.0",
+      "semantic_role": "unadjusted official daily trading facts; corporate actions are separate",
+      "primary_sources": [
+        {"source_id": "twse_daily_price", "coverage": ["listed"]},
+        {"source_id": "tpex_daily_price", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day after close", "max_lag_trading_days": 1, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "trading_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "open", "type": "decimal|null", "required": false},
+        {"name": "high", "type": "decimal|null", "required": false},
+        {"name": "low", "type": "decimal|null", "required": false},
+        {"name": "close", "type": "decimal", "required": true},
+        {"name": "volume", "type": "integer", "required": true},
+        {"name": "trade_value", "type": "integer|null", "required": false},
+        {"name": "transaction_count", "type": "integer|null", "required": false}
+      ]
+    },
+    "institutional_trading": {
+      "dataset_id": "institutional_trading",
+      "schema_version": "1.0.0",
+      "semantic_role": "daily institutional investor buy/sell flows with dealer proprietary and hedge legs preserved",
+      "primary_sources": [
+        {"source_id": "twse_institutional_trading", "coverage": ["listed"]},
+        {"source_id": "tpex_institutional_trading", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day after close", "max_lag_trading_days": 1, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "trading_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "foreign_buy", "type": "integer", "required": true},
+        {"name": "foreign_sell", "type": "integer", "required": true},
+        {"name": "foreign_net", "type": "integer", "required": true},
+        {"name": "investment_trust_buy", "type": "integer", "required": true},
+        {"name": "investment_trust_sell", "type": "integer", "required": true},
+        {"name": "investment_trust_net", "type": "integer", "required": true},
+        {"name": "dealer_proprietary_net", "type": "integer|null", "required": false},
+        {"name": "dealer_hedge_net", "type": "integer|null", "required": false},
+        {"name": "dealer_net", "type": "integer", "required": true},
+        {"name": "institutional_total_net", "type": "integer", "required": true}
+      ]
+    },
+    "margin_short": {
+      "dataset_id": "margin_short",
+      "schema_version": "1.0.0",
+      "semantic_role": "daily margin-purchase and short-sale activity and balances",
+      "primary_sources": [
+        {"source_id": "twse_margin_short", "coverage": ["listed"]},
+        {"source_id": "tpex_margin_short", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day after close", "max_lag_trading_days": 1, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "trading_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "margin_buy", "type": "integer", "required": true},
+        {"name": "margin_sell", "type": "integer", "required": true},
+        {"name": "margin_balance", "type": "integer", "required": true},
+        {"name": "short_buy", "type": "integer", "required": true},
+        {"name": "short_sell", "type": "integer", "required": true},
+        {"name": "short_balance", "type": "integer", "required": true}
+      ]
+    },
+    "securities_lending": {
+      "dataset_id": "securities_lending",
+      "schema_version": "1.0.0",
+      "semantic_role": "securities-borrowing short-sale flows and balances; borrowing is not assumed to equal short selling",
+      "primary_sources": [
+        {"source_id": "twse_securities_lending", "coverage": ["listed"]},
+        {"source_id": "tpex_securities_lending", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day after close", "max_lag_trading_days": 1, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "trading_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "sbl_short_sale", "type": "integer", "required": true},
+        {"name": "sbl_return", "type": "integer|null", "required": false},
+        {"name": "sbl_short_balance", "type": "integer", "required": true},
+        {"name": "sbl_available", "type": "integer|null", "required": false}
+      ]
+    },
+    "shareholder_distribution": {
+      "dataset_id": "shareholder_distribution",
+      "schema_version": "1.0.0",
+      "semantic_role": "TDCC custody-account distribution by holding tier; derived holder groups must preserve source tiers",
+      "primary_sources": [{"source_id": "tdcc_shareholder_distribution", "coverage": ["listed", "otc", "emerging"]}],
+      "fallback_sources": [{"source_id": "finmind_normalized_fallback", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "weekly", "frequency": "weekly after the final business day", "max_lag_calendar_days": 10, "expected_available_by": "next business cycle after weekly snapshot"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "holding_level", "type": "string", "required": true},
+        {"name": "holder_count", "type": "integer", "required": true},
+        {"name": "share_count", "type": "integer", "required": true},
+        {"name": "custody_percent", "type": "decimal", "required": true}
+      ]
+    },
+    "corporate_actions": {
+      "dataset_id": "corporate_actions",
+      "schema_version": "1.0.0",
+      "semantic_role": "official ex-right/ex-dividend events kept separate from raw daily prices",
+      "primary_sources": [
+        {"source_id": "twse_corporate_actions", "coverage": ["listed"]},
+        {"source_id": "tpex_corporate_actions", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "event_driven", "frequency": "event driven with daily snapshot", "max_fetch_age_hours": 24, "expected_available_by": "within one collection cycle of official publication"},
+      "canonical_fields": [
+        {"name": "announcement_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "ex_date", "type": "date", "required": true},
+        {"name": "action_type", "type": "string", "required": true},
+        {"name": "cash_dividend", "type": "decimal|null", "required": false},
+        {"name": "stock_dividend_ratio", "type": "decimal|null", "required": false}
+      ]
+    },
+    "monthly_revenue": {
+      "dataset_id": "monthly_revenue",
+      "schema_version": "1.0.0",
+      "semantic_role": "MOPS monthly revenue filings",
+      "primary_sources": [
+        {"source_id": "twse_mops_monthly_revenue", "coverage": ["listed"]},
+        {"source_id": "tpex_mops_monthly_revenue", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "monthly", "frequency": "monthly, updated as filings arrive", "max_lag_calendar_days": 45, "expected_available_by": "after the applicable statutory filing deadline"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "period", "type": "year-month", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "revenue", "type": "integer", "required": true},
+        {"name": "revenue_yoy_percent", "type": "decimal|null", "required": false},
+        {"name": "cumulative_revenue", "type": "integer|null", "required": false}
+      ]
+    },
+    "financial_statement": {
+      "dataset_id": "financial_statement",
+      "schema_version": "1.0.0",
+      "semantic_role": "MOPS filed financial statements normalized to long-form accounts",
+      "primary_sources": [
+        {"source_id": "twse_mops_financials", "coverage": ["listed"]},
+        {"source_id": "tpex_mops_financials", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "quarterly", "frequency": "quarterly and annual, updated as filings arrive", "max_lag_calendar_days": 140, "expected_available_by": "after the applicable statutory filing deadline"},
+      "canonical_fields": [
+        {"name": "published_date", "type": "date", "required": true},
+        {"name": "period_end", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "statement_type", "type": "string", "required": true},
+        {"name": "account_name", "type": "string", "required": true},
+        {"name": "value", "type": "decimal|null", "required": false},
+        {"name": "unit", "type": "string", "required": true}
+      ]
+    },
+    "material_event": {
+      "dataset_id": "material_event",
+      "schema_version": "1.0.0",
+      "semantic_role": "MOPS material-event disclosures",
+      "primary_sources": [
+        {"source_id": "twse_mops_material_events", "coverage": ["listed"]},
+        {"source_id": "tpex_mops_material_events", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "event_driven", "frequency": "event driven", "max_fetch_age_hours": 6, "expected_available_by": "within the next scheduled collection cycle"},
+      "canonical_fields": [
+        {"name": "published_at", "type": "datetime", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "sequence", "type": "string", "required": true},
+        {"name": "subject", "type": "string", "required": true},
+        {"name": "category", "type": "string|null", "required": false}
+      ]
+    },
+    "mda_candidate_pool": {
+      "dataset_id": "mda_candidate_pool",
+      "schema_version": "1.0.0",
+      "semantic_role": "derived MDA candidate pool; explicitly not an SFZ signal dataset",
+      "primary_sources": [{"source_id": "mda_scan_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [],
+      "freshness": {"mode": "trading_day", "frequency": "each production scan", "max_lag_trading_days": 1, "expected_available_by": "after upstream daily and weekly inputs pass freshness checks"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "mda_basket", "type": "string", "required": true},
+        {"name": "mda_score", "type": "decimal", "required": true},
+        {"name": "pit_eligible", "type": "boolean|null", "required": true}
+      ]
+    }
+  }
+}

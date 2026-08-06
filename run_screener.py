@@ -14,6 +14,7 @@ DATA_DIR = ROOT / "data"
 REPORTS_DIR = ROOT / "reports"
 PRICE_DIR = DATA_DIR / "prices"
 SCAN_PATH = DATA_DIR / "mda_universe_scan.json"
+MDA_CANDIDATES_PATH = DATA_DIR / "mda_candidates.json"
 SFZ_ALL_PATH = DATA_DIR / "sfz_all.json"
 MARKETS_PATH = DATA_DIR / "stock_markets.json"
 INDUSTRY_PATH = DATA_DIR / "stock_industries.json"
@@ -506,18 +507,23 @@ def market_cap_bucket(row: dict) -> str:
     return "small"
 
 
-def sfz_json_stock(row: dict) -> dict:
+def mda_candidate_json_stock(row: dict, pit_eligible_ids: set[str] | None = None) -> dict:
     turnover_value = to_float(row.get("turnover_value"), None)
+    stock_id = str(row.get("stock_id") or "")
     return {
         "rank": int(to_float(row.get("rank"), 0) or 0),
-        "stock_id": str(row.get("stock_id") or ""),
-        "name": row.get("name") or str(row.get("stock_id") or ""),
+        "stock_id": stock_id,
+        "security_id": stock_id,
+        "name": row.get("name") or stock_id,
         "date": row.get("date") or "",
+        "data_date": row.get("date") or "",
         "basket": row.get("basket") or "",
+        "mda_basket": row.get("basket") or "",
         "rank_basket": row.get("rank_basket") or row.get("basket") or "",
         "status": row.get("status") or "",
         "icon": row.get("icon") or "",
         "score": to_float(row.get("score"), None),
+        "mda_score": to_float(row.get("score"), None),
         "close": to_float(row.get("close"), None),
         "gain_6w": to_float(row.get("gain_6w"), None),
         "gain_3d": to_float(row.get("gain_3d"), None),
@@ -536,20 +542,68 @@ def sfz_json_stock(row: dict) -> dict:
         "target": to_float(row.get("target"), None),
         "stop": to_float(row.get("stop"), None),
         "reason": row.get("reason") or "",
+        "pit_eligible": stock_id in pit_eligible_ids if pit_eligible_ids is not None else None,
     }
 
 
-def build_sfz_all_payload(
+def build_pit_universe_audit(
+    rows: list[dict],
+    eligible_ids: set[str] | None = None,
+) -> tuple[dict, set[str]]:
+    latest_date = max((str(row.get("date") or "") for row in rows), default="")
+    latest_ids = {
+        str(row.get("stock_id") or "")
+        for row in rows
+        if str(row.get("date") or "") == latest_date and row.get("stock_id")
+    }
+    error = ""
+    supplied_eligible_ids = eligible_ids is not None
+    if eligible_ids is None:
+        try:
+            from tools.pit_universe import get_eligible_universe
+
+            eligible_ids = get_eligible_universe(latest_date, MIN_CLOSE) if latest_date else set()
+        except Exception as exc:
+            eligible_ids = set()
+            error = f"{type(exc).__name__}: {exc}"
+    eligible_ids = {str(stock_id) for stock_id in eligible_ids}
+    if not supplied_eligible_ids and latest_ids and not eligible_ids and not error:
+        error = "PIT universe returned zero eligible stocks; upstream point-in-time inputs may be unavailable"
+    rejected = sorted(latest_ids - eligible_ids)
+    audit = {
+        "check": "tools.pit_universe.get_eligible_universe",
+        "mode": "audit_only_no_strategy_filter",
+        "as_of_date": latest_date or None,
+        "candidate_count": len(latest_ids),
+        "eligible_count": None if error else len(latest_ids & eligible_ids),
+        "rejected_count": None if error else len(rejected),
+        "rejected_ids_sample": [] if error else rejected[:20],
+        "status": "unavailable" if error else ("pass" if not rejected else "warn"),
+        "error": error or None,
+    }
+    return audit, eligible_ids
+
+
+def build_mda_candidates_payload(
     rows: list[dict],
     industry_map: dict[str, dict] | None = None,
     sector_scores: dict[str, dict] | None = None,
+    pit_eligible_ids: set[str] | None = None,
 ) -> dict:
     stocks = latest_enriched_candidates(rows, industry_map, sector_scores)
-    json_stocks = [sfz_json_stock(row) for row in stocks]
+    pit_audit, checked_eligible_ids = build_pit_universe_audit(stocks, pit_eligible_ids)
+    eligible_for_rows = checked_eligible_ids if pit_audit["status"] != "unavailable" else None
+    json_stocks = [mda_candidate_json_stock(row, eligible_for_rows) for row in stocks]
     latest_date = json_stocks[0]["date"] if json_stocks else ""
     return {
+        "dataset_id": "mda_candidate_pool",
+        "schema_version": "1.0.0",
+        "semantic_role": "derived_mda_candidate_pool_not_sfz_signal",
         "date": latest_date,
         "source": "data/mda_universe_scan.json",
+        "canonical_path": "data/mda_candidates.json",
+        "legacy_aliases": ["data/sfz_all.json"],
+        "pit_universe": pit_audit,
         "count": len(json_stocks),
         "default_limit": TOP_N,
         "filters": {
@@ -561,15 +615,40 @@ def build_sfz_all_payload(
     }
 
 
+def build_sfz_all_payload(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+    pit_eligible_ids: set[str] | None = None,
+) -> dict:
+    """Compatibility alias. The payload is an MDA candidate pool, not an SFZ signal."""
+
+    return build_mda_candidates_payload(rows, industry_map, sector_scores, pit_eligible_ids)
+
+
+def write_mda_candidates_json(
+    rows: list[dict],
+    industry_map: dict[str, dict] | None = None,
+    sector_scores: dict[str, dict] | None = None,
+) -> dict:
+    payload = build_mda_candidates_payload(rows, industry_map, sector_scores)
+    MDA_CANDIDATES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    SFZ_ALL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    serialized = json.dumps(payload, ensure_ascii=False, indent=2)
+    MDA_CANDIDATES_PATH.write_text(serialized, encoding="utf-8")
+    # Keep the legacy filename until generate_site.py and downstream consumers migrate.
+    SFZ_ALL_PATH.write_text(serialized, encoding="utf-8")
+    return payload
+
+
 def write_sfz_all_json(
     rows: list[dict],
     industry_map: dict[str, dict] | None = None,
     sector_scores: dict[str, dict] | None = None,
 ) -> dict:
-    payload = build_sfz_all_payload(rows, industry_map, sector_scores)
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    SFZ_ALL_PATH.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    return payload
+    """Compatibility writer for callers that still use the legacy filename."""
+
+    return write_mda_candidates_json(rows, industry_map, sector_scores)
 
 
 def select_top20(
@@ -686,7 +765,7 @@ def main() -> None:
     industry_map = load_industry_map()
     sector_scores = market_sector_flow(industry_map)
     scan_rows = load_scan_rows()
-    sfz_all = write_sfz_all_json(scan_rows, industry_map, sector_scores)
+    mda_candidates = write_mda_candidates_json(scan_rows, industry_map, sector_scores)
     rows = select_top20(scan_rows, industry_map, sector_scores)
     if not rows:
         raise SystemExit("No rows available. Run mda_full_market_refresh.py and mda_universe_scan.py first.")
@@ -695,7 +774,12 @@ def main() -> None:
     out = REPORTS_DIR / f"每日選股報告_{report_date}.md"
     out.write_text(report_markdown(rows, report_date, sector_scores), encoding="utf-8")
     print(f"[run_screener] wrote {out} rows={len(rows)}")
-    print(f"[run_screener] wrote {SFZ_ALL_PATH} rows={sfz_all.get('count', 0)}")
+    pit = mda_candidates.get("pit_universe") or {}
+    print(
+        f"[run_screener] wrote {MDA_CANDIDATES_PATH} rows={mda_candidates.get('count', 0)} "
+        f"pit_status={pit.get('status')} pit_rejected={pit.get('rejected_count')}"
+    )
+    print(f"[run_screener] compatibility alias -> {SFZ_ALL_PATH}")
 
 
 if __name__ == "__main__":

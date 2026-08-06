@@ -1,6 +1,91 @@
 # Codex Handoff
 
-Last updated: 2026-06-01
+Last updated: 2026-08-04
+
+## 2026-08-04 Official Data Contract / Freshness Matrix (Goal 1)
+
+### Goal
+
+Audit the existing free-data pipeline and establish an executable, legally
+conservative data contract for Taiwan market, chip, TDCC, and MOPS data without
+changing strategy scoring, signal, universe, or exit rules.
+
+### Completed
+
+- Added `contracts/taiwan_stock_data_contracts.json` with 23 source definitions
+  and 12 dataset contracts. Official primary routes are owner-operated TWSE,
+  TPEx, TDCC, and MOPS surfaces; the existing FinMind route is fallback-only and
+  must remain visible.
+- Added `contracts/freshness_matrix.md` with frequency, coverage, SLA, fallback,
+  current collector gaps, source/terms evidence, and TDCC's conservative raw
+  redistribution policy.
+- Added `data_contract.py`:
+  - registry and manifest validation;
+  - canonical SHA-256 and row-count verification;
+  - distinct data/trading/expected/fetch dates;
+  - `fresh`, `expected_lag`, `stale`, `missing`, `fallback_fresh`,
+    `fallback_stale`, and `schema_error` states;
+  - partial field/partition missingness;
+  - atomic manifest upsert;
+  - mandatory official calendar sessions/provenance for trading-day freshness.
+- Updated `run_screener.py` so the production output is canonically
+  `data/mda_candidates.json`, with `data/sfz_all.json` retained only as a legacy
+  compatibility alias. Payload metadata explicitly says it is an MDA candidate
+  pool, not an SFZ signal.
+- Connected `tools.pit_universe.get_eligible_universe` to the production MDA
+  payload as an audit-only data-quality check. It records pass/warn/unavailable,
+  counts, and a bounded rejected-ID sample without changing candidate order or
+  strategy filtering. Missing PIT inputs produce `null`, not a false rejection.
+- Added deterministic fixtures and tests for fresh/missing/stale/fallback/schema,
+  official-calendar provenance, manifest hashing/upsert, MDA semantics, and PIT
+  visibility.
+
+### Important Decisions / Boundaries
+
+- TDCC OpenAPI 1-5 is treated as an official primary source, but its Swagger did
+  not expose an explicit terms URL during the 2026-08-04 audit. Raw redistribution
+  stays disabled pending explicit owner confirmation; metadata, hashes, tests,
+  and necessary aggregates are safe shared outputs.
+- `sfz_all.json` remains temporarily because current generated-site consumers use
+  the filename. Its content is now self-identifying as `mda_candidate_pool`; a
+  later site migration can remove the alias.
+- This task did not regenerate `docs/`, modify strategy thresholds, collect or
+  commit raw market data, or read credential/session files.
+
+### Verification
+
+- `python -m py_compile data_contract.py run_screener.py` OK.
+- `python data_contract.py validate-registry` OK: 23 sources, 12 datasets.
+- Live registry endpoint check OK: all 21 official source URLs returned HTTP 200
+  on 2026-08-04; response bodies were not saved.
+- `uv run --with requests python -m unittest discover -s tools -p 'test_*.py' -v`
+  OK: 61 tests.
+- `git diff --check` OK (Git only reports the repository's Windows line-ending
+  conversion notice for two existing tracked Python files).
+
+### Changed Files
+
+- `contracts/taiwan_stock_data_contracts.json`
+- `contracts/freshness_matrix.md`
+- `data_contract.py`
+- `run_screener.py`
+- `tools/fixtures/data_contract/daily_price_rows.json`
+- `tools/test_data_contract.py`
+- `tools/test_run_screener_sector_filter.py`
+- `README.md`
+- `codex_context/logs/2026-08-04-data-contract-freshness-matrix.md`
+- `CODEX_HANDOFF.md`
+
+### Next Work
+
+- Migrate each collector incrementally to normalize official source rows and call
+  `build_manifest` / `update_manifest_file`; gate site generation on manifest
+  validation only after fixtures exist for that collector.
+- Add the TPEx emerging-market security-master route and canonical normalizers for
+  industry-specific MOPS financial statement schemas.
+- Move generated-site readers from the legacy `data/sfz_all.json` filename to
+  `data/mda_candidates.json`, then remove the compatibility alias in a separate
+  website-layer change.
 
 ## 2026-06-01 Backtest Dashboard Task 3
 
