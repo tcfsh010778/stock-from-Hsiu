@@ -355,6 +355,66 @@
       "use_policy": "must retain upstream source manifests and PIT audit metadata",
       "field_map": {}
     },
+    "carybot_local_csv_derived": {
+      "source_id": "carybot_local_csv_derived",
+      "provider": "stock-from-Hsiu local CaryBot bridge",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/carybot_signals.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/CODEX_HANDOFF.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-data",
+      "access": "local CSV-derived artifact; source directory is never published",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "daily when local CaryBot exports are available",
+      "use_policy": "publish normalized signals and provenance metadata only",
+      "field_map": {}
+    },
+    "carybot_preserved_json": {
+      "source_id": "carybot_preserved_json",
+      "provider": "stock-from-Hsiu preserved artifact",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/data/carybot_signals.json",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/carybot_signals.py",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-cache-fallback",
+      "access": "existing normalized JSON fallback",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "preserved only when the primary local export is unavailable",
+      "use_policy": "fallback_only; age and fallback reason must remain visible",
+      "field_map": {}
+    },
+    "backtest_local_csv_derived": {
+      "source_id": "backtest_local_csv_derived",
+      "provider": "stock-from-Hsiu backtest dashboard builder",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/backtest_dashboard.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/CODEX_HANDOFF.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-data",
+      "access": "local backtest CSV-derived aggregate artifact",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "on dashboard rebuild",
+      "use_policy": "publish summarized strategies only; raw backtest outputs remain local",
+      "field_map": {}
+    },
+    "backtest_preserved_json": {
+      "source_id": "backtest_preserved_json",
+      "provider": "stock-from-Hsiu preserved artifact",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/data/backtest_results.json",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/backtest_dashboard.py",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-cache-fallback",
+      "access": "existing normalized JSON fallback",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "preserved only when the primary local export is unavailable",
+      "use_policy": "fallback_only; age and fallback reason must remain visible",
+      "field_map": {}
+    },
     "finmind_normalized_fallback": {
       "source_id": "finmind_normalized_fallback",
       "provider": "FinMind",
@@ -612,6 +672,37 @@
         {"name": "mda_basket", "type": "string", "required": true},
         {"name": "mda_score", "type": "decimal", "required": true},
         {"name": "pit_eligible", "type": "boolean|null", "required": true}
+      ]
+    },
+    "carybot_signals": {
+      "dataset_id": "carybot_signals",
+      "schema_version": "1.0.0",
+      "semantic_role": "normalized CaryBot B1/B2 timing signals for site consumption",
+      "primary_sources": [{"source_id": "carybot_local_csv_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [{"source_id": "carybot_preserved_json", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "calendar_day", "frequency": "daily when local exports are available", "max_lag_calendar_days": 3, "expected_available_by": "after the daily CaryBot export"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "signal_type", "type": "string", "required": true},
+        {"name": "score", "type": "integer", "required": true},
+        {"name": "is_current", "type": "boolean", "required": true}
+      ]
+    },
+    "backtest_results": {
+      "dataset_id": "backtest_results",
+      "schema_version": "1.0.0",
+      "semantic_role": "aggregated strategy research results for the static dashboard",
+      "primary_sources": [{"source_id": "backtest_local_csv_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [{"source_id": "backtest_preserved_json", "coverage": ["listed", "otc"]}],
+      "freshness": {"mode": "calendar_day", "frequency": "on backtest dashboard rebuild", "max_lag_calendar_days": 30, "expected_available_by": "when reviewed backtest inputs change"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "strategy_name", "type": "string", "required": true},
+        {"name": "category", "type": "string", "required": true},
+        {"name": "period_start", "type": "date|null", "required": true},
+        {"name": "period_end", "type": "date|null", "required": true},
+        {"name": "metrics", "type": "object", "required": true}
       ]
     }
   }

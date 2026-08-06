@@ -8,6 +8,10 @@ from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
+from stock_rules import is_overheated as _shared_is_overheated
+from stock_rules import mda_stock_status
+from stock_rules import overheat_reason_text as _shared_overheat_reason_text
+from stock_rules import overheat_reasons as _shared_overheat_reasons
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -127,36 +131,15 @@ def pct_change(now, before):
 
 def is_overheated(stock: dict) -> bool:
     """PR3 guard: any condition forces the stock into 過熱/風險."""
-    return (
-        to_float(stock.get("gain_6w"), 0) >= 100
-        or to_float(stock.get("rsi") or stock.get("rsi_14"), 0) >= 85
-        or to_float(stock.get("bb_pct") or stock.get("percent_b"), 0) >= 110
-        or to_float(stock.get("gain_3d"), 0) >= 20
-    )
+    return _shared_is_overheated(stock)
 
 
 def overheat_reasons(stock: dict) -> list[str]:
-    gain_6w = to_float(stock.get("gain_6w"), 0)
-    gain_3d = to_float(stock.get("gain_3d"), 0)
-    rsi14 = to_float(stock.get("rsi") or stock.get("rsi_14"), 0)
-    percent_b = to_float(stock.get("bb_pct") or stock.get("percent_b"), 0)
-    reasons: list[str] = []
-    if gain_6w >= 100:
-        reasons.append(f"近6週 {_fmt_signed_pct(gain_6w)} (門檻 100%)")
-    if rsi14 >= 85 or (gain_6w >= 100 and rsi14 >= 80):
-        reasons.append(f"RSI {rsi14:.1f} (門檻 85)")
-    if percent_b >= 110:
-        reasons.append(f"%B {percent_b:.1f}% (門檻 110%)")
-    if gain_3d >= 20:
-        reasons.append(f"近3日 {_fmt_signed_pct(gain_3d)} (門檻 20%)")
-    return reasons
+    return _shared_overheat_reasons(stock)
 
 
 def overheat_reason_text(stock: dict) -> str:
-    reasons = overheat_reasons(stock)
-    if not reasons:
-        return ""
-    return "強制過熱排除：" + " + ".join(reasons)
+    return _shared_overheat_reason_text(stock)
 
 
 def load_scan_rows() -> list[dict]:
@@ -298,14 +281,7 @@ def market_sector_flow(industry_map: dict[str, dict]) -> dict[str, dict]:
 
 
 def stock_status(row: dict) -> tuple[str, str]:
-    if is_overheated(row):
-        return "🔴", "過熱/風險"
-    basket = row.get("basket", "")
-    if basket == "已發動籃":
-        return "🟡", "強勢追蹤"
-    if basket in {"空轉多觀察籃", "未發動觀察籃"}:
-        return "🟢", "健康整理"
-    return "🔴", "過熱/風險"
+    return mda_stock_status(row)
 
 
 def enrich(row: dict, industry_map: dict[str, dict] | None = None) -> dict:
@@ -573,6 +549,18 @@ def build_pit_universe_audit(
     audit = {
         "check": "tools.pit_universe.get_eligible_universe",
         "mode": "audit_only_no_strategy_filter",
+        "policy_decision": "audit_only",
+        "filter_applied": False,
+        "decision_reason": (
+            "PIT eligibility depends on complete local price and holding caches; missing inputs can "
+            "produce an empty universe. Keep candidate selection unchanged until cache completeness "
+            "and historical coverage are enforced and monitored."
+        ),
+        "activation_requirements": [
+            "price_and_holding_cache_completeness_gate",
+            "historical_survivorship_bias_regression_test",
+            "zero_eligible_universe_fail_closed_handling",
+        ],
         "as_of_date": latest_date or None,
         "candidate_count": len(latest_ids),
         "eligible_count": None if error else len(latest_ids & eligible_ids),

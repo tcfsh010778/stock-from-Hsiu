@@ -1585,3 +1585,59 @@ Fold pending / not-yet-connected UI blocks so first-time visitors do not see lar
 
 - `artifacts/` remains untracked and should stay out of commits unless screenshots are intentionally archived.
 - The placeholder work is display-only; it does not change strategy, universe, signal, or exit logic.
+## 2026-08-04 Issue #6 Shared Signal-State and Freshness Pass
+
+### Goal
+
+Complete the four remaining coordination tasks without changing strategy output:
+centralize duplicated policy, decide PIT enforcement, structure traffic-light
+state, and extend artifact freshness to CaryBot/backtest JSON.
+
+### Completed
+
+- Added `stock_rules.py` as the single owner of:
+  - overheat thresholds and reason text;
+  - MDA/site basket presentation policies;
+  - TDCC holding-level grouping;
+  - pure traffic-light evaluation (`GO/WATCH/NO-GO` plus
+    `candidate/armed/entry/exit`, checks, and blockers).
+- Migrated `mda_universe_scan.py`, `run_screener.py`, and `generate_site.py` to
+  consume those shared policies.
+- Kept PIT audit-only. `run_screener.py` now emits `policy_decision`,
+  `filter_applied=false`, the safety rationale, and activation requirements.
+- Added `calendar_day` support to `data_contract.py` and contract routes for:
+  - `carybot_signals` (3-day SLA);
+  - `backtest_results` (30-day SLA).
+- Both writers now expose freshness in the JSON, update
+  `data/freshness_manifest.json`, and hash the exact emitted bytes. Preserved
+  artifacts become visible fallback states and age into `fallback_stale`.
+- Added stale/missing UI warnings and made the freshness manifest publishable as
+  a site data asset.
+
+### Decisions and boundaries
+
+- PIT filtering is deferred because incomplete local price/holding caches can
+  produce an empty universe. Enable it only after completeness gates,
+  survivorship-bias regressions, and zero-result fail-closed handling exist.
+- No selection threshold, scoring, signal, exit, or ordering logic changed.
+- Per Issue #6 scope, `docs/` was not regenerated or committed. Durable site
+  changes remain in `generate_site.py` for the next approved site build.
+- No raw CSV, full backtest output, paid data, secrets, credentials, or OneDrive
+  data was added.
+
+### Source of truth
+
+- Shared policy: `stock_rules.py`
+- Artifact contract/manifest: `data_contract.py` and
+  `contracts/taiwan_stock_data_contracts.json`
+- PIT audit metadata: `run_screener.py`
+- Site rendering: `generate_site.py`
+- Detailed decision log:
+  `codex_context/logs/2026-08-04-issue6-signal-state-pit-freshness.md`
+
+### Verification
+
+- `python -m py_compile stock_rules.py mda_universe_scan.py run_screener.py generate_site.py carybot_signals.py backtest_dashboard.py data_contract.py` OK.
+- `python data_contract.py validate-registry` OK: 27 sources, 14 datasets.
+- `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -v` OK: 75 tests.
+- `git diff --check` OK; only the repository's Windows line-ending conversion notices were emitted.

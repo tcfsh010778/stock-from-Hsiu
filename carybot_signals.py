@@ -15,13 +15,16 @@ import csv
 import json
 import math
 import os
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any
+
+from data_contract import DEFAULT_MANIFEST_PATH, prepare_artifact_manifest, update_manifest_file
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 LOCAL_DATA_DIR = PROJECT_ROOT / "data"
 CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
+TAIPEI_TZ = timezone(timedelta(hours=8))
 
 BACKTEST_DIR_NAME = "\u56de\u6e2c"
 TRADING_PROJECT_DIR_NAME = "\u81ea\u52d5\u4ea4\u6613\u7a0b\u5f0f"
@@ -224,7 +227,15 @@ def latest_v50_buy_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     return [row for row in buy_rows if str(row.get("date") or "") == latest_date] if latest_date else []
 
 
-def build_payload(source_dir: Path | str | None = None, existing_path: Path | str = CARYBOT_SIGNALS_PATH) -> dict[str, Any]:
+def build_payload(
+    source_dir: Path | str | None = None,
+    existing_path: Path | str = CARYBOT_SIGNALS_PATH,
+    *,
+    now: datetime | None = None,
+) -> dict[str, Any]:
+    updated = now or datetime.now(TAIPEI_TZ)
+    if updated.tzinfo is None:
+        updated = updated.replace(tzinfo=TAIPEI_TZ)
     resolved_source = discover_source_dir(source_dir)
     existing_payload = load_existing_payload(Path(existing_path))
     if not resolved_source:
@@ -232,7 +243,7 @@ def build_payload(source_dir: Path | str | None = None, existing_path: Path | st
             return existing_payload
         return {
             "date": "",
-            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": updated.astimezone(TAIPEI_TZ).isoformat(),
             "signals": [],
             "history": [],
             "sources": {"mode": "empty_no_source"},
@@ -280,7 +291,7 @@ def build_payload(source_dir: Path | str | None = None, existing_path: Path | st
 
     return {
         "date": latest_date,
-        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "updated_at": updated.astimezone(TAIPEI_TZ).isoformat(),
         "signals": signals,
         "history": history,
         "sources": {
@@ -294,14 +305,60 @@ def build_payload(source_dir: Path | str | None = None, existing_path: Path | st
     }
 
 
+def contract_rows(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for is_current_default, items in ((True, payload.get("signals") or []), (False, payload.get("history") or [])):
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+            rows.append(
+                {
+                    "data_date": str(item.get("date") or payload.get("date") or ""),
+                    "security_id": str(item.get("stock_id") or ""),
+                    "signal_type": str(item.get("signal_type") or ""),
+                    "score": int(round(to_float(item.get("score")) or 0)),
+                    "is_current": bool(item.get("is_current", is_current_default)),
+                }
+            )
+    return rows
+
+
 def write_payload(
     output_path: Path | str = CARYBOT_SIGNALS_PATH,
     source_dir: Path | str | None = None,
+    *,
+    now: datetime | None = None,
+    manifest_path: Path | str | None = None,
 ) -> dict[str, Any]:
     output_path = Path(output_path)
-    payload = build_payload(source_dir=source_dir, existing_path=output_path)
+    updated = now or datetime.now(TAIPEI_TZ)
+    if updated.tzinfo is None:
+        updated = updated.replace(tzinfo=TAIPEI_TZ)
+    payload = build_payload(source_dir=source_dir, existing_path=output_path, now=updated)
+    source_mode = str((payload.get("sources") or {}).get("mode") or "")
+    is_fallback = source_mode == "preserved_existing_json"
+    source_id = "carybot_preserved_json" if is_fallback else "carybot_local_csv_derived"
+    fallback_args = {
+        "fallback_from_source_id": "carybot_local_csv_derived" if is_fallback else None,
+        "fallback_reason": "Local CaryBot CSV exports were unavailable; preserved existing JSON." if is_fallback else None,
+    }
+    payload, manifest, artifact_bytes = prepare_artifact_manifest(
+        payload,
+        dataset_id="carybot_signals",
+        source_id=source_id,
+        rows=contract_rows(payload),
+        data_date=str(payload.get("date") or ""),
+        expected_data_date=updated.astimezone(TAIPEI_TZ).date().isoformat(),
+        fetched_at=updated.astimezone(TAIPEI_TZ),
+        evaluated_at=updated.astimezone(TAIPEI_TZ),
+        **fallback_args,
+    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    output_path.write_bytes(artifact_bytes)
+    resolved_manifest_path = Path(manifest_path) if manifest_path else (
+        DEFAULT_MANIFEST_PATH if output_path.resolve() == CARYBOT_SIGNALS_PATH.resolve() else output_path.parent / "freshness_manifest.json"
+    )
+    update_manifest_file(manifest, resolved_manifest_path)
     return payload
 
 

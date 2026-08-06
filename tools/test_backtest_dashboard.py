@@ -12,6 +12,7 @@ import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import generate_site
+import data_contract
 
 
 def _load_backtest_module():
@@ -163,6 +164,63 @@ class BacktestDashboardTest(unittest.TestCase):
         self.assertIn("data-monthly-heatmap", html)
         self.assertIn("0.44%", html)
         self.assertIn("SFZ_Top20", html)
+
+    def test_preserved_backtest_payload_is_rewritten_with_stale_fallback_manifest(self) -> None:
+        mod = _load_backtest_module()
+        payload = {
+            "schema_version": 1,
+            "date": "2026-05-01",
+            "updated_at": "2026-05-01T20:00:00+08:00",
+            "strategies": [
+                {
+                    "strategy_name": "unit",
+                    "category": "trade_simulation",
+                    "period": {"start": "2024-01-01", "end": "2024-12-31"},
+                    "metrics": {"total_trades": 10},
+                }
+            ],
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            output = root / "backtest_results.json"
+            manifest_path = root / "freshness_manifest.json"
+            now = datetime(2026, 8, 4, 20, 0, tzinfo=timezone.utc)
+
+            mod.write_payload(
+                payload,
+                output,
+                now=now,
+                preserved_existing=True,
+                manifest_path=manifest_path,
+            )
+            written = json.loads(output.read_text(encoding="utf-8"))
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))["artifacts"][
+                "backtest_results:backtest_preserved_json"
+            ]
+            artifact_digest = data_contract.sha256_bytes(output.read_bytes())
+
+        self.assertEqual(written["freshness"]["status"], "fallback_stale")
+        self.assertGreater(written["freshness"]["age_calendar_days"], 30)
+        self.assertTrue(written["freshness"]["fallback"]["used"])
+        self.assertEqual(manifest["sha256"], artifact_digest)
+
+    def test_generate_site_warns_when_preserved_backtest_is_stale(self) -> None:
+        payload = {
+            "schema_version": 1,
+            "date": "2026-05-01",
+            "updated_at": "2026-05-01T20:00:00+08:00",
+            "strategies": [],
+            "freshness": {
+                "status": "fallback_stale",
+                "data_date": "2026-05-01",
+                "expected_data_date": "2026-08-04",
+            },
+        }
+
+        html = generate_site.build_backtest_dashboard_page(payload)
+
+        self.assertIn('data-artifact-freshness="fallback_stale"', html)
+        self.assertIn("請勿視為最新結果", html)
 
     def test_generate_site_publishes_backtest_json_and_nav_page(self) -> None:
         self.assertTrue(hasattr(generate_site, "BACKTEST_DASHBOARD_PATH"))
