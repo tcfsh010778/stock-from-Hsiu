@@ -1,7 +1,7 @@
 {
   "registry_schema_version": "1.0.0",
   "manifest_schema_version": "1.0.0",
-  "last_official_audit": "2026-08-06",
+  "last_official_audit": "2026-08-08",
   "timezone": "Asia/Taipei",
   "policy": {
     "official_primary_only": true,
@@ -156,6 +156,34 @@
       "market_coverage": ["otc"],
       "source_frequency": "each trading day after close",
       "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "foreign_net": "ForeignInvestorsIncludeMainlandAreaInvestors-Difference", "investment_trust_net": "SecuritiesInvestmentTrustCompanies-Difference", "dealer_net": "Dealers-Difference", "institutional_total_net": "TotalDifference"}
+    },
+    "twse_institutional_amount_summary": {
+      "source_id": "twse_institutional_amount_summary",
+      "provider": "TWSE",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/fund/BFI82U?response=json&type=day",
+      "documentation_url": "https://www.twse.com.tw/zh/trading/foreign/bfi82u.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-08",
+      "terms_status": "official_report_interface_with_attribution",
+      "access": "unauthenticated_https_json",
+      "market_coverage": ["listed"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"investor_type": "單位名稱", "buy_amount": "買進金額", "sell_amount": "賣出金額", "net_amount": "買賣差額"}
+    },
+    "tpex_institutional_amount_summary": {
+      "source_id": "tpex_institutional_amount_summary",
+      "provider": "TPEx",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/www/zh-tw/insti/summary",
+      "documentation_url": "https://www.tpex.org.tw/zh-tw/mainboard/trading/major-institutional/summary/day.html",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
+      "terms_checked_on": "2026-08-08",
+      "terms_status": "official_report_interface_with_attribution",
+      "access": "unauthenticated_https_json_post",
+      "market_coverage": ["otc"],
+      "source_frequency": "each trading day after close",
+      "field_map": {"investor_type": "單位名稱", "buy_amount": "買進金額(元)", "sell_amount": "賣出金額(元)", "net_amount": "買賣超(元)"}
     },
     "twse_margin_short": {
       "source_id": "twse_margin_short",
@@ -544,10 +572,10 @@
       "terms_url": null,
       "terms_checked_on": null,
       "terms_status": "project-derived-aggregate-from-TWSE-and-TPEx-official-sources",
-      "access": "derived aggregate; source partitions and missing states remain visible",
+      "access": "derived aggregate plus normalized ordinary-equity rankings; source partitions and missing states remain visible",
       "market_coverage": ["listed", "otc"],
       "source_frequency": "each trading day after official institutional feeds",
-      "use_policy": "publish aggregate metrics and top net-buy/sell summaries only; preserve official source attribution",
+      "use_policy": "publish exact official market amount summaries and normalized ordinary-equity net-buy/sell rankings; exclude ETF, ETN, warrants, TDR, bonds, preferred shares and other non-common-equity instruments from rankings; preserve official source attribution",
       "field_map": {}
     },
     "weekly_holder_risers_derived": {
@@ -673,8 +701,8 @@
     },
     "daily_market_flow": {
       "dataset_id": "daily_market_flow",
-      "schema_version": "1.0.0",
-      "semantic_role": "derived daily listed/OTC aggregate of foreign and investment-trust net buying",
+      "schema_version": "1.1.0",
+      "semantic_role": "derived daily listed/OTC exact institutional amount summary plus ordinary-equity-only foreign and investment-trust rankings",
       "primary_sources": [{"source_id": "daily_market_flow_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "calendar_day", "frequency": "each trading day after official institutional feeds", "max_lag_calendar_days": 2, "expected_available_by": "20:00 Asia/Taipei"},
@@ -683,7 +711,12 @@
         {"name": "market", "type": "enum:listed|otc", "required": true},
         {"name": "foreign_net", "type": "integer", "required": true},
         {"name": "investment_trust_net", "type": "integer", "required": true},
-        {"name": "institutional_total_net", "type": "integer", "required": true}
+        {"name": "institutional_total_net", "type": "integer", "required": true},
+        {"name": "foreign_net_amount", "type": "integer", "required": true},
+        {"name": "investment_trust_net_amount", "type": "integer", "required": true},
+        {"name": "institutional_total_net_amount", "type": "integer", "required": true},
+        {"name": "ranking_eligible_count", "type": "integer", "required": true},
+        {"name": "ranking_excluded_count", "type": "integer", "required": true}
       ]
     },
     "margin_short": {
@@ -746,8 +779,8 @@
     },
     "weekly_holder_risers": {
       "dataset_id": "weekly_holder_risers",
-      "schema_version": "1.0.0",
-      "semantic_role": "derived weekly list of stocks whose major-holder ownership ratio rose between the latest two weekly snapshots",
+      "schema_version": "1.1.0",
+      "semantic_role": "complete derived weekly list of every stock whose major-holder ownership ratio rose between the latest two weekly snapshots; no Top N truncation",
       "primary_sources": [{"source_id": "weekly_holder_risers_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "weekly", "frequency": "weekly after holder-distribution refresh", "max_lag_calendar_days": 10, "expected_available_by": "next business cycle after weekly snapshot"},

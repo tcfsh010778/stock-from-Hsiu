@@ -1,6 +1,62 @@
 # Codex Handoff
 
-Last updated: 2026-08-07
+Last updated: 2026-08-08
+
+## 2026-08-08 Dedicated institutional-flow and holder-riser pages
+
+### Goal
+
+Replace low-context homepage share totals with official monetary totals, move
+foreign/investment-trust rankings to a dedicated page that excludes
+non-common instruments, and publish every positive weekly major-holder change
+on its own complete table page. This is display/data-contract work only;
+strategy, universe, signal, exit, and order rules are unchanged.
+
+### Completed
+
+- `market_flow.py` now collects exact TWD buy/sell/net totals from TWSE
+  `BFI82U` and TPEx `insti/summary`, while keeping T86/TPEx detail feeds for
+  per-stock rankings.
+- Added deterministic `ordinary_equity_v1` ranking eligibility: only four-digit
+  stock codes that do not start with `0` or `91` and do not carry known
+  ETF/ETN/TDR/warrant/preferred/beneficiary labels enter the ranking.
+- Added complete combined listed/OTC foreign buy, foreign sell, trust buy, and
+  trust sell arrays to `daily_market_flow.json` schema `1.1.0`.
+- Added `institutional-flow.html`, with four complete searchable ranking tabs.
+  The page visibly distinguishes official all-instrument amount totals from
+  ordinary-equity-only rankings.
+- Added `holder-risers.html`, with one table row for every stock whose 400+
+  lots major-holder ratio rose between its latest two snapshots.
+- Removed the previous default 50-row cap in `weekly_holder_risers.py`; schema
+  `1.1.0` now records `row_count` and `complete_positive_set`.
+- Homepage cards now link to both dedicated pages and show official amounts in
+  `億元`; homepage ranking snippets and share totals were removed.
+
+### Source of truth / rebuild
+
+- Collect flow: `python market_flow.py`
+- Build complete holder list: `python weekly_holder_risers.py`
+- Generate pages: `python generate_site.py`
+- Renderers: `build_institutional_flow_page()` and
+  `build_weekly_holder_risers_page()` in `generate_site.py`
+- Contract: `contracts/taiwan_stock_data_contracts.json`
+- Detailed log: `codex_context/logs/2026-08-08-flow-ranking-and-holder-pages.md`
+
+### Verification
+
+- `python data_contract.py validate-registry contracts/taiwan_stock_data_contracts.json`
+  OK: 39 sources, 21 datasets.
+- `python -m unittest discover -s tools -p "test_*.py"` OK: 105 tests.
+- Live 2026-08-07 official smoke: listed and OTC amount summaries aligned to
+  the detail date; 1,844 ordinary equities eligible and 380 non-common
+  instruments excluded.
+- Generated affected-page QA with real local holder cache produced 838 holder
+  rows and 2,079 institutional ranking rows. The homepage had monetary totals,
+  no share-total card, both page links, and no `0050` ranking row.
+- This remains a sparse source checkout; affected HTML was generated into a
+  temporary QA directory. CI/designated output writer should regenerate and
+  commit the full `docs/` tree after merge.
+
 ## 2026-08-07 Site consolidation and market-flow summaries
 
 ### Goal
