@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2947  — Stockfrom脩 選股站</title>
+<title>2947 振宇五金 — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
 <link rel="icon" href="data:,">
 <style>
@@ -38,6 +38,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -187,6 +189,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -330,7 +337,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -360,15 +367,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="../mda.html" class="tab">M大觀察</a>
 <a href="../timing.html" class="tab">買賣時機</a>
 <a href="../stocks.html" class="tab active">個股查詢</a>
-<a href="../backtest_dashboard.html" class="tab">回測</a>
 <a href="../history.html" class="tab">歷史分析</a>
 
 </nav>
 
 <div class="container">
   <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
-  <div class="page-title">2947 </div>
+  <div class="page-title">2947 振宇五金</div>
   <div class="page-sub">個股查詢頁 · 最新收盤 2026-06-26</div>
+  <div class="tag-row" data-stock-decision-badge="2947" style="margin:10px 0 12px"><span class="tag tag-yellow" data-decision-state="missing">決策狀態未載入</span></div>
   
   <div class="detail-hero">
     <div class="card">
@@ -378,7 +385,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="telegram-report-card">
   <div class="telegram-head">
     <div>
-      <div class="telegram-title">2947  個股資訊卡</div>
+      <div class="telegram-title">2947 振宇五金 個股資訊卡</div>
       <div class="telegram-meta">收盤日期 2026-06-26｜個股查詢頁</div>
     </div>
     <div class="telegram-rating ">觀望</div>

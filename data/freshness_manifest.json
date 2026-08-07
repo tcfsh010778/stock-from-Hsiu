@@ -1,7 +1,214 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-07T18:48:32+08:00",
+  "generated_at": "2026-08-07T22:28:46+08:00",
   "artifacts": {
+    "attention_disposition_risk:attention_disposition_derived": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "attention_disposition_risk",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "attention_disposition_derived",
+      "source_tier": "primary",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/attention_disposition.py",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "each trading day after official source partitions",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 88,
+      "sha256": "ff29c850b58af8e5a3e96ee7f64423aae5fa1176deee79d2cda17e2bd7b7ddd2",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day after official source partitions",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after TWSE/TPEx attention and disposition updates",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "risk_level",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "data_date",
+          "market",
+          "risk_level",
+          "rule_version",
+          "security_id"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "attention_securities:tpex_attention": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "attention_securities",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "tpex_attention",
+      "source_tier": "primary",
+      "source_url": "https://www.tpex.org.tw/www/zh-tw/bulletin/attention",
+      "market_coverage": [
+        "otc"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 21,
+      "sha256": "36210432d85cc4a93b93437bf278c2789f91fe4f6ee25c9b8b7f7d0e65a36a54",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange announcement update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "security_name",
+          "reason",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "attention_count",
+          "data_date",
+          "market",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "attention_securities:twse_attention": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "attention_securities",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "twse_attention",
+      "source_tier": "primary",
+      "source_url": "https://www.twse.com.tw/rwd/zh/announcement/notice",
+      "market_coverage": [
+        "listed"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 36,
+      "sha256": "73f5254a3ea297bc7e34d982c7a5fed7c3055ed3e49cf48f625c990b00d93e91",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange announcement update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "security_name",
+          "reason",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "attention_count",
+          "data_date",
+          "market",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
     "backtest_results:backtest_preserved_json": {
       "manifest_schema_version": "1.0.0",
       "dataset_id": "backtest_results",
@@ -17,9 +224,9 @@
       "data_date": "2026-06-01",
       "trading_date": null,
       "expected_data_date": "2026-08-07",
-      "fetched_at": "2026-08-07T18:48:31+08:00",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
       "row_count": 39,
-      "sha256": "f8bbd142e26705f513e35d294cf73d2340016382a8d54a6aea768bb9869fff74",
+      "sha256": "2d3b47258eed95a03da146a3209aa54e195a3cad8407bd65d90688c556483fc6",
       "fallback": {
         "used": true,
         "from_source_id": "backtest_local_csv_derived",
@@ -32,7 +239,7 @@
       },
       "freshness": {
         "status": "fallback_stale",
-        "evaluated_at": "2026-08-07T18:48:31+08:00",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
         "expected_data_date": "2026-08-07",
         "age_trading_days": null,
         "age_calendar_days": 67,
@@ -80,9 +287,9 @@
       "data_date": "2026-05-12",
       "trading_date": null,
       "expected_data_date": "2026-08-07",
-      "fetched_at": "2026-08-07T18:48:31+08:00",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
       "row_count": 587,
-      "sha256": "1b1e0464b282b62b294da1af8ee82b754bfe82ee0bfc9fc4f4a0ce05deb2822f",
+      "sha256": "e353437c1850143364c804bff94befa2d5217582c5eca8079fc470e92099d74d",
       "fallback": {
         "used": true,
         "from_source_id": "carybot_local_csv_derived",
@@ -95,7 +302,7 @@
       },
       "freshness": {
         "status": "fallback_stale",
-        "evaluated_at": "2026-08-07T18:48:31+08:00",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
         "expected_data_date": "2026-08-07",
         "age_trading_days": null,
         "age_calendar_days": 87,
@@ -129,7 +336,7 @@
     "daily_decisions:daily_decisions_derived": {
       "manifest_schema_version": "1.0.0",
       "dataset_id": "daily_decisions",
-      "dataset_schema_version": "1.0.0",
+      "dataset_schema_version": "1.1.0",
       "source_id": "daily_decisions_derived",
       "source_tier": "primary",
       "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/daily_decisions.py",
@@ -141,9 +348,9 @@
       "data_date": "2026-08-07",
       "trading_date": null,
       "expected_data_date": "2026-08-07",
-      "fetched_at": "2026-08-07T18:48:32+08:00",
+      "fetched_at": "2026-08-07T22:26:54+08:00",
       "row_count": 276,
-      "sha256": "3755f9c0fe8891a2bf0172ddcb5b6be684de9ed2c663e443a5ae47c82bf9ea2b",
+      "sha256": "8189cce8ed5a67e6b5292ce5b9c83a655a05dc8f37afefdd19de505f20f5c2c5",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -156,7 +363,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-07T18:48:32+08:00",
+        "evaluated_at": "2026-08-07T22:26:54+08:00",
         "expected_data_date": "2026-08-07",
         "age_trading_days": null,
         "age_calendar_days": 0,
@@ -176,6 +383,7 @@
           "traffic_state",
           "carybot_signal_type",
           "data_quality_state",
+          "market_risk_level",
           "rule_version"
         ],
         "observed_fields": [
@@ -183,9 +391,434 @@
           "carybot_signal_type",
           "data_date",
           "data_quality_state",
+          "market_risk_level",
           "rule_version",
           "security_id",
           "traffic_state"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "daily_market_flow:daily_market_flow_derived": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "daily_market_flow",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "daily_market_flow_derived",
+      "source_tier": "primary",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/market_flow.py",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "each trading day after official institutional feeds",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:32+08:00",
+      "row_count": 2,
+      "sha256": "a7e49bc94f6944f172ab273e36dc4928a0663ad8780787fe6943492a7e8c3084",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:32+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": null,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "calendar_day",
+          "frequency": "each trading day after official institutional feeds",
+          "max_lag_calendar_days": 2,
+          "expected_available_by": "20:00 Asia/Taipei"
+        }
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "trading_date",
+          "market",
+          "foreign_net",
+          "investment_trust_net",
+          "institutional_total_net"
+        ],
+        "observed_fields": [
+          "foreign_net",
+          "institutional_total_net",
+          "investment_trust_net",
+          "market",
+          "trading_date"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "disposition_securities:tpex_disposition": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "disposition_securities",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "tpex_disposition",
+      "source_tier": "primary",
+      "source_url": "https://www.tpex.org.tw/www/zh-tw/bulletin/disposal",
+      "market_coverage": [
+        "otc"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 30,
+      "sha256": "0bb13efd3fa1bc9ea5168fdc692b4e8459c323da7b04c388d89586b552df6a2d",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange announcement update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "original_start_date",
+          "effective_end_date",
+          "active_on_data_date",
+          "matching_interval_minutes",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "active_on_data_date",
+          "data_date",
+          "day_trade_trigger",
+          "effective_end_date",
+          "market",
+          "matching_interval_minutes",
+          "occurrence_count",
+          "original_end_date",
+          "original_start_date",
+          "publication_date",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id",
+          "transition_revised"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "disposition_securities:twse_disposition": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "disposition_securities",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "twse_disposition",
+      "source_tier": "primary",
+      "source_url": "https://www.twse.com.tw/rwd/zh/announcement/punish",
+      "market_coverage": [
+        "listed"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 20,
+      "sha256": "1e90a4530f9429ec9771ea969d1fe7421e45100d724ecacf431b3c75d4c07f72",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange announcement update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "original_start_date",
+          "effective_end_date",
+          "active_on_data_date",
+          "matching_interval_minutes",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "active_on_data_date",
+          "data_date",
+          "day_trade_trigger",
+          "effective_end_date",
+          "market",
+          "matching_interval_minutes",
+          "occurrence_count",
+          "original_end_date",
+          "original_start_date",
+          "publication_date",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id",
+          "transition_revised"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "near_disposition_risk:tpex_near_disposition": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "near_disposition_risk",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "tpex_near_disposition",
+      "source_tier": "primary",
+      "source_url": "https://www.tpex.org.tw/www/zh-tw/bulletin/warning",
+      "market_coverage": [
+        "otc"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 9,
+      "sha256": "f4cf881d49ab798ad6890e3853b5264120b3fe75a16a047375b17f6260ce65cf",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange warning-table update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "reason",
+          "official_near_disposition",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "data_date",
+          "market",
+          "official_near_disposition",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "near_disposition_risk:twse_near_disposition": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "near_disposition_risk",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "twse_near_disposition",
+      "source_tier": "primary",
+      "source_url": "https://www.twse.com.tw/rwd/zh/announcement/notetrans",
+      "market_coverage": [
+        "listed"
+      ],
+      "update_frequency": "each trading day",
+      "data_date": "2026-08-07",
+      "trading_date": "2026-08-07",
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:26:41+08:00",
+      "row_count": 16,
+      "sha256": "b7134e6920bec8c8c60b3b945fc55da9344e25ab27b7660569ea6dab730bd470",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "fresh",
+        "evaluated_at": "2026-08-07T22:26:41+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": 0,
+        "age_calendar_days": 0,
+        "sla": {
+          "mode": "trading_day",
+          "frequency": "each trading day",
+          "max_lag_trading_days": 0,
+          "expected_available_by": "after the exchange warning-table update",
+          "empty_result_is_valid": true
+        },
+        "calendar_basis": "official_trading_sessions",
+        "calendar_source_ids": [
+          "tpex_trading_calendar",
+          "twse_trading_calendar"
+        ]
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "market",
+          "security_id",
+          "reason",
+          "official_near_disposition",
+          "rule_version"
+        ],
+        "observed_fields": [
+          "data_date",
+          "market",
+          "official_near_disposition",
+          "reason",
+          "rule_version",
+          "security_id",
+          "security_name",
+          "source_id"
+        ],
+        "missing_required_fields": [],
+        "missing_required_field_rows": {}
+      }
+    },
+    "weekly_holder_risers:weekly_holder_risers_derived": {
+      "manifest_schema_version": "1.0.0",
+      "dataset_id": "weekly_holder_risers",
+      "dataset_schema_version": "1.0.0",
+      "source_id": "weekly_holder_risers_derived",
+      "source_tier": "primary",
+      "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/weekly_holder_risers.py",
+      "market_coverage": [
+        "listed",
+        "otc"
+      ],
+      "update_frequency": "weekly after holder-distribution refresh",
+      "data_date": "2026-06-18",
+      "trading_date": null,
+      "expected_data_date": "2026-08-07",
+      "fetched_at": "2026-08-07T22:28:46+08:00",
+      "row_count": 50,
+      "sha256": "89b89297be3cca606e75f38cca1ce0db7dc210dbfafed89588ea55d3f2887c53",
+      "fallback": {
+        "used": false,
+        "from_source_id": null,
+        "reason": null
+      },
+      "missing": {
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
+      },
+      "freshness": {
+        "status": "stale",
+        "evaluated_at": "2026-08-07T22:28:46+08:00",
+        "expected_data_date": "2026-08-07",
+        "age_trading_days": null,
+        "age_calendar_days": 50,
+        "sla": {
+          "mode": "weekly",
+          "frequency": "weekly after holder-distribution refresh",
+          "max_lag_calendar_days": 10,
+          "expected_available_by": "next business cycle after weekly snapshot"
+        }
+      },
+      "schema_validation": {
+        "status": "ok",
+        "required_fields": [
+          "data_date",
+          "security_id",
+          "market",
+          "major_percent",
+          "previous_major_percent",
+          "major_delta_pctpt"
+        ],
+        "observed_fields": [
+          "data_date",
+          "major_delta_pctpt",
+          "major_percent",
+          "market",
+          "previous_major_percent",
+          "security_id"
         ],
         "missing_required_fields": [],
         "missing_required_field_rows": {}

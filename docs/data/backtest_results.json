@@ -4551,7 +4551,7 @@
     "status": "fallback_stale",
     "data_date": "2026-06-01",
     "expected_data_date": "2026-08-07",
-    "fetched_at": "2026-08-07T18:48:31+08:00",
+    "fetched_at": "2026-08-07T22:26:41+08:00",
     "row_count": 39,
     "sla": {
       "mode": "calendar_day",
@@ -4561,6 +4561,8 @@
     },
     "age_trading_days": null,
     "age_calendar_days": 67,
+    "calendar_basis": null,
+    "calendar_source_ids": [],
     "fallback": {
       "used": true,
       "from_source_id": "backtest_local_csv_derived",

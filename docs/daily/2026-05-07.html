@@ -38,6 +38,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -187,6 +189,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -330,7 +337,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -360,14 +367,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="../mda.html" class="tab">M大觀察</a>
 <a href="../timing.html" class="tab">買賣時機</a>
 <a href="../stocks.html" class="tab">個股查詢</a>
-<a href="../backtest_dashboard.html" class="tab">回測</a>
 <a href="../history.html" class="tab">歷史分析</a>
 
 </nav>
 <div class="container"><div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div><div class="page-title">2026-05-07</div><div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。</div>
 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#3fb950">12</div>
+    <div style="font-size:24px;font-weight:800;color:#3fb950">16</div>
     <div style="font-size:11px;color:#6e7681">行進籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
@@ -375,11 +381,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div style="font-size:11px;color:#6e7681">盤整籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#f85149">1</div>
+    <div style="font-size:24px;font-weight:800;color:#f85149">4</div>
     <div style="font-size:11px;color:#6e7681">過熱/風險</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#58a6ff">13</div>
+    <div style="font-size:24px;font-weight:800;color:#58a6ff">20</div>
     <div style="font-size:11px;color:#6e7681">精選總數</div>
   </div>
 </div>
@@ -516,6 +522,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#4</span></td>
   <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/2740.html">2740</a></div>
+    <div style="color:#8b949e;font-size:12px">華軒</div>
+    <div class="signal-dates">觀光餐旅</div>
+  </td>
+
+  <td class="price-main">41.85</td>
+  <td class="pos" style="font-weight:600">0.72%</td>
+  <td style="color:#8b949e">62.1</td>
+  <td style="color:#8b949e">73.1%</td>
+  <td class="hide-mobile" style="color:#8b949e">5 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-1張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 25.75</div>
+    <div class="price-target">目 44.88</div>
+    <div class="price-stop">初停 24.85</div>
+    <div class="price-support">支撐 33.63</div>
+    <div class="price-rr rr-good">R:R 1:21.3</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
+  <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/3443.html">3443</a></div>
     <div style="color:#8b949e;font-size:12px">創意</div>
     <div class="signal-dates">電子工業</div>
@@ -538,7 +568,103 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/4979.html">4979</a></div>
+    <div style="color:#8b949e;font-size:12px">華星光</div>
+    <div class="signal-dates">通信網路業</div>
+  </td>
+
+  <td class="price-main">700</td>
+  <td class="pos" style="font-weight:600">84.21%</td>
+  <td style="color:#8b949e">60.4</td>
+  <td style="color:#8b949e">81.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">8182 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-3,405張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 484.38</div>
+    <div class="price-target">目 777.24</div>
+    <div class="price-stop">初停 450.50</div>
+    <div class="price-support">支撐 418.89</div>
+    <div class="price-rr rr-good">R:R 1:8.6</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/6217.html">6217</a></div>
+    <div style="color:#8b949e;font-size:12px">中探針</div>
+    <div class="signal-dates">電子零組件業</div>
+  </td>
+
+  <td class="price-main">280</td>
+  <td class="pos" style="font-weight:600">63.74%</td>
+  <td style="color:#8b949e">65.1</td>
+  <td style="color:#8b949e">65.8%</td>
+  <td class="hide-mobile" style="color:#8b949e">1718 張</td>
+  <td class="hide-mobile" style="color:#f85149">+239張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 233.62</div>
+    <div class="price-target">目 318.24</div>
+    <div class="price-stop">初停 219.61</div>
+    <div class="price-support">支撐 186.06</div>
+    <div class="price-rr rr-good">R:R 1:6.0</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/6274.html">6274</a></div>
+    <div style="color:#8b949e;font-size:12px">台燿</div>
+    <div class="signal-dates">電子零組件業</div>
+  </td>
+
+  <td class="price-main">1445</td>
+  <td class="pos" style="font-weight:600">168.59%</td>
+  <td style="color:#8b949e">83.8</td>
+  <td style="color:#8b949e">119.2%</td>
+  <td class="hide-mobile" style="color:#8b949e">9204 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-2,533張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 1530.00</div>
+    <div class="price-target">目 1473.90</div>
+    <div class="price-stop">初停 1438.20</div>
+    <div class="price-support">支撐 693.51</div>
+    <div class="price-rr ">R:R ─</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/8047.html">8047</a></div>
+    <div style="color:#8b949e;font-size:12px">星雲</div>
+    <div class="signal-dates">其他電子類</div>
+  </td>
+
+  <td class="price-main">54</td>
+  <td class="pos" style="font-weight:600">7.57%</td>
+  <td style="color:#8b949e">46.2</td>
+  <td style="color:#8b949e">32.5%</td>
+  <td class="hide-mobile" style="color:#8b949e">127 張</td>
+  <td class="hide-mobile" style="color:#f85149">+44張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 42.36</div>
+    <div class="price-target">目 60.18</div>
+    <div class="price-stop">初停 39.82</div>
+    <div class="price-support">支撐 51.04</div>
+    <div class="price-rr rr-good">R:R 1:7.0</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/8112.html">8112</a></div>
     <div style="color:#8b949e;font-size:12px">至上</div>
@@ -562,7 +688,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/8271.html">8271</a></div>
     <div style="color:#8b949e;font-size:12px">宇瞻</div>
@@ -586,7 +712,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1301.html">1301</a></div>
     <div style="color:#8b949e;font-size:12px">台塑</div>
@@ -610,7 +736,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1303.html">1303</a></div>
     <div style="color:#8b949e;font-size:12px">南亞</div>
@@ -639,7 +765,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1326.html">1326</a></div>
     <div style="color:#8b949e;font-size:12px">台化</div>
@@ -663,7 +789,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1560.html">1560</a></div>
     <div style="color:#8b949e;font-size:12px">中砂</div>
@@ -687,7 +813,31 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#16</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/1595.html">1595</a></div>
+    <div style="color:#8b949e;font-size:12px">川寶</div>
+    <div class="signal-dates">半導體業</div>
+  </td>
+
+  <td class="price-main">96.2</td>
+  <td class="pos" style="font-weight:600">124.77%</td>
+  <td style="color:#8b949e">91.4</td>
+  <td style="color:#8b949e">105.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">6591 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-67張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">進 73.70</div>
+    <div class="price-target">目 103.02</div>
+    <div class="price-stop">初停 69.28</div>
+    <div class="price-support">支撐 41.19</div>
+    <div class="price-rr rr-good">R:R 1:6.6</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#17</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1721.html">1721</a></div>
     <div style="color:#8b949e;font-size:12px">三晃</div>
@@ -711,7 +861,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#18</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1727.html">1727</a></div>
     <div style="color:#8b949e;font-size:12px">中華化</div>
@@ -735,7 +885,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#19</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/1773.html">1773</a></div>
     <div style="color:#8b949e;font-size:12px">勝一</div>
@@ -756,6 +906,30 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div class="price-stop">初停 158.39</div>
     <div class="price-support">支撐 146.76</div>
     <div class="price-rr rr-mid">R:R 1:1.7</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#20</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/1785.html">1785</a></div>
+    <div style="color:#8b949e;font-size:12px">光洋科</div>
+    <div class="signal-dates">其他電子類</div>
+  </td>
+
+  <td class="price-main">185</td>
+  <td class="pos" style="font-weight:600">103.74%</td>
+  <td style="color:#8b949e">69.7</td>
+  <td style="color:#8b949e">95%</td>
+  <td class="hide-mobile" style="color:#8b949e">56103 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-31,746張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">進 132.38</div>
+    <div class="price-target">目 188.70</div>
+    <div class="price-stop">初停 124.43</div>
+    <div class="price-support">支撐 91.54</div>
+    <div class="price-rr rr-good">R:R 1:7.1</div>
   </td>
 </tr></tbody>
 </table>

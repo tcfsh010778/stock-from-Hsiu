@@ -1,0 +1,297 @@
+{
+  "dataset_id": "daily_market_flow",
+  "schema_version": "1.0.0",
+  "date": "2026-08-07",
+  "updated_at": "2026-08-07T22:26:32.820176+08:00",
+  "markets": {
+    "listed": {
+      "stock_count": 1326,
+      "foreign_buy": 1839897693,
+      "foreign_sell": 2103081873,
+      "foreign_net": -263184180,
+      "investment_trust_buy": 63238225,
+      "investment_trust_sell": 57306419,
+      "investment_trust_net": 5931806,
+      "institutional_total_net": -417356507,
+      "foreign_top_buy": [
+        {
+          "security_id": "2618",
+          "name": "長榮航",
+          "net": 22000373
+        },
+        {
+          "security_id": "1216",
+          "name": "統一",
+          "net": 20335509
+        },
+        {
+          "security_id": "3231",
+          "name": "緯創",
+          "net": 17158210
+        },
+        {
+          "security_id": "00988A",
+          "name": "主動統一全球創新",
+          "net": 16442630
+        },
+        {
+          "security_id": "2887",
+          "name": "台新新光金",
+          "net": 14196618
+        }
+      ],
+      "foreign_top_sell": [
+        {
+          "security_id": "3481",
+          "name": "群創",
+          "net": -51201712
+        },
+        {
+          "security_id": "2344",
+          "name": "華邦電",
+          "net": -43331455
+        },
+        {
+          "security_id": "00403A",
+          "name": "主動統一升級50",
+          "net": -35955338
+        },
+        {
+          "security_id": "00981A",
+          "name": "主動統一台股增長",
+          "net": -31626352
+        },
+        {
+          "security_id": "2303",
+          "name": "聯電",
+          "net": -23200666
+        }
+      ],
+      "trust_top_buy": [
+        {
+          "security_id": "2610",
+          "name": "華航",
+          "net": 6997000
+        },
+        {
+          "security_id": "2880",
+          "name": "華南金",
+          "net": 6911000
+        },
+        {
+          "security_id": "00953B",
+          "name": "群益優選非投等債",
+          "net": 5000000
+        },
+        {
+          "security_id": "2027",
+          "name": "大成鋼",
+          "net": 4865000
+        },
+        {
+          "security_id": "2883",
+          "name": "凱基金",
+          "net": 3985000
+        }
+      ],
+      "trust_top_sell": [
+        {
+          "security_id": "00988A",
+          "name": "主動統一全球創新",
+          "net": -15400000
+        },
+        {
+          "security_id": "3231",
+          "name": "緯創",
+          "net": -10276000
+        },
+        {
+          "security_id": "2303",
+          "name": "聯電",
+          "net": -6691000
+        },
+        {
+          "security_id": "2049",
+          "name": "上銀",
+          "net": -1540000
+        },
+        {
+          "security_id": "2327",
+          "name": "國巨*",
+          "net": -1516000
+        }
+      ]
+    },
+    "otc": {
+      "stock_count": 898,
+      "foreign_buy": 240401313,
+      "foreign_sell": 300633287,
+      "foreign_net": -60231974,
+      "investment_trust_buy": 6852489,
+      "investment_trust_sell": 10579000,
+      "investment_trust_net": -3726511,
+      "institutional_total_net": -124234336,
+      "foreign_top_buy": [
+        {
+          "security_id": "5351",
+          "name": "鈺創",
+          "net": 7964618
+        },
+        {
+          "security_id": "8050",
+          "name": "廣積",
+          "net": 2155227
+        },
+        {
+          "security_id": "6279",
+          "name": "胡連",
+          "net": 2031000
+        },
+        {
+          "security_id": "4931",
+          "name": "新盛力",
+          "net": 1800470
+        },
+        {
+          "security_id": "3293",
+          "name": "鈊象",
+          "net": 1470400
+        }
+      ],
+      "foreign_top_sell": [
+        {
+          "security_id": "00937B",
+          "name": "群益ESG投等債20+",
+          "net": -16494965
+        },
+        {
+          "security_id": "8358",
+          "name": "金居",
+          "net": -6856473
+        },
+        {
+          "security_id": "8086",
+          "name": "宏捷科",
+          "net": -3748880
+        },
+        {
+          "security_id": "3105",
+          "name": "穩懋",
+          "net": -3565114
+        },
+        {
+          "security_id": "00679B",
+          "name": "元大美債20年",
+          "net": -3233070
+        }
+      ],
+      "trust_top_buy": [
+        {
+          "security_id": "3211",
+          "name": "順達",
+          "net": 2204000
+        },
+        {
+          "security_id": "3264",
+          "name": "欣銓",
+          "net": 1572000
+        },
+        {
+          "security_id": "009814",
+          "name": "富邦標普500",
+          "net": 800000
+        },
+        {
+          "security_id": "6274",
+          "name": "台燿",
+          "net": 488250
+        },
+        {
+          "security_id": "3081",
+          "name": "聯亞",
+          "net": 392500
+        }
+      ],
+      "trust_top_sell": [
+        {
+          "security_id": "5347",
+          "name": "世界",
+          "net": -4800481
+        },
+        {
+          "security_id": "5371",
+          "name": "中光電",
+          "net": -3000000
+        },
+        {
+          "security_id": "8299",
+          "name": "群聯",
+          "net": -717500
+        },
+        {
+          "security_id": "6138",
+          "name": "茂達",
+          "net": -354000
+        },
+        {
+          "security_id": "4966",
+          "name": "譜瑞-KY",
+          "net": -270000
+        }
+      ]
+    }
+  },
+  "source_artifacts": [
+    {
+      "source_id": "twse_institutional_trading",
+      "market": "listed",
+      "status": "fresh",
+      "data_date": "2026-08-07",
+      "row_count": 1326,
+      "error": null
+    },
+    {
+      "source_id": "tpex_institutional_trading",
+      "market": "otc",
+      "status": "fresh",
+      "data_date": "2026-08-07",
+      "row_count": 898,
+      "error": null
+    }
+  ],
+  "data_quality": {
+    "state": "ok",
+    "warnings": []
+  },
+  "freshness": {
+    "dataset_id": "daily_market_flow",
+    "dataset_schema_version": "1.0.0",
+    "source_id": "daily_market_flow_derived",
+    "source_tier": "primary",
+    "status": "fresh",
+    "data_date": "2026-08-07",
+    "expected_data_date": "2026-08-07",
+    "fetched_at": "2026-08-07T22:26:32+08:00",
+    "row_count": 2,
+    "sla": {
+      "mode": "calendar_day",
+      "frequency": "each trading day after official institutional feeds",
+      "max_lag_calendar_days": 2,
+      "expected_available_by": "20:00 Asia/Taipei"
+    },
+    "age_trading_days": null,
+    "age_calendar_days": 0,
+    "calendar_basis": null,
+    "calendar_source_ids": [],
+    "fallback": {
+      "used": false,
+      "from_source_id": null,
+      "reason": null
+    },
+    "missing": {
+      "status": "complete",
+      "missing_fields": [],
+      "missing_partitions": []
+    }
+  }
+}

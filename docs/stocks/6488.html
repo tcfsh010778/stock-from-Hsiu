@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>6488  — Stockfrom脩 選股站</title>
+<title>6488 環球晶 — Stockfrom脩 選股站</title>
 <meta name="description" content="量化選股 · 每日精選 Top 20 · ABC籌碼分析 · 台股研究">
 <link rel="icon" href="data:,">
 <style>
@@ -38,6 +38,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -187,6 +189,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -330,7 +337,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -360,15 +367,15 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="../mda.html" class="tab">M大觀察</a>
 <a href="../timing.html" class="tab">買賣時機</a>
 <a href="../stocks.html" class="tab active">個股查詢</a>
-<a href="../backtest_dashboard.html" class="tab">回測</a>
 <a href="../history.html" class="tab">歷史分析</a>
 
 </nav>
 
 <div class="container">
   <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
-  <div class="page-title">6488 </div>
-  <div class="page-sub">個股查詢頁 · 最新收盤 2026-08-06</div>
+  <div class="page-title">6488 環球晶</div>
+  <div class="page-sub">個股研究頁 · 報告日期 2026-07-15</div>
+  <div class="tag-row" data-stock-decision-badge="6488" style="margin:10px 0 12px"><span class="tag tag-yellow" data-decision-state="missing">決策狀態未載入</span></div>
   
   <div class="detail-hero">
     <div class="card">
@@ -378,13 +385,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="telegram-report-card">
   <div class="telegram-head">
     <div>
-      <div class="telegram-title">6488  個股資訊卡</div>
-      <div class="telegram-meta">收盤日期 2026-08-06｜個股查詢頁</div>
+      <div class="telegram-title">6488 環球晶 個股資訊卡</div>
+      <div class="telegram-meta">收盤日期 2026-08-06｜報告日期 2026-07-15</div>
     </div>
     <div class="telegram-rating ">觀望</div>
   </div>
   <div class="telegram-price-line"><div><div class="k">收盤價</div><div class="price">872.00</div></div><div class="change pos">單日 +0.00（+0.00%）</div></div>
-  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">盤整籃｜Score ─</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜Williams 買點已算出，但收盤仍低於 MA20，先等站回</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">未進入過熱區 / 整理/修正 / 均量上彎 / B1資料不足 / B2賣壓未確認</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">首次或尚未建立歷史台帳</div></div></div>
+  <div class="telegram-phase"><h3>① 量化篩選確認</h3><div class="telegram-line"><div class="k">篩選結論</div><div class="v">行進籃｜Score 90.0</div></div><div class="telegram-line"><div class="k">操作評價</div><div class="v">觀望｜Williams 買點已算出，但收盤仍低於 MA20，先等站回</div></div><div class="telegram-line"><div class="k">分籃理由</div><div class="v">行進籃 / 評分&gt;=85 / 近6週漲幅&gt;=18% / 均量上彎 / B1資料不足</div></div><div class="telegram-line"><div class="k">台帳</div><div class="v">歷史入選 10 次，最近 2026-07-15</div></div></div>
   <div class="telegram-phase"><h3>② 技術 / 籌碼 / 指標判讀</h3><div class="telegram-line"><div class="k">趨勢結構</div><div class="v">短線空頭排列</div></div><div class="telegram-line"><div class="k">量價關係</div><div class="v">均量上彎</div></div><div class="telegram-line"><div class="k">判斷依據</div><div class="v">單日 0.00% / 量比 0.98x / 黑K / 5日均量較前5日 +102.5%</div></div><div class="telegram-line"><div class="k">量價判讀</div><div class="v">趨勢出量訊號，搭配量增價漲確認攻擊啟動。</div></div><div class="telegram-line"><div class="k">KD</div><div class="v">K 25.5 / D 18.9，偏多</div></div><div class="telegram-line"><div class="k">MACD</div><div class="v">賣出區</div></div><div class="telegram-line"><div class="k">Williams</div><div class="v">-82.7，超賣</div></div><div class="telegram-line"><div class="k">籌碼</div><div class="v pos">外資5日 +997張；三大法人當日 -648 張；大戶(400張以上) 80.87% / 中實戶人數(200-400張) 66 人 / 散戶 7.12%</div></div><div class="telegram-line"><div class="k">籌碼數字</div><div class="v">外資10日 3079 張；主力10日 1520 張</div></div></div>
   <div class="telegram-note">這張卡整理量化篩選、技術與籌碼；操作規劃與 Quick 分析保留在右側。</div>
 </div>
@@ -392,16 +399,16 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div>
       <div class="card">
         <div class="section-label">操作規劃</div>
-        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 1600.00｜近支撐 868.00</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">859.30 ~ 967.70</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">1632.00</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">868.00（爆量K低點，-5.0%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-good">1:15.8</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v watch">跌破MA20｜漲幅10%內跌破MA20；外資連賣3日</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">MABC 觀察：先看 A/B 是否維持，等量縮價穩、站回成本區或 C 買點再處理。</div></div></div>
+        <div class="telegram-phase" style="margin-top:0"><div class="telegram-line"><div class="k">是否進場</div><div class="v">觀望</div></div><div class="telegram-line"><div class="k">壓力 / 近支撐</div><div class="v">壓力 1600｜近支撐 868.00</div></div><div class="telegram-line"><div class="k">較佳買入區</div><div class="v">859.30 ~ 967.70</div></div><div class="telegram-line"><div class="k">停利</div><div class="v">1632.00</div></div><div class="telegram-line"><div class="k">初始停損</div><div class="v">868.00（爆量K低點，-5.0%）</div></div><div class="telegram-line"><div class="k">R:R</div><div class="v rr-good">1:15.8</div></div><div class="telegram-line"><div class="k">賣出警示</div><div class="v watch">跌破MA20｜漲幅10%內跌破MA20；外資連賣3日</div></div><div class="telegram-line"><div class="k">追蹤重點</div><div class="v">SFZ 波段候選：原訊號可小部位，追高不追，等 MA5/MA10/箱頂回測或 TA3 確認。</div></div></div>
       </div>
       <div class="card" style="margin-top:12px">
         <div class="section-label">Quick 分析</div>
-        <div class="mini-report">分類：個股查詢
+        <div class="mini-report">分類：行進籃
 操作評價：觀望｜買進區間：859.30 ~ 967.70｜關鍵防守：868.00（近期大量K低點）
-現況：收盤 872.00，RSI 29.7，%B 23.6。
+現況：收盤 872.00，RSI 73.5，%B 92.9%。
 理由：Williams 買點已算出，但收盤仍低於 MA20，先等站回
-台帳：未在目前籃中，從已快取價格/籌碼資料建立查詢頁。
-操作：先當作獨立個股觀察：重點看價格是否不再破低，外資/融資賣壓是否收斂，以及少量買盤能否守住關鍵支撐。</div>
+台帳：歷史入選 10 次，最近 2026-07-15。
+操作：偏向 SFZ 波段候選：原訊號可小部位，突破追不到不追，等回測 MA5/MA10/箱頂或 TA3-Strict 加碼確認。</div>
       </div>
     </div>
   </div>
@@ -1195,7 +1202,37 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <div class="card">
     <div class="section-label">歷史訊號</div>
     <div style="overflow-x:auto">
-      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody><tr><td colspan="5" style="color:#8b949e">尚無歷史訊號</td></tr></tbody></table>
+      <table class="stock-table"><thead><tr><th>日期</th><th>籃別</th><th>買入區</th><th>收盤</th><th>原始分數</th></tr></thead><tbody>
+<tr>
+  <td>2026-07-15</td><td>行進籃</td><td>976.10 ~ 1122.90<div class="signal-dates">原始 1390.82</div></td><td>1480</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-14</td><td>過熱/風險</td><td>972.35 ~ 1114.15<div class="signal-dates">原始 1336.64</div></td><td>1515</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-13</td><td>過熱/風險</td><td>958.85 ~ 1082.65<div class="signal-dates">原始 1301.18</div></td><td>1485</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-09</td><td>行進籃</td><td>943.10 ~ 1045.90<div class="signal-dates">原始 1255.88</div></td><td>1350</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-08</td><td>行進籃</td><td>943.10 ~ 1045.90<div class="signal-dates">原始 1227.31</div></td><td>1230</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-06</td><td>過熱/風險</td><td>943.10 ~ 1045.90<div class="signal-dates">原始 1163.29</div></td><td>1335</td><td>100.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-03</td><td>過熱/風險</td><td>924.35 ~ 1002.15<div class="signal-dates">原始 1080.55</div></td><td>1255</td><td>100.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-07-01</td><td>行進籃</td><td>808.75 ~ 893.75<div class="signal-dates">原始 985.2</div></td><td>1105</td><td>100.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-06-17</td><td>過熱/風險</td><td>792.25 ~ 875.25<div class="signal-dates">原始 934.76</div></td><td>1100</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr>
+<tr>
+  <td>2026-06-16</td><td>過熱/風險</td><td>777.25 ~ 840.25<div class="signal-dates">原始 870.74</div></td><td>1045</td><td>90.0<div class="signal-dates">原始報告 Score</div></td>
+</tr></tbody></table>
     </div>
     <div class="strategy-note" style="margin-top:12px">買入區以該次報告日期以前的 14 日高低價反推 Williams -65~-85，並用 MA20 作為濾網；下方「原始」保留當天報告寫入的買點。原始分數來自報告 Score；舊格式沒有 Score 時，才用 0-100 的排名遞減補值。</div>
   </div>

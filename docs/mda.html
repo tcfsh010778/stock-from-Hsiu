@@ -38,6 +38,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -187,6 +189,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -330,7 +337,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -360,7 +367,6 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="mda.html" class="tab active">M大觀察</a>
 <a href="timing.html" class="tab">買賣時機</a>
 <a href="stocks.html" class="tab">個股查詢</a>
-<a href="backtest_dashboard.html" class="tab">回測</a>
 <a href="history.html" class="tab">歷史分析</a>
 
 </nav>
@@ -400,7 +406,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/5288.html">5288 豐祥-KY</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">192.50</div><div class="pos">+4.00（+2.12%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +64 張（小增但價格不破，列為觀察）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +40 張（小增但價格不破，列為觀察）</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 0.88%｜8週 0.12%；散戶4週 -0.52%｜8週 -0.71%；股東4週 -247人｜8週 -339人；主力10日 94 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict觀察成立<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -408,7 +414,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/6606.html">6606 建德工業</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">25.90</div><div class="neg">-0.10（-0.38%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +13 張（小增但價格不破，列為觀察）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +10 張（小增但價格不破，列為觀察）</div></td>
   <td><div class="m-checks"><span class="m-check ok">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 0.58%｜8週 0.43%；散戶4週 -0.38%｜8週 -0.52%；股東4週 -217人｜8週 -306人；主力10日 101 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -416,7 +422,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/4555.html">4555 氣立</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">46.75</div><div class="neg">-0.30（-0.64%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -666 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -605 張</div></td>
   <td><div class="m-checks"><span class="m-check ok">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 3.24%｜8週 2.50%；散戶4週 -1.24%｜8週 -1.19%；股東4週 -398人｜8週 -232人；主力10日 385 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -424,7 +430,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3450.html">3450 聯鈞</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">477.00</div><div class="neg">-14.50（-2.95%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -1,952 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -2,254 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -3.57%｜8週 4.21%；散戶4週 3.05%｜8週 -5.44%；股東4週 6342人｜8週 760人；主力10日 5953 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -432,7 +438,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/8016.html">8016 矽創</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">310.50</div><div class="pos">+2.00（+0.65%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -293 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -288 張</div></td>
   <td><div class="m-checks"><span class="m-check ok">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -1.03%｜8週 2.98%；散戶4週 0.45%｜8週 -2.67%；股東4週 1047人｜8週 725人；主力10日 1495 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -440,7 +446,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3022.html">3022 威強電</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">100</div></td>
   <td><div class="price-main">103.00</div><div class="pos">+2.50（+2.49%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +266 張（小增但價格不破，列為觀察）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 +520 張（小增但價格不破，列為觀察）</div></td>
   <td><div class="m-checks"><span class="m-check ok">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 2.98%｜8週 5.18%；散戶4週 -1.65%｜8週 -3.11%；股東4週 -826人｜8週 -1813人；主力10日 2577 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -448,7 +454,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3006.html">3006 晶豪科</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">98</div></td>
   <td><div class="price-main">256.50</div><div class="neg">-1.50（-0.58%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -754 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -1,555 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -8.22%｜8週 1.81%；散戶4週 5.01%｜8週 -2.22%；股東4週 11063人｜8週 -1397人；主力10日 15891 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -456,7 +462,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2301.html">2301 光寶科</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">98</div></td>
   <td><div class="price-main">247.00</div><div class="neg">-5.50（-2.18%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -2,707 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -4,101 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -1.39%｜8週 1.66%；散戶4週 1.25%｜8週 -0.88%；股東4週 27147人｜8週 11597人；主力10日 52935 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -464,7 +470,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2049.html">2049 上銀</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">98</div></td>
   <td><div class="price-main">387.00</div><div class="pos">+25.00（+6.91%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 -90 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=是｜融資10日 +579 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -2.15%｜8週 2.69%；散戶4週 1.26%｜8週 -2.43%；股東4週 7012人｜8週 1297人；主力10日 7081 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -472,7 +478,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3034.html">3034 聯詠</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">96</div></td>
   <td><div class="price-main">542.00</div><div class="neg">-1.00（-0.18%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=是｜外資拉回不逃=是｜融資10日 +33 張（小增但價格不破，列為觀察）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=是｜外資拉回不逃=是｜融資10日 -23 張（融資退場但價格不破，賣壓被吸收）</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -0.38%｜8週 1.78%；散戶4週 -0.85%｜8週 -2.52%；股東4週 -5355人｜8週 -10356人；主力10日 8575 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict觀察成立<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -480,7 +486,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2465.html">2465 麗臺</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">93</div></td>
   <td><div class="price-main">85.10</div><div class="neg">-0.40（-0.47%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=是｜外資拉回不逃=是｜融資10日 +201 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=是｜外資拉回不逃=是｜融資10日 +31 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -0.14%｜8週 3.96%；散戶4週 0.15%｜8週 -3.54%；股東4週 -271人｜8週 -1638人；主力10日 1311 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -488,7 +494,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/3231.html">3231 緯創</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">93</div></td>
   <td><div class="price-main">183.50</div><div class="neg">-6.00（-3.17%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -8,033 張（融資退場但價格不破，賣壓被吸收）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=是｜融資10日 -9,849 張（融資退場但價格不破，賣壓被吸收）</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 4.03%｜8週 7.26%；散戶4週 -1.38%｜8週 -3.75%；股東4週 11756人｜8週 -22082人；主力10日 125087 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -496,23 +502,23 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2408.html">2408 南亞科</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-green">重點觀察</span><div class="m-score">89</div></td>
   <td><div class="price-main">457.00</div><div class="neg">-2.00（-0.44%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 +3,625 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -513 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 -1.33%｜8週 3.64%；散戶4週 1.13%｜8週 -2.64%；股東4週 57503人｜8週 16940人；主力10日 45605 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/2425.html">2425 承啟</a><div class="signal-dates">上市｜M大解析頁</div></td>
-  <td><span class="tag tag-yellow">觀察中</span><div class="m-score">96</div></td>
+  <td><span class="tag tag-yellow">觀察中</span><div class="m-score">93</div></td>
   <td><div class="price-main">52.90</div><div class="pos">+4.75（+9.87%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 +900 張（小增但價格不破，列為觀察）</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 +1,490 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 1.24%｜8週 2.29%；散戶4週 -1.07%｜8週 -2.31%；股東4週 -739人｜8週 177人；主力10日 -1277 張</div></td>
-  <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
+  <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
 <tr>
   <td><a class="stock-link" href="stocks/1303.html">1303 南亞</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">88</div></td>
   <td><div class="price-main">188.00</div><div class="pos">+9.50（+5.32%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check bad">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓未確認｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 +7,180 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check bad">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check ok">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓未確認｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 +22,610 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 2.42%｜8週 2.46%；散戶4週 -1.24%｜8週 -1.28%；股東4週 -40251人｜8週 -43864人；主力10日 -42168 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 0</div></td>
 </tr>
@@ -520,7 +526,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1326.html">1326 台化</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">87</div></td>
   <td><div class="price-main">58.90</div><div class="pos">+0.80（+1.38%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -4,650 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -5,413 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 0.88%｜8週 0.61%；散戶4週 -0.27%｜8週 -0.31%；股東4週 -4041人｜8週 -7549人；主力10日 -25804 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 15</div></td>
 </tr>
@@ -528,7 +534,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/2369.html">2369 菱生</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">84</div></td>
   <td><div class="price-main">33.10</div><div class="neg">-1.15（-3.36%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓未確認｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -1,828 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓未確認｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -1,829 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 4.00%｜8週 5.01%；散戶4週 -0.95%｜8週 -2.25%；股東4週 -1812人｜8週 -5220人；主力10日 -3658 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -536,7 +542,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/8028.html">8028 昇陽半導體</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag-yellow">觀察中</span><div class="m-score">80</div></td>
   <td><div class="price-main">254.00</div><div class="neg">-20.50（-7.47%）</div></td>
-  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -1,365 張</div></td>
+  <td><div class="m-checks"><span class="m-check ok">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check warn">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check ok">MA240上彎</span> <span class="m-check ok">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check bad">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓收斂中｜長週期=是｜價不破低=否｜同區間小量=否｜外資拉回不逃=否｜融資10日 -958 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check bad">散戶/股東人數增加</span> <span class="m-check ok">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 4.07%｜8週 6.57%；散戶4週 -2.21%｜8週 -4.12%；股東4週 -218人｜8週 -517人；主力10日 -4594 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 40｜B1 45｜B2 8</div></td>
 </tr>
@@ -544,7 +550,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1307.html">1307 三芳</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag">暫緩觀察</span><div class="m-score">72</div></td>
   <td><div class="price-main">32.50</div><div class="pos">+0.35（+1.09%）</div></td>
-  <td><div class="m-checks"><span class="m-check warn">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check bad">MA240上彎</span> <span class="m-check warn">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=是｜外資拉回不逃=是｜融資10日 -11 張</div></td>
+  <td><div class="m-checks"><span class="m-check warn">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check ok">MA120上彎</span> <span class="m-check bad">MA240上彎</span> <span class="m-check warn">接近/突破120日</span> <span class="m-check ok">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=是｜價不破低=否｜同區間小量=是｜外資拉回不逃=是｜融資10日 -13 張</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check bad">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 1.93%｜8週 1.34%；散戶4週 -0.54%｜8週 -0.49%；股東4週 -902人｜8週 -926人；主力10日 -98 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 18｜B1 45｜B2 15</div></td>
 </tr>
@@ -552,7 +558,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><a class="stock-link" href="stocks/1325.html">1325 恆大</a><div class="signal-dates">上市｜M大解析頁</div></td>
   <td><span class="tag tag">暫緩觀察</span><div class="m-score">59</div></td>
   <td><div class="price-main">27.40</div><div class="pos">+1.05（+3.98%）</div></td>
-  <td><div class="m-checks"><span class="m-check warn">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check bad">MA120上彎</span> <span class="m-check bad">MA240上彎</span> <span class="m-check warn">接近/突破120日</span> <span class="m-check bad">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=否｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 -68 張（融資退場但價格不破，賣壓被吸收）</div></td>
+  <td><div class="m-checks"><span class="m-check warn">A：長多/空轉多</span> <span class="m-check ok">B1籌碼未離開</span> <span class="m-check ok">B2賣壓吸收</span> <span class="m-check bad">MA120上彎</span> <span class="m-check bad">MA240上彎</span> <span class="m-check warn">接近/突破120日</span> <span class="m-check bad">120/240扣抵有利</span> <span class="m-check bad">有量挑戰關鍵線</span> <span class="m-check ok">外資停止賣或偏買</span></div><div class="signal-dates" style="margin-top:6px">B2賣壓疑似消失｜長週期=否｜價不破低=是｜同區間小量=否｜外資拉回不逃=否｜融資10日 +17 張（小增但價格不破，列為觀察）</div></td>
   <td><div class="m-checks"><span class="m-check bad">主力大戶未明顯回來</span> <span class="m-check ok">散戶/股東人數增加</span> <span class="m-check bad">尚未有效站上120日</span></div><div class="signal-dates" style="margin-top:6px">大戶4週 0.71%｜8週 1.14%；散戶4週 -0.52%｜8週 -1.45%；股東4週 -187人｜8週 918人；主力10日 -230 張</div></td>
   <td><div class="signal-dates">ABC完整｜Strict未觸發<br>A 28｜B1 45｜B2 15</div></td>
 </tr></tbody>
@@ -648,7 +654,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3213.html">3213 茂訊</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3213.html">3213 茂訊</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3213.html">個股資訊</a></span></td>
   <td><div class="price-main">138.50</div><div class="signal-dates">距高 -5.8%｜量 -25.2%</div></td>
   <td><div class="m-checks">MA120 3.62%｜MA240 1.11%</div><div class="signal-dates">MA120 114.86｜MA240 110.74</div></td>
@@ -733,7 +739,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/9960.html">9960 </a><div class="signal-dates">─｜2026-07-13</div></td>
+  <td><a class="stock-link" href="stocks/9960.html">9960 邁達康</a><div class="signal-dates">上櫃｜2026-07-13</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/9960.html">個股資訊</a></span></td>
   <td><div class="price-main">32.15</div><div class="signal-dates">距高 -10.7%｜量 -22.7%</div></td>
   <td><div class="m-checks">MA120 9.20%｜MA240 2.99%</div><div class="signal-dates">MA120 26.99｜MA240 23.81</div></td>
@@ -837,7 +843,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4127.html">4127 天良</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4127.html">4127 天良</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/4127.html">個股資訊</a></span></td>
   <td><div class="price-main">86.00</div><div class="signal-dates">距高 -4.3%｜量 25.5%</div></td>
   <td><div class="m-checks">MA120 15.62%｜MA240 8.65%</div><div class="signal-dates">MA120 52.49｜MA240 42.75</div></td>
@@ -845,7 +851,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5490.html">5490 同亨</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5490.html">5490 同亨</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/5490.html">個股資訊</a></span></td>
   <td><div class="price-main">33.35</div><div class="signal-dates">距高 -10.6%｜量 127.0%</div></td>
   <td><div class="m-checks">MA120 3.08%｜MA240 1.52%</div><div class="signal-dates">MA120 28.35｜MA240 28.57</div></td>
@@ -893,7 +899,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6538.html">6538 倉和</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6538.html">6538 倉和</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/6538.html">個股資訊</a></span></td>
   <td><div class="price-main">150.00</div><div class="signal-dates">距高 -8.0%｜量 157.9%</div></td>
   <td><div class="m-checks">MA120 14.19%｜MA240 5.29%</div><div class="signal-dates">MA120 97.65｜MA240 85.54</div></td>
@@ -909,7 +915,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3441.html">3441 聯一光</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3441.html">3441 聯一光</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3441.html">個股資訊</a></span></td>
   <td><div class="price-main">88.40</div><div class="signal-dates">距高 -7.7%｜量 250.4%</div></td>
   <td><div class="m-checks">MA120 13.79%｜MA240 9.55%</div><div class="signal-dates">MA120 51.01｜MA240 42.81</div></td>
@@ -1063,7 +1069,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3066.html">3066 李洲</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3066.html">3066 李洲</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3066.html">個股資訊</a></span></td>
   <td><div class="price-main">22.20</div><div class="signal-dates">距高 -29.4%｜量 -35.2%</div></td>
   <td><div class="m-checks">MA120 7.01%｜MA240 3.92%</div><div class="signal-dates">MA120 20.22｜MA240 17.53</div></td>
@@ -1071,7 +1077,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3152.html">3152 璟德</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3152.html">3152 璟德</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3152.html">個股資訊</a></span></td>
   <td><div class="price-main">222.50</div><div class="signal-dates">距高 -33.1%｜量 -84.2%</div></td>
   <td><div class="m-checks">MA120 7.66%｜MA240 6.64%</div><div class="signal-dates">MA120 184.16｜MA240 156.12</div></td>
@@ -1079,7 +1085,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3171.html">3171 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3171.html">3171 炎洲流通</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3171.html">個股資訊</a></span></td>
   <td><div class="price-main">66.00</div><div class="signal-dates">距高 -16.9%｜量 -80.0%</div></td>
   <td><div class="m-checks">MA120 4.58%｜MA240 3.82%</div><div class="signal-dates">MA120 64.60｜MA240 57.30</div></td>
@@ -1103,7 +1109,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3234.html">3234 光環</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3234.html">3234 光環</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3234.html">個股資訊</a></span></td>
   <td><div class="price-main">110.50</div><div class="signal-dates">距高 -26.8%｜量 -57.2%</div></td>
   <td><div class="m-checks">MA120 9.81%｜MA240 8.91%</div><div class="signal-dates">MA120 104.30｜MA240 72.42</div></td>
@@ -1111,7 +1117,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3236.html">3236 千如</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3236.html">3236 千如</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3236.html">個股資訊</a></span></td>
   <td><div class="price-main">43.25</div><div class="signal-dates">距高 -42.9%｜量 -44.6%</div></td>
   <td><div class="m-checks">MA120 5.19%｜MA240 7.96%</div><div class="signal-dates">MA120 42.49｜MA240 33.44</div></td>
@@ -1119,7 +1125,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3285.html">3285 微端</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3285.html">3285 微端</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3285.html">個股資訊</a></span></td>
   <td><div class="price-main">38.90</div><div class="signal-dates">距高 -27.3%｜量 -43.5%</div></td>
   <td><div class="m-checks">MA120 6.27%｜MA240 3.87%</div><div class="signal-dates">MA120 33.18｜MA240 29.94</div></td>
@@ -1127,7 +1133,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3290.html">3290 東浦</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3290.html">3290 東浦</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3290.html">個股資訊</a></span></td>
   <td><div class="price-main">53.60</div><div class="signal-dates">距高 -28.3%｜量 -31.4%</div></td>
   <td><div class="m-checks">MA120 4.55%｜MA240 5.73%</div><div class="signal-dates">MA120 52.38｜MA240 47.09</div></td>
@@ -1143,7 +1149,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3498.html">3498 陽程</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3498.html">3498 陽程</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3498.html">個股資訊</a></span></td>
   <td><div class="price-main">111.00</div><div class="signal-dates">距高 -32.5%｜量 -37.2%</div></td>
   <td><div class="m-checks">MA120 10.93%｜MA240 8.30%</div><div class="signal-dates">MA120 98.71｜MA240 74.18</div></td>
@@ -1167,7 +1173,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3709.html">3709 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3709.html">3709 鑫聯大投控</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/3709.html">個股資訊</a></span></td>
   <td><div class="price-main">79.50</div><div class="signal-dates">距高 -14.4%｜量 -54.4%</div></td>
   <td><div class="m-checks">MA120 3.06%｜MA240 5.24%</div><div class="signal-dates">MA120 74.78｜MA240 62.41</div></td>
@@ -1199,7 +1205,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4931.html">4931 新盛力</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4931.html">4931 新盛力</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/4931.html">個股資訊</a></span></td>
   <td><div class="price-main">218.50</div><div class="signal-dates">距高 -23.9%｜量 -44.1%</div></td>
   <td><div class="m-checks">MA120 4.41%｜MA240 4.60%</div><div class="signal-dates">MA120 185.21｜MA240 169.79</div></td>
@@ -1215,7 +1221,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5536.html">5536 聖暉*</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5536.html">5536 聖暉*</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/5536.html">個股資訊</a></span></td>
   <td><div class="price-main">1070.00</div><div class="signal-dates">距高 -28.2%｜量 -45.5%</div></td>
   <td><div class="m-checks">MA120 6.98%｜MA240 6.15%</div><div class="signal-dates">MA120 939.56｜MA240 851.17</div></td>
@@ -1223,7 +1229,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6173.html">6173 信昌電</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6173.html">個股資訊</a></span></td>
   <td><div class="price-main">171.00</div><div class="signal-dates">距高 -52.8%｜量 -22.8%</div></td>
   <td><div class="m-checks">MA120 14.30%｜MA240 13.30%</div><div class="signal-dates">MA120 150.83｜MA240 104.43</div></td>
@@ -1231,7 +1237,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6227.html">6227 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6227.html">6227 茂綸</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6227.html">個股資訊</a></span></td>
   <td><div class="price-main">125.00</div><div class="signal-dates">距高 -12.6%｜量 -46.1%</div></td>
   <td><div class="m-checks">MA120 4.41%｜MA240 1.78%</div><div class="signal-dates">MA120 104.79｜MA240 96.54</div></td>
@@ -1239,7 +1245,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6245.html">6245 立端</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6245.html">6245 立端</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6245.html">個股資訊</a></span></td>
   <td><div class="price-main">82.40</div><div class="signal-dates">距高 -12.6%｜量 -32.2%</div></td>
   <td><div class="m-checks">MA120 2.52%｜MA240 0.05%</div><div class="signal-dates">MA120 76.87｜MA240 76.17</div></td>
@@ -1247,7 +1253,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6435.html">6435 大中</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6435.html">6435 大中</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6435.html">個股資訊</a></span></td>
   <td><div class="price-main">258.50</div><div class="signal-dates">距高 -42.2%｜量 -20.4%</div></td>
   <td><div class="m-checks">MA120 11.79%｜MA240 9.83%</div><div class="signal-dates">MA120 229.17｜MA240 169.34</div></td>
@@ -1255,7 +1261,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6509.html">6509 聚和</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6509.html">6509 聚和</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6509.html">個股資訊</a></span></td>
   <td><div class="price-main">47.00</div><div class="signal-dates">距高 -20.6%｜量 -61.9%</div></td>
   <td><div class="m-checks">MA120 4.88%｜MA240 3.23%</div><div class="signal-dates">MA120 45.32｜MA240 39.44</div></td>
@@ -1263,7 +1269,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6548.html">6548 長科*</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6548.html">6548 長科*</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6548.html">個股資訊</a></span></td>
   <td><div class="price-main">74.20</div><div class="signal-dates">距高 -28.7%｜量 -36.7%</div></td>
   <td><div class="m-checks">MA120 5.24%｜MA240 6.96%</div><div class="signal-dates">MA120 62.47｜MA240 51.61</div></td>
@@ -1271,7 +1277,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6651.html">6651 全宇昕</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6651.html">6651 全宇昕</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/6651.html">個股資訊</a></span></td>
   <td><div class="price-main">120.50</div><div class="signal-dates">距高 -32.1%｜量 -51.2%</div></td>
   <td><div class="m-checks">MA120 6.25%｜MA240 4.20%</div><div class="signal-dates">MA120 117.19｜MA240 96.34</div></td>
@@ -1311,7 +1317,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/7828.html">7828 創新服務</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/7828.html">7828 創新服務</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/7828.html">個股資訊</a></span></td>
   <td><div class="price-main">1755.00</div><div class="signal-dates">距高 -30.1%｜量 -21.1%</div></td>
   <td><div class="m-checks">MA120 14.39%｜MA240 13.51%</div><div class="signal-dates">MA120 1458.17｜MA240 956.17</div></td>
@@ -1335,7 +1341,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8096.html">8096 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8096.html">8096 擎亞</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/8096.html">個股資訊</a></span></td>
   <td><div class="price-main">135.50</div><div class="signal-dates">距高 -23.4%｜量 -55.1%</div></td>
   <td><div class="m-checks">MA120 13.72%｜MA240 10.81%</div><div class="signal-dates">MA120 108.81｜MA240 78.47</div></td>
@@ -1343,7 +1349,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8182.html">8182 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8182.html">8182 加高</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">100</div><span class="tag tag-blue"><a href="stocks/8182.html">個股資訊</a></span></td>
   <td><div class="price-main">39.40</div><div class="signal-dates">距高 -35.1%｜量 -43.0%</div></td>
   <td><div class="m-checks">MA120 6.11%｜MA240 3.78%</div><div class="signal-dates">MA120 38.06｜MA240 32.05</div></td>
@@ -1503,7 +1509,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3088.html">3088 艾訊</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3088.html">3088 艾訊</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/3088.html">個股資訊</a></span></td>
   <td><div class="price-main">134.00</div><div class="signal-dates">距高 -15.7%｜量 64.2%</div></td>
   <td><div class="m-checks">MA120 8.19%｜MA240 4.22%</div><div class="signal-dates">MA120 114.31｜MA240 97.21</div></td>
@@ -1511,7 +1517,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3147.html">3147 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3147.html">3147 大綜</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/3147.html">個股資訊</a></span></td>
   <td><div class="price-main">244.50</div><div class="signal-dates">距高 -30.5%｜量 6.9%</div></td>
   <td><div class="m-checks">MA120 5.67%｜MA240 1.76%</div><div class="signal-dates">MA120 207.72｜MA240 193.19</div></td>
@@ -1519,7 +1525,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3362.html">3362 先進光</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3362.html">3362 先進光</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/3362.html">個股資訊</a></span></td>
   <td><div class="price-main">176.00</div><div class="signal-dates">距高 -19.3%｜量 129.7%</div></td>
   <td><div class="m-checks">MA120 8.22%｜MA240 3.40%</div><div class="signal-dates">MA120 130.46｜MA240 117.72</div></td>
@@ -1543,7 +1549,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4534.html">4534 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4534.html">4534 慶騰</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/4534.html">個股資訊</a></span></td>
   <td><div class="price-main">34.15</div><div class="signal-dates">距高 -23.3%｜量 32.9%</div></td>
   <td><div class="m-checks">MA120 10.63%｜MA240 7.46%</div><div class="signal-dates">MA120 28.60｜MA240 22.74</div></td>
@@ -1551,7 +1557,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4541.html">4541 晟田</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4541.html">4541 晟田</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/4541.html">個股資訊</a></span></td>
   <td><div class="price-main">63.70</div><div class="signal-dates">距高 -21.9%｜量 256.2%</div></td>
   <td><div class="m-checks">MA120 7.36%｜MA240 4.23%</div><div class="signal-dates">MA120 49.55｜MA240 48.05</div></td>
@@ -1559,7 +1565,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4556.html">4556 旭然</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4556.html">4556 旭然</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/4556.html">個股資訊</a></span></td>
   <td><div class="price-main">83.10</div><div class="signal-dates">距高 -39.8%｜量 -0.7%</div></td>
   <td><div class="m-checks">MA120 33.62%｜MA240 23.37%</div><div class="signal-dates">MA120 52.33｜MA240 37.98</div></td>
@@ -1567,7 +1573,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5210.html">5210 寶碩</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5210.html">5210 寶碩</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/5210.html">個股資訊</a></span></td>
   <td><div class="price-main">27.80</div><div class="signal-dates">距高 -16.4%｜量 3.6%</div></td>
   <td><div class="m-checks">MA120 5.09%｜MA240 0.52%</div><div class="signal-dates">MA120 25.87｜MA240 24.96</div></td>
@@ -1575,7 +1581,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5328.html">5328 華容</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5328.html">5328 華容</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/5328.html">個股資訊</a></span></td>
   <td><div class="price-main">62.90</div><div class="signal-dates">距高 -29.2%｜量 28.4%</div></td>
   <td><div class="m-checks">MA120 18.67%｜MA240 16.78%</div><div class="signal-dates">MA120 39.92｜MA240 29.59</div></td>
@@ -1583,7 +1589,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5410.html">5410 國眾</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5410.html">5410 國眾</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/5410.html">個股資訊</a></span></td>
   <td><div class="price-main">37.50</div><div class="signal-dates">距高 -24.7%｜量 -19.5%</div></td>
   <td><div class="m-checks">MA120 3.06%｜MA240 2.17%</div><div class="signal-dates">MA120 35.78｜MA240 34.07</div></td>
@@ -1591,7 +1597,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5464.html">5464 霖宏</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5464.html">5464 霖宏</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/5464.html">個股資訊</a></span></td>
   <td><div class="price-main">67.60</div><div class="signal-dates">距高 -38.0%｜量 -15.5%</div></td>
   <td><div class="m-checks">MA120 18.17%｜MA240 12.09%</div><div class="signal-dates">MA120 54.29｜MA240 39.86</div></td>
@@ -1639,7 +1645,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6432.html">6432 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6432.html">6432 今展科</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/6432.html">個股資訊</a></span></td>
   <td><div class="price-main">73.50</div><div class="signal-dates">距高 -15.4%｜量 -11.8%</div></td>
   <td><div class="m-checks">MA120 13.15%｜MA240 9.59%</div><div class="signal-dates">MA120 53.06｜MA240 42.41</div></td>
@@ -1655,7 +1661,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6488.html">6488 環球晶</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6488.html">6488 環球晶</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/6488.html">個股資訊</a></span></td>
   <td><div class="price-main">872.00</div><div class="signal-dates">距高 -45.5%｜量 56.9%</div></td>
   <td><div class="m-checks">MA120 16.28%｜MA240 12.31%</div><div class="signal-dates">MA120 751.27｜MA240 589.98</div></td>
@@ -1663,7 +1669,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6856.html">6856 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6856.html">6856 鑫傳</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/6856.html">個股資訊</a></span></td>
   <td><div class="price-main">45.15</div><div class="signal-dates">距高 -26.8%｜量 48.0%</div></td>
   <td><div class="m-checks">MA120 1.92%｜MA240 1.08%</div><div class="signal-dates">MA120 38.50｜MA240 41.38</div></td>
@@ -1671,7 +1677,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6870.html">6870 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6870.html">6870 騰雲</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/6870.html">個股資訊</a></span></td>
   <td><div class="price-main">261.50</div><div class="signal-dates">距高 -22.2%｜量 -15.7%</div></td>
   <td><div class="m-checks">MA120 4.85%｜MA240 2.59%</div><div class="signal-dates">MA120 227.36｜MA240 217.32</div></td>
@@ -1695,7 +1701,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8042.html">8042 金山電</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8042.html">8042 金山電</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">90</div><span class="tag tag-blue"><a href="stocks/8042.html">個股資訊</a></span></td>
   <td><div class="price-main">112.50</div><div class="signal-dates">距高 -50.4%｜量 25.7%</div></td>
   <td><div class="m-checks">MA120 10.40%｜MA240 11.59%</div><div class="signal-dates">MA120 103.57｜MA240 75.21</div></td>
@@ -1743,7 +1749,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4767.html">4767 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4767.html">4767 誠泰科技</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">85</div><span class="tag tag-blue"><a href="stocks/4767.html">個股資訊</a></span></td>
   <td><div class="price-main">26.65</div><div class="signal-dates">距高 -11.8%｜量 -50.3%</div></td>
   <td><div class="m-checks">MA120 0.64%｜MA240 -0.53%</div><div class="signal-dates">MA120 25.92｜MA240 25.66</div></td>
@@ -1807,7 +1813,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5425.html">5425 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5425.html">5425 台半</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/5425.html">個股資訊</a></span></td>
   <td><div class="price-main">84.90</div><div class="signal-dates">距高 -41.0%｜量 -31.9%</div></td>
   <td><div class="m-checks">MA120 5.73%｜MA240 5.45%</div><div class="signal-dates">MA120 80.76｜MA240 68.24</div></td>
@@ -1815,7 +1821,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6175.html">6175 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6175.html">6175 立敦</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/6175.html">個股資訊</a></span></td>
   <td><div class="price-main">76.90</div><div class="signal-dates">距高 -37.5%｜量 -49.2%</div></td>
   <td><div class="m-checks">MA120 8.14%｜MA240 7.82%</div><div class="signal-dates">MA120 73.72｜MA240 59.86</div></td>
@@ -1823,7 +1829,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6270.html">6270 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6270.html">6270 倍微</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/6270.html">個股資訊</a></span></td>
   <td><div class="price-main">29.70</div><div class="signal-dates">距高 -36.2%｜量 -53.1%</div></td>
   <td><div class="m-checks">MA120 3.36%｜MA240 3.17%</div><div class="signal-dates">MA120 28.94｜MA240 25.77</div></td>
@@ -1831,7 +1837,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6654.html">6654 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6654.html">6654 天正國際</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/6654.html">個股資訊</a></span></td>
   <td><div class="price-main">170.50</div><div class="signal-dates">距高 -29.5%｜量 -39.1%</div></td>
   <td><div class="m-checks">MA120 11.65%｜MA240 8.52%</div><div class="signal-dates">MA120 127.29｜MA240 104.14</div></td>
@@ -1839,7 +1845,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6716.html">6716 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6716.html">6716 應廣</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/6716.html">個股資訊</a></span></td>
   <td><div class="price-main">87.00</div><div class="signal-dates">距高 -32.6%｜量 -57.6%</div></td>
   <td><div class="m-checks">MA120 7.08%｜MA240 4.64%</div><div class="signal-dates">MA120 85.79｜MA240 67.47</div></td>
@@ -1847,7 +1853,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8043.html">8043 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8043.html">8043 蜜望實</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/8043.html">個股資訊</a></span></td>
   <td><div class="price-main">135.00</div><div class="signal-dates">距高 -43.6%｜量 -38.3%</div></td>
   <td><div class="m-checks">MA120 8.03%｜MA240 12.22%</div><div class="signal-dates">MA120 118.09｜MA240 88.12</div></td>
@@ -1855,7 +1861,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">MA120上彎且收盤站上、大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8064.html">8064 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8064.html">8064 東捷</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">80</div><span class="tag tag-blue"><a href="stocks/8064.html">個股資訊</a></span></td>
   <td><div class="price-main">105.50</div><div class="signal-dates">距高 -44.3%｜量 -54.5%</div></td>
   <td><div class="m-checks">MA120 10.20%｜MA240 8.86%</div><div class="signal-dates">MA120 101.14｜MA240 72.71</div></td>
@@ -1907,7 +1913,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <thead><tr><th>股票</th><th>分數</th><th>位置/量能</th><th>A 長均線</th><th>B1 股權</th><th>判讀摘要</th></tr></thead>
     <tbody>
 <tr>
-  <td><a class="stock-link" href="stocks/1570.html">1570 力肯</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/1570.html">1570 力肯</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/1570.html">個股資訊</a></span></td>
   <td><div class="price-main">33.75</div><div class="signal-dates">距高 -40.4%｜量 -71.0%</div></td>
   <td><div class="m-checks">MA120 2.63%｜MA240 3.42%</div><div class="signal-dates">MA120 37.21｜MA240 32.98</div></td>
@@ -1955,7 +1961,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3093.html">3093 港建*</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3093.html">3093 港建*</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3093.html">個股資訊</a></span></td>
   <td><div class="price-main">48.45</div><div class="signal-dates">距高 -37.6%｜量 -69.0%</div></td>
   <td><div class="m-checks">MA120 7.73%｜MA240 4.78%</div><div class="signal-dates">MA120 51.85｜MA240 38.78</div></td>
@@ -1963,7 +1969,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3131.html">3131 弘塑</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3131.html">3131 弘塑</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3131.html">個股資訊</a></span></td>
   <td><div class="price-main">2385.00</div><div class="signal-dates">距高 -41.0%｜量 -36.5%</div></td>
   <td><div class="m-checks">MA120 6.36%｜MA240 5.09%</div><div class="signal-dates">MA120 2797.75｜MA240 2163.38</div></td>
@@ -1971,7 +1977,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3265.html">3265 台星科</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3265.html">3265 台星科</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3265.html">個股資訊</a></span></td>
   <td><div class="price-main">157.50</div><div class="signal-dates">距高 -23.0%｜量 -60.6%</div></td>
   <td><div class="m-checks">MA120 2.07%｜MA240 3.70%</div><div class="signal-dates">MA120 162.85｜MA240 134.07</div></td>
@@ -1987,7 +1993,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3339.html">3339 泰谷</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3339.html">3339 泰谷</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3339.html">個股資訊</a></span></td>
   <td><div class="price-main">40.60</div><div class="signal-dates">距高 -44.2%｜量 -61.2%</div></td>
   <td><div class="m-checks">MA120 3.01%｜MA240 0.33%</div><div class="signal-dates">MA120 42.19｜MA240 35.77</div></td>
@@ -1995,7 +2001,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3537.html">3537 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3537.html">3537 堡達</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3537.html">個股資訊</a></span></td>
   <td><div class="price-main">52.80</div><div class="signal-dates">距高 -42.9%｜量 -63.1%</div></td>
   <td><div class="m-checks">MA120 1.53%｜MA240 1.92%</div><div class="signal-dates">MA120 56.01｜MA240 50.63</div></td>
@@ -2003,7 +2009,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3580.html">3580 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3580.html">3580 友威科</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3580.html">個股資訊</a></span></td>
   <td><div class="price-main">78.60</div><div class="signal-dates">距高 -33.4%｜量 -73.4%</div></td>
   <td><div class="m-checks">MA120 2.30%｜MA240 1.74%</div><div class="signal-dates">MA120 84.98｜MA240 74.44</div></td>
@@ -2027,7 +2033,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3624.html">3624 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3624.html">3624 光頡</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3624.html">個股資訊</a></span></td>
   <td><div class="price-main">75.60</div><div class="signal-dates">距高 -57.5%｜量 -49.7%</div></td>
   <td><div class="m-checks">MA120 5.76%｜MA240 7.34%</div><div class="signal-dates">MA120 81.52｜MA240 64.30</div></td>
@@ -2035,7 +2041,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3631.html">3631 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3631.html">3631 晟楠</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3631.html">個股資訊</a></span></td>
   <td><div class="price-main">31.40</div><div class="signal-dates">距高 -26.6%｜量 -80.4%</div></td>
   <td><div class="m-checks">MA120 3.14%｜MA240 2.70%</div><div class="signal-dates">MA120 32.54｜MA240 28.23</div></td>
@@ -2043,7 +2049,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3707.html">3707 漢磊</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3707.html">3707 漢磊</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/3707.html">個股資訊</a></span></td>
   <td><div class="price-main">62.10</div><div class="signal-dates">距高 -38.2%｜量 -35.1%</div></td>
   <td><div class="m-checks">MA120 1.30%｜MA240 3.93%</div><div class="signal-dates">MA120 67.15｜MA240 60.48</div></td>
@@ -2059,7 +2065,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4741.html">4741 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4741.html">4741 泓瀚</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/4741.html">個股資訊</a></span></td>
   <td><div class="price-main">44.35</div><div class="signal-dates">距高 -48.8%｜量 -74.6%</div></td>
   <td><div class="m-checks">MA120 8.86%｜MA240 4.98%</div><div class="signal-dates">MA120 47.51｜MA240 34.96</div></td>
@@ -2083,7 +2089,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5291.html">5291 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5291.html">5291 邑昇</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/5291.html">個股資訊</a></span></td>
   <td><div class="price-main">51.00</div><div class="signal-dates">距高 -39.7%｜量 -72.5%</div></td>
   <td><div class="m-checks">MA120 3.77%｜MA240 5.32%</div><div class="signal-dates">MA120 60.82｜MA240 44.27</div></td>
@@ -2091,7 +2097,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6113.html">6113 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6113.html">6113 亞矽</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6113.html">個股資訊</a></span></td>
   <td><div class="price-main">22.80</div><div class="signal-dates">距高 -27.2%｜量 -51.2%</div></td>
   <td><div class="m-checks">MA120 0.37%｜MA240 0.09%</div><div class="signal-dates">MA120 23.52｜MA240 22.42</div></td>
@@ -2107,7 +2113,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6151.html">6151 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6151.html">6151 晉倫</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6151.html">個股資訊</a></span></td>
   <td><div class="price-main">35.00</div><div class="signal-dates">距高 -31.4%｜量 -66.4%</div></td>
   <td><div class="m-checks">MA120 2.35%｜MA240 1.86%</div><div class="signal-dates">MA120 36.36｜MA240 33.00</div></td>
@@ -2123,7 +2129,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6244.html">6244 茂迪</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6244.html">6244 茂迪</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6244.html">個股資訊</a></span></td>
   <td><div class="price-main">23.75</div><div class="signal-dates">距高 -39.3%｜量 -76.2%</div></td>
   <td><div class="m-checks">MA120 1.16%｜MA240 2.28%</div><div class="signal-dates">MA120 28.19｜MA240 23.40</div></td>
@@ -2147,7 +2153,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6417.html">6417 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6417.html">6417 韋僑</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6417.html">個股資訊</a></span></td>
   <td><div class="price-main">118.50</div><div class="signal-dates">距高 -22.3%｜量 -25.1%</div></td>
   <td><div class="m-checks">MA120 1.04%｜MA240 1.52%</div><div class="signal-dates">MA120 120.13｜MA240 112.40</div></td>
@@ -2155,7 +2161,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6530.html">6530 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6530.html">6530 創威</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6530.html">個股資訊</a></span></td>
   <td><div class="price-main">77.30</div><div class="signal-dates">距高 -44.4%｜量 -79.9%</div></td>
   <td><div class="m-checks">MA120 2.50%｜MA240 1.93%</div><div class="signal-dates">MA120 91.48｜MA240 76.40</div></td>
@@ -2171,7 +2177,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6877.html">6877 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6877.html">6877 鏵友益</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/6877.html">個股資訊</a></span></td>
   <td><div class="price-main">125.00</div><div class="signal-dates">距高 -36.9%｜量 -83.9%</div></td>
   <td><div class="m-checks">MA120 4.78%｜MA240 2.81%</div><div class="signal-dates">MA120 131.62｜MA240 110.53</div></td>
@@ -2187,7 +2193,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8093.html">8093 保銳</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8093.html">8093 保銳</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/8093.html">個股資訊</a></span></td>
   <td><div class="price-main">20.70</div><div class="signal-dates">距高 -9.8%｜量 -28.0%</div></td>
   <td><div class="m-checks">MA120 -0.41%｜MA240 0.75%</div><div class="signal-dates">MA120 18.62｜MA240 17.27</div></td>
@@ -2211,7 +2217,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8390.html">8390 金益鼎</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8390.html">8390 金益鼎</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">70</div><span class="tag tag-blue"><a href="stocks/8390.html">個股資訊</a></span></td>
   <td><div class="price-main">98.50</div><div class="signal-dates">距高 -25.4%｜量 -58.1%</div></td>
   <td><div class="m-checks">MA120 -0.48%｜MA240 3.13%</div><div class="signal-dates">MA120 101.26｜MA240 89.34</div></td>
@@ -2299,7 +2305,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3211.html">3211 順達</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3211.html">3211 順達</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">60</div><span class="tag tag-blue"><a href="stocks/3211.html">個股資訊</a></span></td>
   <td><div class="price-main">356.50</div><div class="signal-dates">距高 -28.0%｜量 -16.7%</div></td>
   <td><div class="m-checks">MA120 3.00%｜MA240 3.49%</div><div class="signal-dates">MA120 368.12｜MA240 342.67</div></td>
@@ -2307,7 +2313,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3484.html">3484 崧騰</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3484.html">3484 崧騰</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">60</div><span class="tag tag-blue"><a href="stocks/3484.html">個股資訊</a></span></td>
   <td><div class="price-main">52.10</div><div class="signal-dates">距高 -8.6%｜量 -4.1%</div></td>
   <td><div class="m-checks">MA120 -0.26%｜MA240 0.36%</div><div class="signal-dates">MA120 47.06｜MA240 48.46</div></td>
@@ -2323,7 +2329,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/5511.html">5511 德昌</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/5511.html">5511 德昌</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">60</div><span class="tag tag-blue"><a href="stocks/5511.html">個股資訊</a></span></td>
   <td><div class="price-main">70.10</div><div class="signal-dates">距高 -13.5%｜量 48.9%</div></td>
   <td><div class="m-checks">MA120 0.56%｜MA240 1.46%</div><div class="signal-dates">MA120 72.03｜MA240 67.80</div></td>
@@ -2363,7 +2369,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/2065.html">2065 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/2065.html">2065 世豐</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/2065.html">個股資訊</a></span></td>
   <td><div class="price-main">32.30</div><div class="signal-dates">距高 -13.1%｜量 -57.8%</div></td>
   <td><div class="m-checks">MA120 -0.12%｜MA240 -1.10%</div><div class="signal-dates">MA120 32.04｜MA240 31.19</div></td>
@@ -2395,7 +2401,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3071.html">3071 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3071.html">3071 協禧</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/3071.html">個股資訊</a></span></td>
   <td><div class="price-main">26.05</div><div class="signal-dates">距高 -28.0%｜量 -73.9%</div></td>
   <td><div class="m-checks">MA120 1.34%｜MA240 2.68%</div><div class="signal-dates">MA120 28.79｜MA240 26.19</div></td>
@@ -2411,7 +2417,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4744.html">4744 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4744.html">4744 皇將</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/4744.html">個股資訊</a></span></td>
   <td><div class="price-main">28.25</div><div class="signal-dates">距高 -29.6%｜量 -72.9%</div></td>
   <td><div class="m-checks">MA120 0.18%｜MA240 1.61%</div><div class="signal-dates">MA120 31.95｜MA240 30.70</div></td>
@@ -2443,7 +2449,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6222.html">6222 立軒</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6222.html">6222 立軒</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/6222.html">個股資訊</a></span></td>
   <td><div class="price-main">20.30</div><div class="signal-dates">距高 -14.0%｜量 -70.2%</div></td>
   <td><div class="m-checks">MA120 0.66%｜MA240 -0.44%</div><div class="signal-dates">MA120 20.39｜MA240 20.04</div></td>
@@ -2451,7 +2457,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6229.html">6229 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6229.html">6229 研通</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/6229.html">個股資訊</a></span></td>
   <td><div class="price-main">23.70</div><div class="signal-dates">距高 -24.2%｜量 -67.6%</div></td>
   <td><div class="m-checks">MA120 0.27%｜MA240 0.07%</div><div class="signal-dates">MA120 24.66｜MA240 24.11</div></td>
@@ -2459,7 +2465,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6576.html">6576 逸達</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6576.html">6576 逸達</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/6576.html">個股資訊</a></span></td>
   <td><div class="price-main">79.70</div><div class="signal-dates">距高 -14.9%｜量 -21.5%</div></td>
   <td><div class="m-checks">MA120 -0.01%｜MA240 0.74%</div><div class="signal-dates">MA120 80.02｜MA240 80.00</div></td>
@@ -2483,7 +2489,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6720.html">6720 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6720.html">6720 久昌</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/6720.html">個股資訊</a></span></td>
   <td><div class="price-main">135.00</div><div class="signal-dates">距高 -25.8%｜量 -63.1%</div></td>
   <td><div class="m-checks">MA120 0.07%｜MA240 0.17%</div><div class="signal-dates">MA120 155.10｜MA240 141.98</div></td>
@@ -2491,7 +2497,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6761.html">6761 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6761.html">6761 穩得</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/6761.html">個股資訊</a></span></td>
   <td><div class="price-main">159.00</div><div class="signal-dates">距高 -33.5%｜量 -76.7%</div></td>
   <td><div class="m-checks">MA120 1.29%｜MA240 3.44%</div><div class="signal-dates">MA120 180.27｜MA240 159.19</div></td>
@@ -2499,7 +2505,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8048.html">8048 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8048.html">8048 德勝</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/8048.html">個股資訊</a></span></td>
   <td><div class="price-main">54.00</div><div class="signal-dates">距高 -29.7%｜量 -65.2%</div></td>
   <td><div class="m-checks">MA120 0.19%｜MA240 2.40%</div><div class="signal-dates">MA120 60.07｜MA240 55.17</div></td>
@@ -2507,7 +2513,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8121.html">8121 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8121.html">8121 越峰</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/8121.html">個股資訊</a></span></td>
   <td><div class="price-main">29.30</div><div class="signal-dates">距高 -48.8%｜量 -24.3%</div></td>
   <td><div class="m-checks">MA120 1.69%｜MA240 4.17%</div><div class="signal-dates">MA120 33.28｜MA240 30.21</div></td>
@@ -2515,7 +2521,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8240.html">8240 華宏</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8240.html">8240 華宏</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">55</div><span class="tag tag-blue"><a href="stocks/8240.html">個股資訊</a></span></td>
   <td><div class="price-main">41.80</div><div class="signal-dates">距高 -48.9%｜量 -86.9%</div></td>
   <td><div class="m-checks">MA120 -0.02%｜MA240 1.66%</div><div class="signal-dates">MA120 53.79｜MA240 45.48</div></td>
@@ -2539,7 +2545,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3289.html">3289 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3289.html">3289 宜特</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/3289.html">個股資訊</a></span></td>
   <td><div class="price-main">147.00</div><div class="signal-dates">距高 -32.9%｜量 -73.9%</div></td>
   <td><div class="m-checks">MA120 2.63%｜MA240 1.37%</div><div class="signal-dates">MA120 156.96｜MA240 136.99</div></td>
@@ -2547,7 +2553,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3357.html">3357 臺慶科</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3357.html">3357 臺慶科</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/3357.html">個股資訊</a></span></td>
   <td><div class="price-main">210.00</div><div class="signal-dates">距高 -43.5%｜量 -54.0%</div></td>
   <td><div class="m-checks">MA120 4.21%｜MA240 5.98%</div><div class="signal-dates">MA120 212.23｜MA240 178.16</div></td>
@@ -2555,7 +2561,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3526.html">3526 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3526.html">3526 凡甲</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/3526.html">個股資訊</a></span></td>
   <td><div class="price-main">296.00</div><div class="signal-dates">距高 -26.6%｜量 -57.7%</div></td>
   <td><div class="m-checks">MA120 2.97%｜MA240 1.90%</div><div class="signal-dates">MA120 313.57｜MA240 280.29</div></td>
@@ -2571,7 +2577,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3555.html">3555 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3555.html">3555 博士旺</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/3555.html">個股資訊</a></span></td>
   <td><div class="price-main">157.50</div><div class="signal-dates">距高 -44.0%｜量 -62.3%</div></td>
   <td><div class="m-checks">MA120 5.78%｜MA240 7.96%</div><div class="signal-dates">MA120 182.93｜MA240 127.45</div></td>
@@ -2579,7 +2585,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6127.html">6127 九豪（電子零組件）</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/6127.html">個股資訊</a></span></td>
   <td><div class="price-main">50.00</div><div class="signal-dates">距高 -51.0%｜量 -71.2%</div></td>
   <td><div class="m-checks">MA120 5.72%｜MA240 7.67%</div><div class="signal-dates">MA120 54.38｜MA240 41.11</div></td>
@@ -2603,7 +2609,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6532.html">6532 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6532.html">6532 瑞耘</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/6532.html">個股資訊</a></span></td>
   <td><div class="price-main">76.60</div><div class="signal-dates">距高 -37.5%｜量 -78.1%</div></td>
   <td><div class="m-checks">MA120 2.64%｜MA240 0.30%</div><div class="signal-dates">MA120 81.15｜MA240 69.32</div></td>
@@ -2611,7 +2617,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6683.html">6683 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6683.html">6683 雍智科技</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/6683.html">個股資訊</a></span></td>
   <td><div class="price-main">1185.00</div><div class="signal-dates">距高 -53.8%｜量 -39.7%</div></td>
   <td><div class="m-checks">MA120 9.41%｜MA240 8.06%</div><div class="signal-dates">MA120 1477.80｜MA240 944.56</div></td>
@@ -2619,7 +2625,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/7751.html">7751 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/7751.html">7751 竑騰</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/7751.html">個股資訊</a></span></td>
   <td><div class="price-main">1405.00</div><div class="signal-dates">距高 -49.9%｜量 -27.4%</div></td>
   <td><div class="m-checks">MA120 4.66%｜MA240 6.56%</div><div class="signal-dates">MA120 1530.16｜MA240 1052.27</div></td>
@@ -2627,7 +2633,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8040.html">8040 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8040.html">8040 九暘</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/8040.html">個股資訊</a></span></td>
   <td><div class="price-main">72.20</div><div class="signal-dates">距高 -44.7%｜量 -59.7%</div></td>
   <td><div class="m-checks">MA120 6.14%｜MA240 2.12%</div><div class="signal-dates">MA120 74.65｜MA240 63.57</div></td>
@@ -2651,7 +2657,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區、20日量低於120日均量、240扣抵偏有利</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8289.html">8289 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8289.html">8289 泰藝</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">50</div><span class="tag tag-blue"><a href="stocks/8289.html">個股資訊</a></span></td>
   <td><div class="price-main">42.85</div><div class="signal-dates">距高 -45.1%｜量 -72.3%</div></td>
   <td><div class="m-checks">MA120 8.11%｜MA240 6.55%</div><div class="signal-dates">MA120 48.53｜MA240 34.81</div></td>
@@ -2691,7 +2697,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4107.html">4107 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4107.html">4107 邦特</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">45</div><span class="tag tag-blue"><a href="stocks/4107.html">個股資訊</a></span></td>
   <td><div class="price-main">113.00</div><div class="signal-dates">距高 -14.4%｜量 -16.2%</div></td>
   <td><div class="m-checks">MA120 -0.76%｜MA240 0.11%</div><div class="signal-dates">MA120 117.61｜MA240 119.07</div></td>
@@ -2707,7 +2713,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/8930.html">8930 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/8930.html">8930 青鋼</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">45</div><span class="tag tag-blue"><a href="stocks/8930.html">個股資訊</a></span></td>
   <td><div class="price-main">30.80</div><div class="signal-dates">距高 -8.9%｜量 4.5%</div></td>
   <td><div class="m-checks">MA120 -0.24%｜MA240 -0.01%</div><div class="signal-dates">MA120 29.92｜MA240 30.33</div></td>
@@ -2763,7 +2769,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3228.html">3228 金麗科</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3228.html">3228 金麗科</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/3228.html">個股資訊</a></span></td>
   <td><div class="price-main">146.50</div><div class="signal-dates">距高 -44.1%｜量 -58.7%</div></td>
   <td><div class="m-checks">MA120 2.60%｜MA240 -0.34%</div><div class="signal-dates">MA120 164.60｜MA240 152.27</div></td>
@@ -2787,7 +2793,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、近20日未破60日低位區</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/3546.html">3546 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/3546.html">3546 宇峻</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/3546.html">個股資訊</a></span></td>
   <td><div class="price-main">75.30</div><div class="signal-dates">距高 -15.3%｜量 -47.7%</div></td>
   <td><div class="m-checks">MA120 -0.97%｜MA240 -2.05%</div><div class="signal-dates">MA120 74.35｜MA240 77.19</div></td>
@@ -2803,7 +2809,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4174.html">4174 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4174.html">4174 浩鼎</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/4174.html">個股資訊</a></span></td>
   <td><div class="price-main">25.95</div><div class="signal-dates">距高 -53.0%｜量 -30.2%</div></td>
   <td><div class="m-checks">MA120 0.42%｜MA240 -1.42%</div><div class="signal-dates">MA120 33.66｜MA240 30.62</div></td>
@@ -2811,7 +2817,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4721.html">4721 美琪瑪</a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4721.html">4721 美琪瑪</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/4721.html">個股資訊</a></span></td>
   <td><div class="price-main">72.00</div><div class="signal-dates">距高 -35.1%｜量 -64.1%</div></td>
   <td><div class="m-checks">MA120 0.85%｜MA240 -0.82%</div><div class="signal-dates">MA120 80.61｜MA240 76.41</div></td>
@@ -2827,7 +2833,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4933.html">4933 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4933.html">4933 友輝</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/4933.html">個股資訊</a></span></td>
   <td><div class="price-main">56.80</div><div class="signal-dates">距高 -30.0%｜量 -71.4%</div></td>
   <td><div class="m-checks">MA120 -0.36%｜MA240 -1.69%</div><div class="signal-dates">MA120 63.44｜MA240 61.82</div></td>
@@ -2835,7 +2841,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4966.html">4966 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4966.html">4966 譜瑞-KY</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/4966.html">個股資訊</a></span></td>
   <td><div class="price-main">605.00</div><div class="signal-dates">距高 -34.9%｜量 -47.5%</div></td>
   <td><div class="m-checks">MA120 0.49%｜MA240 -0.14%</div><div class="signal-dates">MA120 610.27｜MA240 648.21</div></td>
@@ -2843,7 +2849,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/4974.html">4974 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/4974.html">4974 亞泰</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/4974.html">個股資訊</a></span></td>
   <td><div class="price-main">68.40</div><div class="signal-dates">距高 -30.9%｜量 -51.0%</div></td>
   <td><div class="m-checks">MA120 -0.95%｜MA240 -1.38%</div><div class="signal-dates">MA120 72.29｜MA240 74.26</div></td>
@@ -2851,7 +2857,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6170.html">6170 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6170.html">6170 統振</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/6170.html">個股資訊</a></span></td>
   <td><div class="price-main">46.25</div><div class="signal-dates">距高 -14.5%｜量 -23.9%</div></td>
   <td><div class="m-checks">MA120 -0.88%｜MA240 -0.47%</div><div class="signal-dates">MA120 50.28｜MA240 50.44</div></td>
@@ -2859,7 +2865,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td><div class="signal-dates">大戶4/8週累積、散戶或總股東下降支撐、近20日未破60日低位區、20日量低於120日均量</div></td>
 </tr>
 <tr>
-  <td><a class="stock-link" href="stocks/6203.html">6203 </a><div class="signal-dates">─｜2026-08-06</div></td>
+  <td><a class="stock-link" href="stocks/6203.html">6203 海韻電</a><div class="signal-dates">上櫃｜2026-08-06</div></td>
   <td><div class="m-score">40</div><span class="tag tag-blue"><a href="stocks/6203.html">個股資訊</a></span></td>
   <td><div class="price-main">60.60</div><div class="signal-dates">距高 -30.9%｜量 -52.3%</div></td>
   <td><div class="m-checks">MA120 -0.67%｜MA240 -1.25%</div><div class="signal-dates">MA120 67.00｜MA240 68.44</div></td>

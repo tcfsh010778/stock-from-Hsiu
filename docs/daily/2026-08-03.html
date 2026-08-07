@@ -38,6 +38,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -187,6 +189,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -330,7 +337,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -360,14 +367,13 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <a href="../mda.html" class="tab">M大觀察</a>
 <a href="../timing.html" class="tab">買賣時機</a>
 <a href="../stocks.html" class="tab">個股查詢</a>
-<a href="../backtest_dashboard.html" class="tab">回測</a>
 <a href="../history.html" class="tab">歷史分析</a>
 
 </nav>
 <div class="container"><div style="margin-bottom:8px"><a href="../index.html" style="color:#6e7681;font-size:13px">&larr; Home</a></div><div class="page-title">2026-08-03</div><div class="page-sub">每日 Top20 母名單：先看系統今天挑出哪些股票，再決定要丟進 SFZ、M大或買點雷達繼續判讀。</div>
 <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#3fb950">14</div>
+    <div style="font-size:24px;font-weight:800;color:#3fb950">18</div>
     <div style="font-size:11px;color:#6e7681">行進籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
@@ -375,11 +381,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     <div style="font-size:11px;color:#6e7681">盤整籃</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#f85149">1</div>
+    <div style="font-size:24px;font-weight:800;color:#f85149">2</div>
     <div style="font-size:11px;color:#6e7681">過熱/風險</div>
   </div>
   <div style="background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 20px;text-align:center">
-    <div style="font-size:24px;font-weight:800;color:#58a6ff">15</div>
+    <div style="font-size:24px;font-weight:800;color:#58a6ff">20</div>
     <div style="font-size:11px;color:#6e7681">精選總數</div>
   </div>
 </div>
@@ -432,12 +438,12 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
     </div>
   </div>
   <div class="score-rule">目前公式來源：`mda_universe_scan.py`。滿分 100 分，不含外資買賣超；外資欄位是另外給你判讀短線籌碼，不是這個 Score 的加分項。</div>
-</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div class="table-placeholder-note">CaryBot 訊號欄位接入中</div><div style="overflow-x:auto">
+</div><div class="card daily-top20-card"><div class="section-label">Top 20</div><div style="font-size:13px;color:#8b949e;margin-bottom:14px;line-height:1.7">每日 Top20 視為行進籃候選清單，表格已省略行進籃欄位；外資買超為紅色、賣超為綠色；CaryBot 暫接欄先顯示現有藍點特徵，優先顯示 AI_Buy。</div><div style="overflow-x:auto">
 <table class="stock-table">
 <thead><tr>
   <th>#</th><th>代號/名稱</th><th>收盤</th>
   <th>近6週漲幅</th><th>RSI</th><th>%B</th>
-  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile carybot-col" data-empty="true">CaryBot暫接</th>
+  <th class="hide-mobile">近5日量</th><th class="hide-mobile">外資近5日</th><th class="hide-mobile carybot-col">CaryBot暫接</th>
   <th>評分</th><th>進場/目標/初停/R:R</th>
 </tr></thead>
 <tbody>
@@ -455,7 +461,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">98.8%</td>
   <td class="hide-mobile" style="color:#8b949e">5724 張</td>
   <td class="hide-mobile" style="color:#3fb950">-2,414張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 43.97</div>
@@ -479,7 +485,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">75.6%</td>
   <td class="hide-mobile" style="color:#8b949e">2742 張</td>
   <td class="hide-mobile" style="color:#f85149">+2,565張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 85.38</div>
@@ -503,7 +509,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">97.7%</td>
   <td class="hide-mobile" style="color:#8b949e">124520 張</td>
   <td class="hide-mobile" style="color:#f85149">+75,073張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 159.00</div>
@@ -516,6 +522,131 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <tr>
   <td><span style="color:#6e7681;font-size:11px">#4</span></td>
   <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/5490.html">5490</a></div>
+    <div style="color:#8b949e;font-size:12px">同亨</div>
+    <div class="signal-dates">電腦及週邊設備業</div>
+  </td>
+
+  <td class="price-main">35.4</td>
+  <td class="pos" style="font-weight:600">21.23%</td>
+  <td style="color:#8b949e">67.2</td>
+  <td style="color:#8b949e">108.6%</td>
+  <td class="hide-mobile" style="color:#8b949e">2822 張</td>
+  <td class="hide-mobile" style="color:#f85149">+562張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">進 30.05</div>
+    <div class="price-target">目 37.08</div>
+    <div class="price-stop">初停 27.81</div>
+    <div class="price-support">支撐 27.81</div>
+    <div class="price-rr rr-good">R:R 1:3.1</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/6222.html">6222</a></div>
+    <div style="color:#8b949e;font-size:12px">立軒</div>
+    <div class="signal-dates">光電業</div>
+  </td>
+
+  <td class="price-main">21</td>
+  <td class="pos" style="font-weight:600">2.19%</td>
+  <td style="color:#8b949e">49.2</td>
+  <td style="color:#8b949e">77.4%</td>
+  <td class="hide-mobile" style="color:#8b949e">12 張</td>
+  <td class="hide-mobile" style="color:#3fb950">-4張</td>
+<td class="hide-mobile carybot-cell">
+  <span class="tag tag-green">&#128994; B1</span><div class="signal-dates">2026-05-12｜分數 91｜溫度 91</div>
+  <div class="carybot-line">QZ <strong class="neg">-3.19</strong>｜QTYR <strong>2.36</strong></div>
+  <div class="carybot-line">VAM20 19.09｜VAM60 0</div>
+  <div class="carybot-line">brown_healthy_pullback</div>
+</td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
+  <td>
+    <div class="price-entry">進 5.30</div>
+    <div class="price-target">目 21.62</div>
+    <div class="price-stop">初停 4.98</div>
+    <div class="price-support">支撐 19.20</div>
+    <div class="price-rr rr-good">R:R 1:51.3</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/3441.html">3441</a></div>
+    <div style="color:#8b949e;font-size:12px">聯一光</div>
+    <div class="signal-dates">光電業</div>
+  </td>
+
+  <td class="price-main">92.4</td>
+  <td class="pos" style="font-weight:600">0.11%</td>
+  <td style="color:#8b949e">68.5</td>
+  <td style="color:#8b949e">115.1%</td>
+  <td class="hide-mobile" style="color:#8b949e">34420 張</td>
+  <td class="hide-mobile" style="color:#f85149">+2,164張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">70.0</span></td>
+  <td>
+    <div class="price-entry">進 70.60</div>
+    <div class="price-target">目 94.25</div>
+    <div class="price-stop">初停 66.36</div>
+    <div class="price-support">支撐 61.89</div>
+    <div class="price-rr rr-good">R:R 1:5.6</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/3066.html">3066</a></div>
+    <div style="color:#8b949e;font-size:12px">李洲</div>
+    <div class="signal-dates">光電業</div>
+  </td>
+
+  <td class="price-main">20.25</td>
+  <td class="neg" style="font-weight:600">-4.93%</td>
+  <td style="color:#8b949e">23.2</td>
+  <td style="color:#8b949e">23.8%</td>
+  <td class="hide-mobile" style="color:#8b949e">384 張</td>
+  <td class="hide-mobile" style="color:#f85149">+117張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">進 20.09</div>
+    <div class="price-target">目 32.08</div>
+    <div class="price-stop">初停 18.76</div>
+    <div class="price-support">支撐 18.76</div>
+    <div class="price-rr rr-good">R:R 1:9.0</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
+  <td>
+    <div style="font-size:14px"><a class="stock-link" href="../stocks/3362.html">3362</a></div>
+    <div style="color:#8b949e;font-size:12px">先進光</div>
+    <div class="signal-dates">光電業</div>
+  </td>
+
+  <td class="price-main">180</td>
+  <td class="neg" style="font-weight:600">-14.69%</td>
+  <td style="color:#8b949e">53.1</td>
+  <td style="color:#8b949e">84.3%</td>
+  <td class="hide-mobile" style="color:#8b949e">19713 張</td>
+  <td class="hide-mobile" style="color:#f85149">+1,087張</td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
+  <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
+  <td>
+    <div class="price-entry">進 157.50</div>
+    <div class="price-target">目 201.96</div>
+    <div class="price-stop">初停 143.78</div>
+    <div class="price-support">支撐 143.78</div>
+    <div class="price-rr rr-good">R:R 1:3.2</div>
+  </td>
+</tr>
+<tr>
+  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
+  <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2412.html">2412</a></div>
     <div style="color:#8b949e;font-size:12px">中華電</div>
     <div class="signal-dates">電子工業</div>
@@ -527,7 +658,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">57.5%</td>
   <td class="hide-mobile" style="color:#8b949e">21453 張</td>
   <td class="hide-mobile" style="color:#f85149">+38,737張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 137.62</div>
@@ -538,7 +669,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#5</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/3704.html">3704</a></div>
     <div style="color:#8b949e;font-size:12px">合勤控</div>
@@ -551,7 +682,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">48%</td>
   <td class="hide-mobile" style="color:#8b949e">2439 張</td>
   <td class="hide-mobile" style="color:#f85149">+495張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 41.81</div>
@@ -562,7 +693,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#6</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/6214.html">6214</a></div>
     <div style="color:#8b949e;font-size:12px">精誠</div>
@@ -575,7 +706,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">89%</td>
   <td class="hide-mobile" style="color:#8b949e">3920 張</td>
   <td class="hide-mobile" style="color:#f85149">+1,803張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 141.38</div>
@@ -586,7 +717,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#7</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2301.html">2301</a></div>
     <div style="color:#8b949e;font-size:12px">光寶科</div>
@@ -599,7 +730,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">91.5%</td>
   <td class="hide-mobile" style="color:#8b949e">22547 張</td>
   <td class="hide-mobile" style="color:#f85149">+59,587張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 199.50</div>
@@ -610,7 +741,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#8</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2881.html">2881</a></div>
     <div style="color:#8b949e;font-size:12px">富邦金</div>
@@ -623,7 +754,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">86.9%</td>
   <td class="hide-mobile" style="color:#8b949e">26142 張</td>
   <td class="hide-mobile" style="color:#3fb950">-242張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 123.50</div>
@@ -634,7 +765,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#9</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2883.html">2883</a></div>
     <div style="color:#8b949e;font-size:12px">凱基金</div>
@@ -647,7 +778,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">65.3%</td>
   <td class="hide-mobile" style="color:#8b949e">59929 張</td>
   <td class="hide-mobile" style="color:#f85149">+25,463張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 29.20</div>
@@ -658,7 +789,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#10</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2884.html">2884</a></div>
     <div style="color:#8b949e;font-size:12px">玉山金</div>
@@ -671,7 +802,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">101%</td>
   <td class="hide-mobile" style="color:#8b949e">54848 張</td>
   <td class="hide-mobile" style="color:#f85149">+45,741張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 36.06</div>
@@ -682,7 +813,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#11</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#16</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2886.html">2886</a></div>
     <div style="color:#8b949e;font-size:12px">兆豐金</div>
@@ -695,7 +826,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">92.5%</td>
   <td class="hide-mobile" style="color:#8b949e">42107 張</td>
   <td class="hide-mobile" style="color:#f85149">+3,692張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 48.75</div>
@@ -706,7 +837,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#12</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#17</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2610.html">2610</a></div>
     <div style="color:#8b949e;font-size:12px">華航</div>
@@ -719,7 +850,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">91.4%</td>
   <td class="hide-mobile" style="color:#8b949e">63319 張</td>
   <td class="hide-mobile" style="color:#f85149">+115,780張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 20.86</div>
@@ -730,7 +861,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#13</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#18</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2618.html">2618</a></div>
     <div style="color:#8b949e;font-size:12px">長榮航</div>
@@ -743,7 +874,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">95.1%</td>
   <td class="hide-mobile" style="color:#8b949e">56605 張</td>
   <td class="hide-mobile" style="color:#f85149">+131,514張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 41.23</div>
@@ -754,7 +885,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#14</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#19</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2637.html">2637</a></div>
     <div style="color:#8b949e;font-size:12px">慧洋-KY</div>
@@ -767,7 +898,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">69.3%</td>
   <td class="hide-mobile" style="color:#8b949e">2418 張</td>
   <td class="hide-mobile" style="color:#f85149">+341張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">90.0</span></td>
   <td>
     <div class="price-entry">進 80.38</div>
@@ -778,7 +909,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   </td>
 </tr>
 <tr>
-  <td><span style="color:#6e7681;font-size:11px">#15</span></td>
+  <td><span style="color:#6e7681;font-size:11px">#20</span></td>
   <td>
     <div style="font-size:14px"><a class="stock-link" href="../stocks/2603.html">2603</a></div>
     <div style="color:#8b949e;font-size:12px">長榮</div>
@@ -791,7 +922,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   <td style="color:#8b949e">90.7%</td>
   <td class="hide-mobile" style="color:#8b949e">8426 張</td>
   <td class="hide-mobile" style="color:#f85149">+12,005張</td>
-<td class="hide-mobile carybot-cell carybot-pending-cell" data-empty="true"><span class="carybot-missing">尚無藍點資料</span></td>
+<td class="hide-mobile carybot-cell carybot-pending-cell"><span class="carybot-missing">尚無藍點資料</span></td>
   <td><span style="color:#58a6ff;font-weight:700;font-size:14px">100.0</span></td>
   <td>
     <div class="price-entry">進 200.62</div>
