@@ -88,6 +88,34 @@ class SiteDailyDecisionsTest(unittest.TestCase):
         self.assertEqual(payload["decisions"][0]["stock_id"], "2330")
         self.assertEqual(payload["data_quality"]["state"], "ok")
 
+    def test_official_risk_is_visible_in_home_queue_and_detail_badge(self) -> None:
+        payload = {
+            "date": "2026-08-07",
+            "decisions": [{
+                "stock_id": "2330",
+                "action_state": "NO-GO",
+                "traffic_light": {"reason": "官方處置覆蓋策略進場"},
+                "evidence": {"market_risk": {"risk_level": "disposition", "source_state": "complete", "reasons": ["處置期間"]}},
+            }],
+            "action_counts": {"NO-GO": 1},
+            "data_quality": {"state": "ok", "warnings": []},
+        }
+        html = generate_site.build_daily_decisions_panel(payload)
+        self.assertIn("官方處置", html)
+        self.assertIn('data-market-risk="disposition"', html)
+        badge = generate_site.build_daily_decision_badge("2330", payload)
+        self.assertIn("決策：先不做", badge)
+        self.assertIn("官方處置", badge)
+
+    def test_nav_and_history_have_single_analysis_entry(self) -> None:
+        nav = generate_site.nav_html("backtest")
+        self.assertNotIn('href="backtest_dashboard.html" class="tab"', nav)
+        self.assertIn('href="history.html" class="tab active"', nav)
+        history = generate_site.build_history_combined_page([])
+        self.assertIn('data-tab="backtest"', history)
+        self.assertIn('data-tab="reports"', history)
+        self.assertIn('data-backtest-dashboard', history)
+
 
 if __name__ == "__main__":
     unittest.main()
