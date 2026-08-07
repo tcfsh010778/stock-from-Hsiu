@@ -52,7 +52,7 @@ change; SFZ, MDA, CaryBot, signal, exit, and order rules are unchanged.
 - Workflow: `.github/workflows/daily_update.yml`
 - Detailed log: `codex_context/logs/2026-08-07-site-market-flow-and-consolidation.md`
 
-### Verification before generated-site QA
+### Verification
 
 - `python data_contract.py validate-registry` OK: 37 sources, 21 datasets.
 - `python -m unittest discover -s tools -p "test_*.py"` OK: 99 tests.
@@ -60,7 +60,16 @@ change; SFZ, MDA, CaryBot, signal, exit, and order rules are unchanged.
 - Live TWSE/TPEx market-flow smoke produced both listed and OTC partitions
   for 2026-08-06 in a temporary output location. The sparse source checkout
   has no local `data/`, `docs/`, or `reports/` tree, so generated-site QA uses
-  the existing full worktree and does not commit generated outputs here.
+  a separate full-data worktree and does not commit generated outputs here.
+- Generated-site smoke with the latest three real reports produced the main
+  pages and 286 individual stock pages. Desktop 1440px and mobile 375px
+  browser checks passed with no horizontal overflow on the homepage, unified
+  history/backtest page, or stock-detail page. The homepage exposed both new
+  data cards, the unified history tabs, and no Sinopac holdings placeholder.
+- The full 67-report regeneration is intentionally left to the designated
+  generated-output writer/CI; the local full-data run exceeded the QA time
+  window while processing the large historical detail set, so no partial
+  generated tree was committed.
 
 ## 2026-08-07 Website daily decision panel
 

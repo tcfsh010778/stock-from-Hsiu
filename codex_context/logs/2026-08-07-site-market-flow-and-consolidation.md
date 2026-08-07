@@ -46,5 +46,10 @@ data summaries:
 - Live market-flow smoke against the official TWSE/TPEx endpoints passed for
   2026-08-06 in a temporary output directory; no raw response was saved in
   the repository.
-- Desktop/mobile generated-site inspection remains to be recorded after the
-  full worktree is switched to this source branch and regenerated.
+- The latest three real reports were regenerated in a separate QA worktree;
+  286 stock pages plus main pages were produced. Desktop 1440px and mobile
+  375px checks passed without horizontal overflow on the homepage, unified
+  history/backtest page, and stock-detail page. The full 67-report run was
+  left to the designated output writer/CI after exceeding the local QA time
+  window during the large historical-detail batch; no generated outputs were
+  committed to this source-only branch.
