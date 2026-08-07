@@ -1,7 +1,6 @@
 # Codex Handoff
 
 Last updated: 2026-08-07
-
 ## 2026-08-07 Website daily decision panel
 
 ### Goal
@@ -53,7 +52,6 @@ blocked. This is a reporting-layer change only.
   badge to the stock detail header and unify history/backtest entry points.
 - Keep Sinopac holdings as pending until the API is actually connected; do not
   infer `HOLD`, `RISK_REDUCE`, or `EXIT_CANDIDATE` from candidate data alone.
-
 ## 2026-08-06 Issue #8 Official Attention / Disposition Risk
 
 ### Goal
@@ -126,7 +124,6 @@ official risk source is incomplete.
 - `python data_contract.py validate-registry` OK: 35 sources, 19 datasets.
 - `python -m py_compile` for the changed Python entry points OK.
 - `git diff --check` OK; only existing Windows line-ending notices were emitted.
-
 ## 2026-08-04 Official Data Contract / Freshness Matrix (Goal 1)
 
 ### Goal
