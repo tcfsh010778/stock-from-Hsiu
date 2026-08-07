@@ -578,6 +578,8 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .action-row .label{font-size:11px;color:#6e7681}
 .action-row .value{font-size:13px;color:#e6edf3;font-weight:800;margin-top:2px}
 .action-row .note{font-size:12px;color:#8b949e;line-height:1.5}
+.daily-decision-row{grid-template-columns:1.65fr 96px 112px 1fr}
+.daily-decision-row .decision-reason{font-size:12px;color:#c9d1d9;line-height:1.55}
 .market-light{display:grid;grid-template-columns:180px 1fr;gap:14px;align-items:stretch}
 .market-badge{display:flex;align-items:center;justify-content:center;border-radius:10px;border:1px solid #30363d;background:#0d1117;font-size:28px;font-weight:900}
 .market-badge.pos{border-color:rgba(248,81,73,.45);background:rgba(248,81,73,.09)}
@@ -1549,6 +1551,179 @@ def load_market_sentiment_payload(path: Path | str = MARKET_SENTIMENT_PATH) -> d
     payload.setdefault("indicators", {})
     payload.setdefault("source_status", [])
     return payload
+
+
+DAILY_DECISION_STATE_META = {
+    "ENTRY_CANDIDATE": ("可進一步確認", "tag-green", "SFZ、交通燈與 CaryBot B1 已對齊"),
+    "SETUP": ("準備中", "tag-yellow", "部分條件成立，等待確認"),
+    "WATCH": ("觀察", "tag-blue", "尚未形成可執行條件"),
+    "NO-GO": ("先不做", "tag-red", "存在阻擋條件或風險"),
+    "HOLD": ("續抱", "tag-green", "持倉整合尚未接入前僅作保留狀態"),
+    "RISK_REDUCE": ("降低風險", "tag-red", "需要檢查部位與風險證據"),
+    "EXIT_CANDIDATE": ("出場候選", "tag-red", "需要檢查出場證據"),
+}
+
+
+def default_daily_decisions_payload() -> dict:
+    return {
+        "date": "",
+        "updated_at": "",
+        "count": 0,
+        "action_counts": {},
+        "decisions": [],
+        "data_quality": {
+            "state": "missing",
+            "warnings": ["daily_decisions.json 尚未產生"],
+        },
+        "freshness": {"status": "missing"},
+    }
+
+
+def load_daily_decisions_payload(path: Path | str = DAILY_DECISIONS_PATH) -> dict:
+    """Load the operation-advice contract without deriving new signals in HTML."""
+    path = Path(path)
+    if not path.exists():
+        return default_daily_decisions_payload()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default_daily_decisions_payload()
+    if not isinstance(payload, dict):
+        return default_daily_decisions_payload()
+    decisions = payload.get("decisions")
+    payload["decisions"] = [row for row in decisions if isinstance(row, dict)] if isinstance(decisions, list) else []
+    payload["count"] = len(payload["decisions"])
+    counts = payload.get("action_counts")
+    payload["action_counts"] = dict(counts) if isinstance(counts, dict) else {}
+    quality = payload.get("data_quality")
+    payload["data_quality"] = dict(quality) if isinstance(quality, dict) else {"state": "unknown", "warnings": []}
+    payload["data_quality"].setdefault("state", "unknown")
+    payload["data_quality"].setdefault("warnings", [])
+    payload.setdefault("date", "")
+    payload.setdefault("updated_at", "")
+    payload.setdefault("freshness", {})
+    return payload
+
+
+def daily_decision_state_meta(state: str) -> tuple[str, str, str]:
+    return DAILY_DECISION_STATE_META.get(
+        str(state or ""),
+        (str(state or "未分類"), "tag", "等待更多資料"),
+    )
+
+
+def _daily_decision_warning_text(payload: dict) -> str:
+    quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
+    warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
+    state = str(quality.get("state") or "unknown")
+    if state == "ok" and not warnings:
+        return ""
+    friendly = []
+    for warning in warnings[:3]:
+        text = str(warning)
+        text = text.replace(" freshness is fallback_stale", " 目前使用舊版 fallback")
+        text = text.replace(" freshness is missing", " 尚未附 freshness")
+        text = text.replace(" freshness is stale", " 已過期")
+        text = text.replace(" freshness is schema_error", " schema 不正確")
+        friendly.append(text)
+    if not friendly:
+        friendly.append("daily_decisions.json 尚未完成資料品質確認")
+    return "；".join(friendly)
+
+
+def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:
+    """Render the existing daily_decisions contract as a human-readable queue."""
+    payload = payload or load_daily_decisions_payload()
+    decisions = [row for row in (payload.get("decisions") or []) if isinstance(row, dict)]
+    counts = payload.get("action_counts") if isinstance(payload.get("action_counts"), dict) else {}
+    state_order = ["ENTRY_CANDIDATE", "SETUP", "WATCH", "NO-GO", "RISK_REDUCE", "EXIT_CANDIDATE", "HOLD"]
+    state_labels = {
+        "ENTRY_CANDIDATE": "可確認",
+        "SETUP": "準備中",
+        "WATCH": "觀察",
+        "NO-GO": "先不做",
+    }
+    state_colors = {
+        "ENTRY_CANDIDATE": "#3fb950",
+        "SETUP": "#d2a520",
+        "WATCH": "#58a6ff",
+        "NO-GO": "#f85149",
+    }
+    metrics = "".join(
+        f'<div class="metric"><div class="metric-num" style="color:{state_colors[state]}">{int(_to_float(counts.get(state), 0) or 0)}</div>'
+        f'<div class="metric-label">{state_labels[state]}</div></div>'
+        for state in state_order[:4]
+    )
+
+    def rank_key(row: dict) -> tuple:
+        state = str(row.get("action_state") or "WATCH")
+        rank = _to_float(row.get("rank"), 999999) or 999999
+        return (state_order.index(state) if state in state_order else len(state_order), rank)
+
+    preferred = [row for row in decisions if str(row.get("action_state") or "") in {"ENTRY_CANDIDATE", "SETUP"}]
+    if not preferred:
+        preferred = [row for row in decisions if str(row.get("action_state") or "") == "WATCH"]
+    selected = sorted(preferred, key=rank_key)[:max(1, limit)]
+    decision_rows = ""
+    for row in selected:
+        state = str(row.get("action_state") or "WATCH")
+        label, tag_cls, _ = daily_decision_state_meta(state)
+        stock_id = str(row.get("stock_id") or row.get("security_id") or "").strip()
+        name = str(row.get("name") or stock_id)
+        traffic = row.get("traffic_light") if isinstance(row.get("traffic_light"), dict) else {}
+        reason = str(traffic.get("reason") or "")
+        if not reason:
+            reasons = row.get("reasons") if isinstance(row.get("reasons"), list) else []
+            reason = str(reasons[0]) if reasons else "等待更多證據"
+        evidence = row.get("evidence") if isinstance(row.get("evidence"), dict) else {}
+        carybot = evidence.get("carybot") if isinstance(evidence.get("carybot"), dict) else {}
+        mda = evidence.get("mda") if isinstance(evidence.get("mda"), dict) else {}
+        carybot_type = str(carybot.get("signal_type") or "")
+        mda_basket = str(mda.get("basket") or "")
+        detail_tags = []
+        if mda_basket:
+            detail_tags.append(f'<span class="tag">{esc(mda_basket)}</span>')
+        if carybot_type:
+            detail_tags.append(f'<span class="tag tag-green">CaryBot {esc(carybot_type)}</span>')
+        details = "".join(detail_tags)
+        href = stock_href(stock_id) if stock_id else "stocks.html"
+        decision_rows += f"""
+<div class="action-row daily-decision-row" data-action-state="{esc(state)}">
+  <div>
+    <a class="stock-link" href="{href}">{esc(stock_id)} {esc(name)}</a>
+    <div class="tag-row">{details}<span class="tag {tag_cls}">{esc(label)}</span></div>
+  </div>
+  <div><div class="label">決策</div><div class="value"><span class="tag {tag_cls}">{esc(label)}</span></div></div>
+  <div><div class="label">狀態</div><div class="value">{esc(state)}</div></div>
+  <div class="decision-reason">{esc(reason)}</div>
+</div>"""
+    if not decision_rows:
+        decision_rows = '<div class="strategy-note" style="margin-top:10px">目前沒有準備中或觀察中的標的；請先查看 SFZ 完整候選清單。</div>'
+
+    warning = _daily_decision_warning_text(payload)
+    warning_html = (
+        f'<div class="strategy-note" style="margin-top:12px"><span class="tag tag-yellow">資料品質提醒</span> {esc(warning)}；本區只呈現合約結果，不會自行補推訊號。</div>'
+        if warning
+        else '<div class="strategy-note" style="margin-top:12px">本區只呈現既有 SFZ／MDA／CaryBot 證據的操作狀態，不會改寫選股門檻。</div>'
+    )
+    date_text = str(payload.get("date") or "─")
+    updated_text = str(payload.get("updated_at") or "")
+    updated_line = f"｜產生於 {updated_text}" if updated_text else ""
+    compact_note = "先看可確認／準備中，再回到個股卡檢查買點與風控。" if compact else "首頁先給工作順序；完整候選與原始證據請回到 SFZ 雙籃。"
+    return f"""
+<div class="card daily-decision-card" data-daily-decisions data-daily-decisions-date="{esc(date_text)}">
+  <div class="section-head">
+    <div>
+      <div class="section-label">今日操作總覽</div>
+      <div class="strategy-note">{compact_note}</div>
+    </div>
+    <div class="section-date">資料日：{esc(date_text)}{esc(updated_line)}</div>
+  </div>
+  <div class="grid grid-4" style="margin-top:12px">{metrics}</div>
+  {warning_html}
+  <div class="action-list">{decision_rows}</div>
+  <div class="signal-foot"><a href="selection.html#sfz-baskets">查看 SFZ 完整候選與雙籃分流 →</a>　<a href="stocks.html">搜尋個股詳細證據 →</a></div>
+</div>"""
 
 
 def _market_color_class(value: str) -> str:
@@ -5276,6 +5451,7 @@ def build_index_page(reports: list[dict]) -> str:
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
+  {build_daily_decisions_panel(load_daily_decisions_payload())}
   {build_market_sentiment_panel(load_market_sentiment_payload())}
   {build_market_light_card(latest, latest_stocks, date_str)}
   {build_sector_heat_widget(latest_stocks)}
@@ -7139,6 +7315,7 @@ def build_baskets_page(reports, section_only=False):
         '<div class="container">'
         + '<div class="page-title">SFZ 雙籃</div>'
         + f'<div class="page-sub">把每日 Top20 拆成行進籃與盤整籃：行進籃偏 SFZ 波段，盤整籃偏等待轉強。資料日期：{date_str}</div>'
+        + build_daily_decisions_panel(load_daily_decisions_payload(), compact=True)
         + market_panel
         + hero
         + playbook

@@ -1,6 +1,58 @@
 # Codex Handoff
 
-Last updated: 2026-08-04
+Last updated: 2026-08-07
+
+## 2026-08-07 Website daily decision panel
+
+### Goal
+
+Expose the already-merged `daily_decisions.json` operation-advice contract on
+the homepage and SFZ workflow so the site clearly separates candidates that are
+ready for further confirmation, still setting up, only for observation, or
+blocked. This is a reporting-layer change only.
+
+### Completed
+
+- Added a defensive `daily_decisions.json` loader and state-label mapping to
+  `generate_site.py`.
+- Added `build_daily_decisions_panel()` with:
+  - counts for `ENTRY_CANDIDATE`, `SETUP`, `WATCH`, and `NO-GO`;
+  - priority rows for entry/setup candidates, falling back to watch rows;
+  - links to stock details and the full SFZ candidate workflow;
+  - visible freshness/fallback warnings without silently treating stale data as
+    live signals.
+- Rendered the panel on `index.html` and `selection.html#sfz-baskets`.
+- Added `tools/test_site_daily_decisions.py` for missing payloads, warning
+  rendering, priority ordering, malformed-row filtering, and contract counts.
+- Kept strategy thresholds, universe filters, signal rules, exits, and order
+  behavior unchanged.
+
+### Changed Files
+
+- `generate_site.py`
+- `tools/test_site_daily_decisions.py`
+- `CODEX_HANDOFF.md`
+- `codex_context/logs/2026-08-07-site-daily-decision-panel.md`
+
+### Verification
+
+- `python -m py_compile generate_site.py tools/test_site_daily_decisions.py` OK.
+- `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -q` OK: 82 tests.
+- Page-builder smoke test confirmed the daily decision panel renders once on
+  both the homepage and SFZ page.
+- This sparse source checkout intentionally does not contain the large
+  generated `docs/`, `data/`, or `reports/` trees, so no generated output was
+  committed. The designated writer/CI should regenerate them after merge.
+
+### Next Notes
+
+- Review and merge the existing Issue #8 Draft PR #5 first if its official
+  attention/disposition risk layer is ready; then show those conservative
+  overrides in this same panel through the existing contract.
+- After the data contract and site panel are stable, add a per-stock decision
+  badge to the stock detail header and unify history/backtest entry points.
+- Keep Sinopac holdings as pending until the API is actually connected; do not
+  infer `HOLD`, `RISK_REDUCE`, or `EXIT_CANDIDATE` from candidate data alone.
 
 ## 2026-08-04 Official Data Contract / Freshness Matrix (Goal 1)
 
