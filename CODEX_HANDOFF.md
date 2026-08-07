@@ -1,6 +1,55 @@
 # Codex Handoff
 
 Last updated: 2026-08-07
+## 2026-08-07 Mda chip-v2 Issue/PR roadmap
+
+### Goal
+
+Turn the user's local-only Mda manual and publicly accessible Vocus review into
+an ordered implementation plan that Codex and Claude can review before any Mda
+strategy semantics change.
+
+### Completed
+
+- Added `codex_context/plans/2026-08-07-mda-chip-v2-roadmap.md`.
+- Audited the current Mda score, holder inputs, `daily_decisions` evidence, data
+  contracts, and already-merged PR/Issue boundaries.
+- Split the proposed work into data correctness, adjustment-safe trend inputs,
+  A/X, B1, B2, casebook/PIT validation, shadow lifecycle state, daily-decision
+  integration, and website rollout PRs.
+- Kept the current 100-point score as a discovery baseline during shadow
+  validation rather than treating it as the final Mda decision.
+- Added explicit Claude semantic-review questions to private coordination Issue
+  #10 workflow; implementation Issues remain provisional until that review.
+
+### Boundaries
+
+- Documentation/coordination only. No threshold, ranking, signal, exit,
+  auto-order, data collector, contract, generated `docs/`, or workflow behavior
+  changed.
+- The local manual and any paid/private article content remain local-only. No
+  source-reconstructing excerpt, screenshot, credential, or browser session was
+  committed.
+
+### Source of truth
+
+- Detailed roadmap:
+  `codex_context/plans/2026-08-07-mda-chip-v2-roadmap.md`
+- Planning log:
+  `codex_context/logs/2026-08-07-mda-chip-v2-planning.md`
+- Cross-agent discussion: private `tcfsh010778/ai-agent-coordination#10`
+- Current implementation sources audited: `mda_universe_scan.py`,
+  `weekly_holder_risers.py`, `stock_rules.py`, `daily_decisions.py`, and
+  `contracts/taiwan_stock_data_contracts.json`
+
+### Next action
+
+- Claude should answer the ten semantic-review questions on coordination Issue
+  #10.
+- After Codex/Claude/user agreement, open only the first two implementation
+  Issues: weekly holder timing/freshness and adjustment-safe price inputs.
+- Keep later Issues in shadow/proposal state until their dependency gates pass.
+
 ## 2026-08-07 Site consolidation and market-flow summaries
 
 ### Goal
