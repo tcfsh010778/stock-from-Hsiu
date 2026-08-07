@@ -5570,17 +5570,6 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
 </div>"""
 
 
-def build_holding_status_card(date_str: str) -> str:
-    return f"""
-<div class="card">
-  <div class="section-head">
-    <div class="section-label">持倉狀態</div>
-    {report_date_badge(date_str)}
-  </div>
-  {coming_soon_block("持倉狀態（永豐 API 串接中）", '<div class="strategy-note">永豐庫存尚未接入。目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>', "data/sinopac_positions.csv", False)}
-</div>"""
-
-
 def build_risk_watchlist(stocks: list[dict], limit: int = 6) -> list[dict]:
     candidates = []
     for s in stocks:

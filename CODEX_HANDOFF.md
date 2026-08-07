@@ -19,6 +19,9 @@ change; SFZ, MDA, CaryBot, signal, exit, and order rules are unchanged.
 - Removed the homepage's obsolete Sinopac "我的持股／持倉狀態" placeholder.
   Sinopac holdings API remains deliberately unconnected and is no longer
   presented as a homepage column.
+- Removed the now-unused `build_holding_status_card()` renderer as well, so
+  the disconnected Sinopac API has no remaining site field or placeholder.
+  Public per-stock ownership/holding-share statistics remain unchanged.
 - Embedded the standardized backtest dashboard directly inside the
   `歷史分析` tab entry and removed the standalone 回測 tab from the main nav.
 - Added `market_flow.py` and `data/daily_market_flow.json` generation for
@@ -57,6 +60,8 @@ change; SFZ, MDA, CaryBot, signal, exit, and order rules are unchanged.
 - `python data_contract.py validate-registry` OK: 37 sources, 21 datasets.
 - `python -m unittest discover -s tools -p "test_*.py"` OK: 99 tests.
 - `python -m py_compile market_flow.py weekly_holder_risers.py generate_site.py` OK.
+- `python -m py_compile generate_site.py` and the full 99-test suite still pass
+  after removing the dormant Sinopac holdings renderer.
 - Live TWSE/TPEx market-flow smoke produced both listed and OTC partitions
   for 2026-08-06 in a temporary output location. The sparse source checkout
   has no local `data/`, `docs/`, or `reports/` tree, so generated-site QA uses

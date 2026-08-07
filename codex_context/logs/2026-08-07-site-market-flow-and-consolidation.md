@@ -53,3 +53,13 @@ data summaries:
   left to the designated output writer/CI after exceeding the local QA time
   window during the large historical-detail batch; no generated outputs were
   committed to this source-only branch.
+
+## Follow-up: remove the dormant Sinopac field
+
+- The homepage placeholder had already been removed in PR #7. At the user's
+  request, the unused `build_holding_status_card()` renderer was removed too.
+- The site now has no Sinopac API holdings field or placeholder. Public
+  per-stock ownership statistics remain available and are unrelated to
+  personal brokerage holdings.
+- `python -m py_compile generate_site.py` and all 99 unit tests passed after
+  the change.
