@@ -535,6 +535,36 @@
       "use_policy": "publish explainable operation-advice states and evidence only; no automatic orders",
       "field_map": {}
     },
+    "daily_market_flow_derived": {
+      "source_id": "daily_market_flow_derived",
+      "provider": "stock-from-Hsiu official-source market-flow aggregator",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/market_flow.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/contracts/freshness_matrix.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-aggregate-from-TWSE-and-TPEx-official-sources",
+      "access": "derived aggregate; source partitions and missing states remain visible",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "each trading day after official institutional feeds",
+      "use_policy": "publish aggregate metrics and top net-buy/sell summaries only; preserve official source attribution",
+      "field_map": {}
+    },
+    "weekly_holder_risers_derived": {
+      "source_id": "weekly_holder_risers_derived",
+      "provider": "stock-from-Hsiu weekly holder-riser builder",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/weekly_holder_risers.py",
+      "documentation_url": "https://www.tdcc.com.tw/portal/zh/smWeb/qryStock",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-aggregate-from-weekly-holder-distribution-cache",
+      "access": "derived aggregate; raw holder rows remain local and source state is visible",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "weekly after holder-distribution refresh",
+      "use_policy": "publish ownership-rising metadata only; do not infer a buy signal from ownership change",
+      "field_map": {}
+    },
     "finmind_normalized_fallback": {
       "source_id": "finmind_normalized_fallback",
       "provider": "FinMind",
@@ -641,6 +671,21 @@
         {"name": "institutional_total_net", "type": "integer", "required": true}
       ]
     },
+    "daily_market_flow": {
+      "dataset_id": "daily_market_flow",
+      "schema_version": "1.0.0",
+      "semantic_role": "derived daily listed/OTC aggregate of foreign and investment-trust net buying",
+      "primary_sources": [{"source_id": "daily_market_flow_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [],
+      "freshness": {"mode": "calendar_day", "frequency": "each trading day after official institutional feeds", "max_lag_calendar_days": 2, "expected_available_by": "20:00 Asia/Taipei"},
+      "canonical_fields": [
+        {"name": "trading_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "foreign_net", "type": "integer", "required": true},
+        {"name": "investment_trust_net", "type": "integer", "required": true},
+        {"name": "institutional_total_net", "type": "integer", "required": true}
+      ]
+    },
     "margin_short": {
       "dataset_id": "margin_short",
       "schema_version": "1.0.0",
@@ -697,6 +742,22 @@
         {"name": "holder_count", "type": "integer", "required": true},
         {"name": "share_count", "type": "integer", "required": true},
         {"name": "custody_percent", "type": "decimal", "required": true}
+      ]
+    },
+    "weekly_holder_risers": {
+      "dataset_id": "weekly_holder_risers",
+      "schema_version": "1.0.0",
+      "semantic_role": "derived weekly list of stocks whose major-holder ownership ratio rose between the latest two weekly snapshots",
+      "primary_sources": [{"source_id": "weekly_holder_risers_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [],
+      "freshness": {"mode": "weekly", "frequency": "weekly after holder-distribution refresh", "max_lag_calendar_days": 10, "expected_available_by": "next business cycle after weekly snapshot"},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "major_percent", "type": "decimal", "required": true},
+        {"name": "previous_major_percent", "type": "decimal", "required": true},
+        {"name": "major_delta_pctpt", "type": "decimal", "required": true}
       ]
     },
     "corporate_actions": {

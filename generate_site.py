@@ -18,6 +18,7 @@ import math
 import urllib.request
 from pathlib import Path
 from datetime import datetime, timedelta
+from typing import Any
 
 from stock_rules import evaluate_traffic_light
 from stock_rules import holding_group as _shared_holding_group
@@ -51,6 +52,8 @@ CARYBOT_SIGNALS_PATH = LOCAL_DATA_DIR / "carybot_signals.json"
 BACKTEST_DASHBOARD_PATH = LOCAL_DATA_DIR / "backtest_results.json"
 DAILY_DECISIONS_PATH = LOCAL_DATA_DIR / "daily_decisions.json"
 ATTENTION_DISPOSITION_PATH = LOCAL_DATA_DIR / "attention_disposition.json"
+DAILY_MARKET_FLOW_PATH = LOCAL_DATA_DIR / "daily_market_flow.json"
+WEEKLY_HOLDER_RISERS_PATH = LOCAL_DATA_DIR / "weekly_holder_risers.json"
 FRESHNESS_MANIFEST_PATH = LOCAL_DATA_DIR / "freshness_manifest.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
@@ -61,6 +64,8 @@ PUBLIC_DATA_FILES = [
     BACKTEST_DASHBOARD_PATH,
     DAILY_DECISIONS_PATH,
     ATTENTION_DISPOSITION_PATH,
+    DAILY_MARKET_FLOW_PATH,
+    WEEKLY_HOLDER_RISERS_PATH,
     FRESHNESS_MANIFEST_PATH,
 ]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
@@ -731,6 +736,11 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .env-dot.red{background:#f85149;box-shadow:0 0 0 3px rgba(248,81,73,.16)}
 .market-env-updated{font-size:12px;color:#8b949e;margin-top:8px}
 .market-env-summary{font-size:13px;color:#c9d1d9;line-height:1.65}
+.flow-market-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px}
+.flow-market-card{border:1px solid #30363d;border-radius:8px;background:#0d1117;padding:12px}
+.flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
+.flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
+.flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -874,7 +884,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -972,7 +982,6 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
         ("stocks",    "stocks.html",    "個股查詢"),
-        ("backtest",  "backtest_dashboard.html", "回測"),
         ("history",   "history.html",   "歷史分析"),
     ]
     # legacy nav keys map to new pages
@@ -980,6 +989,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         "daily": "selection", "basket": "selection", "signals": "selection",
         "mda_launched": "mda", "mda_consolidation": "mda",
         "radar": "timing", "carybot": "timing",
+        "backtest": "history",
     }
     active = _NAV_ALIASES.get(active, active)
     items = ""
@@ -1633,6 +1643,209 @@ def _daily_decision_warning_text(payload: dict) -> str:
     return "；".join(friendly)
 
 
+DAILY_RISK_META = {
+    "none": ("官方風險：無已發布風險", "tag-green"),
+    "attention": ("官方注意", "tag-yellow"),
+    "near_disposition": ("官方處置預警", "tag-yellow"),
+    "disposition": ("官方處置", "tag-red"),
+    "unknown": ("官方風險資料不完整", "tag-yellow"),
+}
+
+
+def daily_decision_risk(row: dict) -> dict:
+    evidence = row.get("evidence") if isinstance(row.get("evidence"), dict) else {}
+    risk = evidence.get("market_risk") if isinstance(evidence.get("market_risk"), dict) else {}
+    risk = dict(risk)
+    level = str(risk.get("risk_level") or "unknown")
+    source_state = str(risk.get("source_state") or "unknown")
+    if level == "none" and source_state != "complete":
+        level = "unknown"
+    label, tag_cls = DAILY_RISK_META.get(level, DAILY_RISK_META["unknown"])
+    return {
+        "level": level,
+        "source_state": source_state,
+        "label": label,
+        "tag_cls": tag_cls,
+        "reasons": [str(item) for item in risk.get("reasons") or [] if str(item)],
+        "warnings": [str(item) for item in risk.get("warnings") or [] if str(item)],
+    }
+
+
+def daily_decision_map(payload: dict | None = None) -> dict[str, dict]:
+    payload = payload or load_daily_decisions_payload()
+    return {
+        str(row.get("stock_id") or row.get("security_id") or "").strip(): row
+        for row in payload.get("decisions") or []
+        if isinstance(row, dict) and str(row.get("stock_id") or row.get("security_id") or "").strip()
+    }
+
+
+def build_daily_decision_badge(stock_id: str, payload: dict | None = None) -> str:
+    row = daily_decision_map(payload).get(str(stock_id or "").strip())
+    if not row:
+        return '<span class="tag tag-yellow" data-decision-state="missing">決策狀態未載入</span>'
+    state = str(row.get("action_state") or "WATCH")
+    label, tag_cls, _ = daily_decision_state_meta(state)
+    risk = daily_decision_risk(row)
+    title = "；".join(risk["reasons"] + risk["warnings"])
+    title_attr = f' title="{esc(title)}"' if title else ""
+    return (
+        f'<span class="tag {tag_cls}" data-decision-state="{esc(state)}">決策：{esc(label)}</span>'
+        f'<span class="tag {risk["tag_cls"]}" data-market-risk="{esc(risk["level"])}"{title_attr}>{esc(risk["label"])}</span>'
+    )
+
+
+def _default_market_flow_summary() -> dict:
+    return {
+        "stock_count": 0,
+        "foreign_buy": 0,
+        "foreign_sell": 0,
+        "foreign_net": 0,
+        "investment_trust_buy": 0,
+        "investment_trust_sell": 0,
+        "investment_trust_net": 0,
+        "institutional_total_net": 0,
+        "foreign_top_buy": [],
+        "foreign_top_sell": [],
+        "trust_top_buy": [],
+        "trust_top_sell": [],
+    }
+
+
+def default_daily_market_flow_payload() -> dict:
+    return {
+        "date": "",
+        "updated_at": "",
+        "markets": {"listed": _default_market_flow_summary(), "otc": _default_market_flow_summary()},
+        "source_artifacts": [],
+        "data_quality": {"state": "missing", "warnings": ["daily_market_flow.json 尚未產生"]},
+        "freshness": {"status": "missing"},
+    }
+
+
+def load_daily_market_flow_payload(path: Path | str = DAILY_MARKET_FLOW_PATH) -> dict:
+    path = Path(path)
+    if not path.exists():
+        return default_daily_market_flow_payload()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default_daily_market_flow_payload()
+    if not isinstance(payload, dict):
+        return default_daily_market_flow_payload()
+    markets = payload.get("markets") if isinstance(payload.get("markets"), dict) else {}
+    payload["markets"] = {
+        market: dict(_default_market_flow_summary(), **(markets.get(market) if isinstance(markets.get(market), dict) else {}))
+        for market in ("listed", "otc")
+    }
+    payload.setdefault("date", "")
+    payload.setdefault("updated_at", "")
+    payload.setdefault("source_artifacts", [])
+    payload.setdefault("data_quality", {"state": "unknown", "warnings": []})
+    payload.setdefault("freshness", {})
+    return payload
+
+
+def _flow_number(value: Any) -> str:
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return "─"
+    return f"{number / 1000:+,.0f} 張"
+
+
+def _flow_top_list(rows: list[dict], limit: int = 3) -> str:
+    if not rows:
+        return '<div class="strategy-note">尚無排行資料</div>'
+    return "".join(
+        f'<div class="flow-top-row"><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a><span>{_flow_number(row.get("net"))}</span></div>'
+        for row in rows[:limit]
+    )
+
+
+def build_daily_market_flow_panel(payload: dict | None = None) -> str:
+    payload = payload or load_daily_market_flow_payload()
+    market_labels = {"listed": "上市", "otc": "上櫃"}
+    cards = ""
+    for market in ("listed", "otc"):
+        summary = payload["markets"].get(market) or _default_market_flow_summary()
+        cards += f"""
+<div class="flow-market-card" data-market-flow="{market}">
+  <div class="section-label">{market_labels[market]} · {int(summary.get('stock_count') or 0):,} 檔</div>
+  <div class="flow-metric-grid">
+    <div><div class="label">外資買賣超</div><div class="flow-net">{_flow_number(summary.get('foreign_net'))}</div></div>
+    <div><div class="label">投信買賣超</div><div class="flow-net">{_flow_number(summary.get('investment_trust_net'))}</div></div>
+    <div><div class="label">三大法人</div><div class="flow-net">{_flow_number(summary.get('institutional_total_net'))}</div></div>
+  </div>
+  <div class="flow-top-title">外資淨買排行</div>{_flow_top_list(summary.get('foreign_top_buy') or [])}
+  <div class="flow-top-title">投信淨買排行</div>{_flow_top_list(summary.get('trust_top_buy') or [])}
+</div>"""
+    quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
+    warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
+    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
+    freshness_status = str(freshness.get("status") or "")
+    if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
+        warnings = list(warnings) + [f"daily_market_flow freshness is {freshness_status}"]
+    warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
+    date_text = str(payload.get("date") or "─")
+    return f"""
+<div class="card market-flow-card" data-daily-market-flow data-market-flow-date="{esc(date_text)}">
+  <div class="section-head"><div><div class="section-label">每日上市／上櫃法人流向</div><div class="strategy-note">外資、投信淨買賣超；單位統一換算為張，排行僅作觀察池參考。</div></div><div class="section-date">資料日：{esc(date_text)}</div></div>
+  <div class="flow-market-grid">{cards}</div>
+  {warning_html}
+  <div class="signal-foot">來源：TWSE T86／TPEx 三大法人 OpenAPI · 只呈現彙總結果，不改寫選股規則</div>
+</div>"""
+
+
+def default_weekly_holder_risers_payload() -> dict:
+    return {"date": "", "previous_date": "", "updated_at": "", "rows": [], "data_quality": {"state": "missing", "warnings": ["weekly_holder_risers.json 尚未產生"]}, "freshness": {"status": "missing"}}
+
+
+def load_weekly_holder_risers_payload(path: Path | str = WEEKLY_HOLDER_RISERS_PATH) -> dict:
+    path = Path(path)
+    if not path.exists():
+        return default_weekly_holder_risers_payload()
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return default_weekly_holder_risers_payload()
+    if not isinstance(payload, dict):
+        return default_weekly_holder_risers_payload()
+    payload["rows"] = [row for row in payload.get("rows") or [] if isinstance(row, dict)]
+    payload.setdefault("date", "")
+    payload.setdefault("previous_date", "")
+    payload.setdefault("updated_at", "")
+    payload.setdefault("data_quality", {"state": "unknown", "warnings": []})
+    payload.setdefault("freshness", {})
+    return payload
+
+
+def build_weekly_holder_risers_panel(payload: dict | None = None, limit: int = 8) -> str:
+    payload = payload or load_weekly_holder_risers_payload()
+    rows = payload.get("rows") or []
+    market_label = {"上市": "上市", "上櫃": "上櫃", "listed": "上市", "otc": "上櫃"}
+    row_html = "".join(
+        f'<tr><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td><td class="pos">+{fmt_num(row.get("major_delta_pctpt"), 2)} pt</td><td>{fmt_num(row.get("major_percent"), 2)}%</td></tr>'
+        for row in rows[:limit]
+    )
+    if not row_html:
+        row_html = '<tr><td colspan="4" style="color:#8b949e">尚無兩週完整股權快照；本區不補推名單。</td></tr>'
+    quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
+    warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
+    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
+    freshness_status = str(freshness.get("status") or "")
+    if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
+        warnings = list(warnings) + [f"weekly_holder_risers freshness is {freshness_status}"]
+    warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
+    return f"""
+<div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">
+  <div class="section-head"><div><div class="section-label">每週大戶持股比例上升</div><div class="strategy-note">比較最新兩個每週快照的 400 張以上大戶比例；這是觀察池，不等於買進訊號。</div></div><div class="section-date">{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}</div></div>
+  <div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>個股</th><th>市場</th><th>大戶變化</th><th>最新比例</th></tr></thead><tbody>{row_html}</tbody></table></div>
+  {warning_html}
+  <div class="signal-foot">資料來源：每週股權分散快照的本地正規化快取 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
+</div>"""
+
+
 def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:
     """Render the existing daily_decisions contract as a human-readable queue."""
     payload = payload or load_daily_decisions_payload()
@@ -1665,6 +1878,8 @@ def build_daily_decisions_panel(payload: dict | None = None, compact: bool = Fal
     preferred = [row for row in decisions if str(row.get("action_state") or "") in {"ENTRY_CANDIDATE", "SETUP"}]
     if not preferred:
         preferred = [row for row in decisions if str(row.get("action_state") or "") == "WATCH"]
+    if not preferred:
+        preferred = [row for row in decisions if str(row.get("action_state") or "") in {"NO-GO", "RISK_REDUCE", "EXIT_CANDIDATE"}]
     selected = sorted(preferred, key=rank_key)[:max(1, limit)]
     decision_rows = ""
     for row in selected:
@@ -1682,11 +1897,15 @@ def build_daily_decisions_panel(payload: dict | None = None, compact: bool = Fal
         mda = evidence.get("mda") if isinstance(evidence.get("mda"), dict) else {}
         carybot_type = str(carybot.get("signal_type") or "")
         mda_basket = str(mda.get("basket") or "")
+        risk = daily_decision_risk(row)
         detail_tags = []
         if mda_basket:
             detail_tags.append(f'<span class="tag">{esc(mda_basket)}</span>')
         if carybot_type:
             detail_tags.append(f'<span class="tag tag-green">CaryBot {esc(carybot_type)}</span>')
+        risk_title = "；".join(risk["reasons"] + risk["warnings"])
+        risk_title_attr = f' title="{esc(risk_title)}"' if risk_title else ""
+        detail_tags.append(f'<span class="tag {risk["tag_cls"]}" data-market-risk="{esc(risk["level"])}"{risk_title_attr}>{esc(risk["label"])}</span>')
         details = "".join(detail_tags)
         href = stock_href(stock_id) if stock_id else "stocks.html"
         decision_rows += f"""
@@ -5351,17 +5570,6 @@ def build_market_light_card(latest: dict, stocks: list[dict], date_str: str) -> 
 </div>"""
 
 
-def build_holding_status_card(date_str: str) -> str:
-    return f"""
-<div class="card">
-  <div class="section-head">
-    <div class="section-label">持倉狀態</div>
-    {report_date_badge(date_str)}
-  </div>
-  {coming_soon_block("持倉狀態（永豐 API 串接中）", '<div class="strategy-note">永豐庫存尚未接入。目前首頁先以候選股與訊號追蹤名單產生買入 / 賣出建議；等券商庫存接入後，這裡會改成實際持倉、成本、現價、損益、MA20 距離與賣出警示。</div>', "data/sinopac_positions.csv", False)}
-</div>"""
-
-
 def build_risk_watchlist(stocks: list[dict], limit: int = 6) -> list[dict]:
     candidates = []
     for s in stocks:
@@ -5452,13 +5660,14 @@ def build_index_page(reports: list[dict]) -> str:
     body = f"""
 <div class="container">
   <div class="page-title">Stockfrom脩 量化選股站</div>
-  <div class="page-sub">今日工作台：只保留大盤燈號、買入 / 賣出建議與持倉狀態。最新報告：{date_str}</div>
+  <div class="page-sub">今日工作台：先看決策狀態、官方風險與市場流向，再回到個股證據。最新報告：{date_str}</div>
   {build_daily_decisions_panel(load_daily_decisions_payload())}
+  {build_daily_market_flow_panel(load_daily_market_flow_payload())}
+  {build_weekly_holder_risers_panel(load_weekly_holder_risers_payload())}
   {build_market_sentiment_panel(load_market_sentiment_payload())}
   {build_market_light_card(latest, latest_stocks, date_str)}
   {build_sector_heat_widget(latest_stocks)}
   {build_today_action_card(latest_stocks, date_str)}
-  {build_holding_status_card(date_str)}
   {build_top5_card(latest_stocks)}
 </div>
 {disclaimer_modal_html()}"""
@@ -7875,6 +8084,8 @@ initMainForceHover_{stock_id}();
     rr_warning = rr_warning_bar(decision)
     mda_abc_card = build_stock_mda_abc_block(stock_id, s_view, daily, tech, chip_series, holding)
     carybot_history_card = build_carybot_signal_history_panel(stock_id)
+    daily_decision_payload = load_daily_decisions_payload()
+    decision_badge_html = build_daily_decision_badge(stock_id, daily_decision_payload)
     report_date = str(s.get("report_date") or "").strip()
     price_date = str(s_view.get("price_date") or latest.get("date") or "").strip()
     if not is_blank(report_date):
@@ -7888,6 +8099,7 @@ initMainForceHover_{stock_id}();
   <div style="margin-bottom:8px"><a href="../selection.html#sfz-baskets" style="color:#6e7681;font-size:13px">&larr; 回雙籃儀表板</a></div>
   <div class="page-title">{esc(stock_id)} {esc(s.get('name',''))}</div>
   {page_sub_html}
+  <div class="tag-row" data-stock-decision-badge="{esc(stock_id)}" style="margin:10px 0 12px">{decision_badge_html}</div>
   {rr_warning}
   <div class="detail-hero">
     <div class="card">
@@ -10066,14 +10278,13 @@ def build_history_combined_page(reports: list[dict]) -> str:
         tab1 = build_backtest_page(reports, section_only=True)
     else:
         payload = load_backtest_dashboard_payload()
-        strategy_count = len(payload.get("strategies") or [])
-        tab1 = f'<div class="card"><div class="section-label">Backtest Dashboard</div><div class="strategy-note">統一回測比較頁已移到 <a href="backtest_dashboard.html">backtest_dashboard.html</a>，目前標準 JSON 內有 {strategy_count} 個策略。Full legacy scan 仍可用 SITE_FULL_BACKTEST=1 重新打開。</div></div>'
+        tab1 = build_backtest_dashboard_page(payload, section_only=True)
     tab2 = build_history_page(reports, section_only=True)
 
     body = f"""
 <div class="container" id="history-tabs">
   <div class="page-title">歷史分析</div>
-  <div class="page-sub">回測結果與歷史報告合併在同一頁，先看策略績效，再查每日原始報告。</div>
+  <div class="page-sub">同一個分析入口：先看回測策略績效與風險，再切到每日歷史報告；回測與報告不再分散在主導覽。</div>
   <div class="tab-bar">
     <button class="tab-btn active" data-tab="backtest">📊 歷史回測</button>
     <button class="tab-btn" data-tab="reports">📄 歷史報告</button>

@@ -228,7 +228,8 @@ class BacktestDashboardTest(unittest.TestCase):
 
         html = generate_site.nav_html("backtest")
 
-        self.assertIn("backtest_dashboard.html", html)
+        self.assertIn('href="history.html" class="tab active"', html)
+        self.assertNotIn('href="backtest_dashboard.html" class="tab"', html)
 
     def test_workflow_runs_backtest_json_before_static_site_generation(self) -> None:
         workflow = Path(".github/workflows/daily_update.yml").read_text(encoding="utf-8")

@@ -1,6 +1,81 @@
 # Codex Handoff
 
 Last updated: 2026-08-07
+## 2026-08-07 Site consolidation and market-flow summaries
+
+### Goal
+
+Finish the requested website consolidation after PR #6 and PR #5, then add
+daily listed/OTC institutional-flow summaries and a weekly major-holder
+ownership-risers observation list. This remains a reporting/data-contract
+change; SFZ, MDA, CaryBot, signal, exit, and order rules are unchanged.
+
+### Completed
+
+- PR #6 was merged into `main` and PR #5 was rebased on that merge, then
+  merged as the official attention/disposition risk layer.
+- Added official-risk labels to the homepage operation queue and a shared
+  decision/risk badge helper used by individual stock detail pages.
+- Removed the homepage's obsolete Sinopac "我的持股／持倉狀態" placeholder.
+  Sinopac holdings API remains deliberately unconnected and is no longer
+  presented as a homepage column.
+- Removed the now-unused `build_holding_status_card()` renderer as well, so
+  the disconnected Sinopac API has no remaining site field or placeholder.
+  Public per-stock ownership/holding-share statistics remain unchanged.
+- Embedded the standardized backtest dashboard directly inside the
+  `歷史分析` tab entry and removed the standalone 回測 tab from the main nav.
+- Added `market_flow.py` and `data/daily_market_flow.json` generation for
+  listed/OTC foreign and investment-trust buy/sell aggregates and top net-buy
+  summaries. The source partitions, date, and warnings remain visible.
+- Added `weekly_holder_risers.py` and `data/weekly_holder_risers.json` to
+  compare the latest two weekly `holding_shares` snapshots. Positive changes
+  in the 400+ lots major-holder ratio are shown as an observation list, not a
+  buy signal.
+- Added registry/freshness entries, daily workflow steps, and deterministic
+  tests for both new artifacts and the site changes.
+
+### Boundaries
+
+- Official raw responses are not published. The daily flow page publishes
+  aggregates and top lists only; weekly ownership publishes derived metadata
+  only.
+- When an official market partition or weekly cache is missing, the UI shows
+  a warning or empty state rather than inventing a result.
+- The weekly holder-riser artifact currently consumes the existing normalized
+  holder cache produced upstream; it does not claim to be a live personal
+  holdings feed.
+
+### Source of truth
+
+- Site renderer: `generate_site.py`
+- Daily market flow collector: `market_flow.py`
+- Weekly holder-riser collector: `weekly_holder_risers.py`
+- Registry/freshness: `contracts/taiwan_stock_data_contracts.json`,
+  `contracts/freshness_matrix.md`
+- Workflow: `.github/workflows/daily_update.yml`
+- Detailed log: `codex_context/logs/2026-08-07-site-market-flow-and-consolidation.md`
+
+### Verification
+
+- `python data_contract.py validate-registry` OK: 37 sources, 21 datasets.
+- `python -m unittest discover -s tools -p "test_*.py"` OK: 99 tests.
+- `python -m py_compile market_flow.py weekly_holder_risers.py generate_site.py` OK.
+- `python -m py_compile generate_site.py` and the full 99-test suite still pass
+  after removing the dormant Sinopac holdings renderer.
+- Live TWSE/TPEx market-flow smoke produced both listed and OTC partitions
+  for 2026-08-06 in a temporary output location. The sparse source checkout
+  has no local `data/`, `docs/`, or `reports/` tree, so generated-site QA uses
+  a separate full-data worktree and does not commit generated outputs here.
+- Generated-site smoke with the latest three real reports produced the main
+  pages and 286 individual stock pages. Desktop 1440px and mobile 375px
+  browser checks passed with no horizontal overflow on the homepage, unified
+  history/backtest page, or stock-detail page. The homepage exposed both new
+  data cards, the unified history tabs, and no Sinopac holdings placeholder.
+- The full 67-report regeneration is intentionally left to the designated
+  generated-output writer/CI; the local full-data run exceeded the QA time
+  window while processing the large historical detail set, so no partial
+  generated tree was committed.
+
 ## 2026-08-07 Website daily decision panel
 
 ### Goal

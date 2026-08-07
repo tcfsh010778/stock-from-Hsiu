@@ -57,6 +57,9 @@ jobs:
       - name: Generate market sentiment data
         run: python market_sentiment.py
 
+      - name: Generate daily listed and OTC market flow
+        run: python market_flow.py
+
       - name: Generate CaryBot signal bridge
         run: python carybot_signals.py
 
@@ -77,6 +80,9 @@ jobs:
           V44_BULK_PRICE_DAYS: "21"
           V44_REFRESH_AUX_SCOPE: "latest"
         run: python refresh_prices.py
+
+      - name: Generate weekly major-holder risers
+        run: python weekly_holder_risers.py
 
       - name: Generate static site
         run: python generate_site.py
