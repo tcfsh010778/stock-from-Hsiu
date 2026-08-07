@@ -1782,6 +1782,10 @@ def build_daily_market_flow_panel(payload: dict | None = None) -> str:
 </div>"""
     quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
     warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
+    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
+    freshness_status = str(freshness.get("status") or "")
+    if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
+        warnings = list(warnings) + [f"daily_market_flow freshness is {freshness_status}"]
     warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
     date_text = str(payload.get("date") or "─")
     return f"""
@@ -1828,6 +1832,10 @@ def build_weekly_holder_risers_panel(payload: dict | None = None, limit: int = 8
         row_html = '<tr><td colspan="4" style="color:#8b949e">尚無兩週完整股權快照；本區不補推名單。</td></tr>'
     quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
     warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
+    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
+    freshness_status = str(freshness.get("status") or "")
+    if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
+        warnings = list(warnings) + [f"weekly_holder_risers freshness is {freshness_status}"]
     warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
     return f"""
 <div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">

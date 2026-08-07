@@ -134,13 +134,14 @@ def write_payload(payload: dict[str, Any], output_path: Path | str = OUTPUT_PATH
         for row in payload.get("rows") or []
     ]
     data_date = str(payload.get("date") or "")
+    expected_date = datetime.now(TAIPEI_TZ).date().isoformat()
     _, manifest, artifact_bytes = prepare_artifact_manifest(
         payload,
         dataset_id="weekly_holder_risers",
         source_id=DERIVED_SOURCE_ID,
         rows=rows,
         data_date=data_date,
-        expected_data_date=data_date or datetime.now(TAIPEI_TZ).date().isoformat(),
+        expected_data_date=expected_date,
         fetched_at=str(payload.get("updated_at") or datetime.now(TAIPEI_TZ).isoformat()),
         missing_partitions=["holding_shares"] if not rows else [],
     )
