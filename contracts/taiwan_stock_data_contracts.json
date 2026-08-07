@@ -1,7 +1,7 @@
 {
   "registry_schema_version": "1.0.0",
   "manifest_schema_version": "1.0.0",
-  "last_official_audit": "2026-08-04",
+  "last_official_audit": "2026-08-06",
   "timezone": "Asia/Taipei",
   "policy": {
     "official_primary_only": true,
@@ -91,12 +91,12 @@
       "source_id": "tpex_trading_calendar",
       "provider": "TPEx",
       "official": true,
-      "endpoint": "https://www.tpex.org.tw/zh-tw/announce/market/holiday.html",
+      "endpoint": "https://www.tpex.org.tw/www/zh-tw/bulletin/tradingDate",
       "documentation_url": "https://www.tpex.org.tw/zh-tw/announce/market/holiday.html",
       "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html?l=zh-tw",
-      "terms_checked_on": "2026-08-04",
-      "terms_status": "official_page; automated collection method must remain the owner-provided download/interface",
-      "access": "official_html_or_owner_download",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official owner-operated page interface reviewed",
+      "access": "unauthenticated_https_json_with_official_html_table_payload",
       "market_coverage": ["otc", "emerging"],
       "source_frequency": "annual schedule plus revisions",
       "field_map": {}
@@ -415,6 +415,111 @@
       "use_policy": "fallback_only; age and fallback reason must remain visible",
       "field_map": {}
     },
+    "twse_attention": {
+      "source_id": "twse_attention",
+      "provider": "Taiwan Stock Exchange",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/announcement/notice",
+      "documentation_url": "https://www.twse.com.tw/zh/announcement/notice.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["listed"],
+      "source_frequency": "trading-day announcements",
+      "use_policy": "normalized metadata and necessary risk aggregates; no raw response redistribution by default",
+      "field_map": {"證券代號": "security_id", "證券名稱": "security_name", "注意交易資訊": "reason", "日期": "data_date"}
+    },
+    "twse_disposition": {
+      "source_id": "twse_disposition",
+      "provider": "Taiwan Stock Exchange",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/announcement/punish",
+      "documentation_url": "https://www.twse.com.tw/zh/announcement/punish.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["listed"],
+      "source_frequency": "trading-day announcements",
+      "use_policy": "normalized metadata and necessary risk aggregates; no raw response redistribution by default",
+      "field_map": {"證券代號": "security_id", "處置起迄時間": "original_period", "處置內容": "transition_and_matching_parser_input"}
+    },
+    "twse_near_disposition": {
+      "source_id": "twse_near_disposition",
+      "provider": "Taiwan Stock Exchange",
+      "official": true,
+      "endpoint": "https://www.twse.com.tw/rwd/zh/announcement/notetrans",
+      "documentation_url": "https://www.twse.com.tw/zh/announcement/notetrans.html",
+      "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["listed"],
+      "source_frequency": "trading-day snapshot",
+      "use_policy": "use the exchange warning as the trigger signal; do not invent missing trigger counts",
+      "field_map": {"證券代號": "security_id", "近期達本公司「公布注意交易資訊」標準之情形": "reason"}
+    },
+    "tpex_attention": {
+      "source_id": "tpex_attention",
+      "provider": "Taipei Exchange",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/www/zh-tw/bulletin/attention",
+      "documentation_url": "https://www.tpex.org.tw/zh-tw/announce/market/attention.html",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["otc"],
+      "source_frequency": "trading-day announcements",
+      "use_policy": "normalized metadata and necessary risk aggregates; no raw response redistribution by default",
+      "field_map": {"證券代號": "security_id", "證券名稱": "security_name", "注意交易資訊": "reason", "公告日期": "data_date"}
+    },
+    "tpex_disposition": {
+      "source_id": "tpex_disposition",
+      "provider": "Taipei Exchange",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/www/zh-tw/bulletin/disposal",
+      "documentation_url": "https://www.tpex.org.tw/zh-tw/announce/market/disposal.html",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["otc"],
+      "source_frequency": "trading-day announcements",
+      "use_policy": "normalized metadata and necessary risk aggregates; no raw response redistribution by default",
+      "field_map": {"證券代號": "security_id", "處置起訖時間": "original_period", "處置內容": "transition_and_matching_parser_input"}
+    },
+    "tpex_near_disposition": {
+      "source_id": "tpex_near_disposition",
+      "provider": "Taipei Exchange",
+      "official": true,
+      "endpoint": "https://www.tpex.org.tw/www/zh-tw/bulletin/warning",
+      "documentation_url": "https://www.tpex.org.tw/zh-tw/announce/market/warning.html",
+      "terms_url": "https://www.tpex.org.tw/zh-tw/gtsm_disclaimer.html",
+      "terms_checked_on": "2026-08-06",
+      "terms_status": "official-public-web-endpoint-reviewed",
+      "access": "public JSON; no authentication",
+      "market_coverage": ["otc"],
+      "source_frequency": "trading-day snapshot",
+      "use_policy": "use the exchange warning as the trigger signal; do not invent missing trigger counts",
+      "field_map": {"證券代號": "security_id", "近期達本公司「公布注意交易資訊」標準之情形": "reason"}
+    },
+    "attention_disposition_derived": {
+      "source_id": "attention_disposition_derived",
+      "provider": "stock-from-Hsiu official risk normalizer",
+      "official": false,
+      "endpoint": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/attention_disposition.py",
+      "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/contracts/freshness_matrix.md",
+      "terms_url": null,
+      "terms_checked_on": null,
+      "terms_status": "project-derived-data-from-official-primary-sources",
+      "access": "derived normalized risk snapshot; official response hashes and missing states remain visible",
+      "market_coverage": ["listed", "otc"],
+      "source_frequency": "each trading day after official announcements",
+      "use_policy": "publish normalized risk metadata only; never place orders",
+      "field_map": {}
+    },
     "daily_decisions_derived": {
       "source_id": "daily_decisions_derived",
       "provider": "stock-from-Hsiu daily decision builder",
@@ -720,10 +825,84 @@
         {"name": "metrics", "type": "object", "required": true}
       ]
     },
+    "attention_securities": {
+      "dataset_id": "attention_securities",
+      "schema_version": "1.0.0",
+      "semantic_role": "current official attention-security announcements",
+      "primary_sources": [
+        {"source_id": "twse_attention", "coverage": ["listed"]},
+        {"source_id": "tpex_attention", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day", "max_lag_trading_days": 0, "expected_available_by": "after the exchange announcement update", "empty_result_is_valid": true},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "security_name", "type": "string", "required": true},
+        {"name": "reason", "type": "string", "required": true},
+        {"name": "rule_version", "type": "string", "required": true}
+      ]
+    },
+    "disposition_securities": {
+      "dataset_id": "disposition_securities",
+      "schema_version": "1.0.0",
+      "semantic_role": "official disposition records normalized to the effective interval on the snapshot date",
+      "primary_sources": [
+        {"source_id": "twse_disposition", "coverage": ["listed"]},
+        {"source_id": "tpex_disposition", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day", "max_lag_trading_days": 0, "expected_available_by": "after the exchange announcement update", "empty_result_is_valid": true},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "original_start_date", "type": "date", "required": true},
+        {"name": "effective_end_date", "type": "date", "required": true},
+        {"name": "active_on_data_date", "type": "boolean", "required": true},
+        {"name": "matching_interval_minutes", "type": "integer|null", "required": true},
+        {"name": "rule_version", "type": "string", "required": true}
+      ]
+    },
+    "near_disposition_risk": {
+      "dataset_id": "near_disposition_risk",
+      "schema_version": "1.0.0",
+      "semantic_role": "exchange-published securities nearing disposition triggers; no locally invented threshold inference",
+      "primary_sources": [
+        {"source_id": "twse_near_disposition", "coverage": ["listed"]},
+        {"source_id": "tpex_near_disposition", "coverage": ["otc"]}
+      ],
+      "fallback_sources": [],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day", "max_lag_trading_days": 0, "expected_available_by": "after the exchange warning-table update", "empty_result_is_valid": true},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "reason", "type": "string", "required": true},
+        {"name": "official_near_disposition", "type": "boolean", "required": true},
+        {"name": "rule_version", "type": "string", "required": true}
+      ]
+    },
+    "attention_disposition_risk": {
+      "dataset_id": "attention_disposition_risk",
+      "schema_version": "1.0.0",
+      "semantic_role": "combined daily risk summary for attention, near-disposition, and active disposition states",
+      "primary_sources": [{"source_id": "attention_disposition_derived", "coverage": ["listed", "otc"]}],
+      "fallback_sources": [],
+      "freshness": {"mode": "trading_day", "frequency": "each trading day after official source partitions", "max_lag_trading_days": 0, "expected_available_by": "after TWSE/TPEx attention and disposition updates", "empty_result_is_valid": true},
+      "canonical_fields": [
+        {"name": "data_date", "type": "date", "required": true},
+        {"name": "market", "type": "enum:listed|otc", "required": true},
+        {"name": "security_id", "type": "string", "required": true},
+        {"name": "risk_level", "type": "enum:attention|near_disposition|disposition", "required": true},
+        {"name": "rule_version", "type": "string", "required": true}
+      ]
+    },
     "daily_decisions": {
       "dataset_id": "daily_decisions",
-      "schema_version": "1.0.0",
-      "semantic_role": "daily explainable operation-advice states derived from existing SFZ/MDA/CaryBot/traffic-light evidence",
+      "schema_version": "1.1.0",
+      "semantic_role": "daily explainable operation-advice states derived from SFZ/MDA/CaryBot/traffic-light evidence and official attention/disposition risk",
       "primary_sources": [{"source_id": "daily_decisions_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "calendar_day", "frequency": "daily after source artifacts are available", "max_lag_calendar_days": 1, "expected_available_by": "after the daily candidate and timing artifacts"},
@@ -734,6 +913,7 @@
         {"name": "traffic_state", "type": "enum:GO|WATCH|NO-GO", "required": true},
         {"name": "carybot_signal_type", "type": "string", "required": true},
         {"name": "data_quality_state", "type": "string", "required": true},
+        {"name": "market_risk_level", "type": "enum:none|attention|near_disposition|disposition|unknown", "required": true},
         {"name": "rule_version", "type": "string", "required": true}
       ]
     }

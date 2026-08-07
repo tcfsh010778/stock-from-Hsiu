@@ -1,7 +1,6 @@
 # Codex Handoff
 
 Last updated: 2026-08-07
-
 ## 2026-08-07 Website daily decision panel
 
 ### Goal
@@ -53,7 +52,78 @@ blocked. This is a reporting-layer change only.
   badge to the stock detail header and unify history/backtest entry points.
 - Keep Sinopac holdings as pending until the API is actually connected; do not
   infer `HOLD`, `RISK_REDUCE`, or `EXIT_CANDIDATE` from candidate data alone.
+## 2026-08-06 Issue #8 Official Attention / Disposition Risk
 
+### Goal
+
+Add a source-only, versioned daily risk layer for TWSE/TPEx attention,
+near-disposition, and active disposition securities, including the official
+2026-08-10 rule change, then make daily decisions fail conservatively when the
+official risk source is incomplete.
+
+### Completed
+
+- Added `attention_disposition.py`, using six public owner-operated JSON tables:
+  TWSE/TPEx attention, disposition, and official near-disposition warnings.
+- Added an exact-byte `data/attention_disposition.json` contract and freshness
+  manifest route. Raw responses are not saved; source URL, response row count,
+  normalized row count, fetched/data dates, schema state, SHA-256, fallback
+  state, and missing partitions remain visible.
+- Added rule versions before/from 2026-08-10. The new metadata records general
+  5-business-day disposition, 7 days for the day-trade-ratio trigger, normal
+  first/repeat matching at about 2 minutes, the revised high-price attention
+  threshold, special-rule exceptions, and transition handling.
+- Parses each transition notice's revised end date. A disposition spanning
+  2026-08-10 uses the official revised end and changes to 2-minute matching on
+  the effective date; old visible 10/12-day text is not treated as final.
+- Keeps only active disposition records in the normalized artifact. Historical
+  lookback rows and full official measure text are not published.
+- Upgraded `daily_decisions` to schema `1.1.0`:
+  active disposition and official near-disposition force `NO-GO`; attention
+  downgrades an otherwise ready entry to `SETUP`; incomplete coverage also
+  downgrades and reports `unknown` instead of asserting no risk.
+- Added market metadata to MDA candidate JSON when the official market cache is
+  available, so listed and OTC missingness can be evaluated independently.
+- Added the collector to the daily workflow before `daily_decisions.py` and
+  exposed the normalized JSON through the existing public-data copy hook.
+
+### Official rule evidence
+
+- TWSE: 臺證監字第1150402582號, published 2026-08-03, effective 2026-08-10.
+- TPEx: 證櫃視字第11500051351號, published 2026-08-03, effective 2026-08-10.
+- Detailed source URLs and terms evidence are in
+  `contracts/freshness_matrix.md` and the executable registry.
+
+### Boundaries
+
+- No SFZ/MDA/CaryBot scoring, selection threshold, traffic-light threshold,
+  exit rule, PIT policy, or automatic order behavior changed.
+- Official near-disposition tables are authoritative. The project does not
+  fabricate missing exchange triggers or scrape paid/authenticated sources.
+- No generated `docs/`, raw response dump, large CSV, paid data, browser
+  session, credential, secret, or OneDrive stock data is committed.
+
+### Source of truth
+
+- Collector/normalizer: `attention_disposition.py`
+- Daily action integration: `daily_decisions.py`
+- Registry/freshness policy: `contracts/taiwan_stock_data_contracts.json` and
+  `contracts/freshness_matrix.md`
+- Detailed log: `codex_context/logs/2026-08-06-issue8-attention-disposition-risk.md`
+
+### Verification
+
+- Live 2026-08-06 official-source smoke: complete six-partition snapshot;
+  attention `84`, active disposition `51`, near-disposition `6`, combined risk
+  securities `117`. Response rows and normalized rows remain separately visible.
+- Transition examples: TWSE `053859` effective end `2026-08-12`; TPEx `3362`
+  effective end `2026-08-13`; both retain 5-minute behavior before 2026-08-10
+  and switch to 2 minutes under the new version.
+- `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -v`
+  OK: 90 tests.
+- `python data_contract.py validate-registry` OK: 35 sources, 19 datasets.
+- `python -m py_compile` for the changed Python entry points OK.
+- `git diff --check` OK; only existing Windows line-ending notices were emitted.
 ## 2026-08-04 Official Data Contract / Freshness Matrix (Goal 1)
 
 ### Goal

@@ -159,6 +159,8 @@ def load_scan_rows() -> list[dict]:
         info = markets.get(sid) or {}
         if info.get("name") and not row.get("name"):
             row["name"] = info["name"]
+        if info.get("market") and not row.get("market"):
+            row["market"] = info["market"]
     return [r for r in rows if to_float(r.get("close"), 0) >= MIN_CLOSE]
 
 
@@ -491,6 +493,7 @@ def mda_candidate_json_stock(row: dict, pit_eligible_ids: set[str] | None = None
         "stock_id": stock_id,
         "security_id": stock_id,
         "name": row.get("name") or stock_id,
+        "market": row.get("market") or "",
         "date": row.get("date") or "",
         "data_date": row.get("date") or "",
         "basket": row.get("basket") or "",

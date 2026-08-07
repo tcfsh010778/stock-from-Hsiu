@@ -54,11 +54,18 @@ schema version、SHA-256、fallback 與缺漏狀態。
 ## 每日決策合約
 
 `daily_decisions.py` 會把既有 MDA candidate pool、CaryBot B1/B2 timing、
-shared traffic light 與 freshness 狀態整理成 `data/daily_decisions.json`。
+shared traffic light、官方注意／處置風險與 freshness 狀態整理成
+`data/daily_decisions.json`。
 這是每日操作建議的結構化證據層，不會改變選股門檻、訊號規則、出場規則，
 也不會自動下單。
 
+`attention_disposition.py` 只讀 TWSE／TPEx 官方公開端點，輸出
+`data/attention_disposition.json`。2026-08-10 新制以版本化規則處理：一般
+處置 5 個營業日、涉及當沖比注意條件者 7 日、一般處置約每 2 分鐘撮合；
+跨生效日案件採官方公告修正後的迄日。來源缺漏時不會把個股標成無風險。
+
 ```bash
+python attention_disposition.py
 python daily_decisions.py
 ```
 
