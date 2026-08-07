@@ -1,31 +1,31 @@
 {
   "schema_version": 1,
-  "date": "2026-08-06",
-  "updated_at": "2026-08-06T23:13:26+08:00",
-  "score": 99,
+  "date": "2026-08-07",
+  "updated_at": "2026-08-07T18:48:31+08:00",
+  "score": 87,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 99 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 87 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
-      "score": 30.0,
+      "score": 20.0,
       "weight": 30,
-      "signal": "bullish",
-      "display": "3/3",
-      "detail": "收盤 44396.70；MA5 43775.02 / MA20 43675.00 / MA60 44231.23",
+      "signal": "neutral",
+      "display": "2/3",
+      "detail": "收盤 44225.91；MA5 43996.26 / MA20 43618.57 / MA60 44278.76",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
-      "date": "2026-08-06",
-      "close": 44396.7,
-      "ma5": 43775.02,
-      "ma20": 43675.0,
-      "ma60": 44231.23,
+      "date": "2026-08-07",
+      "close": 44225.91,
+      "ma5": 43996.26,
+      "ma20": 43618.57,
+      "ma60": 44278.76,
       "lights": {
         "ma5": true,
         "ma20": true,
-        "ma60": true
+        "ma60": false
       }
     },
     "margin_weekly": {
@@ -61,46 +61,46 @@
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "+35.62 億股",
+      "display": "+11.18 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-08-06",
+      "date": "2026-08-07",
       "days": 5,
-      "cumulative_net_shares": 3561526943
+      "cumulative_net_shares": 1118241800
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 10.0,
+      "score": 7.77,
       "weight": 10,
       "signal": "bullish",
-      "display": "363/110",
+      "display": "179/93",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 363,
-      "declines": 110,
-      "ratio": 3.3
+      "advances": 179,
+      "declines": 93,
+      "ratio": 1.92
     },
     "us_vix": {
       "label": "US VIX",
       "score": 14.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "15.81",
-      "detail": "5日變化 -23.48%",
+      "display": "15.15",
+      "detail": "5日變化 -11.35%",
       "available": true,
       "source": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "date": "2026-08-05",
-      "latest": 15.81,
-      "change_5d_pct": -23.48
+      "date": "2026-08-06",
+      "latest": 15.15,
+      "change_5d_pct": -11.35
     }
   },
   "source_status": [
-    "OK: TAIEX - 87 rows",
+    "OK: TAIEX - 88 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 481 SFZ rows",
+    "OK: local breadth - 276 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
