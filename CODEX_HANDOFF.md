@@ -22,9 +22,13 @@ strategy, universe, signal, exit, and order rules are unchanged.
   ETF/ETN/TDR/warrant/preferred/beneficiary labels enter the ranking.
 - Added complete combined listed/OTC foreign buy, foreign sell, trust buy, and
   trust sell arrays to `daily_market_flow.json` schema `1.1.0`.
-- Added `institutional-flow.html`, with four complete searchable ranking tabs.
-  The page visibly distinguishes official all-instrument amount totals from
-  ordinary-equity-only rankings.
+- Added `institutional-flow.html`, with four complete searchable ranking
+  sections shown sequentially on the same page: foreign buy, foreign sell,
+  investment-trust buy, and investment-trust sell. No ranking is hidden behind
+  a tab. The page visibly distinguishes official all-instrument amount totals
+  from ordinary-equity-only rankings.
+- Added a primary `法人排行` navigation item linking directly to
+  `institutional-flow.html`, in addition to the homepage card link.
 - Added `holder-risers.html`, with one table row for every stock whose 400+
   lots major-holder ratio rose between its latest two snapshots.
 - Removed the previous default 50-row cap in `weekly_holder_risers.py`; schema
@@ -46,13 +50,16 @@ strategy, universe, signal, exit, and order rules are unchanged.
 
 - `python data_contract.py validate-registry contracts/taiwan_stock_data_contracts.json`
   OK: 39 sources, 21 datasets.
-- `python -m unittest discover -s tools -p "test_*.py"` OK: 105 tests.
+- `python -m unittest discover -s tools -p "test_*.py"` OK: 106 tests.
 - Live 2026-08-07 official smoke: listed and OTC amount summaries aligned to
   the detail date; 1,844 ordinary equities eligible and 380 non-common
   instruments excluded.
 - Generated affected-page QA with real local holder cache produced 838 holder
   rows and 2,079 institutional ranking rows. The homepage had monetary totals,
   no share-total card, both page links, and no `0050` ranking row.
+- User-clarification QA confirmed the 2,079 ranking rows are distributed across
+  four visible section anchors/tables, with zero hidden tab panels, and the
+  shared navigation marks `法人排行` active.
 - This remains a sparse source checkout; affected HTML was generated into a
   temporary QA directory. CI/designated output writer should regenerate and
   commit the full `docs/` tree after merge.

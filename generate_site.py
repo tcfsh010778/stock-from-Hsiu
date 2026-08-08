@@ -744,6 +744,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .flow-page-link{display:inline-flex;align-items:center;justify-content:center;margin-top:10px;border:1px solid #58a6ff;border-radius:7px;padding:7px 11px;color:#58a6ff;font-size:12px;font-weight:900;text-decoration:none}.flow-page-link:hover{background:rgba(88,166,255,.12);text-decoration:none}
 .flow-page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}.flow-page-toolbar input{min-width:260px;background:#0d1117;border:1px solid #30363d;border-radius:7px;color:#e6edf3;padding:8px 10px}.flow-page-count{font-size:12px;color:#8b949e;font-weight:800}
 .complete-table-note{border-left:3px solid #58a6ff;background:rgba(88,166,255,.08);border-radius:6px;padding:9px 11px;color:#c9d1d9;font-size:12px;line-height:1.65;margin:10px 0}
+.flow-anchor-nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}.flow-anchor-nav a{border:1px solid #30363d;background:#161b22;border-radius:999px;padding:7px 11px;color:#c9d1d9;font-size:12px;font-weight:800;text-decoration:none}.flow-anchor-nav a:hover{border-color:#58a6ff;color:#58a6ff;text-decoration:none}.ranking-section{scroll-margin-top:64px}.ranking-section+.ranking-section{margin-top:16px}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -981,6 +982,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",      "index.html",     "首頁"),
+        ("flow",      "institutional-flow.html", "法人排行"),
         ("selection", "selection.html", "選股池"),
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
@@ -1854,18 +1856,18 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
         ("trust-buy", "投信買超", rankings.get("investment_trust_buy") or []),
         ("trust-sell", "投信賣超", rankings.get("investment_trust_sell") or []),
     ]
-    tab_buttons = "".join(
-        f'<button class="tab-btn{" active" if index == 0 else ""}" data-tab="{tab_id}">{esc(label)} · {len(rows):,} 檔</button>'
-        for index, (tab_id, label, rows) in enumerate(tabs)
+    anchor_links = "".join(
+        f'<a href="#{tab_id}">{esc(label)} · {len(rows):,} 檔</a>'
+        for tab_id, label, rows in tabs
     )
-    tab_panels = "".join(
-        f'<div class="tab-panel{" active" if index == 0 else ""}" id="{tab_id}"><div class="card"><div class="section-label">{esc(label)}排名</div>{_institutional_ranking_table(rows, "當日沒有符合條件的一般股票")}</div></div>'
-        for index, (tab_id, label, rows) in enumerate(tabs)
+    ranking_sections = "".join(
+        f'<section class="card ranking-section" id="{tab_id}"><div class="section-head"><div><div class="section-label">{esc(label)}完整排行</div><div class="strategy-note">共 {len(rows):,} 檔；本表完整列出，不做 Top N 截斷。</div></div><a class="flow-page-link" href="#page-top">回到頁首 ↑</a></div>{_institutional_ranking_table(rows, "當日沒有符合條件的一般股票")}</section>'
+        for tab_id, label, rows in tabs
     )
     date_text = str(payload.get("date") or "─")
     warning_html = _data_quality_warning(payload, "daily_market_flow")
     body = f"""
-<div class="container" id="institutional-flow-tabs" data-flow-ranking-page>
+<div class="container" id="page-top" data-flow-ranking-page>
   <div class="page-title">外資／投信買賣超排行</div>
   <div class="page-sub">上市、上櫃合併排名；只保留一般股票，ETF、ETN、權證、TDR、債券、特別股與受益證券不進榜。資料日：{esc(date_text)}</div>
   <div class="card">
@@ -1875,12 +1877,12 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
     {warning_html}
   </div>
   <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-flow-rank-count>共 {sum(len(rows) for _, _, rows in tabs):,} 筆排行列</span></div>
-  <div class="tab-bar">{tab_buttons}</div>
-  {tab_panels}
+  <div class="flow-anchor-nav" aria-label="四組法人排行快速導覽">{anchor_links}</div>
+  {ranking_sections}
 </div>
 {TAB_JS}
 <script>
-(function(){{var root=document.querySelector('[data-flow-ranking-page]');if(!root)return;var input=root.querySelector('[data-flow-rank-search]'),count=root.querySelector('[data-flow-rank-count]');function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;root.querySelectorAll('[data-flow-rank-row]').forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' 筆排行列';}}input.addEventListener('input',run);initTabs('institutional-flow-tabs');}})();
+(function(){{var root=document.querySelector('[data-flow-ranking-page]');if(!root)return;var input=root.querySelector('[data-flow-rank-search]'),count=root.querySelector('[data-flow-rank-count]');function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;root.querySelectorAll('[data-flow-rank-row]').forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' 筆排行列';}}input.addEventListener('input',run);}})();
 </script>"""
     return html_page("外資／投信買賣超排行", "flow", body)
 

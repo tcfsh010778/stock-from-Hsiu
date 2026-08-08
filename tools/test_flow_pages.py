@@ -52,6 +52,19 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("2330 台積電", html)
         self.assertIn("6488 環球晶", html)
         self.assertEqual(html.count("<tr data-flow-rank-row"), 4)
+        for section_id, label in (
+            ("foreign-buy", "外資買超完整排行"),
+            ("foreign-sell", "外資賣超完整排行"),
+            ("trust-buy", "投信買超完整排行"),
+            ("trust-sell", "投信賣超完整排行"),
+        ):
+            self.assertIn(f'id="{section_id}"', html)
+            self.assertIn(label, html)
+        self.assertNotIn('class="tab-panel', html)
+
+    def test_institutional_page_is_a_primary_navigation_destination(self):
+        html = generate_site.nav_html("flow")
+        self.assertIn('href="institutional-flow.html" class="tab active">法人排行</a>', html)
 
     def test_holder_page_renders_every_positive_row(self):
         rows = [

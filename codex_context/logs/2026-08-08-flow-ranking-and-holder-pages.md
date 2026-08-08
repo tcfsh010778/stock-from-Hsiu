@@ -39,12 +39,16 @@
   - Homepage holder card is a count/period summary with a full-page link.
   - Added `institutional-flow.html` and `holder-risers.html` renderers, search,
     responsive tables, generator outputs, and sitemap entries.
+  - After user clarification, replaced the institutional ranking tabs with
+    four sequential, simultaneously visible complete tables on one independent
+    page and added `法人排行` to the primary navigation.
 - Updated source registry/freshness contract and deterministic tests.
 
 ## Verification evidence
 
 - Registry: 39 sources / 21 datasets valid.
-- Unit suite: 105 tests passed.
+- Unit suite: 106 tests passed after the visible-four-section navigation
+  clarification.
 - Live 2026-08-07 smoke:
   - TWSE foreign `-40,715,743,790`, trust `-1,201,721,402`, total
     `-42,885,537,066` TWD.
