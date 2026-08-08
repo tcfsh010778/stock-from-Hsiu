@@ -90,13 +90,13 @@ jobs:
         run: python generate_site.py
 
       - name: Generate public V2 parallel pages
-        run: python generate_v2.py --validate
+        run: python generate_v2.py --validate --switch-navigation
 
       - name: Verify generated daily artifacts
         run: python tools/verify_daily_update_artifacts.py
 
       - name: Verify V2 parallel release
-        run: python tools/verify_v2_public.py --navigation legacy
+        run: python tools/verify_v2_public.py --navigation switched
 
       - name: Commit and push generated site
         run: |
