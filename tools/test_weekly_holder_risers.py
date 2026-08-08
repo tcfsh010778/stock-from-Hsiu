@@ -45,6 +45,23 @@ class WeeklyHolderRisersTests(unittest.TestCase):
         self.assertEqual(rows[0]["major_delta_pctpt"], 2.0)
         self.assertEqual(rows[0]["market"], "上市")
 
+    def test_default_output_is_not_capped_at_fifty(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            holding = Path(tmp) / "holding_shares"
+            holding.mkdir()
+            market_map = {}
+            for index in range(55):
+                stock_id = str(1000 + index)
+                (holding / f"{stock_id}.csv").write_text(
+                    'date,stock_id,HoldingSharesLevel,people,percent,unit\n'
+                    f'2026-07-24,{stock_id},"400,001-600,000",10,20.0,%\n'
+                    f'2026-07-31,{stock_id},"400,001-600,000",11,20.1,%\n',
+                    encoding="utf-8",
+                )
+                market_map[stock_id] = {"name": f"測試{index}", "market": "上市"}
+            rows = weekly_holder_risers.build_rows(holding_dir=holding, market_map=market_map)
+        self.assertEqual(len(rows), 55)
+
 
 if __name__ == "__main__":
     unittest.main()

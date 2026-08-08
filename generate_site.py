@@ -741,6 +741,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
 .flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
 .flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
+.flow-page-link{display:inline-flex;align-items:center;justify-content:center;margin-top:10px;border:1px solid #58a6ff;border-radius:7px;padding:7px 11px;color:#58a6ff;font-size:12px;font-weight:900;text-decoration:none}.flow-page-link:hover{background:rgba(88,166,255,.12);text-decoration:none}
+.flow-page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}.flow-page-toolbar input{min-width:260px;background:#0d1117;border:1px solid #30363d;border-radius:7px;color:#e6edf3;padding:8px 10px}.flow-page-count{font-size:12px;color:#8b949e;font-weight:800}
+.complete-table-note{border-left:3px solid #58a6ff;background:rgba(88,166,255,.08);border-radius:6px;padding:9px 11px;color:#c9d1d9;font-size:12px;line-height:1.65;margin:10px 0}
+.flow-anchor-nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}.flow-anchor-nav a{border:1px solid #30363d;background:#161b22;border-radius:999px;padding:7px 11px;color:#c9d1d9;font-size:12px;font-weight:800;text-decoration:none}.flow-anchor-nav a:hover{border-color:#58a6ff;color:#58a6ff;text-decoration:none}.ranking-section{scroll-margin-top:64px}.ranking-section+.ranking-section{margin-top:16px}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -884,7 +888,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:1fr}.flow-page-toolbar input{min-width:0;width:100%}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -978,6 +982,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",      "index.html",     "首頁"),
+        ("flow",      "institutional-flow.html", "法人排行"),
         ("selection", "selection.html", "選股池"),
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
@@ -1698,6 +1703,8 @@ def build_daily_decision_badge(stock_id: str, payload: dict | None = None) -> st
 def _default_market_flow_summary() -> dict:
     return {
         "stock_count": 0,
+        "ranking_eligible_count": 0,
+        "ranking_excluded_count": 0,
         "foreign_buy": 0,
         "foreign_sell": 0,
         "foreign_net": 0,
@@ -1709,6 +1716,7 @@ def _default_market_flow_summary() -> dict:
         "foreign_top_sell": [],
         "trust_top_buy": [],
         "trust_top_sell": [],
+        "amounts": {},
     }
 
 
@@ -1717,6 +1725,15 @@ def default_daily_market_flow_payload() -> dict:
         "date": "",
         "updated_at": "",
         "markets": {"listed": _default_market_flow_summary(), "otc": _default_market_flow_summary()},
+        "rankings": {
+            "eligibility_policy": "ordinary_equity_v1",
+            "eligible_count": 0,
+            "excluded_count": 0,
+            "foreign_buy": [],
+            "foreign_sell": [],
+            "investment_trust_buy": [],
+            "investment_trust_sell": [],
+        },
         "source_artifacts": [],
         "data_quality": {"state": "missing", "warnings": ["daily_market_flow.json 尚未產生"]},
         "freshness": {"status": "missing"},
@@ -1738,6 +1755,16 @@ def load_daily_market_flow_payload(path: Path | str = DAILY_MARKET_FLOW_PATH) ->
         market: dict(_default_market_flow_summary(), **(markets.get(market) if isinstance(markets.get(market), dict) else {}))
         for market in ("listed", "otc")
     }
+    rankings = payload.get("rankings") if isinstance(payload.get("rankings"), dict) else {}
+    payload["rankings"] = {
+        "eligibility_policy": str(rankings.get("eligibility_policy") or "ordinary_equity_v1"),
+        "eligible_count": int(rankings.get("eligible_count") or 0),
+        "excluded_count": int(rankings.get("excluded_count") or 0),
+        "foreign_buy": [row for row in rankings.get("foreign_buy") or [] if isinstance(row, dict)],
+        "foreign_sell": [row for row in rankings.get("foreign_sell") or [] if isinstance(row, dict)],
+        "investment_trust_buy": [row for row in rankings.get("investment_trust_buy") or [] if isinstance(row, dict)],
+        "investment_trust_sell": [row for row in rankings.get("investment_trust_sell") or [] if isinstance(row, dict)],
+    }
     payload.setdefault("date", "")
     payload.setdefault("updated_at", "")
     payload.setdefault("source_artifacts", [])
@@ -1754,47 +1781,110 @@ def _flow_number(value: Any) -> str:
     return f"{number / 1000:+,.0f} 張"
 
 
-def _flow_top_list(rows: list[dict], limit: int = 3) -> str:
-    if not rows:
-        return '<div class="strategy-note">尚無排行資料</div>'
-    return "".join(
-        f'<div class="flow-top-row"><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a><span>{_flow_number(row.get("net"))}</span></div>'
-        for row in rows[:limit]
-    )
+def _flow_amount(value: Any) -> str:
+    if value in (None, ""):
+        return "─"
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        return "─"
+    return f"{number / 100_000_000:+,.2f} 億元"
 
 
-def build_daily_market_flow_panel(payload: dict | None = None) -> str:
-    payload = payload or load_daily_market_flow_payload()
+def _market_amount_cards(payload: dict) -> str:
     market_labels = {"listed": "上市", "otc": "上櫃"}
     cards = ""
     for market in ("listed", "otc"):
         summary = payload["markets"].get(market) or _default_market_flow_summary()
+        amounts = summary.get("amounts") if isinstance(summary.get("amounts"), dict) else {}
         cards += f"""
 <div class="flow-market-card" data-market-flow="{market}">
-  <div class="section-label">{market_labels[market]} · {int(summary.get('stock_count') or 0):,} 檔</div>
+  <div class="section-label">{market_labels[market]} · 官方全市場金額</div>
   <div class="flow-metric-grid">
-    <div><div class="label">外資買賣超</div><div class="flow-net">{_flow_number(summary.get('foreign_net'))}</div></div>
-    <div><div class="label">投信買賣超</div><div class="flow-net">{_flow_number(summary.get('investment_trust_net'))}</div></div>
-    <div><div class="label">三大法人</div><div class="flow-net">{_flow_number(summary.get('institutional_total_net'))}</div></div>
+    <div><div class="label">外資買賣超</div><div class="flow-net">{_flow_amount(amounts.get('foreign_net_amount'))}</div></div>
+    <div><div class="label">投信買賣超</div><div class="flow-net">{_flow_amount(amounts.get('investment_trust_net_amount'))}</div></div>
+    <div><div class="label">三大法人</div><div class="flow-net">{_flow_amount(amounts.get('institutional_total_net_amount'))}</div></div>
   </div>
-  <div class="flow-top-title">外資淨買排行</div>{_flow_top_list(summary.get('foreign_top_buy') or [])}
-  <div class="flow-top-title">投信淨買排行</div>{_flow_top_list(summary.get('trust_top_buy') or [])}
+  <div class="strategy-note">金額為交易所官方市場彙總，單位新台幣；涵蓋範圍依官方彙總表。</div>
 </div>"""
+    return cards
+
+
+def _data_quality_warning(payload: dict, dataset_name: str) -> str:
     quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
     warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
     freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
     freshness_status = str(freshness.get("status") or "")
     if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
-        warnings = list(warnings) + [f"daily_market_flow freshness is {freshness_status}"]
-    warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
+        warnings = list(warnings) + [f"{dataset_name} freshness is {freshness_status}"]
+    return f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
+
+
+def build_daily_market_flow_panel(payload: dict | None = None) -> str:
+    payload = payload or load_daily_market_flow_payload()
+    cards = _market_amount_cards(payload)
+    warning_html = _data_quality_warning(payload, "daily_market_flow")
     date_text = str(payload.get("date") or "─")
     return f"""
 <div class="card market-flow-card" data-daily-market-flow data-market-flow-date="{esc(date_text)}">
-  <div class="section-head"><div><div class="section-label">每日上市／上櫃法人流向</div><div class="strategy-note">外資、投信淨買賣超；單位統一換算為張，排行僅作觀察池參考。</div></div><div class="section-date">資料日：{esc(date_text)}</div></div>
+  <div class="section-head"><div><div class="section-label">每日上市／上櫃法人流向</div><div class="strategy-note">首頁改呈現交易所官方買賣超金額；個股排行另頁顯示，並排除 ETF 等非一般股票。</div></div><div class="section-date">資料日：{esc(date_text)}</div></div>
   <div class="flow-market-grid">{cards}</div>
+  <a class="flow-page-link" href="institutional-flow.html">查看外資／投信完整排行 →</a>
   {warning_html}
-  <div class="signal-foot">來源：TWSE T86／TPEx 三大法人 OpenAPI · 只呈現彙總結果，不改寫選股規則</div>
+  <div class="signal-foot">金額來源：TWSE BFI82U／TPEx 三大法人買賣金額彙總表；排行來源：TWSE T86／TPEx 三大法人明細 · 不改寫選股規則</div>
 </div>"""
+
+
+def _institutional_ranking_table(rows: list[dict], empty_text: str) -> str:
+    row_html = "".join(
+        f'<tr data-flow-rank-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{"上市" if str(row.get("market")) == "listed" else "上櫃" if str(row.get("market")) == "otc" else esc(str(row.get("market") or "─"))}</td><td class="{"pos" if float(row.get("net_shares") or 0) > 0 else "neg"}">{_flow_number(row.get("net_shares"))}</td></tr>'
+        for rank, row in enumerate(rows, 1)
+    )
+    if not row_html:
+        row_html = f'<tr><td colspan="4" style="color:#8b949e">{esc(empty_text)}</td></tr>'
+    return f'<div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>淨買賣超</th></tr></thead><tbody>{row_html}</tbody></table></div>'
+
+
+def build_institutional_flow_page(payload: dict | None = None) -> str:
+    payload = payload or load_daily_market_flow_payload()
+    rankings = payload.get("rankings") if isinstance(payload.get("rankings"), dict) else {}
+    eligible_count = int(rankings.get("eligible_count") or 0)
+    excluded_count = int(rankings.get("excluded_count") or 0)
+    tabs = [
+        ("foreign-buy", "外資買超", rankings.get("foreign_buy") or []),
+        ("foreign-sell", "外資賣超", rankings.get("foreign_sell") or []),
+        ("trust-buy", "投信買超", rankings.get("investment_trust_buy") or []),
+        ("trust-sell", "投信賣超", rankings.get("investment_trust_sell") or []),
+    ]
+    anchor_links = "".join(
+        f'<a href="#{tab_id}">{esc(label)} · {len(rows):,} 檔</a>'
+        for tab_id, label, rows in tabs
+    )
+    ranking_sections = "".join(
+        f'<section class="card ranking-section" id="{tab_id}"><div class="section-head"><div><div class="section-label">{esc(label)}完整排行</div><div class="strategy-note">共 {len(rows):,} 檔；本表完整列出，不做 Top N 截斷。</div></div><a class="flow-page-link" href="#page-top">回到頁首 ↑</a></div>{_institutional_ranking_table(rows, "當日沒有符合條件的一般股票")}</section>'
+        for tab_id, label, rows in tabs
+    )
+    date_text = str(payload.get("date") or "─")
+    warning_html = _data_quality_warning(payload, "daily_market_flow")
+    body = f"""
+<div class="container" id="page-top" data-flow-ranking-page>
+  <div class="page-title">外資／投信買賣超排行</div>
+  <div class="page-sub">上市、上櫃合併排名；只保留一般股票，ETF、ETN、權證、TDR、債券、特別股與受益證券不進榜。資料日：{esc(date_text)}</div>
+  <div class="card">
+    <div class="section-label">官方市場金額總覽</div>
+    <div class="flow-market-grid">{_market_amount_cards(payload)}</div>
+    <div class="complete-table-note">金額卡是交易所官方全市場彙總；下方排行則套用一般股票篩選。符合 {eligible_count:,} 檔，排除 {excluded_count:,} 檔非一般股票。</div>
+    {warning_html}
+  </div>
+  <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-flow-rank-count>共 {sum(len(rows) for _, _, rows in tabs):,} 筆排行列</span></div>
+  <div class="flow-anchor-nav" aria-label="四組法人排行快速導覽">{anchor_links}</div>
+  {ranking_sections}
+</div>
+{TAB_JS}
+<script>
+(function(){{var root=document.querySelector('[data-flow-ranking-page]');if(!root)return;var input=root.querySelector('[data-flow-rank-search]'),count=root.querySelector('[data-flow-rank-count]');function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;root.querySelectorAll('[data-flow-rank-row]').forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' 筆排行列';}}input.addEventListener('input',run);}})();
+</script>"""
+    return html_page("外資／投信買賣超排行", "flow", body)
 
 
 def default_weekly_holder_risers_payload() -> dict:
@@ -1820,30 +1910,47 @@ def load_weekly_holder_risers_payload(path: Path | str = WEEKLY_HOLDER_RISERS_PA
     return payload
 
 
-def build_weekly_holder_risers_panel(payload: dict | None = None, limit: int = 8) -> str:
+def build_weekly_holder_risers_panel(payload: dict | None = None) -> str:
+    payload = payload or load_weekly_holder_risers_payload()
+    rows = payload.get("rows") or []
+    warning_html = _data_quality_warning(payload, "weekly_holder_risers")
+    largest = rows[0] if rows else {}
+    largest_text = f'{esc(str(largest.get("security_id") or ""))} {esc(str(largest.get("name") or ""))}（+{fmt_num(largest.get("major_delta_pctpt"), 2)} pt）' if largest else "─"
+    return f"""
+<div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">
+  <div class="section-head"><div><div class="section-label">每週大戶持股比例上升</div><div class="strategy-note">比較最新兩個每週快照的 400 張以上大戶比例；這是觀察池，不等於買進訊號。</div></div><div class="section-date">{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}</div></div>
+  <div class="flow-metric-grid"><div><div class="label">本週上升檔數</div><div class="flow-net">{len(rows):,} 檔</div></div><div><div class="label">最大升幅</div><div class="flow-net">{largest_text}</div></div><div><div class="label">清單狀態</div><div class="flow-net">全部列出</div></div></div>
+  <a class="flow-page-link" href="holder-risers.html">查看完整上升表格 →</a>
+  {warning_html}
+  <div class="signal-foot">資料來源：每週股權分散快照的本地正規化快取 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
+</div>"""
+
+
+def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
     payload = payload or load_weekly_holder_risers_payload()
     rows = payload.get("rows") or []
     market_label = {"上市": "上市", "上櫃": "上櫃", "listed": "上市", "otc": "上櫃"}
     row_html = "".join(
-        f'<tr><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td><td class="pos">+{fmt_num(row.get("major_delta_pctpt"), 2)} pt</td><td>{fmt_num(row.get("major_percent"), 2)}%</td></tr>'
-        for row in rows[:limit]
+        f'<tr data-holder-riser-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td><td>{esc(str(row.get("previous_date") or "─"))}</td><td>{esc(str(row.get("data_date") or "─"))}</td><td>{fmt_num(row.get("previous_major_percent"), 2)}%</td><td>{fmt_num(row.get("major_percent"), 2)}%</td><td class="pos">+{fmt_num(row.get("major_delta_pctpt"), 2)} pt</td><td>{fmt_num(row.get("major_people"), 0)}</td></tr>'
+        for rank, row in enumerate(rows, 1)
     )
     if not row_html:
-        row_html = '<tr><td colspan="4" style="color:#8b949e">尚無兩週完整股權快照；本區不補推名單。</td></tr>'
-    quality = payload.get("data_quality") if isinstance(payload.get("data_quality"), dict) else {}
-    warnings = quality.get("warnings") if isinstance(quality.get("warnings"), list) else []
-    freshness = payload.get("freshness") if isinstance(payload.get("freshness"), dict) else {}
-    freshness_status = str(freshness.get("status") or "")
-    if freshness_status and freshness_status not in {"fresh", "fallback_fresh"}:
-        warnings = list(warnings) + [f"weekly_holder_risers freshness is {freshness_status}"]
-    warning_html = f'<div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> {esc("；".join(str(item) for item in warnings[:2]))}</div>' if warnings else ""
-    return f"""
-<div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">
-  <div class="section-head"><div><div class="section-label">每週大戶持股比例上升</div><div class="strategy-note">比較最新兩個每週快照的 400 張以上大戶比例；這是觀察池，不等於買進訊號。</div></div><div class="section-date">{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}</div></div>
-  <div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>個股</th><th>市場</th><th>大戶變化</th><th>最新比例</th></tr></thead><tbody>{row_html}</tbody></table></div>
+        row_html = '<tr><td colspan="9" style="color:#8b949e">尚無兩週完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
+    warning_html = _data_quality_warning(payload, "weekly_holder_risers")
+    body = f"""
+<div class="container" data-holder-risers-page>
+  <div class="page-title">每週大戶持股比例上升</div>
+  <div class="page-sub">比較最新兩個每週股權快照，只要 400 張以上大戶持股比例上升就列入，不設 Top N 截斷。</div>
+  <div class="complete-table-note">期間：{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}｜完整上升清單共 {len(rows):,} 檔。這是籌碼觀察表，不等於買進訊號。</div>
   {warning_html}
-  <div class="signal-foot">資料來源：每週股權分散快照的本地正規化快取 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
-</div>"""
+  <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
+  <div class="card"><div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>前期日期</th><th>最新日期</th><th>前期大戶比例</th><th>最新大戶比例</th><th>上升</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
+</div>
+{TAB_JS}
+<script>
+(function(){{var root=document.querySelector('[data-holder-risers-page]');if(!root)return;var input=root.querySelector('[data-holder-riser-search]'),count=root.querySelector('[data-holder-riser-count]'),rows=Array.from(root.querySelectorAll('[data-holder-riser-row]'));function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;rows.forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' / '+rows.length+' 檔';}}input.addEventListener('input',run);}})();
+</script>"""
+    return html_page("每週大戶持股比例上升", "holder-risers", body)
 
 
 def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:
@@ -10365,6 +10472,10 @@ def main():
     print("\n[Build] Generating pages...", flush=True)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
     print("   [OK] index.html", flush=True)
+    (OUTPUT_DIR / "institutional-flow.html").write_text(build_institutional_flow_page(), encoding="utf-8")
+    print("   [OK] institutional-flow.html", flush=True)
+    (OUTPUT_DIR / "holder-risers.html").write_text(build_weekly_holder_risers_page(), encoding="utf-8")
+    print("   [OK] holder-risers.html", flush=True)
     (OUTPUT_DIR / "selection.html").write_text(build_selection_page(reports), encoding="utf-8")
     print("   [OK] selection.html", flush=True)
     (OUTPUT_DIR / "daily.html").write_text(redirect_page("selection.html#daily-top20", "每日Top20"), encoding="utf-8")
@@ -10406,7 +10517,7 @@ def main():
         out.write_text(html, encoding="utf-8")
         print(f"   [OK] daily/{r['date']}.html", flush=True)
 
-    sitemap_urls = ["index.html", "selection.html", "mda.html", "timing.html", "stocks.html", "backtest_dashboard.html", "history.html"]
+    sitemap_urls = ["index.html", "institutional-flow.html", "holder-risers.html", "selection.html", "mda.html", "timing.html", "stocks.html", "backtest_dashboard.html", "history.html"]
     sitemap_urls += [f"stocks/{p.name}" for p in sorted((OUTPUT_DIR / "stocks").glob("*.html"))]
     sitemap = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + ''.join(
         f"  <url><loc>https://tcfsh010778.github.io/stock-from-Hsiu/{u}</loc></url>\n" for u in sitemap_urls

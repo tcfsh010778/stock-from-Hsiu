@@ -75,7 +75,7 @@ def _series(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
     return output
 
 
-def build_rows(*, holding_dir: Path = HOLDING_DIR, market_map: dict[str, dict[str, str]] | None = None, limit: int = 50) -> list[dict[str, Any]]:
+def build_rows(*, holding_dir: Path = HOLDING_DIR, market_map: dict[str, dict[str, str]] | None = None, limit: int | None = None) -> list[dict[str, Any]]:
     refs = market_map if market_map is not None else _market_map()
     output = []
     for path in sorted(holding_dir.glob("*.csv")) if holding_dir.exists() else []:
@@ -100,7 +100,7 @@ def build_rows(*, holding_dir: Path = HOLDING_DIR, market_map: dict[str, dict[st
             "major_people": latest.get("major_people"),
         })
     output.sort(key=lambda row: (-float(row.get("major_delta_pctpt") or 0), str(row.get("security_id") or "")))
-    return output[:limit]
+    return output[:limit] if limit is not None and limit > 0 else output
 
 
 def build_payload(rows: list[dict[str, Any]], *, updated_at: datetime | str, source_state: str = "local_cache") -> dict[str, Any]:
@@ -110,11 +110,13 @@ def build_payload(rows: list[dict[str, Any]], *, updated_at: datetime | str, sou
     previous_date = previous_dates[-1] if previous_dates else ""
     return {
         "dataset_id": "weekly_holder_risers",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "date": latest_date,
         "previous_date": previous_date,
         "updated_at": updated_at.isoformat() if isinstance(updated_at, datetime) else str(updated_at),
         "rows": rows,
+        "row_count": len(rows),
+        "complete_positive_set": True,
         "source_state": source_state,
         "data_quality": {"state": "ok" if rows else "missing", "warnings": [] if rows else ["holding_shares weekly cache has fewer than two snapshots"]},
     }
@@ -155,9 +157,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build weekly major-holder ownership-risers artifact.")
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST_PATH)
-    parser.add_argument("--limit", type=int, default=50)
+    parser.add_argument("--limit", type=int, default=0, help="Optional QA cap; 0 publishes every positive weekly change.")
     args = parser.parse_args()
-    rows = build_rows(limit=args.limit)
+    rows = build_rows(limit=args.limit or None)
     payload = build_payload(rows, updated_at=datetime.now(TAIPEI_TZ))
     if args.output.exists():
         try:

@@ -3,8 +3,9 @@
 
 The artifact is an explainable display layer.  It does not alter any stock
 selection, timing, or exit rule.  TWSE and TPEx rows are normalized first,
-then aggregated by market so the homepage can show foreign and investment
-trust net buying without publishing the full official response.
+then aggregated by market so the homepage can show exact official monetary
+totals and a dedicated page can publish ordinary-equity rankings without
+publishing either official response verbatim.
 """
 
 from __future__ import annotations
@@ -27,8 +28,12 @@ DATA_DIR = ROOT / "data"
 OUTPUT_PATH = DATA_DIR / "daily_market_flow.json"
 TWSE_URL = "https://www.twse.com.tw/rwd/zh/fund/T86"
 TPEX_URL = "https://www.tpex.org.tw/openapi/v1/tpex_3insti_daily_trading"
+TWSE_AMOUNT_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
+TPEX_AMOUNT_URL = "https://www.tpex.org.tw/www/zh-tw/insti/summary"
 DERIVED_SOURCE_ID = "daily_market_flow_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
+RANKING_POLICY = "ordinary_equity_v1"
+NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
 
 
 def _number(value: Any, default: int = 0) -> int:
@@ -67,6 +72,20 @@ def _iso_now(now: datetime | None = None) -> datetime:
 def _fetch_json(url: str, params: Mapping[str, str] | None = None, timeout: int = 45) -> Any:
     query = f"?{urlencode(params)}" if params else ""
     request = Request(f"{url}{query}", headers={"User-Agent": "stock-from-Hsiu/market-flow"})
+    with urlopen(request, timeout=timeout) as response:
+        return json.loads(response.read().decode("utf-8-sig"))
+
+
+def _post_json(url: str, params: Mapping[str, str], timeout: int = 45) -> Any:
+    request = Request(
+        url,
+        data=urlencode(params).encode("utf-8"),
+        headers={
+            "User-Agent": "stock-from-Hsiu/market-flow",
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Referer": "https://www.tpex.org.tw/zh-tw/mainboard/trading/major-institutional/summary/day.html",
+        },
+    )
     with urlopen(request, timeout=timeout) as response:
         return json.loads(response.read().decode("utf-8-sig"))
 
@@ -153,11 +172,120 @@ def normalize_tpex_payload(payload: Any, data_date: str | None = None) -> list[d
     return rows
 
 
+def is_ordinary_equity(row: Mapping[str, Any]) -> bool:
+    """Return whether a normalized row is eligible for stock rankings.
+
+    Listed/OTC common stocks use a four-digit numeric code.  The 91xx range is
+    reserved for TDRs; ETF, ETN, warrant, bond and preferred-share codes are
+    longer or suffixed.  Name checks provide a second guard for source changes.
+    """
+
+    security_id = str(row.get("security_id") or "").strip()
+    name = _key_text(row.get("name")).upper()
+    if not re.fullmatch(r"\d{4}", security_id) or security_id.startswith(("0", "91")):
+        return False
+    return not any(token.upper() in name for token in NON_ORDINARY_NAME_TOKENS)
+
+
+def _amount_rows(payload: Any, market: str) -> tuple[str, list[str], list[Any]]:
+    if market == "listed" and isinstance(payload, Mapping):
+        return _date_text(payload.get("date")), [str(field) for field in payload.get("fields") or []], list(payload.get("data") or [])
+    if market == "otc" and isinstance(payload, Mapping):
+        tables = payload.get("tables") or []
+        table = tables[0] if tables and isinstance(tables[0], Mapping) else {}
+        return _date_text(payload.get("date") or table.get("date")), [str(field) for field in table.get("fields") or []], list(table.get("data") or [])
+    return "", [], []
+
+
+def normalize_amount_payload(payload: Any, market: str) -> dict[str, Any]:
+    """Normalize official TWSE/TPEx market-wide institutional amounts."""
+
+    data_date, fields, values = _amount_rows(payload, market)
+    parsed: dict[str, dict[str, int]] = {}
+    dealer_parts: list[dict[str, int]] = []
+    for item in values:
+        if not isinstance(item, Sequence) or isinstance(item, (str, bytes)):
+            continue
+        source = dict(zip(fields, item))
+        label = _key_text(source.get("單位名稱")).replace("*", "")
+        amount = {
+            "buy": _twse_value(source, ["買進金額", "買進金額(元)"]),
+            "sell": _twse_value(source, ["賣出金額", "賣出金額(元)"]),
+            "net": _twse_value(source, ["買賣差額", "買賣超(元)"]),
+        }
+        if "外資及陸資" in label and ("不含外資自營商" in label or "不含自營商" in label):
+            parsed["foreign"] = amount
+        elif label == "投信":
+            parsed["investment_trust"] = amount
+        elif label == "自營商合計":
+            parsed["dealer"] = amount
+        elif label.startswith("自營商("):
+            dealer_parts.append(amount)
+        elif label in {"合計", "三大法人合計"}:
+            parsed["institutional_total"] = amount
+
+    if "dealer" not in parsed and dealer_parts:
+        parsed["dealer"] = {key: sum(part[key] for part in dealer_parts) for key in ("buy", "sell", "net")}
+    for key in ("foreign", "investment_trust", "dealer"):
+        parsed.setdefault(key, {"buy": 0, "sell": 0, "net": 0})
+    if "institutional_total" not in parsed:
+        parsed["institutional_total"] = {
+            key: sum(parsed[item][key] for item in ("foreign", "investment_trust", "dealer"))
+            for key in ("buy", "sell", "net")
+        }
+    return {
+        "trading_date": data_date,
+        "unit": "TWD",
+        "scope": "official_market_total_all_instruments",
+        "foreign_buy_amount": parsed["foreign"]["buy"],
+        "foreign_sell_amount": parsed["foreign"]["sell"],
+        "foreign_net_amount": parsed["foreign"]["net"],
+        "investment_trust_buy_amount": parsed["investment_trust"]["buy"],
+        "investment_trust_sell_amount": parsed["investment_trust"]["sell"],
+        "investment_trust_net_amount": parsed["investment_trust"]["net"],
+        "dealer_buy_amount": parsed["dealer"]["buy"],
+        "dealer_sell_amount": parsed["dealer"]["sell"],
+        "dealer_net_amount": parsed["dealer"]["net"],
+        "institutional_total_buy_amount": parsed["institutional_total"]["buy"],
+        "institutional_total_sell_amount": parsed["institutional_total"]["sell"],
+        "institutional_total_net_amount": parsed["institutional_total"]["net"],
+    }
+
+
+def build_rankings(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+    clean = [dict(row) for row in rows if isinstance(row, Mapping)]
+    eligible = [row for row in clean if is_ordinary_equity(row)]
+
+    def ranked(key: str, positive: bool) -> list[dict[str, Any]]:
+        candidates = [row for row in eligible if (_number(row.get(key)) > 0) == positive and _number(row.get(key)) != 0]
+        candidates.sort(key=lambda row: (_number(row.get(key)), str(row.get("security_id") or "")), reverse=positive)
+        return [
+            {
+                "security_id": str(row.get("security_id") or ""),
+                "name": str(row.get("name") or ""),
+                "market": str(row.get("market") or ""),
+                "net_shares": _number(row.get(key)),
+            }
+            for row in candidates
+        ]
+
+    return {
+        "eligibility_policy": RANKING_POLICY,
+        "eligible_count": len(eligible),
+        "excluded_count": len(clean) - len(eligible),
+        "foreign_buy": ranked("foreign_net", True),
+        "foreign_sell": ranked("foreign_net", False),
+        "investment_trust_buy": ranked("investment_trust_net", True),
+        "investment_trust_sell": ranked("investment_trust_net", False),
+    }
+
+
 def aggregate_market_rows(rows: Sequence[Mapping[str, Any]], limit: int = 5) -> dict[str, Any]:
     clean = [dict(row) for row in rows if isinstance(row, Mapping)]
+    eligible = [row for row in clean if is_ordinary_equity(row)]
 
     def top(key: str, reverse: bool) -> list[dict[str, Any]]:
-        ranked = sorted(clean, key=lambda row: _number(row.get(key)), reverse=reverse)[:limit]
+        ranked = sorted(eligible, key=lambda row: _number(row.get(key)), reverse=reverse)[:limit]
         return [
             {"security_id": row.get("security_id"), "name": row.get("name"), "net": _number(row.get(key))}
             for row in ranked
@@ -166,6 +294,8 @@ def aggregate_market_rows(rows: Sequence[Mapping[str, Any]], limit: int = 5) -> 
 
     return {
         "stock_count": len(clean),
+        "ranking_eligible_count": len(eligible),
+        "ranking_excluded_count": len(clean) - len(eligible),
         "foreign_buy": sum(_number(row.get("foreign_buy")) for row in clean),
         "foreign_sell": sum(_number(row.get("foreign_sell")) for row in clean),
         "foreign_net": sum(_number(row.get("foreign_net")) for row in clean),
@@ -187,8 +317,13 @@ def build_payload(
     data_date: str,
     fetched_at: datetime | str,
     source_errors: Mapping[str, str] | None = None,
+    listed_amounts: Mapping[str, Any] | None = None,
+    otc_amounts: Mapping[str, Any] | None = None,
+    amount_source_errors: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     errors = dict(source_errors or {})
+    amount_errors = dict(amount_source_errors or {})
+    amount_map = {"listed": dict(listed_amounts or {}), "otc": dict(otc_amounts or {})}
     source_artifacts = []
     for market, rows, source_id in (("listed", listed_rows, "twse_institutional_trading"), ("otc", otc_rows, "tpex_institutional_trading")):
         source_artifacts.append({
@@ -199,16 +334,39 @@ def build_payload(
             "row_count": len(rows),
             "error": errors.get(market),
         })
+    for market, source_id in (("listed", "twse_institutional_amount_summary"), ("otc", "tpex_institutional_amount_summary")):
+        amounts = amount_map[market]
+        missing = market in amount_errors or not amounts
+        source_artifacts.append({
+            "source_id": source_id,
+            "market": market,
+            "metric": "amount",
+            "status": "missing" if missing else "fresh",
+            "data_date": amounts.get("trading_date") if not missing else None,
+            "row_count": 1 if not missing else 0,
+            "error": amount_errors.get(market) or ("amount summary unavailable" if missing else None),
+        })
+    markets = {"listed": aggregate_market_rows(listed_rows), "otc": aggregate_market_rows(otc_rows)}
+    for market in ("listed", "otc"):
+        markets[market]["amounts"] = amount_map[market]
+    all_errors = {
+        **{f"{market}_shares": message for market, message in errors.items()},
+        **{f"{market}_amount": message for market, message in amount_errors.items()},
+    }
+    for market in ("listed", "otc"):
+        if not amount_map[market] and market not in amount_errors:
+            all_errors[f"{market}_amount"] = "amount summary unavailable"
     return {
         "dataset_id": "daily_market_flow",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "date": data_date,
         "updated_at": _iso_now(fetched_at if isinstance(fetched_at, datetime) else None).isoformat(),
-        "markets": {"listed": aggregate_market_rows(listed_rows), "otc": aggregate_market_rows(otc_rows)},
+        "markets": markets,
+        "rankings": build_rankings([*listed_rows, *otc_rows]),
         "source_artifacts": source_artifacts,
         "data_quality": {
-            "state": "ok" if not errors else ("warning" if listed_rows or otc_rows else "missing"),
-            "warnings": [f"{market} official institutional feed unavailable: {message}" for market, message in errors.items()],
+            "state": "ok" if not all_errors else ("warning" if listed_rows or otc_rows else "missing"),
+            "warnings": [f"{partition} official institutional feed unavailable: {message}" for partition, message in all_errors.items()],
         },
     }
 
@@ -218,12 +376,18 @@ def _manifest_rows(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
     for market, summary in (payload.get("markets") or {}).items():
         if not isinstance(summary, Mapping):
             continue
+        amounts = summary.get("amounts") if isinstance(summary.get("amounts"), Mapping) else {}
         rows.append({
             "trading_date": payload.get("date"),
             "market": market,
             "foreign_net": _number(summary.get("foreign_net")),
             "investment_trust_net": _number(summary.get("investment_trust_net")),
             "institutional_total_net": _number(summary.get("institutional_total_net")),
+            "foreign_net_amount": _number(amounts.get("foreign_net_amount")),
+            "investment_trust_net_amount": _number(amounts.get("investment_trust_net_amount")),
+            "institutional_total_net_amount": _number(amounts.get("institutional_total_net_amount")),
+            "ranking_eligible_count": _number(summary.get("ranking_eligible_count")),
+            "ranking_excluded_count": _number(summary.get("ranking_excluded_count")),
         })
     return rows
 
@@ -256,6 +420,8 @@ def collect(target_date: date | None = None, *, now: datetime | None = None) -> 
     listed_rows: list[dict[str, Any]] = []
     otc_rows: list[dict[str, Any]] = []
     errors: dict[str, str] = {}
+    amounts: dict[str, dict[str, Any]] = {}
+    amount_errors: dict[str, str] = {}
     try:
         listed_rows = normalize_twse_payload(_fetch_json(TWSE_URL, {"response": "json", "selectType": "ALLBUT0999", "date": date_param}), date_param)
     except Exception as exc:
@@ -264,9 +430,45 @@ def collect(target_date: date | None = None, *, now: datetime | None = None) -> 
         otc_rows = normalize_tpex_payload(_fetch_json(TPEX_URL), date_param)
     except Exception as exc:
         errors["otc"] = str(exc)[:200]
+    try:
+        amounts["listed"] = normalize_amount_payload(
+            _fetch_json(TWSE_AMOUNT_URL, {"response": "json", "dayDate": date_param, "type": "day"}),
+            "listed",
+        )
+        if not amounts["listed"].get("trading_date"):
+            raise ValueError("TWSE amount summary returned no trading date")
+        if not amounts["listed"].get("institutional_total_buy_amount") and not amounts["listed"].get("institutional_total_sell_amount"):
+            raise ValueError("TWSE amount summary returned no monetary totals")
+    except Exception as exc:
+        amount_errors["listed"] = str(exc)[:200]
+    try:
+        amounts["otc"] = normalize_amount_payload(
+            _post_json(TPEX_AMOUNT_URL, {"type": "Daily", "prod": "1", "date": date_param, "response": "json"}),
+            "otc",
+        )
+        if not amounts["otc"].get("trading_date"):
+            raise ValueError("TPEx amount summary returned no trading date")
+        if not amounts["otc"].get("institutional_total_buy_amount") and not amounts["otc"].get("institutional_total_sell_amount"):
+            raise ValueError("TPEx amount summary returned no monetary totals")
+    except Exception as exc:
+        amount_errors["otc"] = str(exc)[:200]
     available_dates = [row.get("trading_date") for row in (*listed_rows, *otc_rows) if row.get("trading_date")]
     resolved_date = max(available_dates) if available_dates else target.isoformat()
-    return build_payload(listed_rows, otc_rows, data_date=resolved_date, fetched_at=fetched_at, source_errors=errors)
+    for market in ("listed", "otc"):
+        amount_date = str((amounts.get(market) or {}).get("trading_date") or "")
+        if amount_date and amount_date != resolved_date:
+            amount_errors[market] = f"amount date {amount_date} does not align with institutional detail date {resolved_date}"
+            amounts.pop(market, None)
+    return build_payload(
+        listed_rows,
+        otc_rows,
+        data_date=resolved_date,
+        fetched_at=fetched_at,
+        source_errors=errors,
+        listed_amounts=amounts.get("listed"),
+        otc_amounts=amounts.get("otc"),
+        amount_source_errors=amount_errors,
+    )
 
 
 def main() -> int:
