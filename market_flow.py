@@ -34,6 +34,7 @@ DERIVED_SOURCE_ID = "daily_market_flow_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 RANKING_POLICY = "ordinary_equity_v1"
 NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
+MAX_AUTO_LOOKBACK_DAYS = 10
 
 
 def _number(value: Any, default: int = 0) -> int:
@@ -100,7 +101,7 @@ def _twse_value(row: Mapping[str, Any], names: Sequence[str]) -> int:
 def normalize_twse_payload(payload: Mapping[str, Any], data_date: str | None = None) -> list[dict[str, Any]]:
     fields = [str(field) for field in payload.get("fields") or []]
     rows: list[dict[str, Any]] = []
-    resolved_date = _date_text(data_date or payload.get("date"))
+    resolved_date = _date_text(payload.get("date") or data_date)
     for values in payload.get("data") or []:
         if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
             continue
@@ -156,7 +157,7 @@ def normalize_tpex_payload(payload: Any, data_date: str | None = None) -> list[d
         trust_buy = _tpex_value(source, "SecuritiesInvestmentTrustCompanies-TotalBuy")
         trust_sell = _tpex_value(source, "SecuritiesInvestmentTrustCompanies-TotalSell")
         rows.append({
-            "trading_date": _date_text(data_date or source.get("Date")),
+            "trading_date": _date_text(source.get("Date") or data_date),
             "security_id": security_id,
             "name": str(source.get("CompanyName") or "").strip(),
             "market": "otc",
@@ -413,10 +414,9 @@ def write_payload(payload: dict[str, Any], output_path: Path | str = OUTPUT_PATH
     return path
 
 
-def collect(target_date: date | None = None, *, now: datetime | None = None) -> dict[str, Any]:
-    fetched_at = _iso_now(now)
-    target = target_date or fetched_at.date()
+def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
     date_param = target.strftime("%Y%m%d")
+    expected_date = target.isoformat()
     listed_rows: list[dict[str, Any]] = []
     otc_rows: list[dict[str, Any]] = []
     errors: dict[str, str] = {}
@@ -452,23 +452,68 @@ def collect(target_date: date | None = None, *, now: datetime | None = None) -> 
             raise ValueError("TPEx amount summary returned no monetary totals")
     except Exception as exc:
         amount_errors["otc"] = str(exc)[:200]
-    available_dates = [row.get("trading_date") for row in (*listed_rows, *otc_rows) if row.get("trading_date")]
-    resolved_date = max(available_dates) if available_dates else target.isoformat()
+
+    detail_rows = {"listed": listed_rows, "otc": otc_rows}
+    for market in ("listed", "otc"):
+        if market in errors:
+            continue
+        rows = detail_rows[market]
+        if not rows:
+            errors[market] = f"no rows returned for {expected_date}"
+            continue
+        row_dates = {str(row.get("trading_date") or "") for row in rows}
+        if row_dates != {expected_date}:
+            actual = ", ".join(sorted(item or "missing" for item in row_dates))
+            errors[market] = f"detail date {actual} does not align with requested date {expected_date}"
+            detail_rows[market] = []
+
     for market in ("listed", "otc"):
         amount_date = str((amounts.get(market) or {}).get("trading_date") or "")
-        if amount_date and amount_date != resolved_date:
-            amount_errors[market] = f"amount date {amount_date} does not align with institutional detail date {resolved_date}"
+        if amount_date and amount_date != expected_date:
+            amount_errors[market] = f"amount date {amount_date} does not align with requested date {expected_date}"
             amounts.pop(market, None)
     return build_payload(
-        listed_rows,
-        otc_rows,
-        data_date=resolved_date,
+        detail_rows["listed"],
+        detail_rows["otc"],
+        data_date=expected_date,
         fetched_at=fetched_at,
         source_errors=errors,
         listed_amounts=amounts.get("listed"),
         otc_amounts=amounts.get("otc"),
         amount_source_errors=amount_errors,
     )
+
+
+def _is_complete_snapshot(payload: Mapping[str, Any]) -> bool:
+    artifacts = payload.get("source_artifacts") or []
+    required = {
+        "twse_institutional_trading",
+        "tpex_institutional_trading",
+        "twse_institutional_amount_summary",
+        "tpex_institutional_amount_summary",
+    }
+    fresh = {
+        str(item.get("source_id"))
+        for item in artifacts
+        if item.get("status") == "fresh" and _number(item.get("row_count")) > 0
+    }
+    return required.issubset(fresh) and (payload.get("data_quality") or {}).get("state") == "ok"
+
+
+def collect(target_date: date | None = None, *, now: datetime | None = None) -> dict[str, Any]:
+    fetched_at = _iso_now(now)
+    if target_date is not None:
+        return _collect_for_target(target_date, fetched_at)
+
+    latest_failed: dict[str, Any] | None = None
+    for offset in range(MAX_AUTO_LOOKBACK_DAYS):
+        candidate = fetched_at.date() - timedelta(days=offset)
+        payload = _collect_for_target(candidate, fetched_at)
+        if latest_failed is None:
+            latest_failed = payload
+        if _is_complete_snapshot(payload):
+            return payload
+    return latest_failed or _collect_for_target(fetched_at.date(), fetched_at)
 
 
 def main() -> int:

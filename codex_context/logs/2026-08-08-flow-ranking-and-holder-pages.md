@@ -67,3 +67,26 @@
 
 No SFZ/MDA/CaryBot universe, score, signal, entry, exit, risk, or order logic
 was changed. Generated `docs/` remains owned by the designated writer/CI.
+
+## Publication remediation: non-trading-day alignment
+
+The first live publication on Saturday 2026-08-08 passed the workflow but
+failed semantic QA: TWSE detail had zero rows, while TPEx returned its latest
+Friday rows and the normalizer overwrote their official date with Saturday.
+The public page therefore showed 809 OTC-only ranking rows.
+
+The collector now gives official response dates priority, rejects empty or
+date-misaligned market partitions, and automatically checks earlier calendar
+days until all four required detail/amount sources form one complete common
+snapshot. Explicit `--date` requests remain exact and fail closed instead of
+rolling back.
+
+Verification after the fix:
+
+- deterministic Saturday-to-Friday regression: passed;
+- full unit suite: 108 passed;
+- real no-write Saturday smoke resolved to 2026-08-07;
+- TWSE detail 1,326 rows and TPEx detail 898 rows;
+- all four required sources fresh with no warnings;
+- ordinary equities 1,844, excluded instruments 380;
+- four ranking arrays 863 / 924 / 144 / 148, total 2,079.

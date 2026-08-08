@@ -64,6 +64,28 @@ strategy, universe, signal, exit, and order rules are unchanged.
   temporary QA directory. CI/designated output writer should regenerate and
   commit the full `docs/` tree after merge.
 
+### 2026-08-08 non-trading-day publication remediation
+
+- The first post-merge workflow exposed a semantic defect that unit-only QA
+  did not catch: on Saturday 2026-08-08, the TPEx latest-only detail feed was
+  stamped with the requested Saturday date while TWSE returned zero rows. The
+  generated page therefore contained only 809 OTC ranking rows even though the
+  workflow and Pages deployment succeeded.
+- `market_flow.py` now prefers official response dates over requested dates,
+  treats empty or misaligned detail partitions as missing, and automatically
+  walks back up to ten calendar days until TWSE detail, TPEx detail, TWSE
+  amount summary, and TPEx amount summary are all non-empty on one common date.
+  An explicit `--date` remains exact and does not silently roll back.
+- Deterministic weekend regression coverage confirms a Saturday request rolls
+  back to the preceding complete Friday snapshot. The full suite is now 108
+  tests.
+- A real no-write smoke on Saturday resolved to 2026-08-07 with all four
+  sources fresh: 1,326 listed rows, 898 OTC rows, 1,844 eligible ordinary
+  equities, 380 exclusions, and 2,079 ranking rows (863 / 924 / 144 / 148).
+- This remediation changes only collection date/fail-closed behavior. Ranking
+  eligibility, website layout, and every strategy/signal/order rule remain
+  unchanged.
+
 ## 2026-08-07 Site consolidation and market-flow summaries
 
 ### Goal
