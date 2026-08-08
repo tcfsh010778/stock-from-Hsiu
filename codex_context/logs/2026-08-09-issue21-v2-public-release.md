@@ -37,3 +37,13 @@ on the legacy page until valid OHLCV input becomes available.
 
 Revert the Phase B navigation commit. No legacy route is deleted, so rollback is
 immediate and does not require regenerating historical pages.
+
+## Phase A live validation
+
+- Public PR #11 merged as `bcd5a90eeb9891652a43ff6e62b225d0b8378597`.
+- Pages deployment run `31270712347` succeeded.
+- V2 redirect, shared stock shell, 2353 packet, legacy 2353 page, homepage, and
+  stock search page all returned HTTP 200.
+- The live 2353 packet retained `action_state=SETUP`.
+
+Phase B may now switch manifest-backed homepage/search links to V2.

@@ -2028,8 +2028,12 @@ legacy `docs/stocks/*.html` route.
 ### Release and rollback
 
 - Coordination owner: private Issue #21.
-- Phase A publishes the parallel `/v2/` surface with legacy navigation.
+- Phase A PR #11 merged as `bcd5a90eeb9891652a43ff6e62b225d0b8378597`.
+- GitHub Pages run `31270712347` succeeded. Live checks returned HTTP 200 for
+  `/v2/stocks/2353.html`, `/v2/stock.html?id=2353`, `/v2/data/2353.json`, the
+  legacy `/stocks/2353.html`, homepage, and stock search page.
 - Phase B changes the workflow to `generate_v2.py --switch-navigation` after
-  live Phase A validation.
+  that live validation. Only manifest-backed IDs switch; excluded/uncovered
+  stocks continue to use the legacy destination.
 - Roll back Phase B by reverting the navigation commit; legacy files are never
   removed.
