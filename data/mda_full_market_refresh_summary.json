@@ -12,7 +12,7 @@
     "fallback": true,
     "cache_date": "2026-08-07",
     "cached_files": 1986,
-    "error": "TaiwanStockPrice HTTP 400: Your level is register. Please update your user level. Detail information:https://finmindtrade.com/analysis/#/Sponsor/sponsor"
+    "error": "TaiwanStockPrice HTTP 403: ip banned"
   },
   "holding": {
     "query_dates": 20,
