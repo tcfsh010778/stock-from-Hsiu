@@ -1978,3 +1978,58 @@ and freshness evidence into explainable per-stock action states.
 - `python data_contract.py validate-registry` OK: 28 sources, 15 datasets.
 - `python -m unittest tools.test_daily_decisions tools.test_data_contract tools.test_pr3_logic -v` OK: 38 tests.
 - `uv run --with requests python -m unittest discover -s tools -p "test_*.py" -v` OK: 79 tests.
+
+## 2026-08-09 Issue #21 V2 Parallel Public Release
+
+### Goal
+
+Publish the deterministic Python V2 analysis as a parallel GitHub Pages surface,
+validate it live, and only then switch home/search links while retaining every
+legacy `docs/stocks/*.html` route.
+
+### Implemented source
+
+- Added `generate_v2.py` as the durable V2 artifact generator.
+- Mirrored only the public-safe deterministic analysis subset from private
+  `tw-stock-Hsiu` commit `a88c54258cf29f0d898e6ef68d8edbdba3e83ab2`
+  into `stock_v2_public/`; provider, companion, private cases, secrets, and
+  private holdings were not copied.
+- Added the versioned technical packet schema and exact Python 3.12 dependency
+  lock in `schemas/technical_pattern_packet.schema.json` and
+  `requirements-v2.lock`.
+- Added a shared static V2 shell at `docs/v2/stock.html`, per-stock JSON under
+  `docs/v2/data/`, and stable redirect routes under `docs/v2/stocks/`.
+- V2 generation is limited to the current `daily_decisions` universe. Search
+  links switch only when a valid V2 packet exists; other stocks retain their
+  legacy destination.
+- Added Windows/Linux V2 CI and daily-build integration.
+
+### Safety and data quality
+
+- `daily_decisions.action_state` remains authoritative and is copied without
+  recomputation or AI override.
+- The public artifact contains no API keys, private holdings, paid content,
+  private case library, or local absolute path.
+- Invalid OHLCV rows are fail-closed exclusions. Current result: 463 generated,
+  18 excluded for invalid high/low/volume values, 0 unexpected failures.
+- Legacy pages remain present and the first release phase does not change home
+  or search navigation.
+
+### Verification before Phase A publish
+
+- Full V2 build with JSON Schema validation: 463 generated, 18 excluded, 0 failed.
+- `python -m unittest discover -s tools -p "test_*.py" -v`: 115 tests passed.
+- `python tools/verify_v2_public.py --navigation legacy`: passed; 2353 remains
+  `SETUP`, has generated trendline evidence, and legacy 2353 exists.
+- Browser QA for 2353: desktop and 375x812 mobile, day/week controls, three
+  rendered trendlines, sticky mobile layer controls, no page overflow, and no
+  console errors.
+
+### Release and rollback
+
+- Coordination owner: private Issue #21.
+- Phase A publishes the parallel `/v2/` surface with legacy navigation.
+- Phase B changes the workflow to `generate_v2.py --switch-navigation` after
+  live Phase A validation.
+- Roll back Phase B by reverting the navigation commit; legacy files are never
+  removed.

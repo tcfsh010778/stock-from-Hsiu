@@ -16,6 +16,8 @@ If old details are needed, search `codex_context/logs/` first, then `C:\Users\US
 ## Source Of Truth
 
 - The website generator is `generate_site.py`.
+- The deterministic V2 Python engine mirrored for public builds is under `stock_v2_public/`; its canonical private source is `tw-stock-Hsiu` and the mirrored source commit must be recorded in `generate_v2.py`.
+- The V2 public artifact generator is `generate_v2.py`. Run it after `generate_site.py`; never hand-edit `docs/v2/` as a durable fix.
 - The visible static site output is under `docs/`.
 - Do not edit generated `docs/*.html` as the durable fix unless the user explicitly asks for a one-off patch.
 - After any website content or layout change, regenerate the visible HTML with `python generate_site.py` and verify the affected `docs/*.html`.
@@ -54,3 +56,6 @@ The user wants to simplify the current page structure and make the site easier t
 - Keep strategy logic, universe logic, signal logic, and exit rules unchanged unless the user explicitly asks to change them.
 - If the work is only navigation, wording, grouping, or page content, keep it in the website/reporting layer.
 - End each website task by updating `CODEX_HANDOFF.md`; for long discussions or important decisions, add a dated log under `codex_context/logs/`.
+- Never publish provider API keys, private holdings, paid article text/images, local absolute paths, or private case-library data in V2 packets.
+- `daily_decisions.action_state` is authoritative. AI explanations and the V2 renderer must not overwrite it.
+- Keep legacy `docs/stocks/*.html` pages available for at least one publication cycle after navigation switches to V2.
