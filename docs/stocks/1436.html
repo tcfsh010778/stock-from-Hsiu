@@ -194,6 +194,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .flow-metric-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:10px 0 12px}
 .flow-metric-grid>div{background:#161b22;border-radius:7px;padding:8px}.flow-net{font-size:16px;font-weight:900;color:#e6edf3;margin-top:4px}
 .flow-top-title{font-size:11px;color:#8b949e;font-weight:800;margin:8px 0 3px}.flow-top-row{display:flex;justify-content:space-between;gap:8px;border-top:1px solid #21262d;padding:4px 0;font-size:12px}.flow-top-row span{font-variant-numeric:tabular-nums;color:#c9d1d9}
+.flow-page-link{display:inline-flex;align-items:center;justify-content:center;margin-top:10px;border:1px solid #58a6ff;border-radius:7px;padding:7px 11px;color:#58a6ff;font-size:12px;font-weight:900;text-decoration:none}.flow-page-link:hover{background:rgba(88,166,255,.12);text-decoration:none}
+.flow-page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}.flow-page-toolbar input{min-width:260px;background:#0d1117;border:1px solid #30363d;border-radius:7px;color:#e6edf3;padding:8px 10px}.flow-page-count{font-size:12px;color:#8b949e;font-weight:800}
+.complete-table-note{border-left:3px solid #58a6ff;background:rgba(88,166,255,.08);border-radius:6px;padding:9px 11px;color:#c9d1d9;font-size:12px;line-height:1.65;margin:10px 0}
+.flow-anchor-nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}.flow-anchor-nav a{border:1px solid #30363d;background:#161b22;border-radius:999px;padding:7px 11px;color:#c9d1d9;font-size:12px;font-weight:800;text-decoration:none}.flow-anchor-nav a:hover{border-color:#58a6ff;color:#58a6ff;text-decoration:none}.ranking-section{scroll-margin-top:64px}.ranking-section+.ranking-section{margin-top:16px}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -337,7 +341,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:1fr}.flow-page-toolbar input{min-width:0;width:100%}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -363,6 +367,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <nav>
   <span class="nav-brand">📊 Stockfrom脩</span>
   <a href="../index.html" class="tab">首頁</a>
+<a href="../institutional-flow.html" class="tab">法人排行</a>
 <a href="../selection.html" class="tab">選股池</a>
 <a href="../mda.html" class="tab">M大觀察</a>
 <a href="../timing.html" class="tab">買賣時機</a>
@@ -416,7 +421,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   
 <div class="card" data-carybot-history>
   <div class="section-label">CaryBot 買點歷史</div>
-  <div class="warning-banner" data-artifact-freshness="fallback_stale">⚠ CaryBot 訊號目前使用已過期的保留資料（資料日 2026-05-12，應更新至 2026-08-07），請勿視為最新結果。</div>
+  <div class="warning-banner" data-artifact-freshness="fallback_stale">⚠ CaryBot 訊號目前使用已過期的保留資料（資料日 2026-05-12，應更新至 2026-08-08），請勿視為最新結果。</div>
   <div class="strategy-note">目前 data/carybot_signals.json 尚無 1436 的 B1/B2 買點紀錄；此區只作 timing / confirmation layer，不取代 SFZ 趨勢篩選。</div>
 </div>
 
