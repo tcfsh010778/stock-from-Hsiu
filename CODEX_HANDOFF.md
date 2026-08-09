@@ -2,6 +2,23 @@
 
 Last updated: 2026-08-09
 
+## 2026-08-09 Independent holder page and homepage cleanup
+
+### Completed
+
+- Promoted `holder-risers.html` to a primary navigation destination named
+  `大戶股權`; the page now owns the six-week TDCC Top 50 table instead of being
+  represented by a separate summary card on the home page.
+- Added the same destination through the shared navigation helper for already
+  generated detail pages, avoiding a noisy rewrite of roughly two thousand
+  otherwise unchanged HTML artifacts.
+- Removed the home-page `大盤燈號` card and retained `市場環境燈號`. The retained
+  card is the broader market measure (TAIEX trend, margin, short interest,
+  foreign flow, breadth, and VIX); the removed card was primarily derived from
+  the candidate-stock pool while its TAIEX block was still a placeholder.
+- Updated regression coverage for the holder navigation state and simplified
+  home-page composition.
+
 ## 2026-08-09 Weekly TDCC holder auto-publish schedule
 
 ### Completed

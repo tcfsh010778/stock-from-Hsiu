@@ -97,6 +97,11 @@ class FlowPageTests(unittest.TestCase):
         html = generate_site.nav_html("flow")
         self.assertIn('href="institutional-flow.html" class="tab active">法人排行</a>', html)
 
+    def test_holder_page_is_a_primary_navigation_destination(self):
+        html = generate_site.nav_html("holder-risers")
+        self.assertIn('href="holder-risers.html" class="tab active">大戶股權</a>', html)
+        self.assertIn("holder-risers.html", generate_site.AUTO_EXPAND_PLACEHOLDER_JS)
+
     def test_holder_page_labels_latest_tdcc_top_fifty(self):
         weekly_dates = ["2026-06-26", "2026-07-03", "2026-07-10", "2026-07-17", "2026-07-24", "2026-07-31"]
         rows = [
@@ -130,11 +135,9 @@ class FlowPageTests(unittest.TestCase):
             "freshness": {"status": "fresh"},
         }
         page = generate_site.build_weekly_holder_risers_page(payload)
-        panel = generate_site.build_weekly_holder_risers_panel(payload)
         self.assertEqual(page.count("<tr data-holder-riser-row"), 60)
         self.assertIn("2059 測試59", page)
-        self.assertIn("Top 50", panel)
-        self.assertIn("holder-risers.html", panel)
+        self.assertIn("大戶股權變化", page)
         self.assertIn("6週累積", page)
         self.assertIn("06/26", page)
         self.assertIn('class="holder-change neg">-0.20</td>', page)
@@ -143,6 +146,12 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("Top 50", page)
         self.assertIn("資料來源為 TDCC", page)
         self.assertNotIn("不做 Top N 截斷", page)
+
+    def test_home_keeps_market_environment_and_removes_duplicate_cards(self):
+        page = generate_site.build_index_page([])
+        self.assertIn("市場環境燈號", page)
+        self.assertNotIn("大盤燈號", page)
+        self.assertNotIn('data-weekly-holder-risers', page)
 
 
 if __name__ == "__main__":
