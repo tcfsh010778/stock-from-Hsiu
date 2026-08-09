@@ -56,5 +56,4 @@ jobs:
             exit 0
           fi
           git commit -m "Update six-week holder history"
-          git pull --rebase origin main
           git push
