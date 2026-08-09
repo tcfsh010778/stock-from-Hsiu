@@ -970,6 +970,22 @@ COMPONENTS_CSS = """
 
 AUTO_EXPAND_PLACEHOLDER_JS = """
 document.addEventListener('DOMContentLoaded', async () => {
+    const primaryNav = document.querySelector('nav');
+    if (primaryNav && !primaryNav.querySelector('a.tab[href$="holder-risers.html"]')) {
+        const flowLink = primaryNav.querySelector('a.tab[href$="institutional-flow.html"]');
+        const holderLink = document.createElement('a');
+        const flowHref = flowLink ? flowLink.getAttribute('href') : 'institutional-flow.html';
+        holderLink.href = flowHref.replace(/institutional-flow\\.html$/, 'holder-risers.html');
+        holderLink.className = 'tab';
+        holderLink.textContent = '大戶股權';
+        holderLink.dataset.holderNav = 'true';
+        if (flowLink) {
+            flowLink.insertAdjacentElement('afterend', holderLink);
+        } else {
+            primaryNav.appendChild(holderLink);
+        }
+    }
+
     const blocks = document.querySelectorAll('.placeholder-block[data-source]');
     for (const block of blocks) {
         const src = block.dataset.source;
@@ -990,6 +1006,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
     tabs = [
         ("home",      "index.html",     "首頁"),
         ("flow",      "institutional-flow.html", "法人排行"),
+        ("holders",   "holder-risers.html", "大戶股權"),
         ("selection", "selection.html", "選股池"),
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
@@ -1002,6 +1019,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         "mda_launched": "mda", "mda_consolidation": "mda",
         "radar": "timing", "carybot": "timing",
         "backtest": "history",
+        "holder-risers": "holders",
     }
     active = _NAV_ALIASES.get(active, active)
     items = ""
@@ -1968,7 +1986,7 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
 <script>
 (function(){{var root=document.querySelector('[data-holder-risers-page]');if(!root)return;var input=root.querySelector('[data-holder-riser-search]'),count=root.querySelector('[data-holder-riser-count]'),rows=Array.from(root.querySelectorAll('[data-holder-riser-row]'));function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;rows.forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' / '+rows.length+' 檔';}}input.addEventListener('input',run);}})();
 </script>"""
-    return html_page("回顧 6 週大戶股權變化", "holder-risers", body)
+    return html_page("大戶股權變化", "holder-risers", body)
 
 
 def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:
@@ -5788,9 +5806,7 @@ def build_index_page(reports: list[dict]) -> str:
   <div class="page-sub">今日工作台：先看決策狀態、官方風險與市場流向，再回到個股證據。最新報告：{date_str}</div>
   {build_daily_decisions_panel(load_daily_decisions_payload())}
   {build_daily_market_flow_panel(load_daily_market_flow_payload())}
-  {build_weekly_holder_risers_panel(load_weekly_holder_risers_payload())}
   {build_market_sentiment_panel(load_market_sentiment_payload())}
-  {build_market_light_card(latest, latest_stocks, date_str)}
   {build_sector_heat_widget(latest_stocks)}
   {build_today_action_card(latest_stocks, date_str)}
   {build_top5_card(latest_stocks)}
