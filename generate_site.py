@@ -10468,6 +10468,7 @@ def build_timing_page(reports: list[dict]) -> str:
 def main():
     import sys
     sys.stdout.reconfigure(encoding="utf-8")
+    holder_only = "--holder-only" in sys.argv[1:]
     print("[Stockfrom] Site Generator v1.0", flush=True)
     print(f"   Reports: {REPORTS_DIR}", flush=True)
     print(f"   Output:  {OUTPUT_DIR}", flush=True)
@@ -10484,6 +10485,14 @@ def main():
         print("[ERROR] No reports parsed or cached.", flush=True)
         return
     set_site_latest_report_date(reports)
+
+    if holder_only:
+        print("\n[Build] Generating holder-history pages only...", flush=True)
+        (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
+        print("   [OK] index.html", flush=True)
+        (OUTPUT_DIR / "holder-risers.html").write_text(build_weekly_holder_risers_page(), encoding="utf-8")
+        print("   [OK] holder-risers.html", flush=True)
+        return
 
     print("\n[Build] Generating pages...", flush=True)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")

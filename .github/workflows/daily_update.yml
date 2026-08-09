@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       backfill_holder_history:
-        description: "One-time FinMind backfill for the recent holder-history gap"
+        description: "One-time holder backfill (requires FinMind Sponsor-level access)"
         required: false
         default: false
         type: boolean
@@ -60,6 +60,7 @@ jobs:
           test -n "$FINMIND_TOKEN"
           if [ "${{ inputs.backfill_holder_history }}" = "true" ]; then
             python mda_full_market_refresh.py --skip-price --holding-start "$(date -d '56 days ago' +%F)"
+            python -c "import json; p=json.load(open('data/mda_full_market_refresh_summary.json', encoding='utf-8')); assert (p.get('holding') or {}).get('dataset_rows', 0) > 0, 'FinMind holder backfill returned zero rows'"
           else
             python mda_full_market_refresh.py --skip-price
           fi

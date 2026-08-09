@@ -1,0 +1,60 @@
+name: Publish Holder History
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-stock-site-update
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip requests
+          python -m pip install -r requirements-v2.lock
+
+      - name: Sync latest main
+        run: git pull --ff-only origin main
+
+      - name: Archive official TDCC weekly holder aggregate
+        run: python tdcc_holder_snapshot.py
+
+      - name: Generate latest complete six-week holder history
+        run: python weekly_holder_risers.py
+
+      - name: Generate holder page and homepage card
+        run: python generate_site.py --holder-only
+
+      - name: Verify holder artifact
+        run: |
+          python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert p.get('row_count', 0) > 0; assert p.get('six_week_complete_count') == p.get('row_count')"
+          grep -q "回顧 6 週大戶股權變化" docs/holder-risers.html
+
+      - name: Commit and push holder pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/holder-risers.html docs/index.html
+          if git diff --cached --quiet; then
+            echo "No holder-history changes to commit."
+            exit 0
+          fi
+          git commit -m "Update six-week holder history"
+          git pull --rebase origin main
+          git push

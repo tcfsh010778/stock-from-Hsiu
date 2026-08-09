@@ -34,13 +34,21 @@ observation/reporting feature and does not change any strategy or order rule.
 ### Verification
 
 - `python -m py_compile tdcc_holder_snapshot.py weekly_holder_risers.py generate_site.py` OK.
-- `python -m unittest discover -s tools -p "test_*.py" -q` OK: 19 tests in
+- `python -m unittest discover -s tools -p "test_*.py" -q` OK: 20 tests in
   this sparse checkout.
 - Live TDCC smoke: 2026-08-07 snapshot, 1,970 ordinary listed/OTC equities;
   ETF 0050 excluded.
-- The builder fails closed on the local 2026-06-18 to 2026-08-07 gap. The
-  one-time workflow backfill must complete before the live table is considered
-  a valid six-week view.
+- The builder never treats the local 2026-06-18 to 2026-08-07 gap as one
+  weekly change. The attempted one-time FinMind backfill returned HTTP 400 because the configured
+  account is register level and holder history requires Sponsor level. The
+  page therefore selects the newest complete contiguous window ending
+  2026-06-18, shows its stale date, and ignores the newer partial TDCC run.
+- Real-cache verification of that fallback produced six dated changes from
+  2026-05-15 through 2026-06-18 and 35 complete latest-week positive rows;
+  freshness is visibly `stale` at 52 calendar days.
+- Added a small manual `Publish Holder History` workflow and
+  `generate_site.py --holder-only` so holder corrections do not require the
+  50-minute full-site/V2 rebuild.
 
 ### Source of truth / rebuild
 
