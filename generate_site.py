@@ -751,6 +751,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.ranking-grid .ranking-section{margin:0;min-width:0;padding:0;overflow:hidden;border-radius:4px;border-color:#64748b}.ranking-grid .ranking-section+.ranking-section{margin-top:0}
 .ranking-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-bottom:1px solid #64748b;background:#161b22}.ranking-head .section-label{margin:0;font-size:13px}.ranking-meta{font-size:11px;font-weight:900;color:#e6edf3;white-space:nowrap}.ranking-meta span{color:#8b949e;font-weight:700}
 .flow-table-wrap{overflow:auto;max-height:720px;background:#fff}.stock-table.flow-ranking-table{font-size:11px;line-height:1.2;table-layout:fixed;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.flow-ranking-table th,.stock-table.flow-ranking-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8}.stock-table.flow-ranking-table th{position:sticky;top:0;z-index:2;padding-top:4px;padding-bottom:4px;background:#e2e8f0;color:#111827;font-size:10px;font-weight:900}.stock-table.flow-ranking-table th:last-child,.stock-table.flow-ranking-table td:last-child{border-right:0}.stock-table.flow-ranking-table tr:last-child td{border-bottom:0}.stock-table.flow-ranking-table tr:nth-child(even) td:not(.pos):not(.neg){background:#f8fafc}.stock-table.flow-ranking-table tr:hover td{background:#fff4cc}.stock-table.flow-ranking-table .pos{color:#b42318;background:#ffe0e5;font-weight:900}.stock-table.flow-ranking-table .neg{color:#067647;background:#dcfae6;font-weight:900}.stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:36px;text-align:right;color:#475569}.stock-table.flow-ranking-table th:nth-child(3),.stock-table.flow-ranking-table td:nth-child(3){width:48px;text-align:center}.stock-table.flow-ranking-table th:nth-child(4),.stock-table.flow-ranking-table td:nth-child(4){width:90px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table td:nth-child(2){font-weight:800}.stock-table.flow-ranking-table td:nth-child(2) a{color:#0f3f8c;white-space:nowrap;text-decoration:none}.stock-table.flow-ranking-table td:nth-child(2) a:hover{text-decoration:underline}
+.holder-history-card{padding:0;overflow:hidden;border-radius:4px}.holder-history-wrap{overflow:auto;max-height:760px;background:#fff}.stock-table.holder-history-table{min-width:960px;font-size:10px;line-height:1.2;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.holder-history-table th,.stock-table.holder-history-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.stock-table.holder-history-table th{position:sticky;top:0;z-index:2;background:#e2e8f0;color:#111827;font-weight:900}.stock-table.holder-history-table th:last-child,.stock-table.holder-history-table td:last-child{border-right:0}.stock-table.holder-history-table tr:last-child td{border-bottom:0}.stock-table.holder-history-table tr:nth-child(even) td:not(.holder-change):not(.holder-total){background:#f8fafc}.stock-table.holder-history-table tr:hover td{outline:1px solid #f59e0b;outline-offset:-1px}.stock-table.holder-history-table th:nth-child(1),.stock-table.holder-history-table td:nth-child(1){width:38px;color:#475569}.stock-table.holder-history-table th:nth-child(2),.stock-table.holder-history-table td:nth-child(2){min-width:150px;text-align:left;font-weight:800}.stock-table.holder-history-table th:nth-child(3),.stock-table.holder-history-table td:nth-child(3){width:48px;text-align:center}.stock-table.holder-history-table td:nth-child(2) a{color:#0f3f8c;text-decoration:none}.stock-table.holder-history-table td:nth-child(2) a:hover{text-decoration:underline}.holder-change.pos{color:#b42318;background:#ffe0e5;font-weight:900}.holder-change.neg{color:#067647;background:#dcfae6;font-weight:900}.holder-change.zero,.holder-change.missing{color:#64748b;background:#fff}.holder-total{color:#7c5800;background:#fff0a6;font-weight:900}.holder-positive-count{font-weight:900;color:#0f3f8c}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -1372,7 +1373,7 @@ TAB_JS = """
 <script>
 function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
 function initPlaceholders(){}
-function initResponsiveTables(){document.querySelectorAll('table.stock-table:not(.flow-ranking-table)').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
+function initResponsiveTables(){document.querySelectorAll('table.stock-table:not(.flow-ranking-table):not(.holder-history-table)').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
 function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
 function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
 function initDisclaimer(){var modal=document.querySelector('[data-disclaimer-modal]');if(!modal)return;if(localStorage.getItem('stockfromDisclaimerOk')==='1')return;modal.classList.add('show');var btn=modal.querySelector('button');if(btn)btn.addEventListener('click',function(){localStorage.setItem('stockfromDisclaimerOk','1');modal.classList.remove('show');});}
@@ -1889,7 +1890,7 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
 
 
 def default_weekly_holder_risers_payload() -> dict:
-    return {"date": "", "previous_date": "", "updated_at": "", "rows": [], "data_quality": {"state": "missing", "warnings": ["weekly_holder_risers.json 尚未產生"]}, "freshness": {"status": "missing"}}
+    return {"date": "", "previous_date": "", "weekly_dates": [], "updated_at": "", "rows": [], "data_quality": {"state": "missing", "warnings": ["weekly_holder_risers.json 尚未產生"]}, "freshness": {"status": "missing"}}
 
 
 def load_weekly_holder_risers_payload(path: Path | str = WEEKLY_HOLDER_RISERS_PATH) -> dict:
@@ -1905,6 +1906,7 @@ def load_weekly_holder_risers_payload(path: Path | str = WEEKLY_HOLDER_RISERS_PA
     payload["rows"] = [row for row in payload.get("rows") or [] if isinstance(row, dict)]
     payload.setdefault("date", "")
     payload.setdefault("previous_date", "")
+    payload.setdefault("weekly_dates", [])
     payload.setdefault("updated_at", "")
     payload.setdefault("data_quality", {"state": "unknown", "warnings": []})
     payload.setdefault("freshness", {})
@@ -1919,39 +1921,52 @@ def build_weekly_holder_risers_panel(payload: dict | None = None) -> str:
     largest_text = f'{esc(str(largest.get("security_id") or ""))} {esc(str(largest.get("name") or ""))}（+{fmt_num(largest.get("major_delta_pctpt"), 2)} pt）' if largest else "─"
     return f"""
 <div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">
-  <div class="section-head"><div><div class="section-label">每週大戶持股比例上升</div><div class="strategy-note">比較最新兩個每週快照的 400 張以上大戶比例；這是觀察池，不等於買進訊號。</div></div><div class="section-date">{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}</div></div>
+  <div class="section-head"><div><div class="section-label">回顧 6 週大戶股權變化</div><div class="strategy-note">並排最近 6 個週五的 400 張以上大戶持股比例變化；這是觀察池，不等於買進訊號。</div></div><div class="section-date">截至 {esc(str(payload.get('date') or '─'))}</div></div>
   <div class="flow-metric-grid"><div><div class="label">本週上升檔數</div><div class="flow-net">{len(rows):,} 檔</div></div><div><div class="label">最大升幅</div><div class="flow-net">{largest_text}</div></div><div><div class="label">清單狀態</div><div class="flow-net">全部列出</div></div></div>
   <a class="flow-page-link" href="holder-risers.html">查看完整上升表格 →</a>
   {warning_html}
-  <div class="signal-foot">資料來源：每週股權分散快照的本地正規化快取 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
+  <div class="signal-foot">資料來源：TDCC 集保戶股權分散表的必要衍生彙總 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
 </div>"""
+
+
+def _holder_change_cell(value) -> str:
+    if value is None:
+        return '<td class="holder-change missing">─</td>'
+    number = float(value)
+    cls = "pos" if number > 0 else "neg" if number < 0 else "zero"
+    prefix = "+" if number > 0 else ""
+    return f'<td class="holder-change {cls}">{prefix}{number:.2f}</td>'
 
 
 def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
     payload = payload or load_weekly_holder_risers_payload()
     rows = payload.get("rows") or []
     market_label = {"上市": "上市", "上櫃": "上櫃", "listed": "上市", "otc": "上櫃"}
+    weekly_dates = [str(item) for item in payload.get("weekly_dates") or []][-6:]
+    if not weekly_dates:
+        weekly_dates = sorted({str(change.get("date") or "") for row in rows for change in row.get("weekly_changes") or [] if change.get("date")})[-6:]
+    date_headers = "".join(f'<th title="{esc(data_date)}">{esc(data_date[5:].replace("-", "/"))}</th>' for data_date in weekly_dates)
     row_html = "".join(
-        f'<tr data-holder-riser-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td><td>{esc(str(row.get("previous_date") or "─"))}</td><td>{esc(str(row.get("data_date") or "─"))}</td><td>{fmt_num(row.get("previous_major_percent"), 2)}%</td><td>{fmt_num(row.get("major_percent"), 2)}%</td><td class="pos">+{fmt_num(row.get("major_delta_pctpt"), 2)} pt</td><td>{fmt_num(row.get("major_people"), 0)}</td></tr>'
+        f'<tr data-holder-riser-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td>{"".join(_holder_change_cell({str(change.get("date") or ""): change.get("delta_pctpt") for change in row.get("weekly_changes") or []}.get(data_date)) for data_date in weekly_dates)}<td class="holder-total">{float(row.get("six_week_delta_pctpt") or 0):+.2f}</td><td>{fmt_num(row.get("major_percent"), 2)}%</td><td class="holder-positive-count">{int(row.get("positive_week_count") or 0)} / {len(weekly_dates) or 6}</td><td>{fmt_num(row.get("major_people"), 0)}</td></tr>'
         for rank, row in enumerate(rows, 1)
     )
     if not row_html:
-        row_html = '<tr><td colspan="9" style="color:#8b949e">尚無兩週完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
+        row_html = f'<tr><td colspan="{7 + len(weekly_dates)}" style="color:#8b949e">尚無完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
     warning_html = _data_quality_warning(payload, "weekly_holder_risers")
     body = f"""
 <div class="container" data-holder-risers-page>
-  <div class="page-title">每週大戶持股比例上升</div>
-  <div class="page-sub">比較最新兩個每週股權快照，只要 400 張以上大戶持股比例上升就列入，不設 Top N 截斷。</div>
-  <div class="complete-table-note">期間：{esc(str(payload.get('previous_date') or '─'))} → {esc(str(payload.get('date') or '─'))}｜完整上升清單共 {len(rows):,} 檔。這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="page-title">回顧 6 週大戶股權變化</div>
+  <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
+  <div class="complete-table-note">截至：{esc(str(payload.get('date') or '─'))}｜本週大戶比例上升共 {len(rows):,} 檔，完整列出、不做 Top N 截斷。淡紅為增加、淡綠為減少、黃色為 6 週累積；這是籌碼觀察表，不等於買進訊號。</div>
   {warning_html}
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
-  <div class="card"><div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>前期日期</th><th>最新日期</th><th>前期大戶比例</th><th>最新大戶比例</th><th>上升</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
+  <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
 </div>
 {TAB_JS}
 <script>
 (function(){{var root=document.querySelector('[data-holder-risers-page]');if(!root)return;var input=root.querySelector('[data-holder-riser-search]'),count=root.querySelector('[data-holder-riser-count]'),rows=Array.from(root.querySelectorAll('[data-holder-riser-row]'));function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;rows.forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' / '+rows.length+' 檔';}}input.addEventListener('input',run);}})();
 </script>"""
-    return html_page("每週大戶持股比例上升", "holder-risers", body)
+    return html_page("回顧 6 週大戶股權變化", "holder-risers", body)
 
 
 def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:

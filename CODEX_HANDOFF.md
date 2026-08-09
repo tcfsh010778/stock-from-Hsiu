@@ -1,6 +1,53 @@
 # Codex Handoff
 
-Last updated: 2026-08-08
+Last updated: 2026-08-09
+
+## 2026-08-09 Six-week major-holder ownership history
+
+### Goal
+
+Turn the one-week major-holder riser page into a compact spreadsheet-style
+review of the latest six weekly ownership changes, following the user's Vocus
+reference without copying or publishing the article image. This remains an
+observation/reporting feature and does not change any strategy or order rule.
+
+### Completed
+
+- Added `tdcc_holder_snapshot.py` to fetch the official TDCC distribution and
+  retain only a compact 400+ lot aggregate for ordinary listed/OTC equities.
+  The raw 68k-row official response is never written or published.
+- Extended `weekly_holder_risers.py` schema to `1.2.0`. Each latest-week riser
+  now carries six aligned week-over-week changes, the six-week cumulative
+  change, positive-week count, current major-holder ratio, and major-holder
+  count. A multi-week data gap is never mislabeled as one weekly change.
+- Rebuilt `holder-risers.html` as a dense searchable spreadsheet-style table:
+  six dated columns, red increases, green decreases, yellow cumulative values,
+  sticky header, and horizontal scrolling on narrow screens.
+- Excluded ETF, ETN, TDR, warrant, preferred-share, and other non-ordinary
+  instruments with the shared `ordinary_equity_v1` rule.
+- Added an official TDCC archive step to the daily workflow. A one-time
+  `backfill_holder_history` workflow-dispatch input can fill the recent legacy
+  history gap through the existing FinMind secret; ongoing weekly snapshots
+  then come from TDCC.
+- Updated data contracts, freshness documentation, and regression tests.
+
+### Verification
+
+- `python -m py_compile tdcc_holder_snapshot.py weekly_holder_risers.py generate_site.py` OK.
+- `python -m unittest discover -s tools -p "test_*.py" -q` OK: 19 tests in
+  this sparse checkout.
+- Live TDCC smoke: 2026-08-07 snapshot, 1,970 ordinary listed/OTC equities;
+  ETF 0050 excluded.
+- The builder fails closed on the local 2026-06-18 to 2026-08-07 gap. The
+  one-time workflow backfill must complete before the live table is considered
+  a valid six-week view.
+
+### Source of truth / rebuild
+
+- Official compact snapshot: `python tdcc_holder_snapshot.py`
+- Six-week derived artifact: `python weekly_holder_risers.py`
+- Page generator: `python generate_site.py`
+- Detailed log: `codex_context/logs/2026-08-09-six-week-holder-history.md`
 
 ## 2026-08-08 Dedicated institutional-flow and holder-riser pages
 
