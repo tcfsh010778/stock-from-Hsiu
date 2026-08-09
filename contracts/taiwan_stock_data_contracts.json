@@ -592,7 +592,7 @@
       "access": "derived aggregate from compact official TDCC 400-plus-lot snapshots and legacy normalized history; raw TDCC rows are not persisted or published",
       "market_coverage": ["listed", "otc"],
       "source_frequency": "weekly after holder-distribution refresh",
-      "use_policy": "publish the complete latest-week positive set with six aligned week-over-week ownership changes when seven snapshots are available; expose incomplete history and do not infer a buy signal from ownership change",
+      "use_policy": "publish the complete positive set from the newest contiguous seven-snapshot window with six aligned week-over-week ownership changes; expose observation date and freshness, ignore newer incomplete runs, and do not infer a buy signal from ownership change",
       "field_map": {}
     },
     "finmind_normalized_fallback": {
@@ -782,7 +782,7 @@
     "weekly_holder_risers": {
       "dataset_id": "weekly_holder_risers",
       "schema_version": "1.2.0",
-      "semantic_role": "complete derived weekly list of every stock whose major-holder ownership ratio rose between the latest two snapshots, with up to six aligned week-over-week changes and no Top N truncation",
+      "semantic_role": "complete derived list of every stock whose major-holder ownership ratio rose in the newest contiguous seven-snapshot window, with six aligned week-over-week changes and no Top N truncation",
       "primary_sources": [{"source_id": "weekly_holder_risers_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "weekly", "frequency": "weekly after holder-distribution refresh", "max_lag_calendar_days": 10, "expected_available_by": "next business cycle after weekly snapshot"},

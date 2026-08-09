@@ -40,8 +40,17 @@ not copying the paid/article image or its price columns.
 ## Data-state note
 
 The inspected local legacy holder cache ended at 2026-06-18. The first official
-snapshot collected in this change is 2026-08-07, so the builder correctly
-returns no ranked rows until the workflow's one-time historical backfill fills
-the intervening weekly dates. After that bootstrap, the official TDCC archive
-accumulates one compact snapshot per week and no paid historical refresh is
-needed for normal operation.
+snapshot collected in this change is 2026-08-07. A one-time FinMind backfill
+was attempted in Actions, but all eight weekly queries returned HTTP 400: the
+configured account is register level and the holder-history dataset requires
+Sponsor level. The workflow previously treated those errors as cache fallback,
+so it completed with a zero-row holder artifact.
+
+The corrected builder selects the newest contiguous run containing at least
+seven weekly snapshots. It therefore publishes the valid six-week window ending
+2026-06-18, with its stale freshness visible, while ignoring the isolated newer
+snapshot. Official TDCC snapshots accumulate from 2026-08-07; after seven are
+available, the builder automatically switches to the newer complete run. The
+manual backfill input now fails closed on zero rows, and the lightweight
+`Publish Holder History` workflow can rebuild only the homepage card, holder
+page, JSON, and manifest without rerunning the full V2 site.

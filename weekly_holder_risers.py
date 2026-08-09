@@ -99,6 +99,19 @@ def _weekly_gap_ok(previous_date: str, data_date: str) -> bool:
     return 4 <= gap <= 10
 
 
+def _latest_complete_window(dates: set[str], size: int = 7) -> list[str]:
+    """Return the newest complete weekly run, ignoring a newer partial run."""
+
+    runs: list[list[str]] = []
+    for data_date in sorted(dates):
+        if not runs or not _weekly_gap_ok(runs[-1][-1], data_date):
+            runs.append([data_date])
+        else:
+            runs[-1].append(data_date)
+    complete = [run[-size:] for run in runs if len(run) >= size]
+    return complete[-1] if complete else []
+
+
 def _series(rows: list[dict[str, str]]) -> list[dict[str, Any]]:
     by_date: dict[str, list[dict[str, str]]] = defaultdict(list)
     for row in rows:
@@ -137,10 +150,8 @@ def build_rows(
         for item in series:
             combined[stock_id][str(item["date"])] = item
 
-    all_dates = sorted({data_date for items in combined.values() for data_date in items})[-7:]
-    if len(all_dates) < 2:
-        return []
-    if not _weekly_gap_ok(all_dates[-2], all_dates[-1]):
+    all_dates = _latest_complete_window({data_date for items in combined.values() for data_date in items})
+    if len(all_dates) < 7:
         return []
     change_dates = all_dates[1:]
     output = []
