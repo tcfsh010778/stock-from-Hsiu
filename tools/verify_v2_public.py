@@ -9,11 +9,30 @@ ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
 
 
+def verify_price_freshness(manifest: dict, price_summary: dict) -> str:
+    if price_summary.get("status") != "fresh":
+        raise AssertionError(f"official price refresh is not fresh: {price_summary.get('status')}")
+    expected_price_date = price_summary.get("latest_data_date")
+    if manifest.get("price_refresh_status") != "fresh":
+        raise AssertionError(f"V2 manifest price refresh is not fresh: {manifest.get('price_refresh_status')}")
+    if not expected_price_date or manifest.get("price_data_date") != expected_price_date:
+        raise AssertionError(
+            f"V2 price date mismatch: manifest={manifest.get('price_data_date')}, "
+            f"official={expected_price_date}"
+        )
+    return str(expected_price_date)
+
+
 def verify(navigation: str) -> dict:
     manifest_path = DOCS / "v2" / "data" / "index.json"
     if not manifest_path.exists():
         raise AssertionError("docs/v2/data/index.json is missing")
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    price_summary_path = DOCS / "data" / "price_refresh_summary.json"
+    if not price_summary_path.exists():
+        raise AssertionError("docs/data/price_refresh_summary.json is missing")
+    price_summary = json.loads(price_summary_path.read_text(encoding="utf-8"))
+    expected_price_date = verify_price_freshness(manifest, price_summary)
     if manifest.get("failure_count") != 0:
         raise AssertionError(f"V2 manifest contains failures: {manifest.get('failures', [])[:3]}")
     if manifest.get("stock_count", 0) < 400:
@@ -55,7 +74,7 @@ def verify(navigation: str) -> dict:
         raise AssertionError(f"semantic decision labels remain in V2 UI: {found_semantics}")
     if "LightweightCharts" not in ui or "15% 停損" not in ui:
         raise AssertionError("TradingView-style workbench or fixed stop rendering is missing")
-    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": risk["stop_price"], "navigation": navigation}
+    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": risk["stop_price"], "navigation": navigation, "price_data_date": expected_price_date}
 
 
 def main() -> None:

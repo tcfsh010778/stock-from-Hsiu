@@ -63,6 +63,28 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
             with self.assertRaises(SystemExit):
                 verify_artifacts(root)
 
+    def test_v2_pages_use_their_own_manifest_freshness_verifier(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "reports").mkdir()
+            (root / "docs" / "v2" / "stocks").mkdir(parents=True)
+            (root / "data").mkdir()
+            (root / "reports" / "daily_report_2026-08-07.md").write_text("# report", encoding="utf-8")
+            (root / "docs" / "index.html").write_text("latest report 2026-08-07", encoding="utf-8")
+            (root / "docs" / "v2" / "stock.html").write_text("shared V2 shell", encoding="utf-8")
+            (root / "docs" / "v2" / "stocks" / "2330.html").write_text(
+                "V2 redirect without embedded report date",
+                encoding="utf-8",
+            )
+            (root / "data" / "site_reports.json").write_text(
+                json.dumps([{"date": "2026-08-07"}]),
+                encoding="utf-8",
+            )
+
+            result = verify_artifacts(root)
+
+            self.assertEqual(result.latest_report_date, "2026-08-07")
+
 
 if __name__ == "__main__":
     unittest.main()
