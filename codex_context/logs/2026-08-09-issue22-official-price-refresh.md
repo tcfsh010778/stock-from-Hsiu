@@ -53,3 +53,14 @@ remained 494 rows ending 2026-08-07. No generated repository output was kept.
 Publish through a pull request. After CI succeeds, merge to `main`, manually
 run Daily Stock Site Update once for the initial backfill, and verify the raw
 price CSV, published summary, V2 manifest, and GitHub Pages deployment.
+
+The first publish attempt was run `31293434151`. Its official price refresh
+succeeded and the optional FinMind step was skipped. Publication then stopped
+at `verify_daily_update_artifacts.py` because that legacy verifier required the
+report date inside every V2 shell and redirect HTML page. Those V2 pages carry
+freshness in `docs/v2/data/index.json`, not duplicated static HTML text.
+
+The follow-up keeps the full legacy HTML date scan but excludes `docs/v2/`.
+`verify_v2_public.py`, which runs immediately afterward, now requires
+`docs/data/price_refresh_summary.json` to be fresh and its official latest date
+to exactly equal the V2 manifest `price_data_date`.

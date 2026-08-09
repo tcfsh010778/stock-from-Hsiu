@@ -2132,3 +2132,15 @@ rows.
 - V2 stale-price gate: `generate_v2.py`
 - Detailed log:
   `codex_context/logs/2026-08-09-issue22-official-price-refresh.md`
+
+### First publish follow-up
+
+- PR #13 merged as `0644a64a81491351a26d1d6f13f3f16920466a8a` after
+  Linux and Windows CI passed.
+- Daily run `31293434151` confirmed the official price step succeeded in
+  5m10s and the FinMind auxiliary step was skipped, but publication correctly
+  stopped before push because the legacy HTML freshness verifier also scanned
+  V2 shell/redirect pages that intentionally do not embed the report date.
+- The legacy verifier now excludes `docs/v2/`; the immediately following V2
+  verifier instead requires a fresh official summary and an exactly matching
+  V2 `price_data_date`.

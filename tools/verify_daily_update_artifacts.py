@@ -43,7 +43,11 @@ def collect_json_dates(value: Any) -> set[str]:
 def html_pages(docs_dir: Path) -> list[Path]:
     if not docs_dir.exists():
         fail(f"missing {docs_dir}")
-    return sorted(path for path in docs_dir.rglob("*.html") if path.is_file())
+    return sorted(
+        path
+        for path in docs_dir.rglob("*.html")
+        if path.is_file() and "v2" not in path.relative_to(docs_dir).parts
+    )
 
 
 def fail(message: str) -> None:
