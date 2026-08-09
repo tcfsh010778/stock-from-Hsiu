@@ -53,14 +53,45 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("6488 環球晶", html)
         self.assertEqual(html.count("<tr data-flow-rank-row"), 4)
         for section_id, label in (
-            ("foreign-buy", "外資買超完整排行"),
-            ("foreign-sell", "外資賣超完整排行"),
-            ("trust-buy", "投信買超完整排行"),
-            ("trust-sell", "投信賣超完整排行"),
+            ("foreign-buy", "外資買超"),
+            ("foreign-sell", "外資賣超"),
+            ("trust-buy", "投信買超"),
+            ("trust-sell", "投信賣超"),
         ):
             self.assertIn(f'id="{section_id}"', html)
             self.assertIn(label, html)
         self.assertNotIn('class="tab-panel', html)
+
+    def test_institutional_page_uses_two_column_top_50_grid(self):
+        payload = self.market_payload()
+        rows = [
+            {
+                "security_id": str(1000 + index),
+                "name": f"Stock {index}",
+                "market": "listed",
+                "net_shares": 100_000 - index,
+            }
+            for index in range(60)
+        ]
+        payload["rankings"].update(
+            {
+                "foreign_buy": rows,
+                "foreign_sell": rows,
+                "investment_trust_buy": rows,
+                "investment_trust_sell": rows,
+            }
+        )
+
+        html = generate_site.build_institutional_flow_page(payload)
+
+        self.assertIn('class="ranking-grid"', html)
+        self.assertEqual(html.count("<tr data-flow-rank-row"), 200)
+        self.assertEqual(html.count("Top 50"), 6)
+        self.assertNotIn("1050 Stock 50", html)
+        self.assertIn('class="stock-table flow-ranking-table"', html)
+        self.assertIn("max-height:720px", html)
+        self.assertIn("background:#ffe0e5", html)
+        self.assertIn("background:#dcfae6", html)
 
     def test_institutional_page_is_a_primary_navigation_destination(self):
         html = generate_site.nav_html("flow")

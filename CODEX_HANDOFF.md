@@ -2144,3 +2144,46 @@ rows.
 - The legacy verifier now excludes `docs/v2/`; the immediately following V2
   verifier instead requires a fresh official summary and an exactly matching
   V2 `price_data_date`.
+
+## 2026-08-09 Institutional-flow Top-50 grid redesign
+
+### Goal and decision
+
+- Shorten the institutional ranking page after comparing the live page with
+  Wantgoo's denser institutional-investor table.
+- Keep the existing four ranking definitions and source arrays unchanged, but
+  render only the first 50 rows of each list.
+- Present the four lists as a two-column grid on desktop and a compact
+  single-column table stack on mobile. Institutional tables are deliberately
+  excluded from the generic responsive-card conversion.
+
+### Completed
+
+- Simplified the overview copy and ranking-toolbar metadata.
+- Added compact ranking-card and fixed-column table styling.
+- Refined the ranking tables against the user's spreadsheet screenshot: very
+  short rows, visible cell gridlines, sticky light headers, and pink/green
+  net-buy/net-sell cells inside height-limited scroll regions.
+- Preserved client-side search across the 200 rendered rows.
+- Regenerated `docs/institutional-flow.html` from `generate_site.py`.
+- Added a regression test covering the grid, four Top-50 caps, and absence of
+  rank 51.
+
+### Verification
+
+- `python -m unittest tools.test_flow_pages -q`: 5 tests passed.
+- `python -m py_compile generate_site.py tools/test_flow_pages.py`: passed.
+- `git diff --check`: passed.
+- In-app desktop check: two grid columns, four sections, 200 rows, no
+  horizontal overflow.
+- In-app mobile check: one grid column, market column hidden, no responsive
+  cards, 200 rows, no horizontal overflow.
+
+### Scope boundary
+
+- No ranking, screening, market-data, strategy, or execution logic changed.
+- The redesign is published through the `agent/institutional-flow-top50-grid`
+  branch; GitHub Pages deployment follows the repository's normal merge and
+  publication workflow.
+- Detailed log:
+  `codex_context/logs/2026-08-09-institutional-flow-top50-grid.md`
