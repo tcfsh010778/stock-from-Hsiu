@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-08-07",
-  "updated_at": "2026-08-08T11:31:44+08:00",
-  "score": 74,
+  "updated_at": "2026-08-09T13:12:54+08:00",
+  "score": 75,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 74 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 75 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -71,16 +71,16 @@
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 7.65,
+      "score": 8.21,
       "weight": 10,
       "signal": "bullish",
-      "display": "307/163",
+      "display": "635/307",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 307,
-      "declines": 163,
-      "ratio": 1.88
+      "advances": 635,
+      "declines": 307,
+      "ratio": 2.07
     },
     "us_vix": {
       "label": "US VIX",
@@ -100,7 +100,7 @@
     "OK: TAIEX - 88 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 481 SFZ rows",
+    "OK: local breadth - 966 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [
