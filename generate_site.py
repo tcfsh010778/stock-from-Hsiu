@@ -55,6 +55,7 @@ ATTENTION_DISPOSITION_PATH = LOCAL_DATA_DIR / "attention_disposition.json"
 DAILY_MARKET_FLOW_PATH = LOCAL_DATA_DIR / "daily_market_flow.json"
 WEEKLY_HOLDER_RISERS_PATH = LOCAL_DATA_DIR / "weekly_holder_risers.json"
 FRESHNESS_MANIFEST_PATH = LOCAL_DATA_DIR / "freshness_manifest.json"
+PRICE_REFRESH_SUMMARY_PATH = LOCAL_DATA_DIR / "price_refresh_summary.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 PUBLIC_DATA_FILES = [
@@ -67,6 +68,7 @@ PUBLIC_DATA_FILES = [
     DAILY_MARKET_FLOW_PATH,
     WEEKLY_HOLDER_RISERS_PATH,
     FRESHNESS_MANIFEST_PATH,
+    PRICE_REFRESH_SUMMARY_PATH,
 ]
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"

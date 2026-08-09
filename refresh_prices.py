@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-Refresh FinMind/v44 price cache for the static site.
+Refresh the static site's OHLCV cache from official TWSE and TPEx sources.
 
 This keeps GitHub Pages static and fast:
-1. fetch price data once
+1. fetch official end-of-day price data once
 2. save CSV under data/prices/
 3. generate_site.py reads the local cache
+
+Legacy FinMind helpers remain importable for the isolated MDA auxiliary
+pipeline, but the price refresh entry point does not require a token or paid
+subscription.
 """
 
 import csv
@@ -18,6 +22,8 @@ from pathlib import Path
 from datetime import date, timedelta
 
 import requests
+
+from official_price_refresh import refresh_official_prices
 
 os.environ.setdefault("V44_LIVE_FETCH", "1")
 os.environ.setdefault("V44_FETCH_MONTHS", "24")
@@ -40,6 +46,9 @@ from generate_site import (  # noqa: E402
     load_reports,
     parse_report,
 )
+
+
+PRICE_REFRESH_SUMMARY_PATH = LOCAL_PRICE_DIR.parent / "price_refresh_summary.json"
 
 
 def _report_stock_ids(scope: str) -> set[str]:
@@ -350,28 +359,29 @@ def main() -> None:
     scope = os.environ.get("V44_REFRESH_SCOPE", "latest").strip().lower()
     stock_ids = collect_stock_ids()
     print(f"[refresh_prices] scope={scope} stocks={len(stock_ids)} months={months}")
-    ok = 0
-    if scope == "all":
-        days = int(os.environ.get("V44_BULK_PRICE_DAYS", "14"))
-        summary = refresh_bulk_market_prices(stock_ids, days)
-        print(f"[refresh_prices] bulk prices {summary}")
-        price_ids: list[str] = []
-        aux_scope = os.environ.get("V44_REFRESH_AUX_SCOPE", "latest").strip().lower()
-        aux_ids = stock_ids if aux_scope == "all" else sorted(_report_stock_ids("latest"))
-    else:
-        price_ids = stock_ids
-        aux_ids = stock_ids
+    initial_days = int(os.environ.get("V44_OFFICIAL_INITIAL_BACKFILL_DAYS", "75"))
+    overlap_days = int(os.environ.get("V44_OFFICIAL_OVERLAP_DAYS", "7"))
+    summary = refresh_official_prices(
+        stock_ids=set(stock_ids),
+        price_dir=LOCAL_PRICE_DIR,
+        summary_path=PRICE_REFRESH_SUMMARY_PATH,
+        initial_days=initial_days,
+        overlap_days=overlap_days,
+    )
+    print(
+        "[refresh_prices] official prices "
+        f"date={summary['latest_data_date']} matched={summary['latest_matched_stocks']} "
+        f"written={summary['written_files']} history_warnings={summary['history_warning_count']}"
+    )
 
-    for i, sid in enumerate(price_ids, 1):
-        rows = fetch_finmind_prices(sid, months=months)
-        if rows:
-            write_price_csv(sid, rows)
-            ok += 1
-            print(f"  price [{i:02d}/{len(price_ids)}] {sid} rows={len(rows)}")
-        else:
-            print(f"  price [{i:02d}/{len(price_ids)}] {sid} no data")
+    enable_finmind_aux = os.environ.get("ENABLE_FINMIND_AUX", "").strip().lower() in {"1", "true", "yes"}
+    if not enable_finmind_aux:
+        print("[refresh_prices] legacy FinMind auxiliary refresh disabled")
+        return
 
-    print(f"[refresh_prices] refreshing auxiliary datasets for stocks={len(aux_ids)}")
+    aux_scope = os.environ.get("V44_REFRESH_AUX_SCOPE", "latest").strip().lower()
+    aux_ids = stock_ids if aux_scope == "all" else sorted(_report_stock_ids("latest"))
+    print(f"[refresh_prices] refreshing optional FinMind auxiliary datasets for stocks={len(aux_ids)}")
     for i, sid in enumerate(aux_ids, 1):
         chip_rows = fetch_finmind_dataset(sid, "TaiwanStockInstitutionalInvestorsBuySell", months)
         if chip_rows:
@@ -386,7 +396,6 @@ def main() -> None:
         if margin_rows:
             write_margin_csv(sid, margin_rows)
         print(f"  aux [{i:02d}/{len(aux_ids)}] {sid}")
-    print(f"[refresh_prices] done individual_price_ok={ok}/{len(price_ids)} -> {LOCAL_PRICE_DIR}")
 
 
 if __name__ == "__main__":

@@ -2037,3 +2037,45 @@ legacy `docs/stocks/*.html` route.
   stocks continue to use the legacy destination.
 - Roll back Phase B by reverting the navigation commit; legacy files are never
   removed.
+
+## 2026-08-09 Issue #22 Official OHLCV Price Refresh
+
+### Goal
+
+Remove the expired FinMind subscription from the required price path, repair
+stale stock dates, and keep fresh price files from being overwritten by older
+rows.
+
+### Implemented source
+
+- Added `official_price_refresh.py` for TWSE/TPEx official latest snapshots and
+  exact-date historical backfill.
+- `refresh_prices.py` now runs the official refresh by default. Legacy FinMind
+  auxiliary data is opt-in only with `ENABLE_FINMIND_AUX=1`.
+- Daily Actions runs the official full-market price refresh before analysis and
+  publishes `data/price_refresh_summary.json` through `docs/data/`.
+- Existing price histories merge on `date`: duplicate dates are replaced,
+  newer rows are retained, and no file is truncated to the backfill window.
+- V2 excludes a stock when its latest OHLCV date is older than the official
+  expected price date.
+
+### Safety and verification
+
+- The refresh fails closed if either exchange partition is empty, official
+  dates disagree, no cached symbol matches, a historical request fails, no
+  file is written, or output remains stale.
+- A real isolated 45-calendar-day smoke backfilled 2330 from 2026-06-26 to
+  2026-08-07 (520 to 549 rows) while 2353 stayed at 2026-08-07 with 494 rows.
+- `python data_contract.py validate-registry`: passed (39 sources, 21 datasets).
+- Full test discovery: 122 tests passed.
+- Generated `docs/` and price CSV changes are intentionally not committed;
+  GitHub Actions remains the single writer for generated output.
+
+### Source of truth
+
+- Official refresher: `official_price_refresh.py`
+- Workflow: `.github/workflows/daily_update.yml`
+- Price freshness publication: `generate_site.py`
+- V2 stale-price gate: `generate_v2.py`
+- Detailed log:
+  `codex_context/logs/2026-08-09-issue22-official-price-refresh.md`

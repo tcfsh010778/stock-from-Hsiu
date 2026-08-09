@@ -48,6 +48,16 @@ def load_decisions(path: Path) -> tuple[dict[str, dict], dict]:
     return decisions, payload
 
 
+def load_price_refresh_summary(path: Path) -> dict:
+    if not path.exists():
+        return {}
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
 def safe_decision(stock_id: str, decision: dict | None) -> dict:
     if decision:
         return decision
@@ -91,13 +101,15 @@ _WORKER_VALIDATOR: Draft202012Validator | None = None
 
 
 def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | None]:
-    stock_id, name, price_path, decision, freshness_status, global_warnings, validate = args
+    stock_id, name, price_path, decision, freshness_status, expected_price_date, global_warnings, validate = args
     try:
         warnings.filterwarnings("ignore", message="some peaks have a prominence of 0")
         frame = pd.read_csv(price_path)
         if len(frame) < 30:
             raise ValueError("fewer than 30 OHLCV rows")
         latest_date = str(frame.iloc[-1]["date"])
+        if expected_price_date and latest_date != expected_price_date:
+            raise ValueError(f"stale OHLCV: latest={latest_date}, expected={expected_price_date}")
         packets = analyze_multi_timeframe(
             frame,
             stock_id=stock_id,
@@ -124,6 +136,11 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     quality = decision_payload.get("data_quality") or {}
     global_warnings = list(quality.get("warnings") or [])
     freshness_status = str(quality.get("state") or "unknown")
+    price_summary = load_price_refresh_summary(data_dir / "price_refresh_summary.json")
+    expected_price_date = str(price_summary.get("latest_data_date") or "")
+    price_refresh_status = str(price_summary.get("status") or "missing")
+    if price_refresh_status != "fresh":
+        global_warnings.append(f"official price refresh status is {price_refresh_status}")
 
     root = docs_dir / "v2"
     packet_dir = root / "data"
@@ -155,7 +172,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         if not price_path.exists():
             failures.append({"stock_id": stock_id, "reason": "price file missing"})
             continue
-        tasks.append((stock_id, str(stock.get("name") or ""), str(price_path), safe_decision(stock_id, decisions.get(stock_id)), freshness_status, global_warnings, validate))
+        tasks.append((stock_id, str(stock.get("name") or ""), str(price_path), safe_decision(stock_id, decisions.get(stock_id)), freshness_status, expected_price_date, global_warnings, validate))
 
     worker_count = workers or min(4, os.cpu_count() or 1)
     with concurrent.futures.ProcessPoolExecutor(max_workers=worker_count) as executor:
@@ -170,7 +187,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
                 }
             else:
                 reason = error or "no packets generated"
-                if "invalid high/low/volume" in reason or "fewer than 30 OHLCV rows" in reason:
+                if "invalid high/low/volume" in reason or "fewer than 30 OHLCV rows" in reason or "stale OHLCV" in reason:
                     exclusions.append({"stock_id": stock_id, "reason": reason})
                 else:
                     failures.append({"stock_id": stock_id, "reason": reason})
@@ -183,6 +200,8 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         "coverage": "all_prices" if all_stocks else "daily_decisions",
         "failure_count": len(failures),
         "excluded_count": len(exclusions),
+        "price_data_date": expected_price_date or None,
+        "price_refresh_status": price_refresh_status,
         "stocks": index,
         "failures": failures,
         "exclusions": exclusions,

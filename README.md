@@ -7,8 +7,8 @@
 ```
 選股網站/
 ├── generate_site.py          # 主程式：解析 MD -> 生成 HTML
-├── refresh_prices.py         # 直接接 FinMind 更新股價快取
-├── data/prices/              # FinMind 股價快取（日K/週K/月K來源）
+├── refresh_prices.py         # 直接接 TWSE/TPEx 官方介面更新股價快取
+├── data/prices/              # 官方 OHLCV 股價快取（日K/週K/月K來源）
 ├── docs/                     # GitHub Pages 根目錄
 │   ├── index.html            # 首頁
 │   ├── daily.html            # 今日精選
@@ -30,7 +30,7 @@ python refresh_prices.py
 python generate_site.py
 ```
 
-`refresh_prices.py` 會從 v44 的 `.env` 或環境變數讀取 `FINMIND_TOKEN`，抓取目前報告出現過的股票近 12 個月股價、法人買賣超、股權分配，寫入 `data/prices/`、`data/chips/`、`data/holding_shares/`。個股頁會用這些資料顯示 FinMind 最新收盤、日K/週K/月K、MA120/MA240、成交量、大量K、買賣超與大戶比例。
+`refresh_prices.py` 會直接從 TWSE 與 TPEx 官方介面抓取上市、上櫃股票的 OHLCV，依交易日合併並寫入 `data/prices/`，同時產生 `data/price_refresh_summary.json`。它不需要 FinMind 訂閱；舊 FinMind 籌碼／股權輔助更新預設停用，只能用 `ENABLE_FINMIND_AUX=1` 明確開啟。個股頁會用官方快取顯示最新收盤、日K/週K/月K、MA120/MA240、成交量與大量K。
 
 `generate_site.py` 會同步寫入 `data/site_reports.json`。這是 GitHub Actions 的備援資料源，避免雲端 runner 讀不到本機 OneDrive 報告時無法重建網站。
 
