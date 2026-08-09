@@ -38,7 +38,7 @@ Monday-to-Friday assumption cannot produce a publishable freshness state.
 | `margin_short` | TWSE MI_MARGN; TPEx margin OpenAPI | Each trading day after close | Max 1 official trading-day lag by 20:00 Taipei | FinMind, visible | Existing site cache currently refreshes auxiliary data for latest Top20 only |
 | `securities_lending` | TWSE TWT93U; TPEx margin/SBL OpenAPI | Each trading day after close | Max 1 official trading-day lag by 20:00 Taipei | FinMind, visible | Existing pipeline does not collect an official full-market SBL dataset |
 | `shareholder_distribution` | TDCC OpenAPI 1-5 | Weekly, after each week's final business day | No more than 10 calendar days behind the latest expected weekly snapshot | FinMind, visible | TDCC Swagger has no explicit terms link; raw redistribution remains disabled pending explicit confirmation |
-| `weekly_holder_risers` | Derived from the newest contiguous seven-snapshot window; ongoing compact 400+ lot aggregates come from TDCC OpenAPI | Weekly after holder refresh | Max 10 calendar days | Legacy normalized history, visibly identified | FinMind historical holder access currently requires Sponsor level, so the page stays on the visibly stale 2026-06-18 complete window while official TDCC snapshots accumulate from 2026-08-07; incomplete newer runs are never mislabeled as weekly changes |
+| `weekly_holder_risers` | Latest-week Top 50 derived from a contiguous seven-snapshot window; current full-market and historical 400+ lot aggregates come from TDCC | Weekly after holder refresh | Max 10 calendar days | None; fail closed | Current all-market ranking uses TDCC OpenAPI and the immediately prior TDCC history date; the remaining five dates are queried only for leading candidates, with rate limiting and complete-history checks before publication |
 | `corporate_actions` | TWSE/TPEx ex-right/ex-dividend feeds | Event driven, daily snapshot | Fetch within 24 hours of the official publication cycle | None | Adjustment-factor derivation is not yet implemented |
 | `monthly_revenue` | TWSE/MOPS listed; TPEx/MOPS OTC | Monthly as filings arrive | Within 45 calendar days of the expected period/date | None | Per-company filing exceptions must remain visible, not silently imputed |
 | `financial_statement` | TWSE/TPEx MOPS industry-specific statements | Quarterly/annual as filings arrive | Within 140 calendar days of period end, then track filing publication time | None | Wide, industry-specific official schemas still need a normalizer to canonical long form |
@@ -91,8 +91,12 @@ The following owner-operated surfaces were reached and schema-sampled on
   [TDCC shareholder-distribution explanation](https://www.tdcc.com.tw/portal/zh/smWeb/qryStock):
   endpoint 1-5 returned 68,323 rows. TDCC states that the distribution is
   compiled after each week's final business day from ID-consolidated custody
-  balances. The Swagger currently exposes no separate terms URL, so this
-  project keeps raw redistribution disabled and shares only metadata/necessary
+  balances and retains one year of dates on its per-security historical query.
+  The current all-market snapshot uses OpenAPI; a rate-limited historical
+  backfill queries only the immediately prior week for the ordinary-equity
+  universe, then older dates only for leading candidates. The Swagger and query
+  page currently expose no separate terms URL, so this project keeps raw
+  redistribution disabled and shares only metadata/necessary 400+ lot
   aggregates until the owner confirms the applicable licence.
 - MOPS listed data is exposed through TWSE OpenAPI; OTC data is exposed through
   TPEx OpenAPI. Company basic data, monthly revenue, financial statements, and

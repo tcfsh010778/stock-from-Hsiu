@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-09T17:21:08+08:00",
+  "generated_at": "2026-08-09T21:55:08+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -756,7 +756,7 @@
     "weekly_holder_risers:weekly_holder_risers_derived": {
       "manifest_schema_version": "1.0.0",
       "dataset_id": "weekly_holder_risers",
-      "dataset_schema_version": "1.2.0",
+      "dataset_schema_version": "1.3.0",
       "source_id": "weekly_holder_risers_derived",
       "source_tier": "primary",
       "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/weekly_holder_risers.py",
@@ -765,39 +765,28 @@
         "otc"
       ],
       "update_frequency": "weekly after holder-distribution refresh",
-      "data_date": null,
+      "data_date": "2026-08-07",
       "trading_date": null,
       "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:21:08+08:00",
-      "row_count": 0,
-      "sha256": "494bfd525179cfbf6489938e1d2040da4b7b8b24daa1c3ca9439a9798c80bca5",
+      "fetched_at": "2026-08-09T21:55:08+08:00",
+      "row_count": 50,
+      "sha256": "99d7665e22b34eee9ef38de6a93d4deb9d249b964424dc20cdec1b7b79debc61",
       "fallback": {
         "used": false,
         "from_source_id": null,
         "reason": null
       },
       "missing": {
-        "status": "missing",
-        "missing_fields": [
-          "data_date",
-          "major_delta_pctpt",
-          "major_percent",
-          "market",
-          "positive_week_count",
-          "previous_major_percent",
-          "security_id",
-          "six_week_delta_pctpt"
-        ],
-        "missing_partitions": [
-          "holding_shares"
-        ]
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
       },
       "freshness": {
-        "status": "missing",
-        "evaluated_at": "2026-08-09T17:21:08+08:00",
+        "status": "expected_lag",
+        "evaluated_at": "2026-08-09T21:55:08+08:00",
         "expected_data_date": "2026-08-09",
         "age_trading_days": null,
-        "age_calendar_days": null,
+        "age_calendar_days": 2,
         "sla": {
           "mode": "weekly",
           "frequency": "weekly after holder-distribution refresh",
@@ -806,7 +795,7 @@
         }
       },
       "schema_validation": {
-        "status": "error",
+        "status": "ok",
         "required_fields": [
           "data_date",
           "security_id",
@@ -817,17 +806,17 @@
           "six_week_delta_pctpt",
           "positive_week_count"
         ],
-        "observed_fields": [],
-        "missing_required_fields": [
+        "observed_fields": [
           "data_date",
-          "security_id",
-          "market",
-          "major_percent",
-          "previous_major_percent",
           "major_delta_pctpt",
-          "six_week_delta_pctpt",
-          "positive_week_count"
+          "major_percent",
+          "market",
+          "positive_week_count",
+          "previous_major_percent",
+          "security_id",
+          "six_week_delta_pctpt"
         ],
+        "missing_required_fields": [],
         "missing_required_field_rows": {}
       }
     }

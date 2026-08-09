@@ -35,15 +35,18 @@ jobs:
       - name: Archive official TDCC weekly holder aggregate
         run: python tdcc_holder_snapshot.py
 
+      - name: Backfill latest official TDCC six-week history
+        run: python tdcc_holder_history.py --limit 50
+
       - name: Generate latest complete six-week holder history
-        run: python weekly_holder_risers.py
+        run: python weekly_holder_risers.py --limit 50
 
       - name: Generate holder page and homepage card
         run: python generate_site.py --holder-only
 
       - name: Verify holder artifact
         run: |
-          python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert p.get('row_count', 0) > 0; assert p.get('six_week_complete_count') == p.get('row_count')"
+          python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert 0 < p.get('row_count', 0) <= 50; assert p.get('six_week_complete_count') == p.get('row_count'); assert p.get('source_state') == 'tdcc_official'"
           grep -q "回顧 6 週大戶股權變化" docs/holder-risers.html
 
       - name: Commit and push holder pages
