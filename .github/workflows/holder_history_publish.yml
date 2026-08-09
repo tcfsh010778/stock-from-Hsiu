@@ -1,6 +1,11 @@
 name: Publish Holder History
 
 on:
+  schedule:
+    # Friday 21:30 Asia/Taipei (13:30 UTC).
+    - cron: "30 13 * * 5"
+    # Saturday 09:30 Asia/Taipei fallback if Friday TDCC data is delayed.
+    - cron: "30 1 * * 6"
   workflow_dispatch:
 
 permissions:
