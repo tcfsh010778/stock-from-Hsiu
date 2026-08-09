@@ -2,6 +2,26 @@
 
 Last updated: 2026-08-09
 
+## 2026-08-09 Weekly TDCC holder auto-publish schedule
+
+### Completed
+
+- `.github/workflows/holder_history_publish.yml` now runs automatically every
+  Friday at 21:30 Asia/Taipei (`13:30 UTC`) and retries Saturday at 09:30
+  Asia/Taipei (`01:30 UTC`) in case TDCC publishes Friday data late.
+- Every scheduled run refreshes the official TDCC snapshot, recomputes the
+  full-market latest-week ranking, fills the selected Top 50 six-week history,
+  regenerates the holder page/homepage card, and publishes only changed files.
+- The workflow shares `daily-stock-site-update` concurrency with the daily
+  publisher, so overlapping jobs queue instead of writing to `main` together.
+- Manual `workflow_dispatch` remains available for recovery or an on-demand
+  refresh.
+
+### Verification
+
+- Workflow schedule and complete TDCC generation chain are covered by
+  `tools/test_holder_history_workflow.py`.
+
 ## 2026-08-09 Latest-first official TDCC holder history
 
 ### Goal and user correction
