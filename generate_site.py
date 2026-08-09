@@ -747,6 +747,10 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .flow-page-toolbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:12px 0}.flow-page-toolbar input{min-width:260px;background:#0d1117;border:1px solid #30363d;border-radius:7px;color:#e6edf3;padding:8px 10px}.flow-page-count{font-size:12px;color:#8b949e;font-weight:800}
 .complete-table-note{border-left:3px solid #58a6ff;background:rgba(88,166,255,.08);border-radius:6px;padding:9px 11px;color:#c9d1d9;font-size:12px;line-height:1.65;margin:10px 0}
 .flow-anchor-nav{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 16px}.flow-anchor-nav a{border:1px solid #30363d;background:#161b22;border-radius:999px;padding:7px 11px;color:#c9d1d9;font-size:12px;font-weight:800;text-decoration:none}.flow-anchor-nav a:hover{border-color:#58a6ff;color:#58a6ff;text-decoration:none}.ranking-section{scroll-margin-top:64px}.ranking-section+.ranking-section{margin-top:16px}
+.flow-overview-card{padding:16px}.flow-overview-card .flow-market-card{padding:10px 12px}.flow-overview-card .flow-metric-grid{margin-bottom:4px}
+.ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.ranking-grid .ranking-section{margin:0;min-width:0;padding:0;overflow:hidden;border-radius:4px;border-color:#64748b}.ranking-grid .ranking-section+.ranking-section{margin-top:0}
+.ranking-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-bottom:1px solid #64748b;background:#161b22}.ranking-head .section-label{margin:0;font-size:13px}.ranking-meta{font-size:11px;font-weight:900;color:#e6edf3;white-space:nowrap}.ranking-meta span{color:#8b949e;font-weight:700}
+.flow-table-wrap{overflow:auto;max-height:720px;background:#fff}.stock-table.flow-ranking-table{font-size:11px;line-height:1.2;table-layout:fixed;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.flow-ranking-table th,.stock-table.flow-ranking-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8}.stock-table.flow-ranking-table th{position:sticky;top:0;z-index:2;padding-top:4px;padding-bottom:4px;background:#e2e8f0;color:#111827;font-size:10px;font-weight:900}.stock-table.flow-ranking-table th:last-child,.stock-table.flow-ranking-table td:last-child{border-right:0}.stock-table.flow-ranking-table tr:last-child td{border-bottom:0}.stock-table.flow-ranking-table tr:nth-child(even) td:not(.pos):not(.neg){background:#f8fafc}.stock-table.flow-ranking-table tr:hover td{background:#fff4cc}.stock-table.flow-ranking-table .pos{color:#b42318;background:#ffe0e5;font-weight:900}.stock-table.flow-ranking-table .neg{color:#067647;background:#dcfae6;font-weight:900}.stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:36px;text-align:right;color:#475569}.stock-table.flow-ranking-table th:nth-child(3),.stock-table.flow-ranking-table td:nth-child(3){width:48px;text-align:center}.stock-table.flow-ranking-table th:nth-child(4),.stock-table.flow-ranking-table td:nth-child(4){width:90px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table td:nth-child(2){font-weight:800}.stock-table.flow-ranking-table td:nth-child(2) a{color:#0f3f8c;white-space:nowrap;text-decoration:none}.stock-table.flow-ranking-table td:nth-child(2) a:hover{text-decoration:underline}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -890,7 +894,7 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
   .stock-table.responsive-card,.stock-table.responsive-card tbody,.stock-table.responsive-card tr,.stock-table.responsive-card td{display:block;width:100%}
   .stock-table.responsive-card tr{border:1px solid #30363d;border-radius:8px;margin-bottom:10px;background:#0d1117;padding:8px}
   .stock-table.responsive-card td{border:0;border-bottom:1px solid rgba(48,54,61,.55);display:grid;grid-template-columns:92px 1fr;gap:10px;padding:8px 4px}.stock-table.responsive-card td:last-child{border-bottom:0}.stock-table.responsive-card td::before{content:attr(data-label);color:#8b949e;font-size:11px;font-weight:800}.ledger-controls,.radar-filter-bar{align-items:stretch}.filter-count{margin-left:0}.heat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:1fr}.flow-page-toolbar input{min-width:0;width:100%}
+  .backtest-layout{grid-template-columns:1fr}.backtest-heatmap{grid-template-columns:repeat(3,minmax(0,1fr))}.backtest-toolbar select{min-width:0;width:100%}.flow-market-grid{grid-template-columns:1fr}.flow-metric-grid{grid-template-columns:1fr}.flow-page-toolbar input{min-width:0;width:100%}.ranking-grid{grid-template-columns:1fr}.ranking-head{padding:8px 10px}.flow-table-wrap{max-height:640px}.flow-ranking-table{font-size:11px}.flow-ranking-table th,.flow-ranking-table td{padding:4px 5px}.flow-ranking-table th:nth-child(3),.flow-ranking-table td:nth-child(3){display:none}.flow-ranking-table th:nth-child(4),.flow-ranking-table td:nth-child(4){width:92px}
   .daily-top20-card .stock-table{font-size:13px}
   .daily-top20-card .stock-link{font-size:15px}
   .score-note-grid{grid-template-columns:1fr}
@@ -1013,11 +1017,10 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
 def footer_html() -> str:
     freshness = ""
     if SITE_LATEST_REPORT_DATE:
-        freshness = f'<p class="site-freshness">資料更新：{esc(SITE_LATEST_REPORT_DATE)} 收盤後</p>'
+        freshness = f'  <p class="site-freshness">資料更新：{esc(SITE_LATEST_REPORT_DATE)} 收盤後</p>\n'
     return f"""
 <footer>
-  {freshness}
-  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+{freshness}  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© {datetime.now().year} Stockfrom脩 · 每個交易日自動更新</p>
 </footer>"""
@@ -1369,7 +1372,7 @@ TAB_JS = """
 <script>
 function initTabs(containerId){var c=document.getElementById(containerId);if(!c)return;var btns=c.querySelectorAll('.tab-btn'),panels=c.querySelectorAll('.tab-panel');var aliases={top20:'daily-top20',sfz:'sfz-baskets',tracking:'signal-ledger',radar:'buy-radar',carybot:'carybot',backtest:'backtest',reports:'reports'};function activate(id,writeHash){id=aliases[id]||id;if(!id||!c.querySelector('#'+CSS.escape(id)))id=btns[0]&&btns[0].dataset.tab;btns.forEach(function(b){b.classList.toggle('active',(aliases[b.dataset.tab]||b.dataset.tab)===id)});panels.forEach(function(p){p.classList.toggle('active',p.id===id);p.hidden=p.id!==id;});if(writeHash)history.replaceState(null,'',location.pathname+'#'+id);}btns.forEach(function(b){b.addEventListener('click',function(){activate(b.dataset.tab,true)})});window.addEventListener('hashchange',function(){activate((location.hash||'').replace('#',''),false)});activate((location.hash||'').replace('#','')||new URLSearchParams(location.search).get('tab')||'',false);}
 function initPlaceholders(){}
-function initResponsiveTables(){document.querySelectorAll('table.stock-table').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
+function initResponsiveTables(){document.querySelectorAll('table.stock-table:not(.flow-ranking-table)').forEach(function(table){table.classList.add('responsive-card');var heads=Array.from(table.querySelectorAll('thead th')).map(function(th){return th.textContent.trim();});table.querySelectorAll('tbody tr').forEach(function(tr){Array.from(tr.children).forEach(function(td,i){if(!td.dataset.label)td.dataset.label=heads[i]||'';});});});}
 function initSignalLedger(){document.querySelectorAll('[data-ledger]').forEach(function(root){var tbody=root.querySelector('tbody');var rows=Array.from(root.querySelectorAll('[data-ledger-row]'));var input=root.querySelector('[data-ledger-search]');var current=root.querySelector('[data-ledger-current]');var history=root.querySelector('[data-ledger-history]');var prev=root.querySelector('[data-page-prev]');var next=root.querySelector('[data-page-next]');var info=root.querySelector('[data-page-info]');var pageNums=root.querySelector('[data-page-nums]');var sortKey='latest',sortDir='desc',page=1,per=30;function val(r,k){if(['count','push'].includes(k))return Number(r.dataset[k]||0);return (r.dataset[k]||'').toLowerCase();}function selectedRows(){var q=(input&&input.value||'').trim().toLowerCase();var showCurrent=!current||current.checked;var showHistory=!!(history&&history.checked);return rows.filter(function(r){var okText=!q||(r.dataset.text||'').toLowerCase().indexOf(q)>=0;var okFilter=q||((showCurrent&&r.dataset.current==='1')||(showHistory&&r.dataset.current!=='1'));return okText&&okFilter;}).sort(function(a,b){var av=val(a,sortKey),bv=val(b,sortKey);if(av<bv)return sortDir==='asc'?-1:1;if(av>bv)return sortDir==='asc'?1:-1;return 0;});}function renderPages(pages){if(!pageNums)return;pageNums.innerHTML='';var start=Math.max(1,page-2),end=Math.min(pages,start+4);for(var i=start;i<=end;i++){var btn=document.createElement('button');btn.type='button';btn.className='page-num'+(i===page?' active':'');btn.textContent=i;btn.dataset.page=i;btn.addEventListener('click',function(){page=Number(this.dataset.page);render();});pageNums.appendChild(btn);}}function render(){var shown=selectedRows();var pages=Math.max(1,Math.ceil(shown.length/per));if(page>pages)page=pages;rows.forEach(function(r){r.style.display='none';});shown.forEach(function(r){if(tbody)tbody.appendChild(r);});shown.slice((page-1)*per,page*per).forEach(function(r){r.style.display='';});if(info)info.textContent='第 '+page+' / '+pages+' 頁 · 目前 '+shown.length+' / '+rows.length+' 檔';if(prev)prev.disabled=page<=1;if(next)next.disabled=page>=pages;renderPages(pages);}root.querySelectorAll('[data-ledger-sort]').forEach(function(th){th.addEventListener('click',function(){var key=th.dataset.ledgerSort;if(sortKey===key){sortDir=sortDir==='asc'?'desc':'asc';}else{sortKey=key;sortDir=key==='code'||key==='name'?'asc':'desc';}root.querySelectorAll('[data-ledger-sort]').forEach(function(x){x.classList.remove('sort-asc','sort-desc');});th.classList.add(sortDir==='asc'?'sort-asc':'sort-desc');page=1;render();});});[input,current,history].forEach(function(el){if(el)el.addEventListener(input&&el===input?'input':'change',function(){page=1;render();});});if(prev)prev.addEventListener('click',function(){page=Math.max(1,page-1);render();});if(next)next.addEventListener('click',function(){page=page+1;render();});render();});}
 function initRadarFilters(){document.querySelectorAll('[data-radar]').forEach(function(root){var rows=Array.from(root.querySelectorAll('[data-radar-row]'));var checks=Array.from(root.querySelectorAll('[data-radar-status]'));var basket=root.querySelector('[data-radar-basket]');var sector=root.querySelector('[data-radar-sector]');var rr=root.querySelector('[data-radar-min-rr]');var count=root.querySelector('[data-radar-count]');var reset=root.querySelector('[data-radar-reset]');function render(){var enabled=new Set(checks.filter(function(c){return c.checked;}).map(function(c){return c.value;}));var minRr=rr&&rr.value!==''?Number(rr.value):0;var visible=0;rows.forEach(function(r){var ok=enabled.has(r.dataset.status||'far');if(basket&&basket.value&&basket.value!=='all')ok=ok&&r.dataset.basket===basket.value;if(sector&&sector.value&&sector.value!=='all')ok=ok&&r.dataset.sector===sector.value;if(Number.isFinite(minRr)&&minRr>0)ok=ok&&Number(r.dataset.rr||0)>=minRr;r.style.display=ok?'':'none';if(ok)visible+=1;});if(count)count.textContent='目前 '+visible+' / '+rows.length+' 檔';}function setDefaults(){checks.forEach(function(c){c.checked=c.value==='near'||c.value==='pullback';});if(basket)basket.value='all';if(sector)sector.value='all';if(rr)rr.value='2.0';render();}checks.forEach(function(c){c.addEventListener('change',render);});[basket,sector,rr].forEach(function(el){if(el)el.addEventListener('change',render);});if(rr)rr.addEventListener('input',render);if(reset)reset.addEventListener('click',setDefaults);setDefaults();});}
 function initDisclaimer(){var modal=document.querySelector('[data-disclaimer-modal]');if(!modal)return;if(localStorage.getItem('stockfromDisclaimerOk')==='1')return;modal.classList.add('show');var btn=modal.querySelector('button');if(btn)btn.addEventListener('click',function(){localStorage.setItem('stockfromDisclaimerOk','1');modal.classList.remove('show');});}
@@ -1844,7 +1847,7 @@ def _institutional_ranking_table(rows: list[dict], empty_text: str) -> str:
     )
     if not row_html:
         row_html = f'<tr><td colspan="4" style="color:#8b949e">{esc(empty_text)}</td></tr>'
-    return f'<div style="overflow-x:auto"><table class="stock-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>淨買賣超</th></tr></thead><tbody>{row_html}</tbody></table></div>'
+    return f'<div class="flow-table-wrap"><table class="stock-table flow-ranking-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>淨買賣超</th></tr></thead><tbody>{row_html}</tbody></table></div>'
 
 
 def build_institutional_flow_page(payload: dict | None = None) -> str:
@@ -1858,29 +1861,25 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
         ("trust-buy", "投信買超", rankings.get("investment_trust_buy") or []),
         ("trust-sell", "投信賣超", rankings.get("investment_trust_sell") or []),
     ]
-    anchor_links = "".join(
-        f'<a href="#{tab_id}">{esc(label)} · {len(rows):,} 檔</a>'
-        for tab_id, label, rows in tabs
-    )
+    display_tabs = [(tab_id, label, rows[:50], len(rows)) for tab_id, label, rows in tabs]
     ranking_sections = "".join(
-        f'<section class="card ranking-section" id="{tab_id}"><div class="section-head"><div><div class="section-label">{esc(label)}完整排行</div><div class="strategy-note">共 {len(rows):,} 檔；本表完整列出，不做 Top N 截斷。</div></div><a class="flow-page-link" href="#page-top">回到頁首 ↑</a></div>{_institutional_ranking_table(rows, "當日沒有符合條件的一般股票")}</section>'
-        for tab_id, label, rows in tabs
+        f'<section class="card ranking-section" id="{tab_id}"><div class="ranking-head"><div class="section-label">{esc(label)}</div><div class="ranking-meta">Top {len(rows):,} <span>／全榜 {total_count:,} 檔</span></div></div>{_institutional_ranking_table(rows, "當日沒有符合條件的一般股票")}</section>'
+        for tab_id, label, rows, total_count in display_tabs
     )
     date_text = str(payload.get("date") or "─")
     warning_html = _data_quality_warning(payload, "daily_market_flow")
     body = f"""
 <div class="container" id="page-top" data-flow-ranking-page>
-  <div class="page-title">外資／投信買賣超排行</div>
-  <div class="page-sub">上市、上櫃合併排名；只保留一般股票，ETF、ETN、權證、TDR、債券、特別股與受益證券不進榜。資料日：{esc(date_text)}</div>
-  <div class="card">
-    <div class="section-label">官方市場金額總覽</div>
+  <div class="page-title">法人買賣超排行</div>
+  <div class="page-sub">上市＋上櫃合併排行 · 一般股票 · 資料日：{esc(date_text)}</div>
+  <div class="card flow-overview-card">
+    <div class="section-head"><div class="section-label">今日法人動向</div><div class="section-date">單位：億元</div></div>
     <div class="flow-market-grid">{_market_amount_cards(payload)}</div>
-    <div class="complete-table-note">金額卡是交易所官方全市場彙總；下方排行則套用一般股票篩選。符合 {eligible_count:,} 檔，排除 {excluded_count:,} 檔非一般股票。</div>
-    {warning_html}
+    <div class="complete-table-note">官方全市場金額彙總；排行榜僅列一般股票 Top 50。符合 {eligible_count:,} 檔，已排除 ETF、ETN、權證、TDR 等 {excluded_count:,} 檔。</div>
+{warning_html}
   </div>
-  <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-flow-rank-count>共 {sum(len(rows) for _, _, rows in tabs):,} 筆排行列</span></div>
-  <div class="flow-anchor-nav" aria-label="四組法人排行快速導覽">{anchor_links}</div>
-  {ranking_sections}
+  <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號或名稱"><span class="flow-page-count" data-flow-rank-count>顯示 {sum(len(rows) for _, _, rows, _ in display_tabs):,} 筆 · 每榜 Top 50</span></div>
+  <div class="ranking-grid">{ranking_sections}</div>
 </div>
 {TAB_JS}
 <script>
