@@ -2038,6 +2038,59 @@ legacy `docs/stocks/*.html` route.
 - Roll back Phase B by reverting the navigation commit; legacy files are never
   removed.
 
+## 2026-08-09 V2 Evidence Workbench Revision
+
+### Product decision
+
+- The public V2 page no longer displays or publishes `SETUP`, `WATCH`,
+  `NO-GO`, traffic-light prose, targets, or reward/risk values.
+- The page is now an evidence workbench: price structure, patterns,
+  support/resistance, deterministic trendlines, and public-safe chip series.
+- Python computes one explicit risk control only: a stop 15% below the latest
+  unadjusted close. It does not generate an entry or target.
+
+### Implemented
+
+- Added `risk_control` and optional `market_evidence` to the technical packet.
+- Added lightweight CSV readers for institutional flow, foreign ownership,
+  margin/short balances, and TDCC holding groups without importing v44.
+- Missing datasets remain empty and appear in `market_evidence.gaps`; they are
+  never converted to zero evidence.
+- Rebuilt the static UI in a TradingView-like dark workbench. The B tab uses
+  Lightweight Charts with a shared time range/crosshair across available K,
+  institutional, margin, foreign-ownership, and holding panels.
+- C is a stock-specific breakout/range/breakdown scenario display using the
+  nearest deterministic support/resistance zones and the fixed stop. It has no
+  target or reward/risk field.
+- CaryBot stale data remains a warning only. No CaryBot logic was changed.
+- Legacy `docs/stocks/*.html` pages remain available.
+
+### Current build and verification
+
+- Full validated build: 463 generated, 18 fail-closed exclusions, 0 failures;
+  1,523 manifest-backed home/search links point to V2.
+- 2353: close 30.25, fixed 15% stop 25.7125, 22 holding observations; missing
+  institutional, foreign-ownership, and margin caches are disclosed.
+- 2337 complete-data browser case: five panels rendered (K, institutional,
+  margin, foreign ownership, holdings), with zero console errors.
+- Desktop and 390x844 mobile browser QA passed for 2353.
+- `python tools/verify_v2_public.py --navigation switched` passed.
+- `python -m unittest -v tools.test_generate_v2` passed: 6 tests.
+- Existing V2 engine tests passed two of three; the third reached schema
+  validation after deterministic equality and exposed that `decision` needed
+  to remain an optional schema property for internal engine callers. The
+  schema was corrected; public generation still removes the field, and all
+  463 public packets passed schema validation afterward.
+
+### Source of truth
+
+- Generator and public data normalization: `generate_v2.py`
+- Static V2 UI: `stock_v2_public/site.py`
+- Contract: `schemas/technical_pattern_packet.schema.json`
+- Public verification: `tools/verify_v2_public.py`
+- Detailed log:
+  `codex_context/logs/2026-08-09-v2-evidence-workbench.md`
+
 ## 2026-08-09 Issue #22 Official OHLCV Price Refresh
 
 ### Goal

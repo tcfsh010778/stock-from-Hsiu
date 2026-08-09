@@ -44,5 +44,8 @@ jobs:
           from pathlib import Path
           packets = json.loads(Path("docs/v2/data/2353.json").read_text(encoding="utf-8"))
           daily = next(packet for packet in packets if packet["timeframe"] == "daily")
-          assert daily["decision"]["action_state"] == "SETUP"
+          assert "decision" not in daily
+          risk = daily["risk_control"]
+          assert risk["stop_loss_pct"] == 15.0
+          assert risk["stop_price"] == round(risk["reference_price"] * 0.85, 4)
           assert all(set(line["start"]) == {"date", "price"} for line in daily["trendlines"])

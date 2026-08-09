@@ -10,37 +10,182 @@ STOCK_PAGE_HTML = r'''<!doctype html>
 </head>
 <body>
 <main class="shell">
-  <nav class="top"><a href="../index.html">首頁</a><a href="../stocks.html">個股搜尋</a><a id="legacy-link" href="../stocks.html">舊版個股頁</a><span>Stock from Hsiu V2</span></nav>
-  <section id="loading" class="card">正在載入技術分析資料…</section>
+  <nav class="top"><a href="../index.html">首頁</a><a href="../stocks.html">選股清單</a><a id="legacy-link" href="../stocks.html">舊版個股頁</a><span>Stock from Hsiu V2 · 證據工作台</span></nav>
+  <section id="loading" class="card">正在載入技術與籌碼資料…</section>
   <div id="app" hidden>
     <section class="hero">
-      <article class="card"><div class="eyebrow">規則決策</div><div class="title-row"><h1 id="stock-title"></h1><span id="action-state" class="state"></span></div><div id="meta" class="meta"></div><h2 id="summary"></h2><div class="decision-grid"><div class="mini"><h3>已成立</h3><ul id="reasons"></ul></div><div class="mini"><h3>尚缺／阻擋</h3><ul id="blockers"></ul></div><div class="mini"><h3>警告</h3><ul id="warnings"></ul></div></div></article>
-      <aside class="card"><div class="eyebrow">使用邊界</div><h2>研究與決策輔助</h2><p>型態與趨勢線由 Python 規則引擎計算；AI 只能解釋，不能改動端點、分數或行動狀態。</p><p class="muted">不是投資建議，也不會自動下單。若資料過期或缺漏，請先停止採取行動。</p></aside>
+      <article class="card hero-main">
+        <div class="eyebrow">MARKET EVIDENCE WORKBENCH</div>
+        <div class="title-row"><div><h1 id="stock-title"></h1><div id="meta" class="meta"></div></div><div id="change" class="change"></div></div>
+        <div class="quote-grid">
+          <div class="quote"><span>最新收盤</span><strong id="latest-price">—</strong><small id="latest-date"></small></div>
+          <div class="quote"><span>最近支撐區</span><strong id="support-price">—</strong><small>Python 結構辨識</small></div>
+          <div class="quote"><span>最近壓力區</span><strong id="resistance-price">—</strong><small>Python 結構辨識</small></div>
+          <div class="quote stop"><span>固定停損</span><strong id="stop-price">—</strong><small>最新收盤價下方 15%</small></div>
+        </div>
+      </article>
+      <aside class="card risk-card">
+        <div class="eyebrow">資料警示</div>
+        <h2>先看資料，再看圖</h2>
+        <ul id="warnings"></ul>
+        <p class="muted">本頁只整理可重現的價格、型態與籌碼證據，不替使用者產生多空語意標籤。</p>
+      </aside>
     </section>
-    <nav class="tabs" aria-label="個股分析分頁"><button class="tab active" data-pane="decision">判斷</button><button class="tab" data-pane="trend">A｜趨勢</button><button class="tab" data-pane="chips">B｜籌碼</button><button class="tab" data-pane="plan">C｜計畫</button><button class="tab" data-pane="patterns">型態與案例</button></nav>
-    <section id="decision" class="pane card active"><h2>唯一規則決策</h2><div id="decision-detail"></div></section>
-    <section id="trend" class="pane card"><div class="section-head"><div><div class="eyebrow">價格幾何</div><h2>自動趨勢線、軌道與支撐壓力</h2></div><div id="timeframes" class="tools"></div></div><div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button></div><svg id="chart" viewBox="0 0 1120 500" role="img" aria-label="K 線與自動趨勢線"></svg><div id="chart-detail" class="detail">點擊趨勢線可查看端點、接觸次數、分數與狀態。</div><div id="line-list" class="grid"></div></section>
-    <section id="chips" class="pane card"><h2>籌碼</h2><p class="notice">目前公開 V2 先完成價量型態與趨勢線。法人、投信、融資與股權分散將沿用公開資料契約逐步接入；私人持股不會發布。</p></section>
-    <section id="plan" class="pane card"><h2>三種預案</h2><div class="decision-grid"><div class="mini"><h3>突破</h3><p>等收盤有效突破壓力，並檢查量價與回測是否確認。</p></div><div class="mini"><h3>整理</h3><p>未達規則觸發前維持觀察，不把形成中的型態當成買點。</p></div><div class="mini"><h3>跌破</h3><p>跌破規則失效價或主要支撐時，取消原情境並重新評估。</p></div></div></section>
-    <section id="patterns" class="pane card"><h2>型態證據</h2><div id="pattern-list" class="grid"></div></section>
+
+    <nav class="tabs" aria-label="個股分析分頁">
+      <button class="tab active" data-pane="overview">總覽</button>
+      <button class="tab" data-pane="trend">A｜趨勢</button>
+      <button class="tab" data-pane="chips">B｜籌碼</button>
+      <button class="tab" data-pane="plan">C｜情境計畫</button>
+      <button class="tab" data-pane="patterns">型態證據</button>
+    </nav>
+
+    <section id="overview" class="pane card active">
+      <div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2>目前有哪些可用證據</h2></div></div>
+      <div id="overview-grid" class="metric-grid"></div>
+      <div class="method-note"><b>固定規則：</b>Python 只計算型態、趨勢線、支撐壓力與 15% 停損價；畫面不產生買賣指令，也不替使用者決定方向。</div>
+    </section>
+
+    <section id="trend" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">A · PRICE STRUCTURE</div><h2>K 線、支撐壓力與自動趨勢線</h2></div><div id="timeframes" class="tools"></div></div>
+      <div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button></div>
+      <svg id="chart" viewBox="0 0 1120 520" role="img" aria-label="K 線與自動趨勢線"></svg>
+      <div id="chart-detail" class="detail">點擊趨勢線可查看端點、接觸次數與品質分數。</div>
+      <div id="line-list" class="grid"></div>
+    </section>
+
+    <section id="chips" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">B · CHIP EVIDENCE</div><h2>K 線與籌碼同步工作台</h2></div><div id="crosshair-date" class="crosshair-date">拖曳或縮放任一圖表，其他圖表會同步</div></div>
+      <div id="chip-status"></div>
+      <div id="chip-workbench" class="tv-workbench"></div>
+    </section>
+
+    <section id="plan" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">C · SCENARIOS</div><h2>三種價格情境</h2></div><span class="tag">不預測，只定義觸發條件</span></div>
+      <div id="scenario-grid" class="scenario-grid"></div>
+      <div class="method-note">固定停損以最新收盤價計算，每次資料更新會重新計算；若價格已越過該線，原情境應停止沿用並重新檢查。</div>
+    </section>
+
+    <section id="patterns" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">PATTERN EVIDENCE</div><h2>型態證據與缺少條件</h2></div></div>
+      <div id="pattern-list" class="grid"></div>
+    </section>
   </div>
 </main>
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="assets/v2.js"></script>
 </body></html>
 '''
 
 
-V2_CSS = r''':root{--bg:#07111f;--panel:#101d30;--panel2:#14243a;--text:#e7edf7;--muted:#9db0c9;--line:#29405e;--accent:#66d9c1;--warn:#ffcc66;--bad:#ff7b8b;--good:#69db7c}*{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#07111f,#0b1728);color:var(--text);font:15px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}.shell{max-width:1240px;margin:auto;padding:18px}.top{display:flex;gap:16px;align-items:center;margin-bottom:14px;color:var(--muted)}.top span{margin-left:auto}.top a{color:var(--accent);text-decoration:none}.hero{display:grid;grid-template-columns:1.45fr .55fr;gap:16px}.card{background:rgba(16,29,48,.95);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 14px 36px rgba(0,0,0,.18)}h1,h2,h3{margin:.1em 0 .55em}h1{font-size:clamp(25px,4vw,40px)}h2{font-size:20px}.eyebrow{color:var(--accent);font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.title-row,.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.state{border-radius:999px;padding:7px 12px;background:#193452;color:var(--accent);font-weight:800;white-space:nowrap}.state.NO-GO{color:#8ee09b}.state.SETUP{color:var(--warn)}.meta,.tools{display:flex;gap:9px;flex-wrap:wrap;color:var(--muted)}.meta span{padding:4px 8px;border:1px solid var(--line);border-radius:999px}.decision-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.mini{background:var(--panel2);padding:13px;border-radius:12px;border:1px solid #233b59}.muted,.detail{color:var(--muted)}ul{padding-left:19px;margin:.4em 0}.tabs{display:flex;gap:8px;overflow:auto;padding:18px 0 10px;position:sticky;top:0;background:#091525;z-index:4}.tab,.layer,.tf{border:1px solid var(--line);background:#102039;color:var(--text);border-radius:999px;padding:9px 14px;white-space:nowrap;cursor:pointer}.tab.active,.layer.active,.tf.active{background:var(--accent);color:#04120f;border-color:var(--accent);font-weight:750}.pane{display:none}.pane.active{display:block}.layers{margin:12px 0}svg{display:block;width:100%;height:500px;background:#0a1626;border:1px solid var(--line);border-radius:12px}.axis{font-size:11px;fill:#9db0c9}.zone{opacity:.13}.trend{stroke-width:2.3;cursor:pointer}.mark{font-size:13px;font-weight:900}.detail{min-height:48px;margin:10px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.tag{display:inline-block;padding:3px 8px;border-radius:999px;background:#1d3654;color:var(--accent);font-size:12px}.score{float:right;color:var(--warn)}.notice{border-left:3px solid var(--warn);padding-left:12px;color:var(--muted)}.error{border-color:var(--bad);color:#ffd7dc}@media(max-width:760px){.shell{padding:10px 10px 76px}.hero,.decision-grid{grid-template-columns:1fr}.tabs{margin:0 -10px;padding-left:10px}.layers{position:sticky;bottom:8px;z-index:3;background:rgba(7,17,31,.97);padding:8px;border:1px solid var(--line);border-radius:14px}.layer{font-size:12px;padding:7px 9px}svg{height:390px}.card{padding:14px}.section-head{display:block}.top span{display:none}}'''
+V2_CSS = r''':root{--bg:#080b12;--panel:#111722;--panel2:#161e2c;--text:#d9e2ef;--muted:#8b9bb1;--line:#273245;--grid:#202a3a;--cyan:#2dd4bf;--blue:#4da3ff;--amber:#f6c453;--red:#ef5350;--green:#26a69a}*{box-sizing:border-box}body{margin:0;background:#080b12;color:var(--text);font:14px/1.55 Inter,system-ui,-apple-system,"Segoe UI",sans-serif}.shell{max-width:1440px;margin:auto;padding:14px}.top{display:flex;gap:18px;align-items:center;min-height:34px;color:var(--muted)}.top span{margin-left:auto;font-size:12px;letter-spacing:.08em}.top a{color:#a9bbd1;text-decoration:none}.top a:hover{color:white}.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;box-shadow:0 8px 30px rgba(0,0,0,.18)}.hero{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:10px}.hero-main{background:linear-gradient(120deg,#111722,#111b29)}h1,h2,h3{margin:.12em 0 .5em}h1{font-size:clamp(25px,3vw,38px)}h2{font-size:19px}.eyebrow{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:.16em}.title-row,.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}.meta,.tools{display:flex;gap:7px;flex-wrap:wrap;color:var(--muted)}.meta span{padding:3px 7px;border:1px solid var(--line);border-radius:4px;font-size:12px}.change{font:700 18px/1.2 ui-monospace,monospace;padding-top:8px}.change.up{color:var(--red)}.change.down{color:var(--green)}.quote-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:18px}.quote{background:#0d131d;border:1px solid var(--line);border-radius:6px;padding:11px}.quote span,.quote small{display:block;color:var(--muted);font-size:11px}.quote strong{display:block;font:700 23px/1.35 ui-monospace,SFMono-Regular,monospace}.quote.stop{border-color:#734149}.quote.stop strong{color:#ff8a8a}.risk-card ul{padding-left:18px;margin:.4em 0}.muted,.detail{color:var(--muted)}.tabs{display:flex;gap:2px;overflow:auto;scrollbar-width:none;padding:10px 0 8px;position:sticky;top:0;background:rgba(8,11,18,.96);z-index:10}.tabs::-webkit-scrollbar{display:none}.tab,.layer,.tf{border:1px solid transparent;background:transparent;color:#98a8bd;padding:8px 13px;white-space:nowrap;cursor:pointer;border-radius:4px}.tab:hover,.layer:hover,.tf:hover{background:#182231;color:white}.tab.active{color:white;background:#1b2636;border-color:#324158}.layer,.tf{border-color:var(--line);background:#111a27}.layer.active,.tf.active{color:#07120f;background:var(--cyan);border-color:var(--cyan);font-weight:750}.pane{display:none}.pane.active{display:block}.layers{margin:12px 0}.metric-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.metric,.scenario,.mini{background:var(--panel2);padding:13px;border:1px solid var(--line);border-radius:6px}.metric span{display:block;color:var(--muted);font-size:12px}.metric strong{display:block;font-size:20px;margin-top:4px}.method-note{margin-top:12px;padding:11px 13px;border-left:3px solid var(--cyan);background:#0d151f;color:#9fb0c4}.scenario-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.scenario .trigger{color:var(--cyan);font:700 18px/1.35 ui-monospace,monospace}.scenario.breakdown .trigger{color:#ff8a8a}.tag{display:inline-block;padding:3px 8px;border-radius:4px;background:#1d2b3d;color:#9ee9db;font-size:12px}.score{float:right;color:var(--amber)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:9px}svg{display:block;width:100%;height:520px;background:#0b1018;border:1px solid var(--line);border-radius:4px}.axis{font-size:11px;fill:#8b9bb1}.zone{opacity:.13}.trend{stroke-width:2.3;cursor:pointer}.mark{font-size:13px;font-weight:900}.detail{min-height:42px;margin:9px 0}.tv-workbench{display:grid;gap:7px;margin-top:10px}.tv-panel{position:relative;background:#0b1018;border:1px solid var(--line);border-radius:4px;overflow:hidden}.tv-panel-head{display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-bottom:1px solid var(--line);color:#cbd6e5}.tv-panel-head small{color:var(--muted)}.tv-chart{width:100%}.tv-legend{font-size:11px;color:var(--muted)}.crosshair-date{color:var(--cyan);font:12px ui-monospace,monospace}.gap-list{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.gap{padding:4px 7px;background:#251b1e;border:1px solid #5f353c;color:#f0a2aa;border-radius:4px;font-size:12px}.available{padding:4px 7px;background:#10231f;border:1px solid #245c52;color:#85dfce;border-radius:4px;font-size:12px}.error{border-color:var(--red);color:#ffd7dc}@media(max-width:900px){.hero{grid-template-columns:1fr}.quote-grid,.metric-grid{grid-template-columns:repeat(2,1fr)}.scenario-grid{grid-template-columns:1fr}.risk-card{order:2}}@media(max-width:620px){.shell{padding:8px 8px 72px}.card{padding:11px}.top span{display:none}.tabs{margin:0 -8px;padding-left:8px}.title-row,.section-head{display:block}.change{padding:4px 0}.quote-grid{grid-template-columns:1fr 1fr}.quote strong{font-size:19px}.layers{position:sticky;bottom:7px;z-index:8;background:rgba(8,11,18,.96);padding:7px;border:1px solid var(--line)}.layer{font-size:12px;padding:6px 8px}svg{height:390px}.metric-grid{grid-template-columns:1fr 1fr}.tv-panel-head{display:block}.tv-panel-head small{display:block;margin-top:3px}}'''
 
 
-V2_JS = r'''(()=>{"use strict";const q=new URLSearchParams(location.search),id=(q.get("id")||"").replace(/[^0-9A-Za-z]/g,"");const $=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];let packets=[],active=null;const layers={candles:true,patterns:true,zones:true,lines:true};const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));const list=(el,items,empty="尚無")=>el.innerHTML=(items&&items.length?items:[empty]).map(x=>`<li>${esc(x)}</li>`).join("");function err(msg){$("#loading").classList.add("error");$("#loading").textContent=msg}if(!id){err("網址缺少股票代號。");return}Promise.all([fetch(`data/${id}.json`).then(r=>{if(!r.ok)throw Error("找不到此股票的 V2 分析資料");return r.json()}),fetch("data/index.json").then(r=>r.json())]).then(([p,index])=>{packets=p;active=p.find(x=>x.timeframe==="daily")||p[0];if(!active)throw Error("分析資料為空");const meta=index.stocks?.[id]||{};renderHeader(meta);renderTabs();renderTimeframes();renderDecision();renderPatterns();draw();$("#legacy-link").href=`../stocks/${id}.html`;$("#loading").hidden=true;$("#app").hidden=false}).catch(e=>err(`V2 載入失敗：${e.message}`));function decision(){return active.decision||{}}function renderHeader(meta){const d=decision(),state=d.action_state||"UNRATED";document.title=`${id} ${meta.name||""}｜Stock from Hsiu V2`;$("#stock-title").textContent=`${id} ${meta.name||""}`;$("#action-state").textContent=state;$("#action-state").className=`state ${state}`;$("#meta").innerHTML=`<span>資料 ${esc(active.data_date)}</span><span>${esc(active.timeframe)}</span><span>引擎 ${esc(active.engine_version)}</span><span>Freshness ${esc(active.freshness?.status||"unknown")}</span>`;$("#summary").textContent=d.summary||d.traffic_light?.reason||d.reasons?.[0]||"尚未形成可執行訊號";list($("#reasons"),d.reasons||d.confirmed_conditions,"尚無已確認條件");list($("#blockers"),d.blockers||d.missing_conditions,"尚無額外阻擋條件");list($("#warnings"),[...(d.warnings||[]),...(active.warnings||[])],"尚無額外警告")}function renderTabs(){all(".tab").forEach(b=>b.onclick=()=>{all(".tab,.pane").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("#"+b.dataset.pane).classList.add("active");if(b.dataset.pane==="trend")draw()});all(".layer").forEach(b=>b.onclick=()=>{layers[b.dataset.layer]=!layers[b.dataset.layer];b.classList.toggle("active",layers[b.dataset.layer]);draw()})}function renderTimeframes(){$("#timeframes").innerHTML=packets.map((p,i)=>`<button class="tf ${i===0?"active":""}" data-tf="${p.timeframe}">${({daily:"日線",weekly:"週線",monthly:"月線"})[p.timeframe]||p.timeframe}</button>`).join("");all(".tf").forEach(b=>b.onclick=()=>{active=packets.find(p=>p.timeframe===b.dataset.tf);all(".tf").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderDecision();renderPatterns();draw()})}function renderDecision(){const d=decision();$("#decision-detail").innerHTML=`<p><b>行動狀態：</b>${esc(d.action_state||"UNRATED")}</p><p><b>規則版本：</b>${esc(d.rule_version||"未提供")}</p><p><b>資料品質：</b>${esc(active.freshness?.status||"unknown")}</p><p class="muted">TA-Lib K 線型態不會單獨升級交易決策；所有端點與分數均來自可重現的 Python 規則。</p>`}function renderPatterns(){const items=active.patterns||[];$("#pattern-list").innerHTML=items.length?items.slice(0,18).map(v=>`<article class="mini"><span class="tag">${esc(v.status)} · ${esc(v.direction)}</span><span class="score">${esc(v.quality_score)}</span><h3>${esc(v.name)}</h3><p>${esc((v.evidence||[]).join("；")||"尚無證據說明")}</p><p class="muted">缺少：${esc((v.missing_conditions||[]).join("；")||"無")}</p><p class="muted">反向：${esc((v.counterevidence||[]).join("；")||"無")}</p></article>`).join(""):"<p class=muted>目前沒有通過品質門檻的型態。</p>"}function svg(name,attrs={}){const n=document.createElementNS("http://www.w3.org/2000/svg",name);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n}function draw(){const root=$("#chart");root.replaceChildren();const rows=(active.series||[]).slice(-120);if(!rows.length)return;const W=1120,H=500,p={l:62,r:22,t:18,b:36},min=Math.min(...rows.map(r=>r.low)),max=Math.max(...rows.map(r=>r.high)),span=Math.max(.001,max-min),xi=i=>p.l+i/Math.max(1,rows.length-1)*(W-p.l-p.r),y=v=>p.t+(max-v)/span*(H-p.t-p.b),index=new Map(rows.map((r,i)=>[r.date,i]));for(let g=0;g<=4;g++){const price=min+span*g/4,yy=y(price);root.append(svg("line",{x1:p.l,x2:W-p.r,y1:yy,y2:yy,stroke:"#213650"}));const t=svg("text",{x:5,y:yy+4,class:"axis"});t.textContent=price.toFixed(2);root.append(t)}if(layers.zones)(active.support_resistance||[]).slice(0,8).forEach(z=>root.append(svg("rect",{x:p.l,y:y(z.price_high),width:W-p.l-p.r,height:Math.max(2,y(z.price_low)-y(z.price_high)),fill:z.kind==="support"?"#69db7c":"#ff7b8b",class:"zone"})));if(layers.candles)rows.forEach((r,i)=>{const x=xi(i),c=r.close>=r.open?"#f45b69":"#49b675";root.append(svg("line",{x1:x,x2:x,y1:y(r.high),y2:y(r.low),stroke:c}));root.append(svg("rect",{x:x-2.6,y:y(Math.max(r.open,r.close)),width:5.2,height:Math.max(1,Math.abs(y(r.open)-y(r.close))),fill:c}))});if(layers.patterns)(active.patterns||[]).slice(0,14).forEach(v=>{const i=index.get(v.end_date);if(i===undefined)return;const r=rows[i],t=svg("text",{x:xi(i)-5,y:y(v.direction==="bullish"?r.low:r.high)+(v.direction==="bullish"?16:-7),fill:v.category==="candlestick"?"#66d9c1":"#ffcc66",class:"mark"});t.textContent=v.category==="candlestick"?"◆":"●";const tip=svg("title");tip.textContent=`${v.name}｜${v.status}｜${v.quality_score}`;t.append(tip);root.append(t)});if(layers.lines)(active.trendlines||[]).filter(l=>l.kind!=="channel").slice(0,6).forEach(l=>{const a=index.get(l.start.date),b=index.get(l.end.date);if(a===undefined&&b===undefined)return;const endI=b??rows.length-1,startI=a??0,endPrice=b===undefined?l.end.price+l.slope_per_bar*(rows.length-1-(index.get(l.end.date)||0)):l.end.price,startPrice=a===undefined?endPrice-l.slope_per_bar*(endI-startI):l.start.price,line=svg("line",{x1:xi(startI),x2:xi(endI),y1:y(startPrice),y2:y(endPrice),stroke:l.kind==="support"?"#66d9c1":"#ffcc66",class:"trend"});line.onclick=()=>$("#chart-detail").textContent=`${l.kind}｜${l.status}｜端點 ${l.start.date} ${l.start.price} → ${l.end.date} ${l.end.price}｜接觸 ${l.touch_count}｜穿越 ${l.violation_count}｜分數 ${l.quality_score}`;root.append(line)});renderLines()}function renderLines(){const lines=(active.trendlines||[]).slice(0,8);$("#line-list").innerHTML=lines.length?lines.map(l=>`<article class="mini"><span class="tag">${esc(l.kind)}</span><span class="score">${esc(l.quality_score)}</span><h3>${esc(l.status)}</h3><p>接觸 ${esc(l.touch_count)} 次 · 穿越 ${esc(l.violation_count)} 次</p><p class="muted">${esc(l.start.date)} ${esc(l.start.price)} → ${esc(l.end.date)} ${esc(l.end.price)}</p></article>`).join(""):"<p class=muted>目前沒有已確認的高品質趨勢線。</p>"}})();'''
+V2_JS = r'''(()=>{"use strict";
+const q=new URLSearchParams(location.search),id=(q.get("id")||"").replace(/[^0-9A-Za-z]/g,"");
+const $=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=(v,d=2)=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-TW",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+let packets=[],active=null,chartsReady=false,chartEntries=[],syncing=false;
+const layers={candles:true,patterns:true,zones:true,lines:true};
+const gapNames={institutional:"三大法人",foreign_ownership:"外資持股",margin:"融資融券",holdings:"股東結構"};
+function err(msg){$("#loading").classList.add("error");$("#loading").textContent=msg}
+if(!id){err("網址缺少股票代號。");return}
+Promise.all([
+  fetch(`data/${id}.json`).then(r=>{if(!r.ok)throw Error("找不到此股票的 V2 分析資料");return r.json()}),
+  fetch("data/index.json").then(r=>r.json())
+]).then(([p,index])=>{
+  packets=p;active=p.find(x=>x.timeframe==="daily")||p[0];if(!active)throw Error("分析資料為空");
+  const meta=index.stocks?.[id]||{};renderHeader(meta);renderTabs();renderTimeframes();renderOverview();renderPlan();renderPatterns();drawTrend();renderChipStatus();
+  $("#legacy-link").href=`../stocks/${id}.html`;$("#loading").hidden=true;$("#app").hidden=false;
+}).catch(e=>err(`V2 載入失敗：${e.message}`));
 
-# The decision payload and packet warnings can carry the same freshness note.
-# De-duplicate them at render time without mutating the versioned evidence.
-V2_JS = V2_JS.replace(
-    '[...(d.warnings||[]),...(active.warnings||[])]',
-    '[...new Set([...(d.warnings||[]),...(active.warnings||[])])]',
-)
+function daily(){return packets.find(x=>x.timeframe==="daily")||packets[0]}
+function latest(){const rows=daily().series||[];return rows[rows.length-1]||{}}
+function nearest(kind){
+  const close=Number(latest().close),zones=(daily().support_resistance||[]).filter(z=>z.kind===kind);
+  if(kind==="support") return zones.filter(z=>Number(z.price_high)<close).sort((a,b)=>Number(b.price_high)-Number(a.price_high))[0]||null;
+  return zones.filter(z=>Number(z.price_low)>close).sort((a,b)=>Number(a.price_low)-Number(b.price_low))[0]||null;
+}
+function zoneText(z){return z?`${fmt(z.price_low)} – ${fmt(z.price_high)}`:"資料不足"}
+function warningText(value){
+  const map={
+    "mda_candidate_pool freshness is missing":"MDA 候選資料缺少更新日期，暫不作語意判讀。",
+    "carybot_signals freshness is fallback_stale":"CaryBot 資料已過期，現階段只保留警示。",
+    "adjusted-price metadata is missing; long-horizon geometry confidence was reduced":"缺少還原權息資料，長週期幾何分數已降低。"
+  };return map[value]||value;
+}
+function renderHeader(meta){
+  const d=daily(),row=latest(),rows=d.series||[],prev=rows.length>1?rows[rows.length-2]:null,change=prev&&Number(prev.close)?(Number(row.close)/Number(prev.close)-1)*100:null;
+  document.title=`${id} ${meta.name||""}｜Stock from Hsiu V2`;$("#stock-title").textContent=`${id} ${meta.name||""}`;
+  $("#meta").innerHTML=`<span>資料 ${esc(d.data_date)}</span><span>引擎 ${esc(d.engine_version)}</span><span>品質 ${esc(d.freshness?.status||"unknown")}</span>`;
+  $("#latest-price").textContent=fmt(row.close);$("#latest-date").textContent=row.date||"";$("#support-price").textContent=zoneText(nearest("support"));$("#resistance-price").textContent=zoneText(nearest("resistance"));
+  $("#stop-price").textContent=fmt(d.risk_control?.stop_price);const ce=$("#change");ce.textContent=change==null?"":`${change>=0?"+":""}${change.toFixed(2)}%`;ce.className=`change ${change>=0?"up":"down"}`;
+  const warnings=[...new Set([...(d.warnings||[]),...((d.freshness||{}).warnings||[])])].map(warningText);$("#warnings").innerHTML=(warnings.length?warnings:["目前沒有額外資料警示。"] ).map(x=>`<li>${esc(x)}</li>`).join("");
+}
+function renderTabs(){
+  all(".tab").forEach(b=>b.onclick=()=>{all(".tab,.pane").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("#"+b.dataset.pane).classList.add("active");if(b.dataset.pane==="trend")drawTrend();if(b.dataset.pane==="chips")requestAnimationFrame(initChipWorkbench)});
+  all(".layer").forEach(b=>b.onclick=()=>{layers[b.dataset.layer]=!layers[b.dataset.layer];b.classList.toggle("active",layers[b.dataset.layer]);drawTrend()});
+}
+function renderTimeframes(){
+  $("#timeframes").innerHTML=packets.map(p=>`<button class="tf ${p===active?"active":""}" data-tf="${p.timeframe}">${({daily:"日線",weekly:"週線",monthly:"月線"})[p.timeframe]||p.timeframe}</button>`).join("");
+  all(".tf").forEach(b=>b.onclick=()=>{active=packets.find(p=>p.timeframe===b.dataset.tf)||active;all(".tf").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderPatterns();drawTrend()});
+}
+function renderOverview(){
+  const d=daily(),m=d.market_evidence||{},available=Object.keys(gapNames).filter(k=>!(m.gaps||[]).includes(k));
+  const metrics=[
+    ["價格資料",`${(d.series||[]).length} 根日 K`],["型態證據",`${(d.patterns||[]).length} 項`],["趨勢線",`${(d.trendlines||[]).length} 條`],["籌碼資料",available.length?available.map(k=>gapNames[k]).join("、"):"尚無"]
+  ];$("#overview-grid").innerHTML=metrics.map(([a,b])=>`<div class="metric"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join("");
+}
+function renderPlan(){
+  const support=nearest("support"),resistance=nearest("resistance"),stop=daily().risk_control?.stop_price;
+  const cards=[
+    ["突破情境",resistance?`收盤站上 ${fmt(resistance.price_high)}`:"等待壓力區形成",resistance?"突破後觀察成交量與回測是否守住壓力區上緣。":"目前沒有足夠壓力區資料，不建立突破觸發價。",""] ,
+    ["整理情境",support&&resistance?`${fmt(support.price_low)} – ${fmt(resistance.price_high)}`:"區間資料不足",support&&resistance?"價格留在支撐與壓力之間，只更新證據，不預設方向。":"等待支撐與壓力同時形成。",""] ,
+    ["跌破情境",support?`收盤跌破 ${fmt(support.price_low)}`:`固定停損 ${fmt(stop)}`,`結構跌破時重新檢查；固定停損價為 ${fmt(stop)}。`,"breakdown"]
+  ];$("#scenario-grid").innerHTML=cards.map(([title,trigger,text,cls])=>`<article class="scenario ${cls}"><h3>${title}</h3><div class="trigger">${trigger}</div><p>${text}</p></article>`).join("");
+}
+function renderPatterns(){
+  const items=active.patterns||[];$("#pattern-list").innerHTML=items.length?items.slice(0,18).map(v=>`<article class="mini"><span class="tag">${esc(v.status)} · ${esc(v.direction)}</span><span class="score">${esc(v.quality_score)}</span><h3>${esc(v.name)}</h3><p>${esc((v.evidence||[]).join("；")||"尚無證據說明")}</p><p class="muted">缺少：${esc((v.missing_conditions||[]).join("；")||"無")}</p><p class="muted">反向：${esc((v.counterevidence||[]).join("；")||"無")}</p></article>`).join(""):"<p class=muted>目前沒有通過品質門檻的型態。</p>";
+}
+function svg(name,attrs={}){const n=document.createElementNS("http://www.w3.org/2000/svg",name);for(const[k,v]of Object.entries(attrs))n.setAttribute(k,v);return n}
+function drawTrend(){
+  const root=$("#chart");if(!root)return;root.replaceChildren();const rows=(active.series||[]).slice(-120);if(!rows.length)return;
+  const W=1120,H=520,p={l:62,r:65,t:18,b:35},min=Math.min(...rows.map(r=>r.low)),max=Math.max(...rows.map(r=>r.high)),span=Math.max(.001,max-min),xi=i=>p.l+i/Math.max(1,rows.length-1)*(W-p.l-p.r),y=v=>p.t+(max-v)/span*(H-p.t-p.b),index=new Map(rows.map((r,i)=>[r.date,i]));
+  for(let g=0;g<=5;g++){const price=min+span*g/5,yy=y(price);root.append(svg("line",{x1:p.l,x2:W-p.r,y1:yy,y2:yy,stroke:"#202a3a"}));const t=svg("text",{x:W-p.r+8,y:yy+4,class:"axis"});t.textContent=price.toFixed(2);root.append(t)}
+  if(layers.zones)(active.support_resistance||[]).slice(0,9).forEach(z=>root.append(svg("rect",{x:p.l,y:y(z.price_high),width:W-p.l-p.r,height:Math.max(2,y(z.price_low)-y(z.price_high)),fill:z.kind==="support"?"#26a69a":"#ef5350",class:"zone"})));
+  if(layers.candles)rows.forEach((r,i)=>{const x=xi(i),c=r.close>=r.open?"#ef5350":"#26a69a";root.append(svg("line",{x1:x,x2:x,y1:y(r.high),y2:y(r.low),stroke:c}));root.append(svg("rect",{x:x-2.8,y:y(Math.max(r.open,r.close)),width:5.6,height:Math.max(1,Math.abs(y(r.open)-y(r.close))),fill:c}))});
+  if(layers.patterns)(active.patterns||[]).slice(0,14).forEach(v=>{const i=index.get(v.end_date);if(i===undefined)return;const r=rows[i],t=svg("text",{x:xi(i)-5,y:y(v.direction==="bullish"?r.low:r.high)+(v.direction==="bullish"?17:-7),fill:v.category==="candlestick"?"#2dd4bf":"#f6c453",class:"mark"});t.textContent=v.category==="candlestick"?"◆":"●";const tip=svg("title");tip.textContent=`${v.name}｜${v.status}｜${v.quality_score}`;t.append(tip);root.append(t)});
+  if(layers.lines)(active.trendlines||[]).filter(l=>l.kind!=="channel").slice(0,6).forEach(l=>{const a=index.get(l.start.date),b=index.get(l.end.date);if(a===undefined&&b===undefined)return;const startI=a??0,endI=b??rows.length-1,startPrice=a===undefined?l.start.price+l.slope_per_bar*(startI-(b??0)):l.start.price,endPrice=b===undefined?l.end.price+l.slope_per_bar*(endI-(a??0)):l.end.price,line=svg("line",{x1:xi(startI),x2:xi(endI),y1:y(startPrice),y2:y(endPrice),stroke:l.kind==="support"?"#2dd4bf":"#f6c453",class:"trend"});line.onclick=()=>$("#chart-detail").textContent=`${l.kind}｜${l.status}｜端點 ${l.start.date} ${l.start.price} → ${l.end.date} ${l.end.price}｜接觸 ${l.touch_count}｜穿越 ${l.violation_count}｜分數 ${l.quality_score}`;root.append(line)});renderLines();
+}
+function renderLines(){const lines=(active.trendlines||[]).slice(0,8);$("#line-list").innerHTML=lines.length?lines.map(l=>`<article class="mini"><span class="tag">${esc(l.kind)}</span><span class="score">${esc(l.quality_score)}</span><h3>${esc(l.status)}</h3><p>接觸 ${esc(l.touch_count)} 次 · 穿越 ${esc(l.violation_count)} 次</p><p class="muted">${esc(l.start.date)} ${esc(l.start.price)} → ${esc(l.end.date)} ${esc(l.end.price)}</p></article>`).join(""):"<p class=muted>目前沒有已確認的高品質趨勢線。</p>"}
+function renderChipStatus(){
+  const m=daily().market_evidence||{},gaps=m.gaps||[],available=Object.keys(gapNames).filter(k=>!gaps.includes(k));
+  $("#chip-status").innerHTML=`<div class="gap-list">${available.map(k=>`<span class="available">${gapNames[k]} · ${esc(m.source_dates?.[k]||"")}</span>`).join("")}${gaps.map(k=>`<span class="gap">缺少 ${gapNames[k]}</span>`).join("")}</div>`;
+}
+function panel(title,note,height=210){const wrap=document.createElement("section");wrap.className="tv-panel";wrap.innerHTML=`<div class="tv-panel-head"><b>${title}</b><small>${note}</small></div><div class="tv-chart" style="height:${height}px"></div>`;$("#chip-workbench").append(wrap);return wrap.querySelector(".tv-chart")}
+function baseOptions(){const L=window.LightweightCharts;return{autoSize:true,layout:{background:{type:L.ColorType.Solid,color:"#0b1018"},textColor:"#8b9bb1"},grid:{vertLines:{color:"#202a3a"},horzLines:{color:"#202a3a"}},rightPriceScale:{borderColor:"#273245"},timeScale:{borderColor:"#273245",timeVisible:false,secondsVisible:false,rightOffset:4,barSpacing:7,minBarSpacing:2},crosshair:{mode:L.CrosshairMode.Normal},localization:{locale:"zh-TW"},handleScroll:{mouseWheel:true,pressedMouseMove:true},handleScale:{mouseWheel:true,pinch:true}}}
+function addEntry(el,rows,primary,key){const chart=primary.chart,entry={chart,primary:primary.series,rows,lookup:new Map(rows.map(r=>[r.date,r])),value:r=>Number(r[key])};chartEntries.push(entry);return entry}
+function wireCharts(){
+  chartEntries.forEach(entry=>{
+    entry.chart.timeScale().subscribeVisibleTimeRangeChange(range=>{if(syncing||!range)return;syncing=true;chartEntries.forEach(other=>{if(other!==entry){try{other.chart.timeScale().setVisibleRange(range)}catch(_){}}});syncing=false});
+    entry.chart.subscribeCrosshairMove(param=>{if(syncing)return;const time=typeof param?.time==="string"?param.time:param?.time;if(!time){chartEntries.forEach(x=>{try{x.chart.clearCrosshairPosition()}catch(_){}});return}$("#crosshair-date").textContent=String(time);syncing=true;chartEntries.forEach(other=>{if(other===entry)return;const row=other.lookup.get(String(time)),value=row?other.value(row):null;if(Number.isFinite(value)){try{other.chart.setCrosshairPosition(value,time,other.primary)}catch(_){}}});syncing=false});
+  });
+  const rows=daily().series||[];if(rows.length){const from=rows[Math.max(0,rows.length-120)].date,to=rows[rows.length-1].date;try{chartEntries[0].chart.timeScale().setVisibleRange({from,to})}catch(_){chartEntries[0].chart.timeScale().fitContent()}}
+}
+function initChipWorkbench(){
+  if(chartsReady)return;chartsReady=true;const root=$("#chip-workbench"),L=window.LightweightCharts;if(!L){root.innerHTML='<div class="method-note">圖表元件載入失敗；請確認網路後重新整理。資料本身仍保留在頁面封包中。</div>';return}
+  const d=daily(),m=d.market_evidence||{},price=d.series||[];
+  const priceEl=panel("日 K 與成交量","紅漲綠跌 · 可縮放、拖曳",430),priceChart=L.createChart(priceEl,baseOptions());
+  const candles=priceChart.addSeries(L.CandlestickSeries,{upColor:"#ef5350",downColor:"#26a69a",wickUpColor:"#ef5350",wickDownColor:"#26a69a",borderVisible:false});candles.setData(price.map(r=>({time:r.date,open:r.open,high:r.high,low:r.low,close:r.close})));
+  const volume=priceChart.addSeries(L.HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:"volume",lastValueVisible:false,priceLineVisible:false});priceChart.priceScale("volume").applyOptions({scaleMargins:{top:.78,bottom:0}});volume.setData(price.map(r=>({time:r.date,value:r.volume,color:r.close>=r.open?"rgba(239,83,80,.45)":"rgba(38,166,154,.45)"})));addEntry(priceEl,price,{chart:priceChart,series:candles},"close");
+  if((m.institutional||[]).length){const rows=m.institutional,el=panel("三大法人買賣超","外資／投信／自營商，單位：張"),chart=L.createChart(el,baseOptions());let primary=null;[["foreign","#4da3ff"],["trust","#f6c453"],["dealer","#b98cff"]].forEach(([key,color],i)=>{const s=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false,lastValueVisible:i===0});s.setData(rows.map(r=>({time:r.date,value:r[key]})));if(!primary)primary=s});addEntry(el,rows,{chart,series:primary},"foreign")}
+  if((m.margin||[]).length){const rows=m.margin,el=panel("信用交易","融資餘額／融券餘額"),chart=L.createChart(el,baseOptions()),a=chart.addSeries(L.LineSeries,{color:"#f6c453",lineWidth:2}),b=chart.addSeries(L.LineSeries,{color:"#b98cff",lineWidth:2});a.setData(rows.filter(r=>r.margin_balance!=null).map(r=>({time:r.date,value:r.margin_balance})));b.setData(rows.filter(r=>r.short_balance!=null).map(r=>({time:r.date,value:r.short_balance})));addEntry(el,rows,{chart,series:a},"margin_balance")}
+  if((m.foreign_ownership||[]).length){const rows=m.foreign_ownership,el=panel("外資持股","持股比率（%）"),chart=L.createChart(el,baseOptions()),s=chart.addSeries(L.LineSeries,{color:"#4da3ff",lineWidth:2});s.setData(rows.filter(r=>r.foreign_ratio!=null).map(r=>({time:r.date,value:r.foreign_ratio})));addEntry(el,rows,{chart,series:s},"foreign_ratio")}
+  if((m.holdings||[]).length){const rows=m.holdings,el=panel("股東結構","大戶／中實戶／散戶持股比（每週）",230),chart=L.createChart(el,baseOptions());let primary=null;[["major","#ef5350"],["middle","#f6c453"],["retail","#26a69a"]].forEach(([key,color])=>{const s=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false});s.setData(rows.map(r=>({time:r.date,value:r[key]})));if(!primary)primary=s});addEntry(el,rows,{chart,series:primary},"major")}
+  if(chartEntries.length)wireCharts();else root.innerHTML='<div class="method-note">目前沒有可繪製的籌碼序列；資料補齊後會自動出現副圖。</div>';
+}
+})();'''
 
 
 def stock_redirect_html(stock_id: str) -> str:
@@ -49,6 +194,6 @@ def stock_redirect_html(stock_id: str) -> str:
         '<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8">'
         f'<meta http-equiv="refresh" content="0;url={target}"><link rel="canonical" href="{target}">'
         f'<title>{stock_id}｜Stock from Hsiu V2</title></head><body>'
-        f'<p>正在前往 <a href="{target}">{stock_id} V2 個股分析</a>…</p>'
+        f'<p>正在前往 <a href="{target}">{stock_id} V2 個股頁</a>。</p>'
         f'<script>location.replace("{target}")</script></body></html>'
     )

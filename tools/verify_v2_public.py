@@ -23,8 +23,11 @@ def verify(navigation: str) -> dict:
             raise AssertionError(f"required public artifact missing: docs/{relative}")
     packets = json.loads((DOCS / "v2" / "data" / "2353.json").read_text(encoding="utf-8"))
     daily = next(packet for packet in packets if packet["timeframe"] == "daily")
-    if daily.get("decision", {}).get("action_state") != "SETUP":
-        raise AssertionError("2353 action_state was not preserved as SETUP")
+    if "decision" in daily:
+        raise AssertionError("public V2 packet still contains semantic decision output")
+    risk = daily.get("risk_control") or {}
+    if risk.get("stop_loss_pct") != 15.0 or risk.get("stop_price") != 25.7125:
+        raise AssertionError(f"2353 fixed 15% stop was not generated: {risk}")
     if not daily.get("trendlines"):
         raise AssertionError("2353 has no generated trendline evidence")
     combined = "\n".join((DOCS / rel).read_text(encoding="utf-8", errors="replace") for rel in ("v2/stock.html", "v2/assets/v2.js", "v2/data/2353.json"))
@@ -45,7 +48,14 @@ def verify(navigation: str) -> dict:
         missing = [sid for sid in manifest["stocks"] if f'href="v2/stocks/{sid}.html"' not in search_text]
         if missing:
             raise AssertionError(f"search page did not switch available V2 ids: {missing[:5]}")
-    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "action_2353": "SETUP", "navigation": navigation}
+    ui = "\n".join((DOCS / rel).read_text(encoding="utf-8") for rel in ("v2/stock.html", "v2/assets/v2.js"))
+    semantic_tokens = ("action-state", "SETUP", "WATCH", "NO-GO", "R:R", "目標價")
+    found_semantics = [token for token in semantic_tokens if token in ui]
+    if found_semantics:
+        raise AssertionError(f"semantic decision labels remain in V2 UI: {found_semantics}")
+    if "LightweightCharts" not in ui or "15% 停損" not in ui:
+        raise AssertionError("TradingView-style workbench or fixed stop rendering is missing")
+    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": risk["stop_price"], "navigation": navigation}
 
 
 def main() -> None:
