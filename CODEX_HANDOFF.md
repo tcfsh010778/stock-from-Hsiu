@@ -48,7 +48,10 @@ observation/reporting feature and does not change any strategy or order rule.
   freshness is visibly `stale` at 52 calendar days.
 - Added a small manual `Publish Holder History` workflow and
   `generate_site.py --holder-only` so holder corrections do not require the
-  50-minute full-site/V2 rebuild.
+  50-minute full-site/V2 rebuild. The workflow intentionally pushes its
+  targeted commit without a final rebase: the shared concurrency group already
+  excludes competing site writers, while the generator leaves unrelated
+  static assets unstaged and therefore makes `git pull --rebase` invalid.
 
 ### Source of truth / rebuild
 

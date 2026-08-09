@@ -54,3 +54,9 @@ available, the builder automatically switches to the newer complete run. The
 manual backfill input now fails closed on zero rows, and the lightweight
 `Publish Holder History` workflow can rebuild only the homepage card, holder
 page, JSON, and manifest without rerunning the full V2 site.
+
+The first lightweight run verified the 35-row artifact and both generated
+pages, then failed only at `git pull --rebase` because `generate_site.py` also
+left unrelated static assets unstaged. The workflow shares the same concurrency
+group as the full site writer, so the redundant final rebase was removed; it
+now commits the explicit holder outputs and pushes directly.
