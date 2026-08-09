@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from generate_v2 import safe_decision, switch_navigation, trim_packet
+from generate_v2 import analyze_stock_task, safe_decision, switch_navigation, trim_packet
 from stock_v2_public.site import stock_redirect_html
 
 
@@ -34,6 +34,27 @@ class PublicV2GenerationTests(unittest.TestCase):
         page = stock_redirect_html("2353")
         self.assertIn("../stock.html?id=2353", page)
         self.assertNotIn("OPENAI_API_KEY", page)
+
+    def test_stale_price_file_is_excluded_before_analysis(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "2353.csv"
+            rows = ["date,open,high,low,close,volume"]
+            rows.extend(f"2026-07-{day:02d},10,11,9,10,1000" for day in range(1, 31))
+            path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+            _, _, packets, error = analyze_stock_task(
+                (
+                    "2353",
+                    "Acer",
+                    str(path),
+                    safe_decision("2353", None),
+                    "fresh",
+                    "2026-08-07",
+                    [],
+                    False,
+                )
+            )
+            self.assertIsNone(packets)
+            self.assertIn("stale OHLCV", error)
 
 
 if __name__ == "__main__":
