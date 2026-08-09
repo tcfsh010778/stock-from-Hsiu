@@ -2,6 +2,57 @@
 
 Last updated: 2026-08-09
 
+## 2026-08-09 Latest-first official TDCC holder history
+
+### Goal and user correction
+
+The six-week holder review must start from the newest TDCC week, not silently
+fall back to the last older complete legacy window. The visible list is the
+latest-week increase ranking capped at Top 50.
+
+### Completed
+
+- Added `tdcc_holder_history.py`. It uses the official TDCC OpenAPI 1-5 current
+  full-market aggregate, queries the immediately prior week through TDCC's
+  public per-security history form for the 1,970 ordinary-equity universe,
+  ranks positive changes, then queries the remaining five dates only for enough
+  leading candidates to produce 50 complete rows.
+- Requests are globally rate-limited, use at most four workers by default,
+  retry conservatively, and fail without overwriting the archive if any query
+  fails. Raw TDCC tables are never retained; only compact 400+ lot percentages
+  and holder counts are archived.
+- The completed official window is 2026-06-26 through 2026-08-07. The displayed
+  six changes are dated 2026-07-03, 07-09, 07-17, 07-24, 07-31, and 08-07.
+- The current Top 50 artifact has 50/50 complete rows. First place is 5351
+  鈺創 with a latest-week increase of 8.94 percentage points.
+- `weekly_holder_risers` is schema 1.3.0 and honors the fail-closed selected
+  security scope recorded by the official backfill. This prevents an
+  incomplete higher-ranked recent listing from displacing a complete row.
+- The daily workflow's one-time backfill input now uses TDCC instead of the
+  unavailable FinMind Sponsor history path. The manual holder publisher always
+  ensures the official history is complete and publishes at most 50 rows.
+- Updated the page and homepage-card renderer to label the result as latest
+  week, Top 50, and TDCC sourced. The durable source remains `generate_site.py`.
+
+### Verification
+
+- Live official backfill: 1,970/1,970 prior-week queries succeeded; 60 leading
+  candidates were checked across the remaining five dates; 59 had complete
+  history and the leading 50 complete names were selected.
+- Artifact: date 2026-08-07, previous date 2026-07-31, rows 50, complete 50,
+  `source_state=tdcc_official`.
+- Generated `docs/holder-risers.html`: 50 rows, 2026-08-07, Top 50, TDCC label,
+  no stale 2026-06-18 cutoff.
+- Focused suite: 16 tests passed. Registry validation: 40 sources, 21 datasets.
+
+### Source of truth / rebuild
+
+- Current TDCC archive: `python tdcc_holder_snapshot.py`
+- One-time/latest-gap TDCC history: `python tdcc_holder_history.py --limit 50`
+- Derived Top 50: `python weekly_holder_risers.py --limit 50`
+- Page: `python generate_site.py --holder-only` in a full checkout
+- Detailed log: `codex_context/logs/2026-08-09-latest-first-tdcc-holder-history.md`
+
 ## 2026-08-09 Six-week major-holder ownership history
 
 ### Goal

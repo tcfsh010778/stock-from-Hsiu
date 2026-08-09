@@ -30,7 +30,7 @@ class WeeklyHolderRisersTests(unittest.TestCase):
         self.assertEqual(rows[0]["major_delta_pctpt"], 2.0)
         self.assertEqual(rows[0]["market"], "上市")
 
-    def test_default_output_is_not_capped_at_fifty(self):
+    def test_default_output_is_capped_at_fifty(self):
         with tempfile.TemporaryDirectory() as tmp:
             holding = Path(tmp) / "holding_shares"
             holding.mkdir()
@@ -47,7 +47,7 @@ class WeeklyHolderRisersTests(unittest.TestCase):
                 )
                 market_map[stock_id] = {"name": f"測試{index}", "market": "上市"}
             rows = weekly_holder_risers.build_rows(holding_dir=holding, market_map=market_map, snapshot_path=Path(tmp) / "missing.json")
-        self.assertEqual(len(rows), 55)
+        self.assertEqual(len(rows), 50)
 
     def test_six_week_changes_are_aligned_and_summed(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -109,6 +109,29 @@ class WeeklyHolderRisersTests(unittest.TestCase):
             )
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["data_date"], "2026-06-18")
+        self.assertTrue(rows[0]["six_week_complete"])
+
+    def test_official_backfill_scope_excludes_incomplete_higher_rank(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            snapshot_path = root / "snapshots.json"
+            dates = ["2026-06-26", "2026-07-03", "2026-07-10", "2026-07-17", "2026-07-24", "2026-07-31", "2026-08-07"]
+            snapshots = []
+            for index, data_date in enumerate(dates):
+                rows = [{"security_id": "2330", "major_percent": 20 + index, "major_people": 10}]
+                if index > 0:
+                    rows.append({"security_id": "2331", "major_percent": 30 + index * 2, "major_people": 10})
+                snapshots.append({"date": data_date, "rows": rows})
+            snapshot_path.write_text(json.dumps({
+                "history_backfill": {"selected_security_ids": ["2330"]},
+                "snapshots": snapshots,
+            }), encoding="utf-8")
+            rows = weekly_holder_risers.build_rows(
+                holding_dir=root / "missing",
+                market_map={"2330": {"name": "台積電", "market": "listed"}, "2331": {"name": "測試", "market": "listed"}},
+                snapshot_path=snapshot_path,
+            )
+        self.assertEqual([row["security_id"] for row in rows], ["2330"])
         self.assertTrue(rows[0]["six_week_complete"])
 
 

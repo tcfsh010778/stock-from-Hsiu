@@ -176,7 +176,11 @@ def validate_registry(registry: dict[str, Any]) -> None:
         if source.get("official"):
             if not source.get("terms_checked_on"):
                 raise ContractError(f"official source {source_id} lacks terms_checked_on")
-            if not source.get("terms_url") and source.get("terms_status") != "owner_openapi_without_explicit_terms_link":
+            reviewed_without_terms = {
+                "owner_openapi_without_explicit_terms_link",
+                "owner_public_interface_without_explicit_terms_link",
+            }
+            if not source.get("terms_url") and source.get("terms_status") not in reviewed_without_terms:
                 raise ContractError(f"official source {source_id} lacks terms_url or explicit review status")
 
     allowed_modes = {"trading_day", "calendar_day", "weekly", "monthly", "quarterly", "event_driven", "annual"}

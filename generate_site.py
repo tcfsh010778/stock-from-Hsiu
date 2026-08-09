@@ -1919,10 +1919,11 @@ def build_weekly_holder_risers_panel(payload: dict | None = None) -> str:
     warning_html = _data_quality_warning(payload, "weekly_holder_risers")
     largest = rows[0] if rows else {}
     largest_text = f'{esc(str(largest.get("security_id") or ""))} {esc(str(largest.get("name") or ""))}（+{fmt_num(largest.get("major_delta_pctpt"), 2)} pt）' if largest else "─"
+    ranking_limit = int(payload.get("ranking_limit") or 50)
     return f"""
 <div class="card weekly-holder-risers-card" data-weekly-holder-risers data-weekly-holder-date="{esc(str(payload.get('date') or ''))}">
   <div class="section-head"><div><div class="section-label">回顧 6 週大戶股權變化</div><div class="strategy-note">並排最近 6 個週五的 400 張以上大戶持股比例變化；這是觀察池，不等於買進訊號。</div></div><div class="section-date">截至 {esc(str(payload.get('date') or '─'))}</div></div>
-  <div class="flow-metric-grid"><div><div class="label">本週上升檔數</div><div class="flow-net">{len(rows):,} 檔</div></div><div><div class="label">最大升幅</div><div class="flow-net">{largest_text}</div></div><div><div class="label">清單狀態</div><div class="flow-net">全部列出</div></div></div>
+  <div class="flow-metric-grid"><div><div class="label">最新週排行</div><div class="flow-net">Top {ranking_limit}</div></div><div><div class="label">最大升幅</div><div class="flow-net">{largest_text}</div></div><div><div class="label">資料來源</div><div class="flow-net">TDCC</div></div></div>
   <a class="flow-page-link" href="holder-risers.html">查看完整上升表格 →</a>
   {warning_html}
   <div class="signal-foot">資料來源：TDCC 集保戶股權分散表的必要衍生彙總 · 不會直接改變 SFZ／MDA／CaryBot 狀態</div>
@@ -1953,11 +1954,12 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
     if not row_html:
         row_html = f'<tr><td colspan="{7 + len(weekly_dates)}" style="color:#8b949e">尚無完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
     warning_html = _data_quality_warning(payload, "weekly_holder_risers")
+    ranking_limit = int(payload.get("ranking_limit") or 50)
     body = f"""
 <div class="container" data-holder-risers-page>
   <div class="page-title">回顧 6 週大戶股權變化</div>
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
-  <div class="complete-table-note">截至：{esc(str(payload.get('date') or '─'))}｜本週大戶比例上升共 {len(rows):,} 檔，完整列出、不做 Top N 截斷。淡紅為增加、淡綠為減少、黃色為 6 週累積；這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="complete-table-note">最新在左側日期標示：{esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序，列出 Top {ranking_limit}。淡紅為增加、淡綠為減少、黃色為 6 週累積；資料來源為 TDCC，這是籌碼觀察表，不等於買進訊號。</div>
   {warning_html}
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
   <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>

@@ -24,6 +24,7 @@ OUTPUT_PATH = DATA_DIR / "weekly_holder_risers.json"
 HOLDER_SNAPSHOT_PATH = DATA_DIR / "holder_weekly_snapshots.json"
 DERIVED_SOURCE_ID = "weekly_holder_risers_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
+DEFAULT_RANKING_LIMIT = 50
 
 
 def _number(value: Any, default: float | None = None) -> float | None:
@@ -89,6 +90,17 @@ def _snapshot_series(path: Path = HOLDER_SNAPSHOT_PATH) -> dict[str, list[dict[s
     return {code: [items[data_date] for data_date in sorted(items)] for code, items in by_code.items()}
 
 
+def _snapshot_ranking_scope(path: Path = HOLDER_SNAPSHOT_PATH) -> set[str]:
+    """Return the fail-closed TDCC Top-N selection when a backfill recorded one."""
+
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return set()
+    backfill = payload.get("history_backfill") if isinstance(payload.get("history_backfill"), dict) else {}
+    return {str(code) for code in backfill.get("selected_security_ids") or [] if str(code)}
+
+
 def _weekly_gap_ok(previous_date: str, data_date: str) -> bool:
     """Allow exchange-holiday shifts, but never label a multi-week gap as one week."""
 
@@ -138,7 +150,7 @@ def build_rows(
     holding_dir: Path = HOLDING_DIR,
     market_map: dict[str, dict[str, str]] | None = None,
     snapshot_path: Path = HOLDER_SNAPSHOT_PATH,
-    limit: int | None = None,
+    limit: int | None = DEFAULT_RANKING_LIMIT,
 ) -> list[dict[str, Any]]:
     refs = market_map if market_map is not None else _market_map()
     combined: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
@@ -153,9 +165,12 @@ def build_rows(
     all_dates = _latest_complete_window({data_date for items in combined.values() for data_date in items})
     if len(all_dates) < 7:
         return []
+    ranking_scope = _snapshot_ranking_scope(snapshot_path)
     change_dates = all_dates[1:]
     output = []
     for stock_id, items in combined.items():
+        if ranking_scope and stock_id not in ranking_scope:
+            continue
         previous = items.get(all_dates[-2])
         latest = items.get(all_dates[-1])
         if not previous or not latest:
@@ -195,7 +210,13 @@ def build_rows(
     return output[:limit] if limit is not None and limit > 0 else output
 
 
-def build_payload(rows: list[dict[str, Any]], *, updated_at: datetime | str, source_state: str = "local_cache") -> dict[str, Any]:
+def build_payload(
+    rows: list[dict[str, Any]],
+    *,
+    updated_at: datetime | str,
+    source_state: str = "tdcc_official",
+    ranking_limit: int = DEFAULT_RANKING_LIMIT,
+) -> dict[str, Any]:
     dates = sorted({str(row.get("data_date") or "") for row in rows if row.get("data_date")})
     latest_date = dates[-1] if dates else ""
     previous_dates = sorted({str(row.get("previous_date") or "") for row in rows if row.get("previous_date")})
@@ -204,7 +225,7 @@ def build_payload(rows: list[dict[str, Any]], *, updated_at: datetime | str, sou
     complete_rows = sum(1 for row in rows if row.get("six_week_complete"))
     return {
         "dataset_id": "weekly_holder_risers",
-        "schema_version": "1.2.0",
+        "schema_version": "1.3.0",
         "date": latest_date,
         "previous_date": previous_date,
         "weekly_dates": weekly_dates,
@@ -212,7 +233,9 @@ def build_payload(rows: list[dict[str, Any]], *, updated_at: datetime | str, sou
         "rows": rows,
         "row_count": len(rows),
         "six_week_complete_count": complete_rows,
-        "complete_positive_set": True,
+        "ranking_limit": ranking_limit,
+        "ranking_basis": "latest_week_major_holder_change_pctpt_desc",
+        "complete_positive_set": False,
         "source_state": source_state,
         "data_quality": {
             "state": "ok" if rows and len(weekly_dates) == 6 else "partial" if rows else "missing",
@@ -258,10 +281,10 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Build weekly major-holder ownership-risers artifact.")
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST_PATH)
-    parser.add_argument("--limit", type=int, default=0, help="Optional QA cap; 0 publishes every positive weekly change.")
+    parser.add_argument("--limit", type=int, default=DEFAULT_RANKING_LIMIT, help="Latest-week positive-change ranking cap (default: 50).")
     args = parser.parse_args()
     rows = build_rows(limit=args.limit or None)
-    payload = build_payload(rows, updated_at=datetime.now(TAIPEI_TZ))
+    payload = build_payload(rows, updated_at=datetime.now(TAIPEI_TZ), ranking_limit=args.limit)
     if args.output.exists():
         try:
             previous = json.loads(args.output.read_text(encoding="utf-8-sig"))

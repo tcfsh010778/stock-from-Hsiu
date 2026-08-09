@@ -8,8 +8,8 @@ on:
     - cron: "30 12 * * 1-5"
   workflow_dispatch:
     inputs:
-      backfill_holder_history:
-        description: "One-time holder backfill (requires FinMind Sponsor-level access)"
+      backfill_tdcc_holder_history:
+        description: "One-time official TDCC six-week holder-history backfill"
         required: false
         default: false
         type: boolean
@@ -53,17 +53,12 @@ jobs:
         run: python refresh_prices.py
 
       - name: Refresh optional legacy FinMind auxiliary caches
-        if: ${{ vars.ENABLE_FINMIND_AUX == '1' || inputs.backfill_holder_history == true }}
+        if: ${{ vars.ENABLE_FINMIND_AUX == '1' }}
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: |
           test -n "$FINMIND_TOKEN"
-          if [ "${{ inputs.backfill_holder_history }}" = "true" ]; then
-            python mda_full_market_refresh.py --skip-price --holding-start "$(date -d '56 days ago' +%F)"
-            python -c "import json; p=json.load(open('data/mda_full_market_refresh_summary.json', encoding='utf-8')); assert (p.get('holding') or {}).get('dataset_rows', 0) > 0, 'FinMind holder backfill returned zero rows'"
-          else
-            python mda_full_market_refresh.py --skip-price
-          fi
+          python mda_full_market_refresh.py --skip-price
 
       - name: Refresh MDA full-market scan from current caches
         run: python mda_universe_scan.py
@@ -95,8 +90,12 @@ jobs:
       - name: Archive official TDCC weekly holder aggregate
         run: python tdcc_holder_snapshot.py
 
+      - name: Backfill official TDCC six-week holder history
+        if: ${{ inputs.backfill_tdcc_holder_history == true }}
+        run: python tdcc_holder_history.py --limit 50
+
       - name: Generate weekly major-holder risers
-        run: python weekly_holder_risers.py
+        run: python weekly_holder_risers.py --limit 50
 
       - name: Generate static site
         run: python generate_site.py
