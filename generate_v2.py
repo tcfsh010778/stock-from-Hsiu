@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+import csv
 import html
 import json
 import os
@@ -14,12 +15,153 @@ from jsonschema import Draft202012Validator
 
 from stock_v2_public.analysis.engine import ENGINE_VERSION, analyze_multi_timeframe, stable_json
 from stock_v2_public.site import STOCK_PAGE_HTML, V2_CSS, V2_JS, stock_redirect_html
+from stock_rules import holding_group
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
 PRIVATE_SOURCE_SHA = "a88c54258cf29f0d898e6ef68d8edbdba3e83ab2"
+FIXED_STOP_PCT = 15.0
+
+
+def _float(value: object) -> float | None:
+    try:
+        return float(value) if value not in (None, "") else None
+    except (TypeError, ValueError):
+        return None
+
+
+def _csv_rows(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    with path.open("r", encoding="utf-8-sig", newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def load_market_evidence(data_dir: Path, stock_id: str) -> dict:
+    """Build the public-safe synchronized chip panels without importing v44.
+
+    Missing datasets stay missing and are disclosed in ``gaps``.  This keeps a
+    sparse public cache from silently turning zeroes into fabricated evidence.
+    """
+
+    gaps: list[str] = []
+    source_dates: dict[str, str] = {}
+
+    chip_rows = _csv_rows(data_dir / "chips" / f"{stock_id}.csv")
+    institutional_by_date: dict[str, dict] = {}
+    for row in chip_rows:
+        date = str(row.get("date") or "")
+        buy, sell = _float(row.get("buy")), _float(row.get("sell"))
+        if not date or buy is None or sell is None:
+            continue
+        item = institutional_by_date.setdefault(
+            date, {"date": date, "foreign": 0.0, "trust": 0.0, "dealer": 0.0, "total": 0.0}
+        )
+        net_lots = (buy - sell) / 1000.0
+        name = str(row.get("name") or "")
+        if "Foreign" in name:
+            item["foreign"] += net_lots
+        elif "Investment_Trust" in name:
+            item["trust"] += net_lots
+        elif "Dealer" in name:
+            item["dealer"] += net_lots
+        item["total"] += net_lots
+    institutional = [institutional_by_date[key] for key in sorted(institutional_by_date)][-260:]
+    if institutional:
+        source_dates["institutional"] = institutional[-1]["date"]
+    else:
+        gaps.append("institutional")
+
+    foreign_ownership = []
+    for row in _csv_rows(data_dir / "foreign_shareholding" / f"{stock_id}.csv"):
+        date = str(row.get("date") or "")
+        shares = _float(row.get("foreign_shares_lot"))
+        if shares is None:
+            raw = _float(row.get("foreign_shares") or row.get("ForeignInvestmentShares"))
+            shares = raw / 1000.0 if raw is not None else None
+        ratio = _float(row.get("foreign_ratio") or row.get("ForeignInvestmentSharesRatio"))
+        if date and (shares is not None or ratio is not None):
+            foreign_ownership.append({"date": date, "foreign_shares": shares, "foreign_ratio": ratio})
+    foreign_ownership = sorted(foreign_ownership, key=lambda item: item["date"])[-260:]
+    if foreign_ownership:
+        source_dates["foreign_ownership"] = foreign_ownership[-1]["date"]
+    else:
+        gaps.append("foreign_ownership")
+
+    margin = []
+    for row in _csv_rows(data_dir / "margin" / f"{stock_id}.csv"):
+        date = str(row.get("date") or "")
+        margin_balance = _float(row.get("margin_balance") or row.get("MarginPurchaseTodayBalance"))
+        short_balance = _float(row.get("short_balance") or row.get("ShortSaleTodayBalance"))
+        if date and (margin_balance is not None or short_balance is not None):
+            margin.append({"date": date, "margin_balance": margin_balance, "short_balance": short_balance})
+    margin = sorted(margin, key=lambda item: item["date"])[-260:]
+    if margin:
+        source_dates["margin"] = margin[-1]["date"]
+    else:
+        gaps.append("margin")
+
+    holding_by_date: dict[str, list[dict]] = {}
+    for row in _csv_rows(data_dir / "holding_shares" / f"{stock_id}.csv"):
+        date = str(row.get("date") or "")
+        if date:
+            holding_by_date.setdefault(date, []).append(row)
+    holdings = []
+    for date in sorted(holding_by_date):
+        item = {
+            "date": date,
+            "major": 0.0,
+            "middle": 0.0,
+            "retail": 0.0,
+            "total_people": None,
+        }
+        for row in holding_by_date[date]:
+            level = str(row.get("HoldingSharesLevel") or "")
+            people, percent = _float(row.get("people")), _float(row.get("percent"))
+            if level == "total":
+                item["total_people"] = int(people) if people is not None else None
+                continue
+            group = holding_group(level)
+            if group in {"major", "middle", "retail"} and percent is not None:
+                item[group] += percent
+        for key in ("major", "middle", "retail"):
+            item[key] = round(item[key], 4)
+        holdings.append(item)
+    holdings = holdings[-104:]
+    if holdings:
+        source_dates["holdings"] = holdings[-1]["date"]
+    else:
+        gaps.append("holdings")
+
+    return {
+        "institutional": institutional,
+        "foreign_ownership": foreign_ownership,
+        "margin": margin,
+        "holdings": holdings,
+        "source_dates": source_dates,
+        "gaps": gaps,
+    }
+
+
+def add_public_workbench(packet: dict, market_evidence: dict | None = None) -> dict:
+    rows = packet.get("series") or []
+    if rows:
+        reference_price = float(rows[-1]["close"])
+        packet["risk_control"] = {
+            "method": "fixed_percent_from_latest_close",
+            "reference_date": rows[-1]["date"],
+            "reference_price": round(reference_price, 4),
+            "stop_loss_pct": FIXED_STOP_PCT,
+            "stop_price": round(reference_price * (1.0 - FIXED_STOP_PCT / 100.0), 4),
+        }
+    if packet.get("timeframe") == "daily":
+        packet["market_evidence"] = market_evidence or {
+            "institutional": [], "foreign_ownership": [], "margin": [], "holdings": [],
+            "source_dates": {}, "gaps": ["institutional", "foreign_ownership", "margin", "holdings"],
+        }
+    return packet
 
 
 def load_stock_map(docs_dir: Path, data_dir: Path) -> dict[str, dict]:
@@ -91,7 +233,7 @@ _WORKER_VALIDATOR: Draft202012Validator | None = None
 
 
 def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | None]:
-    stock_id, name, price_path, decision, freshness_status, global_warnings, validate = args
+    stock_id, name, price_path, data_dir, decision, freshness_status, global_warnings, validate = args
     try:
         warnings.filterwarnings("ignore", message="some peaks have a prominence of 0")
         frame = pd.read_csv(price_path)
@@ -105,11 +247,17 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
             decision=decision,
             freshness={"status": freshness_status, "data_date": latest_date, "warnings": global_warnings},
         )
+        market_evidence = load_market_evidence(Path(data_dir), stock_id)
         global _WORKER_VALIDATOR
         if validate and _WORKER_VALIDATOR is None:
             _WORKER_VALIDATOR = Draft202012Validator(json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
         for packet in packets:
             trim_packet(packet)
+            # The public V2 is an evidence workbench.  Daily decision semantics
+            # remain in their source dataset but are intentionally not copied
+            # into the public technical packet.
+            packet.pop("decision", None)
+            add_public_workbench(packet, market_evidence)
             packet["warnings"] = sorted(set(packet.get("warnings", []) + global_warnings))
             if _WORKER_VALIDATOR:
                 _WORKER_VALIDATOR.validate(packet)
@@ -155,7 +303,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         if not price_path.exists():
             failures.append({"stock_id": stock_id, "reason": "price file missing"})
             continue
-        tasks.append((stock_id, str(stock.get("name") or ""), str(price_path), safe_decision(stock_id, decisions.get(stock_id)), freshness_status, global_warnings, validate))
+        tasks.append((stock_id, str(stock.get("name") or ""), str(price_path), str(data_dir), safe_decision(stock_id, decisions.get(stock_id)), freshness_status, global_warnings, validate))
 
     worker_count = workers or min(4, os.cpu_count() or 1)
     with concurrent.futures.ProcessPoolExecutor(max_workers=worker_count) as executor:
@@ -165,7 +313,6 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
                 (redirect_dir / f"{stock_id}.html").write_text(stock_redirect_html(stock_id), encoding="utf-8")
                 index[stock_id] = {
                     "name": name,
-                    "action_state": packets[0].get("decision", {}).get("action_state", "UNRATED"),
                     "data_date": packets[0]["data_date"],
                 }
             else:

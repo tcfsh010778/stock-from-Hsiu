@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from generate_v2 import safe_decision, switch_navigation, trim_packet
+from generate_v2 import add_public_workbench, load_market_evidence, safe_decision, switch_navigation, trim_packet
 from stock_v2_public.site import stock_redirect_html
 
 
@@ -34,6 +34,26 @@ class PublicV2GenerationTests(unittest.TestCase):
         page = stock_redirect_html("2353")
         self.assertIn("../stock.html?id=2353", page)
         self.assertNotIn("OPENAI_API_KEY", page)
+
+    def test_fixed_stop_is_exactly_fifteen_percent(self):
+        packet = {"timeframe": "daily", "series": [{"date": "2026-08-07", "close": 30.25}]}
+        add_public_workbench(packet)
+        self.assertEqual(packet["risk_control"]["stop_loss_pct"], 15.0)
+        self.assertEqual(packet["risk_control"]["stop_price"], 25.7125)
+        self.assertNotIn("target", packet["risk_control"])
+
+    def test_market_evidence_discloses_missing_inputs(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for name in ("chips", "foreign_shareholding", "margin", "holding_shares"):
+                (root / name).mkdir()
+            (root / "chips" / "2330.csv").write_text(
+                "date,stock_id,buy,name,sell\n2026-08-07,2330,2000,Foreign_Investor,500\n",
+                encoding="utf-8",
+            )
+            result = load_market_evidence(root, "2330")
+            self.assertEqual(result["institutional"][0]["foreign"], 1.5)
+            self.assertEqual(set(result["gaps"]), {"foreign_ownership", "margin", "holdings"})
 
 
 if __name__ == "__main__":

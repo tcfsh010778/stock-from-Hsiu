@@ -7,20 +7,68 @@
 </head>
 <body>
 <main class="shell">
-  <nav class="top"><a href="../index.html">首頁</a><a href="../stocks.html">個股搜尋</a><a id="legacy-link" href="../stocks.html">舊版個股頁</a><span>Stock from Hsiu V2</span></nav>
-  <section id="loading" class="card">正在載入技術分析資料…</section>
+  <nav class="top"><a href="../index.html">首頁</a><a href="../stocks.html">選股清單</a><a id="legacy-link" href="../stocks.html">舊版個股頁</a><span>Stock from Hsiu V2 · 證據工作台</span></nav>
+  <section id="loading" class="card">正在載入技術與籌碼資料…</section>
   <div id="app" hidden>
     <section class="hero">
-      <article class="card"><div class="eyebrow">規則決策</div><div class="title-row"><h1 id="stock-title"></h1><span id="action-state" class="state"></span></div><div id="meta" class="meta"></div><h2 id="summary"></h2><div class="decision-grid"><div class="mini"><h3>已成立</h3><ul id="reasons"></ul></div><div class="mini"><h3>尚缺／阻擋</h3><ul id="blockers"></ul></div><div class="mini"><h3>警告</h3><ul id="warnings"></ul></div></div></article>
-      <aside class="card"><div class="eyebrow">使用邊界</div><h2>研究與決策輔助</h2><p>型態與趨勢線由 Python 規則引擎計算；AI 只能解釋，不能改動端點、分數或行動狀態。</p><p class="muted">不是投資建議，也不會自動下單。若資料過期或缺漏，請先停止採取行動。</p></aside>
+      <article class="card hero-main">
+        <div class="eyebrow">MARKET EVIDENCE WORKBENCH</div>
+        <div class="title-row"><div><h1 id="stock-title"></h1><div id="meta" class="meta"></div></div><div id="change" class="change"></div></div>
+        <div class="quote-grid">
+          <div class="quote"><span>最新收盤</span><strong id="latest-price">—</strong><small id="latest-date"></small></div>
+          <div class="quote"><span>最近支撐區</span><strong id="support-price">—</strong><small>Python 結構辨識</small></div>
+          <div class="quote"><span>最近壓力區</span><strong id="resistance-price">—</strong><small>Python 結構辨識</small></div>
+          <div class="quote stop"><span>固定停損</span><strong id="stop-price">—</strong><small>最新收盤價下方 15%</small></div>
+        </div>
+      </article>
+      <aside class="card risk-card">
+        <div class="eyebrow">資料警示</div>
+        <h2>先看資料，再看圖</h2>
+        <ul id="warnings"></ul>
+        <p class="muted">本頁只整理可重現的價格、型態與籌碼證據，不替使用者產生多空語意標籤。</p>
+      </aside>
     </section>
-    <nav class="tabs" aria-label="個股分析分頁"><button class="tab active" data-pane="decision">判斷</button><button class="tab" data-pane="trend">A｜趨勢</button><button class="tab" data-pane="chips">B｜籌碼</button><button class="tab" data-pane="plan">C｜計畫</button><button class="tab" data-pane="patterns">型態與案例</button></nav>
-    <section id="decision" class="pane card active"><h2>唯一規則決策</h2><div id="decision-detail"></div></section>
-    <section id="trend" class="pane card"><div class="section-head"><div><div class="eyebrow">價格幾何</div><h2>自動趨勢線、軌道與支撐壓力</h2></div><div id="timeframes" class="tools"></div></div><div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button></div><svg id="chart" viewBox="0 0 1120 500" role="img" aria-label="K 線與自動趨勢線"></svg><div id="chart-detail" class="detail">點擊趨勢線可查看端點、接觸次數、分數與狀態。</div><div id="line-list" class="grid"></div></section>
-    <section id="chips" class="pane card"><h2>籌碼</h2><p class="notice">目前公開 V2 先完成價量型態與趨勢線。法人、投信、融資與股權分散將沿用公開資料契約逐步接入；私人持股不會發布。</p></section>
-    <section id="plan" class="pane card"><h2>三種預案</h2><div class="decision-grid"><div class="mini"><h3>突破</h3><p>等收盤有效突破壓力，並檢查量價與回測是否確認。</p></div><div class="mini"><h3>整理</h3><p>未達規則觸發前維持觀察，不把形成中的型態當成買點。</p></div><div class="mini"><h3>跌破</h3><p>跌破規則失效價或主要支撐時，取消原情境並重新評估。</p></div></div></section>
-    <section id="patterns" class="pane card"><h2>型態證據</h2><div id="pattern-list" class="grid"></div></section>
+
+    <nav class="tabs" aria-label="個股分析分頁">
+      <button class="tab active" data-pane="overview">總覽</button>
+      <button class="tab" data-pane="trend">A｜趨勢</button>
+      <button class="tab" data-pane="chips">B｜籌碼</button>
+      <button class="tab" data-pane="plan">C｜情境計畫</button>
+      <button class="tab" data-pane="patterns">型態證據</button>
+    </nav>
+
+    <section id="overview" class="pane card active">
+      <div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2>目前有哪些可用證據</h2></div></div>
+      <div id="overview-grid" class="metric-grid"></div>
+      <div class="method-note"><b>固定規則：</b>Python 只計算型態、趨勢線、支撐壓力與 15% 停損價；畫面不產生買賣指令，也不替使用者決定方向。</div>
+    </section>
+
+    <section id="trend" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">A · PRICE STRUCTURE</div><h2>K 線、支撐壓力與自動趨勢線</h2></div><div id="timeframes" class="tools"></div></div>
+      <div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button></div>
+      <svg id="chart" viewBox="0 0 1120 520" role="img" aria-label="K 線與自動趨勢線"></svg>
+      <div id="chart-detail" class="detail">點擊趨勢線可查看端點、接觸次數與品質分數。</div>
+      <div id="line-list" class="grid"></div>
+    </section>
+
+    <section id="chips" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">B · CHIP EVIDENCE</div><h2>K 線與籌碼同步工作台</h2></div><div id="crosshair-date" class="crosshair-date">拖曳或縮放任一圖表，其他圖表會同步</div></div>
+      <div id="chip-status"></div>
+      <div id="chip-workbench" class="tv-workbench"></div>
+    </section>
+
+    <section id="plan" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">C · SCENARIOS</div><h2>三種價格情境</h2></div><span class="tag">不預測，只定義觸發條件</span></div>
+      <div id="scenario-grid" class="scenario-grid"></div>
+      <div class="method-note">固定停損以最新收盤價計算，每次資料更新會重新計算；若價格已越過該線，原情境應停止沿用並重新檢查。</div>
+    </section>
+
+    <section id="patterns" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">PATTERN EVIDENCE</div><h2>型態證據與缺少條件</h2></div></div>
+      <div id="pattern-list" class="grid"></div>
+    </section>
   </div>
 </main>
+<script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
 <script src="assets/v2.js"></script>
 </body></html>

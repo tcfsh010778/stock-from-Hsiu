@@ -10,7 +10,6 @@
     "timeframe",
     "data_date",
     "price_adjustment",
-    "decision",
     "series",
     "patterns",
     "trendlines",
@@ -41,6 +40,31 @@
       "additionalProperties": true
     },
     "freshness": {"type": "object"},
+    "risk_control": {
+      "type": "object",
+      "required": ["method", "reference_date", "reference_price", "stop_loss_pct", "stop_price"],
+      "properties": {
+        "method": {"const": "fixed_percent_from_latest_close"},
+        "reference_date": {"type": "string", "format": "date"},
+        "reference_price": {"type": "number"},
+        "stop_loss_pct": {"const": 15.0},
+        "stop_price": {"type": "number"}
+      },
+      "additionalProperties": false
+    },
+    "market_evidence": {
+      "type": "object",
+      "required": ["institutional", "foreign_ownership", "margin", "holdings", "source_dates", "gaps"],
+      "properties": {
+        "institutional": {"type": "array", "items": {"type": "object"}},
+        "foreign_ownership": {"type": "array", "items": {"type": "object"}},
+        "margin": {"type": "array", "items": {"type": "object"}},
+        "holdings": {"type": "array", "items": {"type": "object"}},
+        "source_dates": {"type": "object", "additionalProperties": {"type": "string", "format": "date"}},
+        "gaps": {"type": "array", "items": {"enum": ["institutional", "foreign_ownership", "margin", "holdings"]}}
+      },
+      "additionalProperties": false
+    },
     "series": {
       "type": "array",
       "items": {
