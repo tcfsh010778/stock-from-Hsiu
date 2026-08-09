@@ -588,11 +588,11 @@
       "documentation_url": "https://www.tdcc.com.tw/portal/zh/smWeb/qryStock",
       "terms_url": null,
       "terms_checked_on": null,
-      "terms_status": "project-derived-aggregate-from-weekly-holder-distribution-cache",
-      "access": "derived aggregate; raw holder rows remain local and source state is visible",
+      "terms_status": "project-derived-aggregate-from-official-TDCC-snapshots-and-legacy-normalized-cache",
+      "access": "derived aggregate from compact official TDCC 400-plus-lot snapshots and legacy normalized history; raw TDCC rows are not persisted or published",
       "market_coverage": ["listed", "otc"],
       "source_frequency": "weekly after holder-distribution refresh",
-      "use_policy": "publish ownership-rising metadata only; do not infer a buy signal from ownership change",
+      "use_policy": "publish the complete latest-week positive set with six aligned week-over-week ownership changes when seven snapshots are available; expose incomplete history and do not infer a buy signal from ownership change",
       "field_map": {}
     },
     "finmind_normalized_fallback": {
@@ -781,8 +781,8 @@
     },
     "weekly_holder_risers": {
       "dataset_id": "weekly_holder_risers",
-      "schema_version": "1.1.0",
-      "semantic_role": "complete derived weekly list of every stock whose major-holder ownership ratio rose between the latest two weekly snapshots; no Top N truncation",
+      "schema_version": "1.2.0",
+      "semantic_role": "complete derived weekly list of every stock whose major-holder ownership ratio rose between the latest two snapshots, with up to six aligned week-over-week changes and no Top N truncation",
       "primary_sources": [{"source_id": "weekly_holder_risers_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "weekly", "frequency": "weekly after holder-distribution refresh", "max_lag_calendar_days": 10, "expected_available_by": "next business cycle after weekly snapshot"},
@@ -792,7 +792,9 @@
         {"name": "market", "type": "enum:listed|otc", "required": true},
         {"name": "major_percent", "type": "decimal", "required": true},
         {"name": "previous_major_percent", "type": "decimal", "required": true},
-        {"name": "major_delta_pctpt", "type": "decimal", "required": true}
+        {"name": "major_delta_pctpt", "type": "decimal", "required": true},
+        {"name": "six_week_delta_pctpt", "type": "decimal", "required": true},
+        {"name": "positive_week_count", "type": "integer", "required": true}
       ]
     },
     "corporate_actions": {

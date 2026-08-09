@@ -98,6 +98,7 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn('href="institutional-flow.html" class="tab active">法人排行</a>', html)
 
     def test_holder_page_renders_every_positive_row(self):
+        weekly_dates = ["2026-06-26", "2026-07-03", "2026-07-10", "2026-07-17", "2026-07-24", "2026-07-31"]
         rows = [
             {
                 "security_id": str(2000 + index),
@@ -109,12 +110,20 @@ class FlowPageTests(unittest.TestCase):
                 "major_percent": 20.1,
                 "major_delta_pctpt": 0.1,
                 "major_people": 10,
+                "weekly_changes": [
+                    {"date": data_date, "delta_pctpt": value}
+                    for data_date, value in zip(weekly_dates, [0.1, -0.2, 0.3, 0.0, 0.4, 0.1])
+                ],
+                "six_week_delta_pctpt": 0.7,
+                "positive_week_count": 4,
+                "six_week_complete": True,
             }
             for index in range(60)
         ]
         payload = {
             "date": "2026-07-31",
             "previous_date": "2026-07-24",
+            "weekly_dates": weekly_dates,
             "rows": rows,
             "data_quality": {"state": "ok", "warnings": []},
             "freshness": {"status": "fresh"},
@@ -125,6 +134,11 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("2059 測試59", page)
         self.assertIn("60 檔", panel)
         self.assertIn("holder-risers.html", panel)
+        self.assertIn("6週累積", page)
+        self.assertIn("06/26", page)
+        self.assertIn('class="holder-change neg">-0.20</td>', page)
+        self.assertIn('class="holder-total">+0.70</td>', page)
+        self.assertIn('class="stock-table holder-history-table"', page)
 
 
 if __name__ == "__main__":

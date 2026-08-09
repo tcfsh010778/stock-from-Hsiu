@@ -7,6 +7,12 @@ on:
     # Fallback retry: 20:30 Taipei / 12:30 UTC. If nothing changed, no commit is made.
     - cron: "30 12 * * 1-5"
   workflow_dispatch:
+    inputs:
+      backfill_holder_history:
+        description: "One-time FinMind backfill for the recent holder-history gap"
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: write
@@ -47,12 +53,16 @@ jobs:
         run: python refresh_prices.py
 
       - name: Refresh optional legacy FinMind auxiliary caches
-        if: ${{ vars.ENABLE_FINMIND_AUX == '1' }}
+        if: ${{ vars.ENABLE_FINMIND_AUX == '1' || inputs.backfill_holder_history == true }}
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: |
           test -n "$FINMIND_TOKEN"
-          python mda_full_market_refresh.py --skip-price
+          if [ "${{ inputs.backfill_holder_history }}" = "true" ]; then
+            python mda_full_market_refresh.py --skip-price --holding-start "$(date -d '56 days ago' +%F)"
+          else
+            python mda_full_market_refresh.py --skip-price
+          fi
 
       - name: Refresh MDA full-market scan from current caches
         run: python mda_universe_scan.py
@@ -80,6 +90,9 @@ jobs:
 
       - name: Generate daily decision contract
         run: python daily_decisions.py
+
+      - name: Archive official TDCC weekly holder aggregate
+        run: python tdcc_holder_snapshot.py
 
       - name: Generate weekly major-holder risers
         run: python weekly_holder_risers.py
