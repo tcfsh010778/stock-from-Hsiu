@@ -38,17 +38,24 @@ jobs:
       - name: Sync latest main before refresh
         run: git pull --ff-only origin main
 
-      - name: Refresh MDA full-market scan
+      - name: Refresh official listed and OTC stock prices
+        env:
+          V44_REFRESH_SCOPE: "all"
+          V44_OFFICIAL_INITIAL_BACKFILL_DAYS: "75"
+          V44_OFFICIAL_OVERLAP_DAYS: "7"
+          ENABLE_FINMIND_AUX: "0"
+        run: python refresh_prices.py
+
+      - name: Refresh optional legacy FinMind auxiliary caches
+        if: ${{ vars.ENABLE_FINMIND_AUX == '1' }}
         env:
           FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
         run: |
-          if [ -n "$FINMIND_TOKEN" ]; then
-            python mda_full_market_refresh.py --price-months 24
-            python mda_full_market_refresh.py --skip-holding --one-day-price
-            python mda_universe_scan.py
-          else
-            echo "::warning::FINMIND_TOKEN is not set; skip MDA full-market refresh."
-          fi
+          test -n "$FINMIND_TOKEN"
+          python mda_full_market_refresh.py --skip-price
+
+      - name: Refresh MDA full-market scan from current caches
+        run: python mda_universe_scan.py
 
       - name: Refresh industry category cache
         run: python tools/refresh_industry_cache.py
@@ -73,15 +80,6 @@ jobs:
 
       - name: Generate daily decision contract
         run: python daily_decisions.py
-
-      - name: Refresh all-market stock prices
-        env:
-          FINMIND_TOKEN: ${{ secrets.FINMIND_TOKEN }}
-          V44_FETCH_MONTHS: "24"
-          V44_REFRESH_SCOPE: "all"
-          V44_BULK_PRICE_DAYS: "21"
-          V44_REFRESH_AUX_SCOPE: "latest"
-        run: python refresh_prices.py
 
       - name: Generate weekly major-holder risers
         run: python weekly_holder_risers.py

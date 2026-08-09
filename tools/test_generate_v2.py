@@ -4,7 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from generate_v2 import add_public_workbench, load_market_evidence, safe_decision, switch_navigation, trim_packet
+from generate_v2 import add_public_workbench, analyze_stock_task, load_market_evidence, safe_decision, switch_navigation, trim_packet
 from stock_v2_public.site import stock_redirect_html
 
 
@@ -54,6 +54,28 @@ class PublicV2GenerationTests(unittest.TestCase):
             result = load_market_evidence(root, "2330")
             self.assertEqual(result["institutional"][0]["foreign"], 1.5)
             self.assertEqual(set(result["gaps"]), {"foreign_ownership", "margin", "holdings"})
+
+    def test_stale_price_file_is_excluded_before_analysis(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "2353.csv"
+            rows = ["date,open,high,low,close,volume"]
+            rows.extend(f"2026-07-{day:02d},10,11,9,10,1000" for day in range(1, 31))
+            path.write_text("\n".join(rows) + "\n", encoding="utf-8")
+            _, _, packets, error = analyze_stock_task(
+                (
+                    "2353",
+                    "Acer",
+                    str(path),
+                    str(Path(folder)),
+                    safe_decision("2353", None),
+                    "fresh",
+                    "2026-08-07",
+                    [],
+                    False,
+                )
+            )
+            self.assertIsNone(packets)
+            self.assertIn("stale OHLCV", error)
 
 
 if __name__ == "__main__":

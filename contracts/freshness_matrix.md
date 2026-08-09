@@ -135,7 +135,7 @@ intervals remain subject to their special provisions.
 | Collector | Current behavior | Contract gap |
 |---|---|---|
 | `mda_full_market_refresh.py` | FinMind full-market price and `TaiwanStockHoldingSharesPer`; retries and cached fallback | No unified hash, schema version, row-count verification, or freshness manifest |
-| `refresh_prices.py` | FinMind price plus institutional, holding, foreign-shareholding, and margin caches | Auxiliary default is latest Top20, not full market; failures can leave old files without a unified status |
+| `refresh_prices.py` | Official TWSE/TPEx full-market OHLCV with exact-date historical backfill; optional legacy FinMind auxiliary caches are disabled unless explicitly enabled | Writes `price_refresh_summary.json`, requires aligned latest exchange dates, and fails closed on zero matched/written files; chip/holding/foreign-shareholding/margin migration remains separate |
 | `market_sentiment.py` | TWSE TAIEX, margin, foreign aggregate; neutral fallback | Has source strings and an update timestamp, but no artifact hash/SLA/partition state |
 | `run_screener.py` | Reads `mda_universe_scan.json`; historically writes it as `sfz_all.json` | MDA candidate pool is mislabeled as SFZ and production PIT eligibility was not recorded |
 | `carybot_signals.py` | Normalizes local CaryBot CSV exports; preserves existing JSON when exports are absent | Now manifests exact output bytes and exposes primary/fallback freshness; source CSV completeness is still local-workspace dependent |
