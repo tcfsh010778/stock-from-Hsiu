@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-09T17:21:08+08:00",
+  "generated_at": "2026-08-09T18:38:21+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -765,39 +765,28 @@
         "otc"
       ],
       "update_frequency": "weekly after holder-distribution refresh",
-      "data_date": null,
+      "data_date": "2026-06-18",
       "trading_date": null,
       "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:21:08+08:00",
-      "row_count": 0,
-      "sha256": "494bfd525179cfbf6489938e1d2040da4b7b8b24daa1c3ca9439a9798c80bca5",
+      "fetched_at": "2026-08-09T18:38:21+08:00",
+      "row_count": 35,
+      "sha256": "913d80e373f7447d80b12907136e080e097c0348f8b12b2fdffd8bc51b106c2a",
       "fallback": {
         "used": false,
         "from_source_id": null,
         "reason": null
       },
       "missing": {
-        "status": "missing",
-        "missing_fields": [
-          "data_date",
-          "major_delta_pctpt",
-          "major_percent",
-          "market",
-          "positive_week_count",
-          "previous_major_percent",
-          "security_id",
-          "six_week_delta_pctpt"
-        ],
-        "missing_partitions": [
-          "holding_shares"
-        ]
+        "status": "complete",
+        "missing_fields": [],
+        "missing_partitions": []
       },
       "freshness": {
-        "status": "missing",
-        "evaluated_at": "2026-08-09T17:21:08+08:00",
+        "status": "stale",
+        "evaluated_at": "2026-08-09T18:38:21+08:00",
         "expected_data_date": "2026-08-09",
         "age_trading_days": null,
-        "age_calendar_days": null,
+        "age_calendar_days": 52,
         "sla": {
           "mode": "weekly",
           "frequency": "weekly after holder-distribution refresh",
@@ -806,7 +795,7 @@
         }
       },
       "schema_validation": {
-        "status": "error",
+        "status": "ok",
         "required_fields": [
           "data_date",
           "security_id",
@@ -817,17 +806,17 @@
           "six_week_delta_pctpt",
           "positive_week_count"
         ],
-        "observed_fields": [],
-        "missing_required_fields": [
+        "observed_fields": [
           "data_date",
-          "security_id",
-          "market",
-          "major_percent",
-          "previous_major_percent",
           "major_delta_pctpt",
-          "six_week_delta_pctpt",
-          "positive_week_count"
+          "major_percent",
+          "market",
+          "positive_week_count",
+          "previous_major_percent",
+          "security_id",
+          "six_week_delta_pctpt"
         ],
+        "missing_required_fields": [],
         "missing_required_field_rows": {}
       }
     }
