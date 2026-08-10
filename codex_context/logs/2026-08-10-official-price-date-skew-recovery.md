@@ -53,3 +53,27 @@ are not stored.
 
 - Private coordination Issue: `tcfsh010778/ai-agent-coordination#23`.
 - Branch: `codex/23-desktop-osj874c-price-date-fallback`.
+
+## Publication follow-up
+
+Manual recovery run `31395025758` proved the price-date recovery itself: the
+official refresh and every downstream generator completed for `2026-08-10`.
+The run then failed closed at the final V2 verification because the verifier
+still required 2353's previous fixed stop `25.7125`. The current packet used
+close `31.0`, 15%, and the correct derived stop `26.35`; therefore no generated
+files were committed or published from that run.
+
+The follow-up changes the assertion from a historical literal to contract
+validation: packet date, latest series-row date, and risk reference date must
+equal the official expected price date; reference price must equal the latest
+series close; percentage must remain exactly 15%; and stop price must equal the
+rounded value derived from that same close. Regressions cover the valid current
+value, a stale date, an underived stop, and a stale but internally consistent
+price/stop pair found during independent review. This changes verification
+only, not the risk calculation or strategy.
+
+Follow-up verification passed 6 focused tests and the full 150-test repository
+suite after independent-review hardening. The data-contract registry remained
+valid with 40 sources and 21 datasets. End-to-end verification is intentionally
+delegated to the recovery workflow because this sparse coordination worktree
+does not contain generated `docs/v2/data` artifacts.
