@@ -4550,8 +4550,8 @@
     "source_tier": "fallback",
     "status": "fallback_stale",
     "data_date": "2026-06-01",
-    "expected_data_date": "2026-08-09",
-    "fetched_at": "2026-08-09T17:20:52+08:00",
+    "expected_data_date": "2026-08-10",
+    "fetched_at": "2026-08-10T23:54:43+08:00",
     "row_count": 39,
     "sla": {
       "mode": "calendar_day",
@@ -4560,7 +4560,7 @@
       "expected_available_by": "when reviewed backtest inputs change"
     },
     "age_trading_days": null,
-    "age_calendar_days": 69,
+    "age_calendar_days": 70,
     "calendar_basis": null,
     "calendar_source_ids": [],
     "fallback": {

@@ -1,9 +1,9 @@
 {
   "dataset_id": "attention_disposition_risk",
   "schema_version": "1.0.0",
-  "rule_version": "tw_attention_disposition_pre_2026_08_10",
-  "date": "2026-08-09",
-  "updated_at": "2026-08-09T17:20:52+08:00",
+  "rule_version": "tw_attention_disposition_2026_08_10",
+  "date": "2026-08-10",
+  "updated_at": "2026-08-10T23:54:43+08:00",
   "rule_metadata": {
     "effective_from": "2026-08-10",
     "announcement_date": "2026-08-03",
@@ -51,13 +51,13 @@
       "kind": "attention",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/notice",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 0,
-      "response_row_count": 0,
-      "sha256": "d9f6fb58a44135f3b6b1d65e3285a523d4719fa08af073ded00e1fda35021664",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 30,
+      "response_row_count": 30,
+      "sha256": "e7474addc11592c286681e83f6ad9728f79e934a7a1665f4047b165c6778d78d",
       "fallback": {
         "used": false,
         "reason": null
@@ -84,13 +84,13 @@
       "kind": "disposition",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/punish",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 15,
-      "response_row_count": 135,
-      "sha256": "b337f7bf82856167754882dd6d461177d5f8c5285101fbf6e326c5840c129dbc",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 20,
+      "response_row_count": 132,
+      "sha256": "a1135b243d9336f27769e01e4f4e6f3a18449c63d55ba131f7c804fb478caba3",
       "fallback": {
         "used": false,
         "reason": null
@@ -117,13 +117,13 @@
       "kind": "near_disposition",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/notetrans",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 16,
-      "response_row_count": 16,
-      "sha256": "c7f587c05f45de51d7f47e655c4ee2e26c3d442112e861bc55592fb39a59c212",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 3,
+      "response_row_count": 3,
+      "sha256": "e254ed54ca108b9a6d27fa5d48f5bace4dc20f037c7ee4fb001aed8de5b5b5eb",
       "fallback": {
         "used": false,
         "reason": null
@@ -150,13 +150,13 @@
       "kind": "attention",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/attention",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 0,
-      "response_row_count": 0,
-      "sha256": "cae5c97a2fcc0818d17e02af307d9f96eb5fa93e116a0b523ba5c76d9e556960",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 19,
+      "response_row_count": 19,
+      "sha256": "66cb485b6819d2574b6b556c92b6b2d6f085058e2495111f9f62e37c4ab0330a",
       "fallback": {
         "used": false,
         "reason": null
@@ -183,13 +183,13 @@
       "kind": "disposition",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/disposal",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 27,
-      "response_row_count": 203,
-      "sha256": "057b075802454ae2cef922812143aeaf3a5ea101100292be895f04f1b1efbb31",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 31,
+      "response_row_count": 194,
+      "sha256": "22d452128bd1247c2ec7d4ece593414df1a84456e22414c4e8b8a2c346534385",
       "fallback": {
         "used": false,
         "reason": null
@@ -216,13 +216,13 @@
       "kind": "near_disposition",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/warning",
       "status": "fresh",
-      "data_date": "2026-08-09",
-      "trading_date": "2026-08-09",
-      "expected_data_date": "2026-08-09",
-      "fetched_at": "2026-08-09T17:20:52+08:00",
-      "row_count": 9,
-      "response_row_count": 9,
-      "sha256": "d8517fd6cebadecb65fdaa10252ec970d8ad22a686dbc5b941457f0f0d71c6ef",
+      "data_date": "2026-08-10",
+      "trading_date": "2026-08-10",
+      "expected_data_date": "2026-08-10",
+      "fetched_at": "2026-08-10T23:54:43+08:00",
+      "row_count": 2,
+      "response_row_count": 2,
+      "sha256": "d830c3011c4a4cef3d3336230e5bb3ec44ab53ce2f700cdbe7e06254d519cdb2",
       "fallback": {
         "used": false,
         "reason": null
@@ -244,10 +244,501 @@
     "fallback_used": false,
     "warning": null
   },
-  "attention": [],
+  "attention": [
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "039038",
+      "security_name": "富鼎統一6A購01",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價跌幅達58.25%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "039457",
+      "security_name": "宏達電統一6A購02",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價跌幅達53.92%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "044799",
+      "security_name": "華新科統一6B購01",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價跌幅達42.10%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "059780",
+      "security_name": "辛耘國泰5A購01",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達39.01%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "069935",
+      "security_name": "聯電台新63購01",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價跌幅達25.01%。且08月10日凱基證券商賣出之比率為39.90%。且08月10日元大證券商賣出之比率為59.60%。且08月10日台新自營證券商買進之比率為90.07%﹝第五款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2059",
+      "security_name": "川湖",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達43.49%。且六個營業日起迄兩個營業日收盤價價差達3270.00 元﹝第一款﹞。最近六十個營業日起迄兩個營業日之收盤價漲幅達144.95% 。最近九十個營業日起迄兩個營業日之收盤價漲幅達274.96% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2344",
+      "security_name": "華邦電",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達34.01%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2408",
+      "security_name": "南亞科",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達34.55%。且六個營業日起迄兩個營業日收盤價價差達105.50元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2454",
+      "security_name": "聯發科",
+      "attention_count": 1,
+      "reason": "最近九十個營業日起迄兩個營業日之收盤價漲幅達167.41% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2455",
+      "security_name": "全新",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達29.16%。且六個營業日起迄兩個營業日收盤價價差達63.50 元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2464",
+      "security_name": "盟立",
+      "attention_count": 1,
+      "reason": "最近九十個營業日起迄兩個營業日之收盤價漲幅達167.06% ﹝第二款﹞。08月07日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率60.17%，且08月07日當日沖銷成交量占該日總成交量比率71.02%﹝第十三款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2491",
+      "security_name": "吉祥全",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達43.86%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3006",
+      "security_name": "晶豪科",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達44.48%。且六個營業日起迄兩個營業日收盤價價差達77.50 元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3026",
+      "security_name": "禾伸堂",
+      "attention_count": 1,
+      "reason": "最近九十個營業日起迄兩個營業日之收盤價漲幅達331.85% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3167",
+      "security_name": "大量",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達31.79%。且六個營業日起迄兩個營業日收盤價價差達121.00元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3189",
+      "security_name": "景碩",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達28.82%。且六個營業日起迄兩個營業日收盤價價差達138.00元﹝第一款﹞。且08月10日台灣摩根證券商賣出之比率為38.04%﹝第五款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達167.57% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3450",
+      "security_name": "聯鈞",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達35.88%。且六個營業日起迄兩個營業日收盤價價差達115.00元﹝第一款﹞。08月10日之本益比為 155.95，且股價淨值比為14.64 。另當日週轉率為 8.97%，暨瑞銀證券商成交買進金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為12.09%。單一投資人當日買進該有價證券之成交金額占當日該有價證券總成交金額比率10%以上，且達新台幣壹億元以上﹝第六款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3605",
+      "security_name": "宏致",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達33.49%﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "4540",
+      "security_name": "全球傳動",
+      "attention_count": 1,
+      "reason": "08月07日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率62.14%，且08月07日當日沖銷成交量占該日總成交量比率68.42%﹝第十三款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6213",
+      "security_name": "聯茂",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達50.73%。且六個營業日起迄兩個營業日收盤價價差達138.50元﹝第一款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達189.89% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6426",
+      "security_name": "統新",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達38.15%。且六個營業日起迄兩個營業日收盤價價差達59.50 元﹝第一款﹞。08月10日之本益比為 418.27，且股價淨值比為8.98。另當日週轉率為 9.81%，暨元大證券商成交賣出金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為26.10%﹝第六款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6451",
+      "security_name": "訊芯-KY",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達30.76%。且六個營業日起迄兩個營業日收盤價價差達81.50 元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6531",
+      "security_name": "愛普*",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達33.89%。且六個營業日起迄兩個營業日收盤價價差達190.00元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6834",
+      "security_name": "天二科技",
+      "attention_count": 1,
+      "reason": "最近九十個營業日起迄兩個營業日之收盤價漲幅達218.55% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "7610",
+      "security_name": "聯友金屬-創",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達50.66%。且六個營業日起迄兩個營業日收盤價價差達630.00元﹝第一款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達455.55% ﹝第二款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "7711",
+      "security_name": "永擎",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達33.82%。且六個營業日起迄兩個營業日收盤價價差達111.50元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "7795",
+      "security_name": "長廣",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達27.58%。且六個營業日起迄兩個營業日收盤價價差達71.50 元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "8021",
+      "security_name": "尖點",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達31.34%。且六個營業日起迄兩個營業日收盤價價差達79.50 元﹝第一款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "8039",
+      "security_name": "台虹",
+      "attention_count": 1,
+      "reason": "最近六個營業日累積收盤價漲幅達28.07%。且08月10日之週轉率為16.95%﹝第四款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "911608",
+      "security_name": "明輝-DR",
+      "attention_count": 1,
+      "reason": "公開資訊觀測站公告當日之前一個營業日臺灣存託憑證兩地收盤價溢價130.00% ﹝第八款﹞。",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "1815",
+      "security_name": "富喬",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達30.7%(第一款)\n當日週轉率達8.41%(第四款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "3081",
+      "security_name": "聯亞",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達46.48%(第一款)\n最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣745元(第十一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "3163",
+      "security_name": "波若威",
+      "attention_count": 19,
+      "reason": "當日本益比為72.04、股價淨值比為17.3且為其所屬產業類別股價淨值比之2.52倍、當日週轉率達6.35%(第六款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "3498",
+      "security_name": "陽程",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達34.19%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4442",
+      "security_name": "竣邦-KY",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價跌幅達31.5%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4707",
+      "security_name": "磐亞",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達34%(第一款)\n最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達181.49%(第二款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4931",
+      "security_name": "新盛力",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達30.55%(第一款)\n凱基證券公司當日受託買進該有價證券之成交量占當日該有價證券總成交量之比率為45.72%(第五款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4939",
+      "security_name": "亞電",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)之累積週轉率為88.79%，當日週轉率達10.66%(第十款)\n最近六個營業日(自當日之前一個營業日起)之當日沖銷成交量占總成交量比率達72.45%，當日之前一個營業日當日沖銷成交量占總成交量達77.7%（第十三款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4971",
+      "security_name": "IET-KY",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達38.7%(第一款)\n當日週轉率達5.75%(第四款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4973",
+      "security_name": "廣穎",
+      "attention_count": 19,
+      "reason": "最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達163.75%(第二款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4979",
+      "security_name": "華星光",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達38.91%(第一款)\n當日週轉率達6.59%(第四款)\n元大證券公司當日受託賣出該有價證券之成交量占當日該有價證券總成交量之比率為31.05%(第五款)\n當日本益比為96.93、股價淨值比為18.46且為其所屬產業類別股價淨值比之2.69倍、元大證券公司當日賣出該有價證券之成交金額達15.4億元，且占當日該有價證券之總成交金額30.98%(第六款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "49794",
+      "security_name": "華星光四",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達30.87%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4991",
+      "security_name": "環宇-KY",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達39.13%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "5351",
+      "security_name": "鈺創",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達46.99%(第一款)\n當日週轉率達13.86%(第四款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "5464",
+      "security_name": "霖宏",
+      "attention_count": 19,
+      "reason": "最近六個營業日(自當日之前一個營業日起)之借券賣出成交量占總成交量比率達10.46%，當日之前一個營業日借券賣出成交量較最近六十個營業日(自當日之前一個營業日起)之日平均借券賣出成交量放大為10倍(第十二款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6217",
+      "security_name": "中探針",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達41.45%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6617",
+      "security_name": "共信-KY",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達34.27%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6716",
+      "security_name": "應廣",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達31.3%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "76101",
+      "security_name": "聯友金屬一創",
+      "attention_count": 19,
+      "reason": "最近六個營業日(含當日)累積之最後成交價漲幅達48.1%(第一款)",
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_attention"
+    }
+  ],
   "disposition": [
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-06",
       "market": "listed",
       "security_id": "039038",
@@ -260,12 +751,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": false,
-      "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "listed",
       "security_id": "039457",
@@ -279,11 +770,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-05",
       "market": "listed",
       "security_id": "053859",
@@ -296,12 +787,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": false,
-      "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-28",
       "market": "listed",
       "security_id": "057808",
@@ -315,11 +806,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-06",
       "market": "listed",
       "security_id": "068822",
@@ -332,12 +823,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": false,
-      "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "listed",
       "security_id": "1515",
@@ -351,11 +842,47 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "listed",
+      "security_id": "2059",
+      "security_name": "川湖",
+      "occurrence_count": 1,
+      "reason": "連續三次",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "listed",
+      "security_id": "2455",
+      "security_name": "全新",
+      "occurrence_count": 2,
+      "reason": "連續三次",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "listed",
       "security_id": "3026",
@@ -369,11 +896,29 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "listed",
+      "security_id": "3037",
+      "security_name": "欣興",
+      "occurrence_count": 1,
+      "reason": "連續三次",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "listed",
       "security_id": "3055",
@@ -387,11 +932,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "listed",
       "security_id": "3167",
@@ -405,11 +950,29 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "listed",
+      "security_id": "3189",
+      "security_name": "景碩",
+      "occurrence_count": 2,
+      "reason": "連續三次",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "listed",
       "security_id": "3532",
@@ -423,11 +986,29 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "listed",
+      "security_id": "3653",
+      "security_name": "健策",
+      "occurrence_count": 1,
+      "reason": "連續三次",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "listed",
       "security_id": "4169",
@@ -441,11 +1022,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "listed",
       "security_id": "6531",
@@ -459,11 +1040,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-27",
       "market": "listed",
       "security_id": "6969",
@@ -477,11 +1058,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "listed",
       "security_id": "7610",
@@ -495,11 +1076,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "listed",
       "security_id": "8046",
@@ -513,11 +1094,83 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "otc",
+      "security_id": "24552",
+      "security_name": "全新二",
+      "occurrence_count": 4,
+      "reason": "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "otc",
+      "security_id": "24553",
+      "security_name": "全新三",
+      "occurrence_count": 4,
+      "reason": "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "otc",
+      "security_id": "30371",
+      "security_name": "欣興一",
+      "occurrence_count": 4,
+      "reason": "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
+      "publication_date": "2026-08-07",
+      "market": "otc",
+      "security_id": "6274",
+      "security_name": "台燿",
+      "occurrence_count": 4,
+      "reason": "因連續3個營業日達本中心作業要點第四條第一項第一款",
+      "original_start_date": "2026-08-10",
+      "original_end_date": "2026-08-14",
+      "effective_end_date": "2026-08-14",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-04",
       "market": "otc",
       "security_id": "3362",
@@ -530,12 +1183,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": true,
-      "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-04",
       "market": "otc",
       "security_id": "33621",
@@ -548,12 +1201,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": true,
-      "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-04",
       "market": "otc",
       "security_id": "45421",
@@ -566,12 +1219,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": false,
-      "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-08-03",
       "market": "otc",
       "security_id": "4556",
@@ -584,12 +1237,12 @@
       "transition_revised": true,
       "active_on_data_date": true,
       "day_trade_trigger": false,
-      "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "otc",
       "security_id": "3624",
@@ -603,11 +1256,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "otc",
       "security_id": "6182",
@@ -621,11 +1274,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "otc",
       "security_id": "61828",
@@ -639,11 +1292,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "otc",
       "security_id": "6739",
@@ -657,11 +1310,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-31",
       "market": "otc",
       "security_id": "7828",
@@ -675,11 +1328,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "otc",
       "security_id": "31672",
@@ -693,11 +1346,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "otc",
       "security_id": "45421",
@@ -711,11 +1364,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "otc",
       "security_id": "6217",
@@ -729,11 +1382,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "otc",
       "security_id": "729185",
@@ -747,11 +1400,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-30",
       "market": "otc",
       "security_id": "76101",
@@ -765,11 +1418,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "23511",
@@ -783,11 +1436,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "4979",
@@ -801,11 +1454,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "49793",
@@ -819,11 +1472,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "49794",
@@ -837,11 +1490,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "4991",
@@ -855,11 +1508,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-29",
       "market": "otc",
       "security_id": "76101",
@@ -873,11 +1526,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-28",
       "market": "otc",
       "security_id": "61828",
@@ -891,11 +1544,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-28",
       "market": "otc",
       "security_id": "736244",
@@ -909,11 +1562,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-27",
       "market": "otc",
       "security_id": "6217",
@@ -927,11 +1580,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-27",
       "market": "otc",
       "security_id": "76101",
@@ -945,11 +1598,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-23",
       "market": "otc",
       "security_id": "6182",
@@ -963,11 +1616,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-23",
       "market": "otc",
       "security_id": "61827",
@@ -981,11 +1634,11 @@
       "active_on_data_date": true,
       "day_trade_trigger": true,
       "matching_interval_minutes": 5,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "publication_date": "2026-07-23",
       "market": "otc",
       "security_id": "61828",
@@ -999,291 +1652,94 @@
       "active_on_data_date": true,
       "day_trade_trigger": false,
       "matching_interval_minutes": 20,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_disposition"
     }
   ],
   "near_disposition": [
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "057514",
-      "security_name": "強茂統一63購01",
-      "reason": "115年8月6日至115年8月7日連續二次",
+      "security_id": "039038",
+      "security_name": "富鼎統一6A購01",
+      "reason": "115年8月7日至115年8月10日連續二次",
       "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_near_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "063447",
-      "security_name": "國巨統一74購01",
-      "reason": "115年8月6日至115年8月7日連續二次",
+      "security_id": "6426",
+      "security_name": "統新",
+      "reason": "115年8月7日至115年8月10日連續二次",
       "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_near_disposition"
     },
     {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "2464",
-      "security_name": "盟立",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "2491",
-      "security_name": "吉祥全",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "3006",
-      "security_name": "晶豪科",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "3167",
-      "security_name": "大量",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "3443",
-      "security_name": "創意",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "3450",
-      "security_name": "聯鈞",
-      "reason": "115年8月6日至115年8月7日連續二次\n115年7月28日至115年8月7日等九個營業日已有五次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "4722",
-      "security_name": "國精化",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "6213",
-      "security_name": "聯茂",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "6451",
-      "security_name": "訊芯-KY",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "6531",
-      "security_name": "愛普*",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "6831",
-      "security_name": "邁科",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "7610",
-      "security_name": "聯友金屬-創",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "8021",
-      "security_name": "尖點",
-      "reason": "115年8月6日至115年8月7日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "twse_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "8996",
       "security_name": "高力",
-      "reason": "115年8月6日至115年8月7日連續二次\n115年7月28日至115年8月7日等九個營業日已有五次",
+      "reason": "115年7月29日至115年8月10日等九個營業日已有五次",
       "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_near_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
-      "security_id": "1815",
-      "security_name": "富喬",
-      "reason": "115年08月06日至115年08月07日連續二次",
+      "security_id": "4979",
+      "security_name": "華星光",
+      "reason": "115年08月07日至115年08月10日連續二次",
       "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_near_disposition"
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
-      "security_id": "24552",
-      "security_name": "全新二",
-      "reason": "115年08月06日至115年08月07日連續二次",
+      "security_id": "4991",
+      "security_name": "環宇-KY",
+      "reason": "115年08月07日至115年08月10日連續二次",
       "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "24553",
-      "security_name": "全新三",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "24642",
-      "security_name": "盟立二",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "3081",
-      "security_name": "聯亞",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "4971",
-      "security_name": "IET-KY",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "5351",
-      "security_name": "鈺創",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "6217",
-      "security_name": "中探針",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "source_id": "tpex_near_disposition"
-    },
-    {
-      "data_date": "2026-08-09",
-      "market": "otc",
-      "security_id": "76101",
-      "security_name": "聯友金屬一創",
-      "reason": "115年08月06日至115年08月07日連續二次",
-      "official_near_disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "tpex_near_disposition"
     }
   ],
   "risk_summary": [
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "039038",
       "security_name": "富鼎統一6A購01",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": false,
+      "attention": true,
+      "near_disposition": true,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近六個營業日累積收盤價跌幅達58.25%﹝第一款﹞。",
+        "115年8月7日至115年8月10日連續二次",
         "連續三次"
       ],
       "effective_end_date": "2026-08-13",
-      "matching_interval_minutes": 5,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "039457",
       "security_name": "宏達電統一6A購02",
       "risk_level": "disposition",
-      "attention": false,
+      "attention": true,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近六個營業日累積收盤價跌幅達53.92%﹝第一款﹞。",
         "連續三次"
       ],
       "effective_end_date": "2026-08-14",
@@ -1291,7 +1747,21 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "044799",
+      "security_name": "華新科統一6B購01",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價跌幅達42.10%﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "053859",
       "security_name": "強茂統一61購02",
@@ -1299,30 +1769,16 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
       "effective_end_date": "2026-08-12",
-      "matching_interval_minutes": 5,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
-      "market": "listed",
-      "security_id": "057514",
-      "security_name": "強茂統一63購01",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
-      "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
-      "reasons": [
-        "115年8月6日至115年8月7日連續二次"
-      ]
-    },
-    {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "057808",
       "security_name": "國巨凱基59購05",
@@ -1330,7 +1786,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1339,21 +1795,21 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "063447",
-      "security_name": "國巨統一74購01",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "security_id": "059780",
+      "security_name": "辛耘國泰5A購01",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達39.01%﹝第一款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "068822",
       "security_name": "富鼎統一69購01",
@@ -1361,16 +1817,30 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
       "effective_end_date": "2026-08-13",
-      "matching_interval_minutes": 5,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "069935",
+      "security_name": "聯電台新63購01",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價跌幅達25.01%。且08月10日凱基證券商賣出之比率為39.90%。且08月10日元大證券商賣出之比率為59.60%。且08月10日台新自營證券商買進之比率為90.07%﹝第五款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "1515",
       "security_name": "力山",
@@ -1378,7 +1848,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1387,58 +1857,137 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2059",
+      "security_name": "川湖",
+      "risk_level": "disposition",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達43.49%。且六個營業日起迄兩個營業日收盤價價差達3270.00 元﹝第一款﹞。最近六十個營業日起迄兩個營業日之收盤價漲幅達144.95% 。最近九十個營業日起迄兩個營業日之收盤價漲幅達274.96% ﹝第二款﹞。",
+        "連續三次"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2344",
+      "security_name": "華邦電",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達34.01%﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2408",
+      "security_name": "南亞科",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達34.55%。且六個營業日起迄兩個營業日收盤價價差達105.50元﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2454",
+      "security_name": "聯發科",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近九十個營業日起迄兩個營業日之收盤價漲幅達167.41% ﹝第二款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "2455",
+      "security_name": "全新",
+      "risk_level": "disposition",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達29.16%。且六個營業日起迄兩個營業日收盤價價差達63.50 元﹝第一款﹞。",
+        "連續三次"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "2464",
       "security_name": "盟立",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近九十個營業日起迄兩個營業日之收盤價漲幅達167.06% ﹝第二款﹞。08月07日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率60.17%，且08月07日當日沖銷成交量占該日總成交量比率71.02%﹝第十三款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "2491",
       "security_name": "吉祥全",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達43.86%﹝第一款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3006",
       "security_name": "晶豪科",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達44.48%。且六個營業日起迄兩個營業日收盤價價差達77.50 元﹝第一款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3026",
       "security_name": "禾伸堂",
       "risk_level": "disposition",
-      "attention": false,
+      "attention": true,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近九十個營業日起迄兩個營業日之收盤價漲幅達331.85% ﹝第二款﹞。",
         "連續三次"
       ],
       "effective_end_date": "2026-08-14",
@@ -1446,7 +1995,24 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3037",
+      "security_name": "欣興",
+      "risk_level": "disposition",
+      "attention": false,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "連續三次"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3055",
       "security_name": "蔚華科",
@@ -1454,7 +2020,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1463,17 +2029,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3167",
       "security_name": "大量",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": true,
+      "attention": true,
+      "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次",
+        "最近六個營業日累積收盤價漲幅達31.79%。且六個營業日起迄兩個營業日收盤價價差達121.00元﹝第一款﹞。",
         "連續三次"
       ],
       "effective_end_date": "2026-08-13",
@@ -1481,35 +2047,39 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "3443",
-      "security_name": "創意",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
-      "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "security_id": "3189",
+      "security_name": "景碩",
+      "risk_level": "disposition",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
-      ]
+        "最近六個營業日累積收盤價漲幅達28.82%。且六個營業日起迄兩個營業日收盤價價差達138.00元﹝第一款﹞。且08月10日台灣摩根證券商賣出之比率為38.04%﹝第五款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達167.57% ﹝第二款﹞。",
+        "連續三次"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3450",
       "security_name": "聯鈞",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次\n115年7月28日至115年8月7日等九個營業日已有五次"
+        "最近六個營業日累積收盤價漲幅達35.88%。且六個營業日起迄兩個營業日收盤價價差達115.00元﹝第一款﹞。08月10日之本益比為 155.95，且股價淨值比為14.64 。另當日週轉率為 8.97%，暨瑞銀證券商成交買進金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為12.09%。單一投資人當日買進該有價證券之成交金額占當日該有價證券總成交金額比率10%以上，且達新台幣壹億元以上﹝第六款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "3532",
       "security_name": "台勝科",
@@ -1517,7 +2087,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1526,7 +2096,38 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3605",
+      "security_name": "宏致",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達33.49%﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "3653",
+      "security_name": "健策",
+      "risk_level": "disposition",
+      "attention": false,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "連續三次"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "4169",
       "security_name": "泰宗",
@@ -1534,7 +2135,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1543,59 +2144,74 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "4722",
-      "security_name": "國精化",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "security_id": "4540",
+      "security_name": "全球傳動",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "08月07日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率62.14%，且08月07日當日沖銷成交量占該日總成交量比率68.42%﹝第十三款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "6213",
       "security_name": "聯茂",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達50.73%。且六個營業日起迄兩個營業日收盤價價差達138.50元﹝第一款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達189.89% ﹝第二款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "6426",
+      "security_name": "統新",
+      "risk_level": "near_disposition",
+      "attention": true,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達38.15%。且六個營業日起迄兩個營業日收盤價價差達59.50 元﹝第一款﹞。08月10日之本益比為 418.27，且股價淨值比為8.98。另當日週轉率為 9.81%，暨元大證券商成交賣出金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為26.10%﹝第六款﹞。",
+        "115年8月7日至115年8月10日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "6451",
       "security_name": "訊芯-KY",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達30.76%。且六個營業日起迄兩個營業日收盤價價差達81.50 元﹝第一款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "6531",
       "security_name": "愛普*",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": true,
+      "attention": true,
+      "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次",
+        "最近六個營業日累積收盤價漲幅達33.89%。且六個營業日起迄兩個營業日收盤價價差達190.00元﹝第一款﹞。",
         "連續三次"
       ],
       "effective_end_date": "2026-08-14",
@@ -1603,21 +2219,21 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "6831",
-      "security_name": "邁科",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "security_id": "6834",
+      "security_name": "天二科技",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近九十個營業日起迄兩個營業日之收盤價漲幅達218.55% ﹝第二款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "6969",
       "security_name": "成信實業*-創",
@@ -1625,7 +2241,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次"
       ],
@@ -1634,17 +2250,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "7610",
       "security_name": "聯友金屬-創",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": true,
+      "attention": true,
+      "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次",
+        "最近六個營業日累積收盤價漲幅達50.66%。且六個營業日起迄兩個營業日收盤價價差達630.00元﹝第一款﹞。最近九十個營業日起迄兩個營業日之收盤價漲幅達455.55% ﹝第二款﹞。",
         "連續三次"
       ],
       "effective_end_date": "2026-08-12",
@@ -1652,21 +2268,63 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
-      "security_id": "8021",
-      "security_name": "尖點",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "security_id": "7711",
+      "security_name": "永擎",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次"
+        "最近六個營業日累積收盤價漲幅達33.82%。且六個營業日起迄兩個營業日收盤價價差達111.50元﹝第一款﹞。"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "7795",
+      "security_name": "長廣",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達27.58%。且六個營業日起迄兩個營業日收盤價價差達71.50 元﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "8021",
+      "security_name": "尖點",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達31.34%。且六個營業日起迄兩個營業日收盤價價差達79.50 元﹝第一款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "8039",
+      "security_name": "台虹",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日累積收盤價漲幅達28.07%。且08月10日之週轉率為16.95%﹝第四款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "8046",
       "security_name": "南電",
@@ -1674,7 +2332,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續三次及當日沖銷標準"
       ],
@@ -1683,7 +2341,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "listed",
       "security_id": "8996",
       "security_name": "高力",
@@ -1691,27 +2349,41 @@
       "attention": false,
       "near_disposition": true,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月6日至115年8月7日連續二次\n115年7月28日至115年8月7日等九個營業日已有五次"
+        "115年7月29日至115年8月10日等九個營業日已有五次"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "listed",
+      "security_id": "911608",
+      "security_name": "明輝-DR",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "公開資訊觀測站公告當日之前一個營業日臺灣存託憑證兩地收盤價溢價130.00% ﹝第八款﹞。"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "1815",
       "security_name": "富喬",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
+        "最近六個營業日(含當日)累積之最後成交價漲幅達30.7%(第一款)\n當日週轉率達8.41%(第四款)"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "23511",
       "security_name": "順德一",
@@ -1719,7 +2391,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -1728,63 +2400,86 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "24552",
       "security_name": "全新二",
-      "risk_level": "near_disposition",
+      "risk_level": "disposition",
       "attention": false,
-      "near_disposition": true,
-      "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
-      ]
+        "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "24553",
       "security_name": "全新三",
-      "risk_level": "near_disposition",
+      "risk_level": "disposition",
       "attention": false,
-      "near_disposition": true,
-      "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
-      ]
+        "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
-      "security_id": "24642",
-      "security_name": "盟立二",
-      "risk_level": "near_disposition",
+      "security_id": "30371",
+      "security_name": "欣興一",
+      "risk_level": "disposition",
       "attention": false,
-      "near_disposition": true,
-      "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
-      ]
+        "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "3081",
       "security_name": "聯亞",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
+        "最近六個營業日(含當日)累積之最後成交價漲幅達46.48%(第一款)\n最近六個營業日(含當日)起迄兩個營業日之最後成交價價差達新臺幣745元(第十一款)"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "3163",
+      "security_name": "波若威",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "當日本益比為72.04、股價淨值比為17.3且為其所屬產業類別股價淨值比之2.52倍、當日週轉率達6.35%(第六款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "31672",
       "security_name": "大量二",
@@ -1792,7 +2487,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
@@ -1801,7 +2496,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "3362",
       "security_name": "先進光",
@@ -1809,16 +2504,16 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "連續5個營業日及沖銷標準"
       ],
       "effective_end_date": "2026-08-13",
-      "matching_interval_minutes": 5,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "33621",
       "security_name": "先進光一",
@@ -1826,16 +2521,30 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
       "effective_end_date": "2026-08-13",
-      "matching_interval_minutes": 5,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "3498",
+      "security_name": "陽程",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達34.19%(第一款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "3624",
       "security_name": "光頡",
@@ -1843,7 +2552,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -1852,7 +2561,21 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4442",
+      "security_name": "竣邦-KY",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價跌幅達31.5%(第一款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "45421",
       "security_name": "科嶠一",
@@ -1860,7 +2583,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -1869,7 +2592,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "4556",
       "security_name": "旭然",
@@ -1877,39 +2600,97 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
       "effective_end_date": "2026-08-10",
-      "matching_interval_minutes": 20,
+      "matching_interval_minutes": 2,
       "transition_revised": true
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
-      "security_id": "4971",
-      "security_name": "IET-KY",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "security_id": "4707",
+      "security_name": "磐亞",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
+        "最近六個營業日(含當日)累積之最後成交價漲幅達34%(第一款)\n最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達181.49%(第二款)"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4931",
+      "security_name": "新盛力",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達30.55%(第一款)\n凱基證券公司當日受託買進該有價證券之成交量占當日該有價證券總成交量之比率為45.72%(第五款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4939",
+      "security_name": "亞電",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)之累積週轉率為88.79%，當日週轉率達10.66%(第十款)\n最近六個營業日(自當日之前一個營業日起)之當日沖銷成交量占總成交量比率達72.45%，當日之前一個營業日當日沖銷成交量占總成交量達77.7%（第十三款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4971",
+      "security_name": "IET-KY",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達38.7%(第一款)\n當日週轉率達5.75%(第四款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "4973",
+      "security_name": "廣穎",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達163.75%(第二款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "4979",
       "security_name": "華星光",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": false,
+      "attention": true,
+      "near_disposition": true,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達38.91%(第一款)\n當日週轉率達6.59%(第四款)\n元大證券公司當日受託賣出該有價證券之成交量占當日該有價證券總成交量之比率為31.05%(第五款)\n當日本益比為96.93、股價淨值比為18.46且為其所屬產業類別股價淨值比之2.69倍、元大證券公司當日賣出該有價證券之成交金額達15.4億元，且占當日該有價證券之總成交金額30.98%(第六款)",
+        "115年08月07日至115年08月10日連續二次",
         "連續5個營業日及沖銷標準"
       ],
       "effective_end_date": "2026-08-14",
@@ -1917,7 +2698,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "49793",
       "security_name": "華星光三",
@@ -1925,7 +2706,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
@@ -1934,16 +2715,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "49794",
       "security_name": "華星光四",
       "risk_level": "disposition",
-      "attention": false,
+      "attention": true,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達30.87%(第一款)",
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
       "effective_end_date": "2026-08-14",
@@ -1951,16 +2733,18 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "4991",
       "security_name": "環宇-KY",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": false,
+      "attention": true,
+      "near_disposition": true,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達39.13%(第一款)",
+        "115年08月07日至115年08月10日連續二次",
         "連續5個營業日及沖銷標準"
       ],
       "effective_end_date": "2026-08-14",
@@ -1968,21 +2752,35 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "5351",
       "security_name": "鈺創",
-      "risk_level": "near_disposition",
-      "attention": false,
-      "near_disposition": true,
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
       "disposition": false,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次"
+        "最近六個營業日(含當日)累積之最後成交價漲幅達46.99%(第一款)\n當日週轉率達13.86%(第四款)"
       ]
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "5464",
+      "security_name": "霖宏",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(自當日之前一個營業日起)之借券賣出成交量占總成交量比率達10.46%，當日之前一個營業日借券賣出成交量較最近六十個營業日(自當日之前一個營業日起)之日平均借券賣出成交量放大為10倍(第十二款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "6182",
       "security_name": "合晶",
@@ -1990,7 +2788,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款",
         "連續3個營業日及沖銷標準"
@@ -2000,7 +2798,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "61827",
       "security_name": "合晶七",
@@ -2008,7 +2806,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
@@ -2017,7 +2815,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "61828",
       "security_name": "合晶八",
@@ -2025,7 +2823,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款",
         "連續3個營業日及沖銷標準"
@@ -2035,17 +2833,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "6217",
       "security_name": "中探針",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": true,
+      "attention": true,
+      "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次",
+        "最近六個營業日(含當日)累積之最後成交價漲幅達41.45%(第一款)",
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
       "effective_end_date": "2026-08-10",
@@ -2053,7 +2851,52 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6274",
+      "security_name": "台燿",
+      "risk_level": "disposition",
+      "attention": false,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "因連續3個營業日達本中心作業要點第四條第一項第一款"
+      ],
+      "effective_end_date": "2026-08-14",
+      "matching_interval_minutes": 2,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6617",
+      "security_name": "共信-KY",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達34.27%(第一款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
+      "market": "otc",
+      "security_id": "6716",
+      "security_name": "應廣",
+      "risk_level": "attention",
+      "attention": true,
+      "near_disposition": false,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "最近六個營業日(含當日)累積之最後成交價漲幅達31.3%(第一款)"
+      ]
+    },
+    {
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "6739",
       "security_name": "竹陞科技",
@@ -2061,7 +2904,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -2070,7 +2913,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "729185",
       "security_name": "華星光統一59購03",
@@ -2078,7 +2921,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -2087,7 +2930,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "736244",
       "security_name": "金居統一61購01",
@@ -2095,7 +2938,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -2104,17 +2947,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "76101",
       "security_name": "聯友金屬一創",
       "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": true,
+      "attention": true,
+      "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年08月06日至115年08月07日連續二次",
+        "最近六個營業日(含當日)累積之最後成交價漲幅達48.1%(第一款)",
         "因連續3個營業日達本中心作業要點第四條第一項第一款",
         "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
       ],
@@ -2123,7 +2966,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-08-09",
+      "data_date": "2026-08-10",
       "market": "otc",
       "security_id": "7828",
       "security_name": "創新服務",
@@ -2131,7 +2974,7 @@
       "attention": false,
       "near_disposition": false,
       "disposition": true,
-      "rule_version": "tw_attention_disposition_pre_2026_08_10",
+      "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
         "因連續3個營業日達本中心作業要點第四條第一項第一款"
       ],
@@ -2146,10 +2989,10 @@
     "source_id": "attention_disposition_derived",
     "source_tier": "primary",
     "status": "fresh",
-    "data_date": "2026-08-09",
-    "expected_data_date": "2026-08-09",
-    "fetched_at": "2026-08-09T17:20:52+08:00",
-    "row_count": 55,
+    "data_date": "2026-08-10",
+    "expected_data_date": "2026-08-10",
+    "fetched_at": "2026-08-10T23:54:43+08:00",
+    "row_count": 80,
     "sla": {
       "mode": "trading_day",
       "frequency": "each trading day after official source partitions",
