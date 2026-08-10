@@ -2371,3 +2371,38 @@ rows.
   publication workflow.
 - Detailed log:
   `codex_context/logs/2026-08-09-institutional-flow-top50-grid.md`
+
+## 2026-08-10 V2 dynamic fixed-stop verification follow-up
+
+### Incident
+
+- Recovery workflow run `31395025758` successfully refreshed all official
+  prices and completed every analysis/site-generation step for `2026-08-10`.
+- Publication was stopped only by `tools/verify_v2_public.py`, which compared
+  2353 against the old hard-coded stop `25.7125`. The regenerated packet was
+  internally consistent: latest close `31.0`, fixed stop percent `15.0`, and
+  stop price `26.35`.
+
+### Fix and boundary
+
+- V2 verification now requires the packet date, latest series-row date, and
+  risk-control reference date to match the official price date. It also
+  requires the risk reference price to equal that latest row's close before
+  deriving the expected stop from the same close and fixed 15% percentage.
+- Added regressions for a current dynamic stop, stale reference date, and a
+  stop value that is not derived from the current reference price. An
+  independent review added coverage for a stale but internally consistent
+  price/stop pair.
+- No price generation, strategy, signal, ranking, exit, or publication logic
+  changed; this only removes a stale hard-coded assertion in the verifier.
+
+### Verification
+
+- `python -m unittest tools.test_verify_v2_public -v`: 6 tests passed.
+- `python -m py_compile tools/verify_v2_public.py tools/test_verify_v2_public.py`:
+  passed.
+- Full repository suite with `requirements-v2.lock`: 150 tests passed after
+  independent-review hardening.
+- `python data_contract.py validate-registry`: 40 sources and 21 datasets.
+- Full-suite and recovery-publication results are recorded in
+  `codex_context/logs/2026-08-10-official-price-date-skew-recovery.md`.
