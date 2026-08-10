@@ -19,6 +19,8 @@ TWSE_HISTORY_URL = "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX"
 TPEX_HISTORY_URL = "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
 USER_AGENT = "stock-from-Hsiu-official-price-refresh/1.0"
 CSV_FIELDS = ["date", "open", "high", "low", "close", "volume"]
+RECOVERY_MIN_UNIQUE_IDS = {"twse": 800, "tpex": 600}
+RECOVERY_MIN_REFERENCE_RATIO = 0.99
 
 
 def source_date_to_iso(value: Any) -> str:
@@ -200,21 +202,10 @@ def _get_json(url: str, params: dict[str, str] | None = None, *, timeout: int = 
     raise RuntimeError(f"official price request failed: {url}: {last_error}")
 
 
-def fetch_latest_snapshot(fetch_json: Callable[..., Any] = _get_json) -> tuple[str, list[dict[str, Any]], dict[str, int]]:
-    twse_payload = fetch_json(TWSE_LATEST_URL)
-    tpex_payload = fetch_json(TPEX_LATEST_URL)
-    if not isinstance(twse_payload, list) or not isinstance(tpex_payload, list):
-        raise RuntimeError("official latest price endpoints returned an unexpected schema")
-    twse_date, twse_rows = normalize_twse_latest(twse_payload)
-    tpex_date, tpex_rows = normalize_tpex_latest(tpex_payload)
-    if twse_date != tpex_date:
-        raise RuntimeError(f"official latest price dates do not align: TWSE={twse_date}, TPEx={tpex_date}")
-    if not twse_rows or not tpex_rows:
-        raise RuntimeError("official latest price snapshot is missing a market partition")
-    return twse_date, twse_rows + tpex_rows, {"twse": len(twse_rows), "tpex": len(tpex_rows)}
-
-
-def fetch_history_snapshot(query_date: date, fetch_json: Callable[..., Any] = _get_json) -> list[dict[str, Any]]:
+def fetch_history_partitions(
+    query_date: date,
+    fetch_json: Callable[..., Any] = _get_json,
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
     twse_payload = fetch_json(
         TWSE_HISTORY_URL,
         {"date": query_date.strftime("%Y%m%d"), "type": "ALLBUT0999", "response": "json"},
@@ -232,6 +223,126 @@ def fetch_history_snapshot(query_date: date, fetch_json: Callable[..., Any] = _g
             f"official historical price partitions do not align for {query_date}: "
             f"TWSE={len(twse_rows)}, TPEx={len(tpex_rows)}"
         )
+    return twse_rows, tpex_rows
+
+
+def partition_security_ids(rows: list[dict[str, Any]], label: str) -> set[str]:
+    security_ids: set[str] = set()
+    duplicates: set[str] = set()
+    for row in rows:
+        security_id = str(row.get("stock_id") or "").strip()
+        if security_id in security_ids:
+            duplicates.add(security_id)
+        elif security_id:
+            security_ids.add(security_id)
+    if duplicates:
+        raise RuntimeError(
+            f"official price {label} partition contains duplicate security IDs: "
+            f"count={len(duplicates)}, sample={sorted(duplicates)[:10]}"
+        )
+    return security_ids
+
+
+def fetch_latest_snapshot(
+    fetch_json: Callable[..., Any] = _get_json,
+    *,
+    recovery_min_unique_ids: dict[str, int] | None = None,
+    recovery_min_reference_ratio: float = RECOVERY_MIN_REFERENCE_RATIO,
+) -> tuple[str, list[dict[str, Any]], dict[str, int], dict[str, Any]]:
+    twse_payload = fetch_json(TWSE_LATEST_URL)
+    tpex_payload = fetch_json(TPEX_LATEST_URL)
+    if not isinstance(twse_payload, list) or not isinstance(tpex_payload, list):
+        raise RuntimeError("official latest price endpoints returned an unexpected schema")
+    twse_date, twse_rows = normalize_twse_latest(twse_payload)
+    tpex_date, tpex_rows = normalize_tpex_latest(tpex_payload)
+    twse_latest_ids = partition_security_ids(twse_rows, "TWSE latest")
+    tpex_latest_ids = partition_security_ids(tpex_rows, "TPEx latest")
+    if twse_date != tpex_date:
+        reference_ids = {"twse": twse_latest_ids, "tpex": tpex_latest_ids}
+        reference_counts = {market: len(ids) for market, ids in reference_ids.items()}
+        target_iso = max(twse_date, tpex_date)
+        target_date = date.fromisoformat(target_iso)
+        try:
+            twse_rows, tpex_rows = fetch_history_partitions(target_date, fetch_json)
+        except Exception as exc:
+            raise RuntimeError(
+                "official latest price date-skew recovery failed: "
+                f"TWSE latest={twse_date}, TPEx latest={tpex_date}, target={target_iso}: {exc}"
+            ) from exc
+        if not twse_rows or not tpex_rows:
+            raise RuntimeError(
+                "official latest price date-skew recovery failed: "
+                f"TWSE latest={twse_date}, TPEx latest={tpex_date}, target={target_iso}, "
+                f"historical TWSE={len(twse_rows)}, historical TPEx={len(tpex_rows)}"
+            )
+        recovered_ids = {
+            "twse": partition_security_ids(twse_rows, "TWSE recovered"),
+            "tpex": partition_security_ids(tpex_rows, "TPEx recovered"),
+        }
+        recovered_counts = {market: len(ids) for market, ids in recovered_ids.items()}
+        minimum_ids = recovery_min_unique_ids or RECOVERY_MIN_UNIQUE_IDS
+        minimum_counts = {
+            market: int(minimum_ids.get(market, RECOVERY_MIN_UNIQUE_IDS[market]))
+            for market in ("twse", "tpex")
+        }
+        required_reference_counts = {
+            market: math.ceil(reference_counts[market] * recovery_min_reference_ratio)
+            for market in ("twse", "tpex")
+        }
+        covered_reference_counts = {
+            market: len(reference_ids[market] & recovered_ids[market])
+            for market in ("twse", "tpex")
+        }
+        incomplete = {
+            market: {
+                "unique_ids": recovered_counts[market],
+                "minimum_unique_ids": minimum_counts[market],
+                "covered_reference_ids": covered_reference_counts[market],
+                "required_reference_ids": required_reference_counts[market],
+            }
+            for market in ("twse", "tpex")
+            if (
+                recovered_counts[market] < minimum_counts[market]
+                or covered_reference_counts[market] < required_reference_counts[market]
+            )
+        }
+        if incomplete:
+            raise RuntimeError(
+                "official latest price date-skew recovery coverage is incomplete: "
+                f"TWSE latest={twse_date}, TPEx latest={tpex_date}, target={target_iso}, "
+                f"partitions={incomplete}"
+            )
+        metadata = {
+            "mode": "historical_exact_date_recovery",
+            "date_skew_recovered": True,
+            "twse_latest_date": twse_date,
+            "tpex_latest_date": tpex_date,
+            "target_date": target_iso,
+            "recovery_coverage": {
+                "count_basis": "unique_security_ids",
+                "reference_unique_ids": reference_counts,
+                "minimum_unique_ids": minimum_counts,
+                "required_reference_ids": required_reference_counts,
+                "covered_reference_ids": covered_reference_counts,
+                "recovered_unique_ids": recovered_counts,
+                "min_reference_ratio": recovery_min_reference_ratio,
+            },
+        }
+        return target_iso, twse_rows + tpex_rows, recovered_counts, metadata
+    if not twse_rows or not tpex_rows:
+        raise RuntimeError("official latest price snapshot is missing a market partition")
+    metadata = {
+        "mode": "latest_openapi",
+        "date_skew_recovered": False,
+        "twse_latest_date": twse_date,
+        "tpex_latest_date": tpex_date,
+        "target_date": twse_date,
+    }
+    return twse_date, twse_rows + tpex_rows, {"twse": len(twse_latest_ids), "tpex": len(tpex_latest_ids)}, metadata
+
+
+def fetch_history_snapshot(query_date: date, fetch_json: Callable[..., Any] = _get_json) -> list[dict[str, Any]]:
+    twse_rows, tpex_rows = fetch_history_partitions(query_date, fetch_json)
     return twse_rows + tpex_rows
 
 
@@ -305,12 +416,25 @@ def refresh_official_prices(
     summary_path: Path,
     initial_days: int = 75,
     overlap_days: int = 7,
-    fetch_latest: Callable[[], tuple[str, list[dict[str, Any]], dict[str, int]]] = fetch_latest_snapshot,
+    fetch_latest: Callable[..., tuple] = fetch_latest_snapshot,
     fetch_history: Callable[[date], list[dict[str, Any]]] = fetch_history_snapshot,
 ) -> dict[str, Any]:
     if not stock_ids:
         raise RuntimeError("official price refresh has an empty stock universe")
-    latest_iso, latest_rows, latest_partition_counts = fetch_latest()
+    latest_result = fetch_latest()
+    if len(latest_result) == 4:
+        latest_iso, latest_rows, latest_partition_counts, latest_snapshot = latest_result
+    elif len(latest_result) == 3:
+        latest_iso, latest_rows, latest_partition_counts = latest_result
+        latest_snapshot = {
+            "mode": "injected_or_legacy",
+            "date_skew_recovered": False,
+            "twse_latest_date": latest_iso,
+            "tpex_latest_date": latest_iso,
+            "target_date": latest_iso,
+        }
+    else:
+        raise RuntimeError(f"official latest price provider returned {len(latest_result)} fields; expected 3 or 4")
     latest_date = date.fromisoformat(latest_iso)
     previous = load_previous_summary(summary_path)
     start_date = choose_start_date(
@@ -360,7 +484,7 @@ def refresh_official_prices(
         )
 
     summary = {
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "source": "official_twse_tpex",
         "source_urls": {
             "twse_latest": TWSE_LATEST_URL,
@@ -371,6 +495,7 @@ def refresh_official_prices(
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "query_start_date": start_date.isoformat(),
         "latest_data_date": latest_iso,
+        "latest_snapshot": latest_snapshot,
         "common_trading_dates": common_dates,
         "stock_scope_count": len(stock_ids),
         "latest_partition_rows": latest_partition_counts,

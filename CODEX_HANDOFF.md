@@ -1,6 +1,44 @@
 # Codex Handoff
 
-Last updated: 2026-08-09
+Last updated: 2026-08-10
+
+## 2026-08-10 Official price latest-date skew recovery
+
+### Goal
+
+Restore the daily publisher after TWSE's latest OpenAPI snapshot remained on
+2026-08-07 while TPEx had advanced to 2026-08-10, even though TWSE's exact-date
+MI_INDEX endpoint already contained the complete 2026-08-10 listed partition.
+
+### Completed
+
+- `official_price_refresh.py` now prefers aligned latest OpenAPI snapshots.
+- When their dates differ, it selects the newer date and queries both official
+  exact-date historical endpoints. It proceeds only when both normalized
+  partitions exactly match that date, contain no duplicate security IDs, have
+  at least 800 TWSE / 600 TPEx unique IDs, and retain at least 99% of each
+  latest-snapshot reference ID set; otherwise it still fails closed.
+- `price_refresh_summary.json` schema `1.1.0` records `latest_snapshot` mode,
+  original TWSE/TPEx latest dates, target date, and whether date-skew recovery
+  was used.
+- Added deterministic regressions for the aligned primary path, observed
+  recovery case, missing and nonempty-but-partial partition rejection, summary
+  non-publication on failure, duplicate-count inflation rejection, and recovery
+  metadata based on unique IDs.
+- Updated the README and freshness matrix. Strategy, ranking, signal, exit,
+  order, and website presentation logic are unchanged.
+
+### Verification
+
+- Focused unit suite: 11 tests passed.
+- Full suite with the locked V2 dependencies: 146 tests passed.
+- Data-contract registry validation passed: 40 sources, 21 datasets.
+- Live no-write snapshot smoke recovered `2026-08-10` with 1,092 TWSE rows and
+  874 TPEx rows through `historical_exact_date_recovery`; it covered 1,087 of
+  1,089 TWSE reference IDs and 874 of 874 TPEx reference IDs, above the required
+  1,079 / 866.
+- Detailed log:
+  `codex_context/logs/2026-08-10-official-price-date-skew-recovery.md`.
 
 ## 2026-08-09 Independent holder page and homepage cleanup
 

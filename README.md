@@ -30,7 +30,7 @@ python refresh_prices.py
 python generate_site.py
 ```
 
-`refresh_prices.py` 會直接從 TWSE 與 TPEx 官方介面抓取上市、上櫃股票的 OHLCV，依交易日合併並寫入 `data/prices/`，同時產生 `data/price_refresh_summary.json`。它不需要 FinMind 訂閱；舊 FinMind 籌碼／股權輔助更新預設停用，只能用 `ENABLE_FINMIND_AUX=1` 明確開啟。個股頁會用官方快取顯示最新收盤、日K/週K/月K、MA120/MA240、成交量與大量K。
+`refresh_prices.py` 會直接從 TWSE 與 TPEx 官方介面抓取上市、上櫃股票的 OHLCV，依交易日合併並寫入 `data/prices/`，同時產生 `data/price_refresh_summary.json`。若兩個最新快照端點發布時間不同，更新器會用較新日期查回兩個市場的指定日期歷史端點；只有兩邊同日、股票代號不重複，而且通過最低唯一代號數與 99% 參考代號覆蓋率檢查才繼續，並在摘要記錄回退模式與覆蓋證據。它不需要 FinMind 訂閱；舊 FinMind 籌碼／股權輔助更新預設停用，只能用 `ENABLE_FINMIND_AUX=1` 明確開啟。個股頁會用官方快取顯示最新收盤、日K/週K/月K、MA120/MA240、成交量與大量K。
 
 `generate_site.py` 會同步寫入 `data/site_reports.json`。這是 GitHub Actions 的備援資料源，避免雲端 runner 讀不到本機 OneDrive 報告時無法重建網站。
 
