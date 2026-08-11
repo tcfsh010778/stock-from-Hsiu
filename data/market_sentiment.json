@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-08-11",
-  "updated_at": "2026-08-11T18:33:08+08:00",
-  "score": 76,
+  "updated_at": "2026-08-11T22:05:07+08:00",
+  "score": 82,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 76 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 82 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,31 +30,31 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 4.28,
+      "score": 5.8,
       "weight": 15,
-      "signal": "bearish",
-      "display": "-1.29%",
-      "detail": "融資餘額 9,003,223；前值 9,120,700",
+      "signal": "neutral",
+      "display": "-0.68%",
+      "detail": "融資餘額 8,970,583；前值 9,032,013",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-10",
-      "latest": 9003223.0,
-      "previous": 9120700.0,
-      "weekly_change_pct": -1.29
+      "date": "2026-08-11",
+      "latest": 8970583.0,
+      "previous": 9032013.0,
+      "weekly_change_pct": -0.68
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 7.99,
+      "score": 12.01,
       "weight": 15,
       "signal": "neutral",
-      "display": "+9.34%",
-      "detail": "融券餘額 202,632；快速增加視為偏空",
+      "display": "+3.98%",
+      "detail": "融券餘額 204,819；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-10",
-      "latest": 202632.0,
-      "previous": 185322.0,
-      "weekly_change_pct": 9.34
+      "date": "2026-08-11",
+      "latest": 204819.0,
+      "previous": 196970.0,
+      "weekly_change_pct": 3.98
     },
     "foreign_5d": {
       "label": "外資 5 日",

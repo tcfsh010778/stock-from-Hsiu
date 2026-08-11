@@ -3,7 +3,7 @@
   "schema_version": "1.1.0",
   "rule_version": "daily_decisions_v1_1_market_risk",
   "date": "2026-08-11",
-  "updated_at": "2026-08-11T18:33:26+08:00",
+  "updated_at": "2026-08-11T22:05:24+08:00",
   "source_artifacts": [
     {
       "dataset_id": "mda_candidate_pool",
@@ -76111,7 +76111,7 @@
     "status": "fresh",
     "data_date": "2026-08-11",
     "expected_data_date": "2026-08-11",
-    "fetched_at": "2026-08-11T18:33:26+08:00",
+    "fetched_at": "2026-08-11T22:05:24+08:00",
     "row_count": 975,
     "sla": {
       "mode": "calendar_day",

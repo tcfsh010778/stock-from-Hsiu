@@ -2,19 +2,19 @@
   "dataset_id": "daily_market_flow",
   "schema_version": "1.1.0",
   "date": "2026-08-11",
-  "updated_at": "2026-08-11T18:33:08.894404+08:00",
+  "updated_at": "2026-08-11T22:05:07.827601+08:00",
   "markets": {
     "listed": {
-      "stock_count": 1328,
+      "stock_count": 1331,
       "ranking_eligible_count": 1072,
-      "ranking_excluded_count": 256,
-      "foreign_buy": 2121885076,
-      "foreign_sell": 2184868298,
+      "ranking_excluded_count": 259,
+      "foreign_buy": 2127175473,
+      "foreign_sell": 2190158695,
       "foreign_net": -62983222,
-      "investment_trust_buy": 58387331,
-      "investment_trust_sell": 23063199,
-      "investment_trust_net": 35324132,
-      "institutional_total_net": 48185606,
+      "investment_trust_buy": 59096391,
+      "investment_trust_sell": 23505637,
+      "investment_trust_net": 35590754,
+      "institutional_total_net": 48452228,
       "foreign_top_buy": [
         {
           "security_id": "2344",
@@ -120,25 +120,25 @@
         {
           "security_id": "3665",
           "name": "貿聯-KY",
-          "net": -607097
+          "net": -732097
         }
       ],
       "amounts": {
         "trading_date": "2026-08-11",
         "unit": "TWD",
         "scope": "official_market_total_all_instruments",
-        "foreign_buy_amount": 348999743082,
-        "foreign_sell_amount": 326671059787,
+        "foreign_buy_amount": 355022942702,
+        "foreign_sell_amount": 332694259407,
         "foreign_net_amount": 22328683295,
-        "investment_trust_buy_amount": 16965701330,
-        "investment_trust_sell_amount": 13575877093,
-        "investment_trust_net_amount": 3389824237,
-        "dealer_buy_amount": 34105054749,
-        "dealer_sell_amount": 31644915147,
+        "investment_trust_buy_amount": 17374366535,
+        "investment_trust_sell_amount": 14150298802,
+        "investment_trust_net_amount": 3224067733,
+        "dealer_buy_amount": 34105399297,
+        "dealer_sell_amount": 31645259695,
         "dealer_net_amount": 2460139602,
-        "institutional_total_buy_amount": 400070499161,
-        "institutional_total_sell_amount": 371891852027,
-        "institutional_total_net_amount": 28178647134
+        "institutional_total_buy_amount": 406502708534,
+        "institutional_total_sell_amount": 378489817904,
+        "institutional_total_net_amount": 28012890630
       }
     },
     "otc": {
@@ -148,10 +148,10 @@
       "foreign_buy": 230251661,
       "foreign_sell": 304882012,
       "foreign_net": -74630351,
-      "investment_trust_buy": 6143245,
-      "investment_trust_sell": 2256620,
-      "investment_trust_net": 3886625,
-      "institutional_total_net": -132285342,
+      "investment_trust_buy": 7886365,
+      "investment_trust_sell": 2259620,
+      "investment_trust_net": 5626745,
+      "institutional_total_net": -130545222,
       "foreign_top_buy": [
         {
           "security_id": "8358",
@@ -218,19 +218,19 @@
           "net": 1660000
         },
         {
+          "security_id": "3264",
+          "name": "欣銓",
+          "net": 1176000
+        },
+        {
+          "security_id": "6147",
+          "name": "頎邦",
+          "net": 529000
+        },
+        {
           "security_id": "6510",
           "name": "精測",
           "net": 99132
-        },
-        {
-          "security_id": "3105",
-          "name": "穩懋",
-          "net": 84900
-        },
-        {
-          "security_id": "4749",
-          "name": "新應材",
-          "net": 70175
         }
       ],
       "trust_top_sell": [
@@ -267,22 +267,22 @@
         "foreign_buy_amount": 54993863987,
         "foreign_sell_amount": 59954399798,
         "foreign_net_amount": -4960535811,
-        "investment_trust_buy_amount": 3279400823,
-        "investment_trust_sell_amount": 1717961951,
-        "investment_trust_net_amount": 1561438872,
+        "investment_trust_buy_amount": 3671619596,
+        "investment_trust_sell_amount": 1725941951,
+        "investment_trust_net_amount": 1945677645,
         "dealer_buy_amount": 5060449992,
         "dealer_sell_amount": 4550020225,
         "dealer_net_amount": 510429767,
-        "institutional_total_buy_amount": 63333714802,
-        "institutional_total_sell_amount": 66222381974,
-        "institutional_total_net_amount": -2888667172
+        "institutional_total_buy_amount": 63725933575,
+        "institutional_total_sell_amount": 66230361974,
+        "institutional_total_net_amount": -2504428399
       }
     }
   },
   "rankings": {
     "eligibility_policy": "ordinary_equity_v1",
     "eligible_count": 1866,
-    "excluded_count": 377,
+    "excluded_count": 380,
     "foreign_buy": [
       {
         "security_id": "2344",
@@ -11200,7 +11200,7 @@
         "security_id": "2327",
         "name": "國巨*",
         "market": "listed",
-        "net_shares": 2120951
+        "net_shares": 2124951
       },
       {
         "security_id": "4979",
@@ -11227,10 +11227,16 @@
         "net_shares": 1182859
       },
       {
+        "security_id": "3264",
+        "name": "欣銓",
+        "market": "otc",
+        "net_shares": 1176000
+      },
+      {
         "security_id": "2308",
         "name": "台達電",
         "market": "listed",
-        "net_shares": 1047502
+        "net_shares": 1007502
       },
       {
         "security_id": "2855",
@@ -11261,6 +11267,18 @@
         "name": "華新科",
         "market": "listed",
         "net_shares": 605776
+      },
+      {
+        "security_id": "3450",
+        "name": "聯鈞",
+        "market": "listed",
+        "net_shares": 550904
+      },
+      {
+        "security_id": "6147",
+        "name": "頎邦",
+        "market": "otc",
+        "net_shares": 529000
       },
       {
         "security_id": "6239",
@@ -11320,7 +11338,7 @@
         "security_id": "2330",
         "name": "台積電",
         "market": "listed",
-        "net_shares": 357408
+        "net_shares": 381840
       },
       {
         "security_id": "2408",
@@ -11341,6 +11359,12 @@
         "net_shares": 261000
       },
       {
+        "security_id": "2382",
+        "name": "廣達",
+        "market": "listed",
+        "net_shares": 205224
+      },
+      {
         "security_id": "5880",
         "name": "合庫金",
         "market": "listed",
@@ -11351,12 +11375,6 @@
         "name": "遠傳",
         "market": "listed",
         "net_shares": 168215
-      },
-      {
-        "security_id": "2382",
-        "name": "廣達",
-        "market": "listed",
-        "net_shares": 157224
       },
       {
         "security_id": "2347",
@@ -11503,6 +11521,12 @@
         "net_shares": 44349
       },
       {
+        "security_id": "2455",
+        "name": "全新",
+        "market": "listed",
+        "net_shares": 41057
+      },
+      {
         "security_id": "2609",
         "name": "陽明",
         "market": "listed",
@@ -11515,16 +11539,16 @@
         "net_shares": 36144
       },
       {
+        "security_id": "4991",
+        "name": "環宇-KY",
+        "market": "otc",
+        "net_shares": 34000
+      },
+      {
         "security_id": "2379",
         "name": "瑞昱",
         "market": "listed",
         "net_shares": 32009
-      },
-      {
-        "security_id": "3529",
-        "name": "力旺",
-        "market": "otc",
-        "net_shares": 30850
       },
       {
         "security_id": "2412",
@@ -11539,22 +11563,28 @@
         "net_shares": 28015
       },
       {
+        "security_id": "3529",
+        "name": "力旺",
+        "market": "otc",
+        "net_shares": 27850
+      },
+      {
         "security_id": "1477",
         "name": "聚陽",
         "market": "listed",
         "net_shares": 26104
       },
       {
+        "security_id": "6223",
+        "name": "旺矽",
+        "market": "otc",
+        "net_shares": 24388
+      },
+      {
         "security_id": "6274",
         "name": "台燿",
         "market": "otc",
         "net_shares": 24000
-      },
-      {
-        "security_id": "6223",
-        "name": "旺矽",
-        "market": "otc",
-        "net_shares": 23088
       },
       {
         "security_id": "5871",
@@ -11581,28 +11611,22 @@
         "net_shares": 16134
       },
       {
+        "security_id": "3443",
+        "name": "創意",
+        "market": "listed",
+        "net_shares": 15553
+      },
+      {
         "security_id": "2385",
         "name": "群光",
         "market": "listed",
         "net_shares": 14011
       },
       {
-        "security_id": "3443",
-        "name": "創意",
-        "market": "listed",
-        "net_shares": 13453
-      },
-      {
         "security_id": "1216",
         "name": "統一",
         "market": "listed",
         "net_shares": 10353
-      },
-      {
-        "security_id": "6147",
-        "name": "頎邦",
-        "market": "otc",
-        "net_shares": 10000
       },
       {
         "security_id": "6138",
@@ -11635,12 +11659,6 @@
         "net_shares": 8526
       },
       {
-        "security_id": "2618",
-        "name": "長榮航",
-        "market": "listed",
-        "net_shares": 7900
-      },
-      {
         "security_id": "6116",
         "name": "彩晶",
         "market": "listed",
@@ -11657,12 +11675,6 @@
         "name": "鈊象",
         "market": "otc",
         "net_shares": 6000
-      },
-      {
-        "security_id": "4991",
-        "name": "環宇-KY",
-        "market": "otc",
-        "net_shares": 5000
       },
       {
         "security_id": "2023",
@@ -11904,7 +11916,13 @@
         "security_id": "3665",
         "name": "貿聯-KY",
         "market": "listed",
-        "net_shares": -607097
+        "net_shares": -732097
+      },
+      {
+        "security_id": "8210",
+        "name": "勤誠",
+        "market": "listed",
+        "net_shares": -507516
       },
       {
         "security_id": "2345",
@@ -11943,12 +11961,6 @@
         "net_shares": -327021
       },
       {
-        "security_id": "8210",
-        "name": "勤誠",
-        "market": "listed",
-        "net_shares": -318516
-      },
-      {
         "security_id": "3227",
         "name": "原相",
         "market": "otc",
@@ -11961,16 +11973,16 @@
         "net_shares": -260180
       },
       {
+        "security_id": "2344",
+        "name": "華邦電",
+        "market": "listed",
+        "net_shares": -238815
+      },
+      {
         "security_id": "1590",
         "name": "亞德客-KY",
         "market": "listed",
         "net_shares": -227897
-      },
-      {
-        "security_id": "2344",
-        "name": "華邦電",
-        "market": "listed",
-        "net_shares": -191815
       },
       {
         "security_id": "2892",
@@ -12018,7 +12030,7 @@
         "security_id": "3653",
         "name": "健策",
         "market": "listed",
-        "net_shares": -127944
+        "net_shares": -132944
       },
       {
         "security_id": "3042",
@@ -12183,12 +12195,6 @@
         "net_shares": -27453
       },
       {
-        "security_id": "3450",
-        "name": "聯鈞",
-        "market": "listed",
-        "net_shares": -27096
-      },
-      {
         "security_id": "6531",
         "name": "愛普*",
         "market": "listed",
@@ -12315,28 +12321,28 @@
         "net_shares": -18524
       },
       {
+        "security_id": "7769",
+        "name": "鴻勁",
+        "market": "listed",
+        "net_shares": -18301
+      },
+      {
         "security_id": "2903",
         "name": "遠百",
         "market": "listed",
         "net_shares": -18271
       },
       {
-        "security_id": "7769",
-        "name": "鴻勁",
+        "security_id": "2615",
+        "name": "萬海",
         "market": "listed",
-        "net_shares": -16863
+        "net_shares": -17734
       },
       {
         "security_id": "3260",
         "name": "威剛",
         "market": "otc",
         "net_shares": -16300
-      },
-      {
-        "security_id": "3264",
-        "name": "欣銓",
-        "market": "otc",
-        "net_shares": -16000
       },
       {
         "security_id": "2881",
@@ -12349,6 +12355,12 @@
         "name": "佳世達",
         "market": "listed",
         "net_shares": -15805
+      },
+      {
+        "security_id": "4763",
+        "name": "材料*-KY",
+        "market": "listed",
+        "net_shares": -15135
       },
       {
         "security_id": "2838",
@@ -12415,12 +12427,6 @@
         "name": "中華",
         "market": "listed",
         "net_shares": -10872
-      },
-      {
-        "security_id": "2615",
-        "name": "萬海",
-        "market": "listed",
-        "net_shares": -10734
       },
       {
         "security_id": "2208",
@@ -12597,12 +12603,6 @@
         "net_shares": -6096
       },
       {
-        "security_id": "2455",
-        "name": "全新",
-        "market": "listed",
-        "net_shares": -5943
-      },
-      {
         "security_id": "8150",
         "name": "南茂",
         "market": "listed",
@@ -12631,6 +12631,12 @@
         "name": "精誠",
         "market": "listed",
         "net_shares": -5104
+      },
+      {
+        "security_id": "2618",
+        "name": "長榮航",
+        "market": "listed",
+        "net_shares": -5100
       },
       {
         "security_id": "6515",
@@ -12679,12 +12685,6 @@
         "name": "燿華",
         "market": "listed",
         "net_shares": -4187
-      },
-      {
-        "security_id": "2059",
-        "name": "川湖",
-        "market": "listed",
-        "net_shares": -4082
       },
       {
         "security_id": "2211",
@@ -12765,12 +12765,6 @@
         "net_shares": -3238
       },
       {
-        "security_id": "4763",
-        "name": "材料*-KY",
-        "market": "listed",
-        "net_shares": -3135
-      },
-      {
         "security_id": "5904",
         "name": "寶雅*",
         "market": "otc",
@@ -12781,12 +12775,6 @@
         "name": "明基材",
         "market": "listed",
         "net_shares": -3000
-      },
-      {
-        "security_id": "5274",
-        "name": "信驊",
-        "market": "otc",
-        "net_shares": -2927
       },
       {
         "security_id": "8926",
@@ -12921,6 +12909,12 @@
         "net_shares": -1559
       },
       {
+        "security_id": "2059",
+        "name": "川湖",
+        "market": "listed",
+        "net_shares": -1554
+      },
+      {
         "security_id": "9917",
         "name": "中保科",
         "market": "listed",
@@ -13003,6 +12997,12 @@
         "name": "華立",
         "market": "listed",
         "net_shares": -1109
+      },
+      {
+        "security_id": "5274",
+        "name": "信驊",
+        "market": "otc",
+        "net_shares": -1107
       },
       {
         "security_id": "6191",
@@ -13336,7 +13336,7 @@
       "market": "listed",
       "status": "fresh",
       "data_date": "2026-08-11",
-      "row_count": 1328,
+      "row_count": 1331,
       "error": null
     },
     {
@@ -13378,7 +13378,7 @@
     "status": "fresh",
     "data_date": "2026-08-11",
     "expected_data_date": "2026-08-11",
-    "fetched_at": "2026-08-11T18:33:08+08:00",
+    "fetched_at": "2026-08-11T22:05:07+08:00",
     "row_count": 2,
     "sla": {
       "mode": "calendar_day",
