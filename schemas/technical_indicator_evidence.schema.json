@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tcfsh010778.github.io/stock-from-Hsiu/schemas/technical_indicator_evidence.schema.json",
+  "title": "Stock from Hsiu numeric technical-indicator evidence",
+  "type": "object",
+  "required": [
+    "schema_version", "dataset_id", "security_id", "market", "data_date", "timeframe", "indicator_id", "name",
+    "definition_version", "parameters", "unit", "comparison_basis", "missing_value_policy", "extreme_value_policy",
+    "value", "value_status", "calculation_basis", "confirmed_at", "source_id", "upstream_dataset_id", "fetched_at",
+    "frequency", "timezone", "adjustment_policy", "test_status", "evidence_role", "freshness", "known_gaps"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "dataset_id": {"const": "technical_indicator_evidence"},
+    "security_id": {"type": "string", "pattern": "^[0-9A-Za-z.-]+$"},
+    "market": {"enum": ["listed", "otc", "emerging"]},
+    "data_date": {"type": "string", "format": "date"},
+    "timeframe": {"enum": ["daily", "weekly", "monthly"]},
+    "indicator_id": {"enum": ["rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10"]},
+    "name": {"type": "string", "minLength": 1},
+    "definition_version": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+$"},
+    "parameters": {"type": "object", "minProperties": 1},
+    "unit": {"type": "string", "minLength": 1},
+    "comparison_basis": {"type": "string", "minLength": 1},
+    "missing_value_policy": {"type": "string", "minLength": 1},
+    "extreme_value_policy": {"type": "string", "minLength": 1},
+    "value": {"type": ["number", "null"]},
+    "value_status": {"enum": ["available", "insufficient_history", "missing", "non_finite"]},
+    "calculation_basis": {"const": "closed_bar_only"},
+    "confirmed_at": {"type": ["string", "null"], "format": "date"},
+    "source_id": {"const": "technical_indicator_evidence_derived"},
+    "upstream_dataset_id": {"const": "daily_price"},
+    "fetched_at": {"type": "string", "format": "date-time"},
+    "frequency": {"const": "daily_after_close"},
+    "timezone": {"const": "Asia/Taipei"},
+    "adjustment_policy": {"type": "string", "minLength": 1},
+    "comparison_values": {"type": "object"},
+    "test_status": {"enum": ["unit_tested", "golden_file", "unverified"]},
+    "evidence_role": {"const": "auxiliary_evidence_only"},
+    "freshness": {
+      "type": "object", "required": ["status", "as_of", "sla"],
+      "properties": {
+        "status": {"enum": ["fresh", "expected_lag", "stale", "missing", "fallback_fresh", "fallback_stale", "schema_error"]},
+        "as_of": {"type": ["string", "null"], "format": "date"},
+        "sla": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": true
+    },
+    "known_gaps": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+  },
+  "allOf": [
+    {"if": {"properties": {"value_status": {"const": "available"}}}, "then": {"properties": {"value": {"type": "number"}}}},
+    {"if": {"properties": {"value_status": {"enum": ["insufficient_history", "missing", "non_finite"]}}}, "then": {"properties": {"value": {"type": "null"}}}}
+  ],
+  "additionalProperties": false
+}

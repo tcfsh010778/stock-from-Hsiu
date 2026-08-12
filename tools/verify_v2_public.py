@@ -8,6 +8,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs"
+EXPECTED_TECHNICAL_INDICATORS = {
+    "rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10",
+}
 
 
 def verify_price_freshness(manifest: dict, price_summary: dict) -> str:
@@ -71,6 +74,23 @@ def verify_fixed_stop(risk: dict, daily: dict, expected_price_date: str) -> floa
     return stop_price
 
 
+def verify_technical_evidence(daily: dict) -> set[str]:
+    items = daily.get("technical_evidence")
+    if not isinstance(items, list):
+        raise AssertionError("2353 daily packet has no technical evidence cards")
+    indicator_ids = {str(item.get("indicator_id")) for item in items if isinstance(item, dict)}
+    if indicator_ids != EXPECTED_TECHNICAL_INDICATORS or len(items) != len(EXPECTED_TECHNICAL_INDICATORS):
+        raise AssertionError(f"2353 technical evidence ids mismatch: {sorted(indicator_ids)}")
+    for item in items:
+        if item.get("calculation_basis") != "closed_bar_only":
+            raise AssertionError(f"technical evidence is not closed-bar-only: {item.get('indicator_id')}")
+        if item.get("evidence_role") != "auxiliary_evidence_only":
+            raise AssertionError(f"technical evidence role is not auxiliary-only: {item.get('indicator_id')}")
+        if item.get("value_status") not in {"available", "insufficient_history", "missing", "non_finite"}:
+            raise AssertionError(f"technical evidence value status is not explicit: {item.get('indicator_id')}")
+    return indicator_ids
+
+
 def verify(navigation: str) -> dict:
     manifest_path = DOCS / "v2" / "data" / "index.json"
     if not manifest_path.exists():
@@ -94,6 +114,7 @@ def verify(navigation: str) -> dict:
         raise AssertionError("public V2 packet still contains semantic decision output")
     risk = daily.get("risk_control") or {}
     fixed_stop = verify_fixed_stop(risk, daily, expected_price_date)
+    technical_indicators = verify_technical_evidence(daily)
     if not daily.get("trendlines"):
         raise AssertionError("2353 has no generated trendline evidence")
     combined = "\n".join((DOCS / rel).read_text(encoding="utf-8", errors="replace") for rel in ("v2/stock.html", "v2/assets/v2.js", "v2/data/2353.json"))
@@ -121,7 +142,9 @@ def verify(navigation: str) -> dict:
         raise AssertionError(f"semantic decision labels remain in V2 UI: {found_semantics}")
     if "LightweightCharts" not in ui or "15% 停損" not in ui:
         raise AssertionError("TradingView-style workbench or fixed stop rendering is missing")
-    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": fixed_stop, "navigation": navigation, "price_data_date": expected_price_date}
+    if "技術分析證據卡" not in ui or "technical-evidence" not in ui or not {"RSI", "MACD", "布林"}.issubset(set(re.findall(r"RSI|MACD|布林", ui))):
+        raise AssertionError("technical evidence cards are missing from the public V2 UI")
+    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": fixed_stop, "technical_indicators": sorted(technical_indicators), "navigation": navigation, "price_data_date": expected_price_date}
 
 
 def main() -> None:

@@ -8,6 +8,7 @@ import pandas as pd
 
 from .candlesticks import detect_candlestick_patterns
 from .core import finite_float, iso_date, prepare_ohlcv, with_indicators
+from .indicators import build_technical_evidence
 from .structures import detect_price_structures, detect_support_resistance
 from .swings import detect_swings
 from .trendlines import detect_trendlines
@@ -47,6 +48,7 @@ def analyze_ohlcv(
     price_adjustment: str | dict[str, Any] | None = None,
     decision: dict[str, Any] | None = None,
     freshness: dict[str, Any] | None = None,
+    market: str = "listed",
 ) -> dict[str, Any]:
     if timeframe not in {"daily", "weekly", "monthly"}:
         raise ValueError(f"unsupported timeframe: {timeframe}")
@@ -68,6 +70,11 @@ def analyze_ohlcv(
             item["quality_score"] = round(float(item["quality_score"]) * 0.8, 2)
 
     data_date = iso_date(frame.iloc[-1]["date"])
+    technical_evidence = (
+        build_technical_evidence(frame, stock_id=str(stock_id), market=market, freshness=freshness)
+        if timeframe == "daily"
+        else []
+    )
     safe_decision = deepcopy(decision or {})
     safe_decision.setdefault("action_state", "UNKNOWN")
     packet = {
@@ -80,6 +87,7 @@ def analyze_ohlcv(
         "price_adjustment": adjustment,
         "decision": safe_decision,
         "freshness": deepcopy(freshness or {"status": "unknown"}),
+        "technical_evidence": technical_evidence,
         "series": _series(frame),
         "swings": swings,
         "patterns": sorted(patterns, key=lambda item: (item["quality_score"], item["pattern_id"]), reverse=True),
@@ -110,6 +118,7 @@ def analyze_multi_timeframe(
     price_adjustment: str | dict[str, Any] | None = None,
     decision: dict[str, Any] | None = None,
     freshness: dict[str, Any] | None = None,
+    market: str = "listed",
 ) -> list[dict[str, Any]]:
     frame = prepare_ohlcv(data)
     packets: list[dict[str, Any]] = []
@@ -125,6 +134,7 @@ def analyze_multi_timeframe(
                 price_adjustment=price_adjustment,
                 decision=decision,
                 freshness=freshness,
+                market=market,
             )
         )
     return packets

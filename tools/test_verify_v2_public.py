@@ -6,7 +6,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from verify_v2_public import verify_fixed_stop, verify_price_freshness
+from verify_v2_public import verify_fixed_stop, verify_price_freshness, verify_technical_evidence
 
 
 class VerifyV2PublicTest(unittest.TestCase):
@@ -93,6 +93,11 @@ class VerifyV2PublicTest(unittest.TestCase):
                 {"price_refresh_status": "fresh", "price_data_date": "2026-06-26"},
                 {"status": "fresh", "latest_data_date": "2026-08-07"},
             )
+
+    def test_accepts_explicit_auxiliary_technical_cards(self) -> None:
+        ids = ["rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10"]
+        packet = {"technical_evidence": [{"indicator_id": indicator_id, "calculation_basis": "closed_bar_only", "evidence_role": "auxiliary_evidence_only", "value_status": "available"} for indicator_id in ids]}
+        self.assertEqual(verify_technical_evidence(packet), set(ids))
 
 
 if __name__ == "__main__":

@@ -21,7 +21,7 @@ ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
-PRIVATE_SOURCE_SHA = "a88c54258cf29f0d898e6ef68d8edbdba3e83ab2"
+PRIVATE_SOURCE_SHA = "d06eb297885ca212a985a246085bf5350f9fc090"
 FIXED_STOP_PCT = 15.0
 
 
