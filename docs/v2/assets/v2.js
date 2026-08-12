@@ -13,7 +13,7 @@ Promise.all([
   fetch("data/index.json").then(r=>r.json())
 ]).then(([p,index])=>{
   packets=p;active=p.find(x=>x.timeframe==="daily")||p[0];if(!active)throw Error("分析資料為空");
-  const meta=index.stocks?.[id]||{};renderHeader(meta);renderTabs();renderTimeframes();renderOverview();renderPlan();renderPatterns();drawTrend();renderChipStatus();
+  const meta=index.stocks?.[id]||{};renderHeader(meta);renderTabs();renderTimeframes();renderOverview();renderTechnicalEvidence();renderTechnicalPatterns();renderPlan();renderPatterns();drawTrend();renderChipStatus();
   $("#legacy-link").href=`../stocks/${id}.html`;$("#loading").hidden=true;$("#app").hidden=false;
 }).catch(e=>err(`V2 載入失敗：${e.message}`));
 
@@ -41,18 +41,36 @@ function renderHeader(meta){
   const warnings=[...new Set([...(d.warnings||[]),...((d.freshness||{}).warnings||[])])].map(warningText);$("#warnings").innerHTML=(warnings.length?warnings:["目前沒有額外資料警示。"] ).map(x=>`<li>${esc(x)}</li>`).join("");
 }
 function renderTabs(){
-  all(".tab").forEach(b=>b.onclick=()=>{all(".tab,.pane").forEach(x=>x.classList.remove("active"));b.classList.add("active");$("#"+b.dataset.pane).classList.add("active");if(b.dataset.pane==="trend")drawTrend();if(b.dataset.pane==="chips")requestAnimationFrame(initChipWorkbench)});
+  const activate=pane=>{const target=$("#"+pane);if(!target)return;all(".tab,.pane").forEach(x=>x.classList.remove("active"));const tab=$(`.tab[data-pane="${pane}"]`);if(tab)tab.classList.add("active");target.classList.add("active");if(pane==="trend")drawTrend();if(pane==="chips")requestAnimationFrame(initChipWorkbench)};
+  all(".tab").forEach(b=>b.onclick=()=>activate(b.dataset.pane));
+  all(".analysis-entry-link").forEach(b=>b.onclick=()=>activate(b.dataset.pane));
   all(".layer").forEach(b=>b.onclick=()=>{layers[b.dataset.layer]=!layers[b.dataset.layer];b.classList.toggle("active",layers[b.dataset.layer]);drawTrend()});
 }
 function renderTimeframes(){
   $("#timeframes").innerHTML=packets.map(p=>`<button class="tf ${p===active?"active":""}" data-tf="${p.timeframe}">${({daily:"日線",weekly:"週線",monthly:"月線"})[p.timeframe]||p.timeframe}</button>`).join("");
-  all(".tf").forEach(b=>b.onclick=()=>{active=packets.find(p=>p.timeframe===b.dataset.tf)||active;all(".tf").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderPatterns();drawTrend()});
+  all(".tf").forEach(b=>b.onclick=()=>{active=packets.find(p=>p.timeframe===b.dataset.tf)||active;all(".tf").forEach(x=>x.classList.remove("active"));b.classList.add("active");renderTechnicalEvidence();renderTechnicalPatterns();renderPatterns();drawTrend()});
 }
 function renderOverview(){
   const d=daily(),m=d.market_evidence||{},available=Object.keys(gapNames).filter(k=>!(m.gaps||[]).includes(k));
   const metrics=[
     ["價格資料",`${(d.series||[]).length} 根日 K`],["型態證據",`${(d.patterns||[]).length} 項`],["趨勢線",`${(d.trendlines||[]).length} 條`],["籌碼資料",available.length?available.map(k=>gapNames[k]).join("、"):"尚無"]
   ];$("#overview-grid").innerHTML=metrics.map(([a,b])=>`<div class="metric"><span>${esc(a)}</span><strong>${esc(b)}</strong></div>`).join("");
+}
+const indicatorMeanings={rsi_14:"動能位置，提供 30／70 參考區間",macd_12_26_9:"快慢指數差與訊號線的相對位置",bollinger_20_2:"收盤位於上下軌之間的位置",volume_vs_avg_3:"最新量與前 3 根已閉合 K 線均量比較",volume_vs_avg_5:"最新量與前 5 根已閉合 K 線均量比較",volume_vs_avg_10:"最新量與前 10 根已閉合 K 線均量比較"};
+const statusLabels={available:"可用",insufficient_history:"歷史不足",missing:"缺少資料",non_finite:"數值無效"};
+const comparisonLabels={current_volume:"最新量",average_volume:"均量",delta_volume:"差額",delta_percent:"差異 %",oversold_reference:"超賣參考",overbought_reference:"超買參考",macd:"MACD",signal:"訊號線",histogram:"柱狀體",close:"收盤",upper:"上軌",middle:"中軌",lower:"下軌",bandwidth:"帶寬",required_rows:"所需根數",actual_rows:"目前根數",zone:"區間",bias:"相對位置",direction:"量能方向"};
+const patternMeanings={"十字線":"開收接近，需搭配位置與量能觀察","錘頭線":"下影線較長，需搭配後續 K 線確認","吞噬":"前後兩根 K 線的實體關係，需搭配趨勢確認"};
+function evidenceValue(item){return item.value_status==="available"?fmt(item.value,item.unit==="index_0_100"?2:4):statusLabels[item.value_status]||"—"}
+function evidenceComparison(item){return Object.entries(item.comparison_values||{}).filter(([,v])=>v!=="unavailable").map(([k,v])=>`${esc(comparisonLabels[k]||k)}：${typeof v==="number"?esc(fmt(v,4)):esc(v)}`).join(" · ")}
+function renderTechnicalEvidence(){
+  const items=daily().technical_evidence||[];
+  $("#technical-evidence-cards").innerHTML=items.map(item=>`<article class="evidence-card ${esc(item.value_status)}"><span class="evidence-state ${esc(item.value_status)}">${esc(statusLabels[item.value_status]||item.value_status)}</span><h3>${esc(item.name)}</h3><p class="evidence-meta">${esc(indicatorMeanings[item.indicator_id]||"此數值只作為輔助證據")}</p><div class="evidence-value">${evidenceValue(item)}</div><p class="evidence-meta">${esc(item.comparison_basis)}</p><p>${evidenceComparison(item)||"目前沒有可比較欄位"}</p><p class="muted">${esc(item.calculation_basis)} · ${esc(item.data_date)} · ${esc(item.freshness?.status||"unknown")}</p>${item.known_gaps?.length?`<p class="muted">限制：${item.known_gaps.map(esc).join("；")}</p>`:""}</article>`).join("")||"<p class=muted>目前沒有技術證據卡；請等待足夠的已閉合 K 線。</p>";
+}
+function renderTechnicalPatterns(){
+  const patterns=(active.patterns||[]).slice(0,6),lines=(active.trendlines||[]).filter(line=>line.kind!=="channel").slice(0,3);
+  const patternCards=patterns.map(v=>`<article class="mini"><span class="tag">${esc(v.category)} · ${esc(v.direction)} · ${esc(v.status)}</span><h3>${esc(v.name)}</h3><p class="evidence-meta">${esc(patternMeanings[v.name]||"型態需搭配位置、趨勢與量能確認")}</p><p>${esc((v.evidence||[]).join("；")||"目前沒有補充證據")}</p><p class="muted">缺少：${esc((v.missing_conditions||[]).join("；")||"無")}</p></article>`);
+  const lineCards=lines.map(line=>`<article class="mini"><span class="tag">趨勢線 · ${esc(line.kind)}</span><h3>${esc(line.status)}</h3><p class="evidence-meta">以已確認波段連接支撐／壓力位置；接觸越多不代表必然突破。</p><p>接觸 ${esc(line.touch_count)} 次 · 穿越 ${esc(line.violation_count)} 次 · 分數 ${esc(line.quality_score)}</p></article>`);
+  $("#technical-pattern-summary").innerHTML=patternCards.concat(lineCards).join("")||"<p class=muted>目前沒有可顯示的 K 線或線型判讀。</p>";
 }
 function renderPlan(){
   const support=nearest("support"),resistance=nearest("resistance"),stop=daily().risk_control?.stop_price;

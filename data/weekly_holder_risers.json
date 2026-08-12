@@ -2031,7 +2031,7 @@
     "source_tier": "primary",
     "status": "expected_lag",
     "data_date": "2026-08-07",
-    "expected_data_date": "2026-08-11",
+    "expected_data_date": "2026-08-12",
     "fetched_at": "2026-08-10T23:54:58+08:00",
     "row_count": 50,
     "sla": {
@@ -2041,7 +2041,7 @@
       "expected_available_by": "next business cycle after weekly snapshot"
     },
     "age_trading_days": null,
-    "age_calendar_days": 4,
+    "age_calendar_days": 5,
     "calendar_basis": null,
     "calendar_source_ids": [],
     "fallback": {

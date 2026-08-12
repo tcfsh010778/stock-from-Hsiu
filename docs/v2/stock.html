@@ -31,6 +31,7 @@
 
     <nav class="tabs" aria-label="個股分析分頁">
       <button class="tab active" data-pane="overview">總覽</button>
+      <button class="tab" data-pane="technical-evidence">技術證據</button>
       <button class="tab" data-pane="trend">A｜趨勢</button>
       <button class="tab" data-pane="chips">B｜籌碼</button>
       <button class="tab" data-pane="plan">C｜情境計畫</button>
@@ -40,7 +41,25 @@
     <section id="overview" class="pane card active">
       <div class="section-head"><div><div class="eyebrow">OVERVIEW</div><h2>目前有哪些可用證據</h2></div></div>
       <div id="overview-grid" class="metric-grid"></div>
+      <section id="analysis-entry" class="analysis-entry">
+        <div class="section-head"><div><div class="eyebrow">ANALYSIS ENTRY</div><h2>V2 分析入口 <span class="tag">平行路徑</span></h2></div></div>
+        <p class="notice">這裡集中目前可重現的技術與籌碼證據；不取代 V1，也不新增未驗證的規則門檻。</p>
+        <div class="analysis-entry-grid">
+          <button class="analysis-entry-link" data-pane="technical-evidence"><strong>技術分析證據卡</strong><span class="entry-status">K 線、線型、量能、RSI、MACD、布林</span></button>
+          <button class="analysis-entry-link" data-pane="chips"><strong>籌碼分析</strong><span class="entry-status">法人、外資持股與股東結構分開呈現</span></button>
+          <button class="analysis-entry-link" data-pane="plan"><strong>現行策略證據</strong><span class="entry-status">沿用既有資料，不新增指標門檻</span></button>
+          <button class="analysis-entry-link" data-pane="history"><strong>歷史分析</strong><span class="entry-status">報告／回測統一入口骨架，後續整理</span></button>
+        </div>
+      </section>
       <div class="method-note"><b>固定規則：</b>Python 只計算型態、趨勢線、支撐壓力與 15% 停損價；畫面不產生買賣指令，也不替使用者決定方向。</div>
+    </section>
+
+    <section id="technical-evidence" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">TECHNICAL EVIDENCE</div><h2>技術分析證據卡</h2></div><span class="tag">日線／已閉合 K 線</span></div>
+      <p class="notice">RSI、MACD、布林軌道與量能比較是輔助證據；數值不足時保留缺口，不單獨產生訊號。</p>
+      <div id="technical-evidence-cards" class="evidence-grid"></div>
+      <h3>目前 K 線與線型判讀</h3>
+      <div id="technical-pattern-summary" class="grid"></div>
     </section>
 
     <section id="trend" class="pane card">
@@ -66,6 +85,11 @@
     <section id="patterns" class="pane card">
       <div class="section-head"><div><div class="eyebrow">PATTERN EVIDENCE</div><h2>型態證據與缺少條件</h2></div></div>
       <div id="pattern-list" class="grid"></div>
+    </section>
+
+    <section id="history" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">HISTORICAL ANALYSIS</div><h2>歷史報告與回測入口</h2></div><span class="tag">整理中</span></div>
+      <p class="notice">此處先保留共同分析入口；歷史報告與回測資料會在契約與驗證補齊後再接入。</p>
     </section>
   </div>
 </main>
