@@ -33,7 +33,9 @@ class V2EngineTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.frame = synthetic_ohlcv()
-        cls.schema = json.loads((Path(__file__).resolve().parents[1] / "schemas" / "technical_pattern_packet.schema.json").read_text(encoding="utf-8"))
+        root = Path(__file__).resolve().parents[1]
+        cls.schema = json.loads((root / "schemas" / "technical_pattern_packet.schema.json").read_text(encoding="utf-8"))
+        cls.indicator_schema = json.loads((root / "schemas" / "technical_indicator_evidence.schema.json").read_text(encoding="utf-8"))
 
     def test_deterministic_and_preserves_action_state(self):
         kwargs = {"stock_id": "2353", "decision": {"action_state": "SETUP"}, "freshness": {"status": "fresh"}}
@@ -42,6 +44,16 @@ class V2EngineTests(unittest.TestCase):
         self.assertEqual(stable_json(first), stable_json(second))
         self.assertEqual(first["decision"]["action_state"], "SETUP")
         Draft202012Validator(self.schema).validate(first)
+
+    def test_daily_technical_evidence_is_auxiliary_and_contract_validated(self):
+        packet = analyze_ohlcv(self.frame, stock_id="2353", freshness={"status": "fresh"})
+        expected = {"rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10"}
+        items = packet["technical_evidence"]
+        self.assertEqual({item["indicator_id"] for item in items}, expected)
+        self.assertTrue(all(item["calculation_basis"] == "closed_bar_only" for item in items))
+        self.assertTrue(all(item["evidence_role"] == "auxiliary_evidence_only" for item in items))
+        for item in items:
+            Draft202012Validator(self.indicator_schema).validate(item)
 
     def test_multitimeframe_and_no_future_swing(self):
         packets = analyze_multi_timeframe(self.frame, stock_id="2353", price_adjustment="none")

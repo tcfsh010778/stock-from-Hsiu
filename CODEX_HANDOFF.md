@@ -1,6 +1,39 @@
 # Codex Handoff
 
-Last updated: 2026-08-10
+Last updated: 2026-08-12
+
+## 2026-08-12 Public V2 technical evidence release
+
+### Source prepared
+
+- Private source PR #11 was approved and squash-merged at
+  `d06eb297885ca212a985a246085bf5350f9fc090`.
+- Coordination Issue #28 owns the public single-writer release lease.
+- Public V2 remains a parallel path; legacy V1 pages and URLs are preserved.
+- `stock_v2_public/analysis/indicators.py` now emits six closed-bar evidence
+  cards: RSI(14), MACD(12,26,9), Bollinger(20,2), and volume versus the prior
+  3, 5, and 10 closed bars.
+- Public packets deliberately keep these values as
+  `auxiliary_evidence_only`; no private holdings, provider credentials, or
+  semantic decision output is copied into V2.
+- `generate_v2.py` records the private merge SHA as the public provenance
+  anchor and `tools/verify_v2_public.py` validates the six-card contract,
+  fixed stop, freshness, navigation, and public-safe boundaries.
+
+### Verification before public merge
+
+- Public V2 engine, generation, verifier tests: 18 passed.
+- Node JavaScript syntax check passed for the generated V2 bundle.
+- JSON schema parsing and `git diff --check` passed.
+
+### Release handoff
+
+- Branch: `codex/28-desktop-osj874c-public-release`.
+- Next writer: merge the public release PR after CI, then dispatch the existing
+  `Daily Stock Site Update` workflow. That workflow remains the only generated
+  output writer and must regenerate V2 before Pages verification.
+- Final public PR, workflow run, Pages deployment, and cache-busted URLs are
+  recorded in coordination Issue #28 after publication.
 
 ## 2026-08-10 Official price latest-date skew recovery
 
