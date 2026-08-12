@@ -2,6 +2,20 @@
 
 Last updated: 2026-08-12
 
+## 2026-08-12 Institutional-flow empty-publication repair
+
+- Diagnosed the live 2026-08-12 artifact: its date had advanced, but all four
+  official TWSE/TPEx partitions were missing and every ranking was empty.
+- Added bounded retries for truncated/transient official HTTP responses.
+- `market_flow.py` now preserves the last complete artifact when the official
+  partitions are incomplete instead of publishing a new empty dated payload.
+- The daily artifact verifier now rejects non-`ok`, date-mismatched, or empty
+  listed/OTC market-flow data before any generated update can be committed.
+- Added an independent weekday institutional-flow publisher at 18:45 Taipei,
+  with a 21:15 fallback. It updates only the official flow artifact, its public
+  JSON, the home summary panel, and the ranking page, so an unrelated price
+  refresh failure cannot block the institutional-flow update.
+
 ## 2026-08-12 Public V2 technical evidence release
 
 ### Source prepared

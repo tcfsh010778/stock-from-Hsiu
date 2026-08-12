@@ -58,6 +58,7 @@ def verify_artifacts(root: Path) -> VerificationResult:
     reports = root / "reports"
     index = root / "docs" / "index.html"
     site_reports = root / "data" / "site_reports.json"
+    market_flow = root / "data" / "daily_market_flow.json"
 
     dates = report_dates(reports)
     if not dates:
@@ -89,6 +90,21 @@ def verify_artifacts(root: Path) -> VerificationResult:
     json_dates = collect_json_dates(payload)
     if latest not in json_dates:
         fail(f"latest report date {latest} is missing from {site_reports}")
+
+    if not market_flow.exists():
+        fail(f"missing {market_flow}")
+    try:
+        flow_payload = json.loads(market_flow.read_text(encoding="utf-8-sig"))
+    except json.JSONDecodeError as exc:
+        fail(f"{market_flow} is not valid JSON: {exc}")
+    flow_date = str(flow_payload.get("date") or "")
+    if not DATE_PATTERN.fullmatch(flow_date) or flow_date < latest:
+        fail(f"market-flow date {flow_date or 'missing'} is older than latest report date {latest}")
+    if (flow_payload.get("data_quality") or {}).get("state") != "ok":
+        fail("market-flow official partitions are incomplete")
+    markets = flow_payload.get("markets") or {}
+    if any(int((markets.get(market) or {}).get("stock_count") or 0) <= 0 for market in ("listed", "otc")):
+        fail("market-flow listed or OTC detail rows are empty")
 
     print(f"verified latest report date: {latest}")
     print(f"report date count: {len(dates)}")

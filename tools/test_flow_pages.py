@@ -45,6 +45,17 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("institutional-flow.html", html)
         self.assertNotIn("外資淨買排行", html)
 
+    def test_home_market_flow_panel_can_be_replaced_without_rebuilding_other_cards(self):
+        page = f"before\n{generate_site.HOME_MARKET_FLOW_START}\nold\n{generate_site.HOME_MARKET_FLOW_END}\nafter"
+        updated = generate_site.replace_home_market_flow_panel(page, "<div>new flow</div>")
+        self.assertIn("before", updated)
+        self.assertIn("<div>new flow</div>", updated)
+        self.assertNotIn("old", updated)
+        self.assertIn("after", updated)
+
+        with self.assertRaises(ValueError):
+            generate_site.replace_home_market_flow_panel("no markers", "<div>new</div>")
+
     def test_institutional_page_contains_all_four_filtered_rankings(self):
         html = generate_site.build_institutional_flow_page(self.market_payload())
         self.assertIn("外資／投信買賣超排行", html)

@@ -1,0 +1,57 @@
+name: Publish Institutional Flow
+
+on:
+  schedule:
+    # 18:45 Asia/Taipei / 10:45 UTC, Monday-Friday.
+    - cron: "45 10 * * 1-5"
+    # 21:15 Asia/Taipei / 13:15 UTC fallback for delayed official feeds.
+    - cron: "15 13 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-stock-site-update
+  cancel-in-progress: false
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Sync latest main
+        run: git pull --ff-only origin main
+
+      - name: Refresh complete official institutional flow
+        run: python market_flow.py
+
+      - name: Generate focused institutional-flow pages
+        run: python generate_site.py --flow-only
+
+      - name: Verify institutional-flow artifact
+        run: |
+          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); assert p.get('data_quality', {}).get('state') == 'ok'; assert p.get('markets', {}).get('listed', {}).get('stock_count', 0) > 0; assert p.get('markets', {}).get('otc', {}).get('stock_count', 0) > 0"
+          grep -q 'data-flow-rank-row' docs/institutional-flow.html
+
+      - name: Commit and push institutional-flow pages
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/daily_market_flow.json data/freshness_manifest.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/index.html docs/institutional-flow.html
+          if git diff --cached --quiet; then
+            echo "No institutional-flow changes to commit."
+            exit 0
+          fi
+          git commit -m "Update institutional flow"
+          git pull --rebase origin main
+          git push

@@ -70,6 +70,8 @@ PUBLIC_DATA_FILES = [
     FRESHNESS_MANIFEST_PATH,
     PRICE_REFRESH_SUMMARY_PATH,
 ]
+HOME_MARKET_FLOW_START = "<!-- daily-market-flow:start -->"
+HOME_MARKET_FLOW_END = "<!-- daily-market-flow:end -->"
 V44_PRICE_DIR = V44_ROOT / "回測" / "v6_outputs" / "prices"
 V44_CHIP_DIR = V44_ROOT / "回測" / "v6_outputs" / "chips"
 V44_HOLDING_DIR = V44_ROOT / "回測" / "v6_outputs" / "holding_shares"
@@ -1857,6 +1859,19 @@ def build_daily_market_flow_panel(payload: dict | None = None) -> str:
   {warning_html}
   <div class="signal-foot">金額來源：TWSE BFI82U／TPEx 三大法人買賣金額彙總表；排行來源：TWSE T86／TPEx 三大法人明細 · 不改寫選股規則</div>
 </div>"""
+
+
+def replace_home_market_flow_panel(page_html: str, panel_html: str) -> str:
+    pattern = re.compile(
+        re.escape(HOME_MARKET_FLOW_START) + r".*?" + re.escape(HOME_MARKET_FLOW_END),
+        re.DOTALL,
+    )
+    clean_panel = "\n".join(line.rstrip() for line in panel_html.strip().splitlines())
+    replacement = f"{HOME_MARKET_FLOW_START}\n{clean_panel}\n{HOME_MARKET_FLOW_END}"
+    updated, count = pattern.subn(replacement, page_html, count=1)
+    if count != 1:
+        raise ValueError("home market-flow markers are missing or duplicated")
+    return updated
 
 
 def _institutional_ranking_table(rows: list[dict], empty_text: str) -> str:
@@ -5805,7 +5820,9 @@ def build_index_page(reports: list[dict]) -> str:
   <div class="page-title">Stockfrom脩 量化選股站</div>
   <div class="page-sub">今日工作台：先看決策狀態、官方風險與市場流向，再回到個股證據。最新報告：{date_str}</div>
   {build_daily_decisions_panel(load_daily_decisions_payload())}
+  {HOME_MARKET_FLOW_START}
   {build_daily_market_flow_panel(load_daily_market_flow_payload())}
+  {HOME_MARKET_FLOW_END}
   {build_market_sentiment_panel(load_market_sentiment_payload())}
   {build_sector_heat_widget(latest_stocks)}
   {build_today_action_card(latest_stocks, date_str)}
@@ -10487,11 +10504,32 @@ def main():
     import sys
     sys.stdout.reconfigure(encoding="utf-8")
     holder_only = "--holder-only" in sys.argv[1:]
+    flow_only = "--flow-only" in sys.argv[1:]
     print("[Stockfrom] Site Generator v1.0", flush=True)
     print(f"   Reports: {REPORTS_DIR}", flush=True)
     print(f"   Output:  {OUTPUT_DIR}", flush=True)
 
     (OUTPUT_DIR / "daily").mkdir(parents=True, exist_ok=True)
+    if flow_only:
+        public_data = publish_data_assets([DAILY_MARKET_FLOW_PATH, FRESHNESS_MANIFEST_PATH])
+        if public_data:
+            print(f"   [OK] data/{', data/'.join(public_data)}", flush=True)
+        reports = []
+        if REPORTS_CACHE_PATH.exists():
+            reports = json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8-sig"))
+        if reports:
+            set_site_latest_report_date(reports)
+        index_path = OUTPUT_DIR / "index.html"
+        current_index = index_path.read_text(encoding="utf-8")
+        index_path.write_text(
+            replace_home_market_flow_panel(current_index, build_daily_market_flow_panel(load_daily_market_flow_payload())),
+            encoding="utf-8",
+        )
+        print("   [OK] index.html market-flow panel", flush=True)
+        (OUTPUT_DIR / "institutional-flow.html").write_text(build_institutional_flow_page(), encoding="utf-8")
+        print("   [OK] institutional-flow.html", flush=True)
+        return
+
     write_static_assets()
     print("   [OK] css/components.css, js/auto-expand-placeholder.js", flush=True)
     public_data = publish_data_assets()
