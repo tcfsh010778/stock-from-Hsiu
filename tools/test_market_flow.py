@@ -1,11 +1,23 @@
 import unittest
 from datetime import datetime
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import market_flow
 
 
 class MarketFlowTests(unittest.TestCase):
+    def test_fetch_json_retries_truncated_official_response(self):
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = b'{"ok": true}'
+        with patch.object(market_flow, "urlopen", side_effect=[OSError("truncated"), response]) as mocked, patch.object(
+            market_flow, "sleep"
+        ) as mocked_sleep:
+            payload = market_flow._fetch_json("https://example.test/data")
+
+        self.assertEqual(payload, {"ok": True})
+        self.assertEqual(mocked.call_count, 2)
+        mocked_sleep.assert_called_once_with(1)
+
     def test_normalize_twse_and_tpex_rows(self):
         twse = market_flow.normalize_twse_payload(
             {
@@ -203,6 +215,23 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(payload["markets"]["otc"]["stock_count"], 1)
         self.assertEqual(payload["data_quality"], {"state": "ok", "warnings": []})
         self.assertTrue(market_flow._is_complete_snapshot(payload))
+
+    def test_main_keeps_existing_artifact_when_official_partitions_are_incomplete(self):
+        incomplete = market_flow.build_payload(
+            [],
+            [],
+            data_date="2026-08-12",
+            fetched_at="2026-08-12T18:00:00+08:00",
+            source_errors={"listed": "not ready", "otc": "not ready"},
+            amount_source_errors={"listed": "not ready", "otc": "not ready"},
+        )
+        with patch.object(market_flow, "collect", return_value=incomplete), patch.object(
+            market_flow, "write_payload"
+        ) as mocked_write, patch("sys.argv", ["market_flow.py"]):
+            result = market_flow.main()
+
+        self.assertEqual(result, 0)
+        mocked_write.assert_not_called()
 
 
 if __name__ == "__main__":

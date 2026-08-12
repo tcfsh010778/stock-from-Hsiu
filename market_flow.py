@@ -17,6 +17,7 @@ import re
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from time import sleep
 from typing import Any
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -35,6 +36,7 @@ TAIPEI_TZ = timezone(timedelta(hours=8))
 RANKING_POLICY = "ordinary_equity_v1"
 NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
 MAX_AUTO_LOOKBACK_DAYS = 10
+HTTP_ATTEMPTS = 3
 
 
 def _number(value: Any, default: int = 0) -> int:
@@ -70,11 +72,24 @@ def _iso_now(now: datetime | None = None) -> datetime:
     return value.astimezone(TAIPEI_TZ)
 
 
+def _read_json(request: Request, *, timeout: int, attempts: int = HTTP_ATTEMPTS) -> Any:
+    last_error: Exception | None = None
+    for attempt in range(attempts):
+        try:
+            with urlopen(request, timeout=timeout) as response:
+                return json.loads(response.read().decode("utf-8-sig"))
+        except Exception as exc:
+            last_error = exc
+            if attempt + 1 < attempts:
+                sleep(2**attempt)
+    assert last_error is not None
+    raise last_error
+
+
 def _fetch_json(url: str, params: Mapping[str, str] | None = None, timeout: int = 45) -> Any:
     query = f"?{urlencode(params)}" if params else ""
     request = Request(f"{url}{query}", headers={"User-Agent": "stock-from-Hsiu/market-flow"})
-    with urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8-sig"))
+    return _read_json(request, timeout=timeout)
 
 
 def _post_json(url: str, params: Mapping[str, str], timeout: int = 45) -> Any:
@@ -87,8 +102,7 @@ def _post_json(url: str, params: Mapping[str, str], timeout: int = 45) -> Any:
             "Referer": "https://www.tpex.org.tw/zh-tw/mainboard/trading/major-institutional/summary/day.html",
         },
     )
-    with urlopen(request, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8-sig"))
+    return _read_json(request, timeout=timeout)
 
 
 def _twse_value(row: Mapping[str, Any], names: Sequence[str]) -> int:
@@ -523,6 +537,10 @@ def main() -> int:
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST_PATH)
     args = parser.parse_args()
     payload = collect(args.date)
+    if not _is_complete_snapshot(payload):
+        warnings = "; ".join((payload.get("data_quality") or {}).get("warnings") or ["official partitions incomplete"])
+        print(f"[market_flow][WARN] keeping the existing artifact; {warnings}")
+        return 0
     write_payload(payload, args.output, args.manifest)
     print(f"[market_flow] wrote {args.output} date={payload.get('date')} state={(payload.get('data_quality') or {}).get('state')}")
     return 0

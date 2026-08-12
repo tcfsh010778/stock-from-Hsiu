@@ -12,6 +12,16 @@ from verify_daily_update_artifacts import verify_artifacts
 
 
 class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
+    def write_valid_market_flow(self, root: Path, data_date: str) -> None:
+        (root / "data" / "daily_market_flow.json").write_text(
+            json.dumps({
+                "date": data_date,
+                "data_quality": {"state": "ok", "warnings": []},
+                "markets": {"listed": {"stock_count": 1000}, "otc": {"stock_count": 800}},
+            }),
+            encoding="utf-8",
+        )
+
     def test_accepts_site_when_latest_report_date_is_rendered(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -24,6 +34,7 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
                 json.dumps([{"date": "2026-05-13"}]),
                 encoding="utf-8",
             )
+            self.write_valid_market_flow(root, "2026-05-14")
 
             result = verify_artifacts(root)
 
@@ -41,6 +52,7 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
                 json.dumps([{"date": "2026-05-13"}]),
                 encoding="utf-8",
             )
+            self.write_valid_market_flow(root, "2026-05-13")
 
             with self.assertRaises(SystemExit):
                 verify_artifacts(root)
@@ -59,6 +71,7 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
                 json.dumps([{"date": "2026-05-21"}]),
                 encoding="utf-8",
             )
+            self.write_valid_market_flow(root, "2026-05-21")
 
             with self.assertRaises(SystemExit):
                 verify_artifacts(root)
@@ -80,10 +93,34 @@ class VerifyDailyUpdateArtifactsTest(unittest.TestCase):
                 json.dumps([{"date": "2026-08-07"}]),
                 encoding="utf-8",
             )
+            self.write_valid_market_flow(root, "2026-08-07")
 
             result = verify_artifacts(root)
 
             self.assertEqual(result.latest_report_date, "2026-08-07")
+
+    def test_rejects_incomplete_market_flow_artifact(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "reports").mkdir()
+            (root / "docs").mkdir()
+            (root / "data").mkdir()
+            (root / "reports" / "daily_report_2026-08-12.md").write_text("# report", encoding="utf-8")
+            (root / "docs" / "index.html").write_text("latest report 2026-08-12", encoding="utf-8")
+            (root / "data" / "site_reports.json").write_text(
+                json.dumps([{"date": "2026-08-12"}]), encoding="utf-8"
+            )
+            (root / "data" / "daily_market_flow.json").write_text(
+                json.dumps({
+                    "date": "2026-08-12",
+                    "data_quality": {"state": "missing"},
+                    "markets": {"listed": {"stock_count": 0}, "otc": {"stock_count": 0}},
+                }),
+                encoding="utf-8",
+            )
+
+            with self.assertRaises(SystemExit):
+                verify_artifacts(root)
 
 
 if __name__ == "__main__":
