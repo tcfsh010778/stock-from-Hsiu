@@ -1,12 +1,12 @@
 {
   "schema_version": 1,
   "date": "2026-08-12",
-  "updated_at": "2026-08-12T13:56:28+08:00",
-  "score": 82,
+  "updated_at": "2026-08-12T22:09:29+08:00",
+  "score": 89,
   "regime": "bullish",
   "regime_label": "偏多",
   "color": "green",
-  "summary": "市場情緒 82 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
+  "summary": "市場情緒 89 分，偏多；VIX 與台股均線/籌碼一起納入判斷。",
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
@@ -30,57 +30,57 @@
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 5.8,
+      "score": 9.18,
       "weight": 15,
-      "signal": "neutral",
-      "display": "-0.68%",
-      "detail": "融資餘額 8,970,583；前值 9,032,013",
+      "signal": "bullish",
+      "display": "+0.67%",
+      "detail": "融資餘額 8,961,034；前值 8,901,190",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-11",
-      "latest": 8970583.0,
-      "previous": 9032013.0,
-      "weekly_change_pct": -0.68
+      "date": "2026-08-12",
+      "latest": 8961034.0,
+      "previous": 8901190.0,
+      "weekly_change_pct": 0.67
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 12.01,
+      "score": 13.2,
       "weight": 15,
       "signal": "neutral",
-      "display": "+3.98%",
-      "detail": "融券餘額 204,819；快速增加視為偏空",
+      "display": "+2.40%",
+      "detail": "融券餘額 201,947；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-11",
-      "latest": 204819.0,
-      "previous": 196970.0,
-      "weekly_change_pct": 3.98
+      "date": "2026-08-12",
+      "latest": 201947.0,
+      "previous": 197222.0,
+      "weekly_change_pct": 2.4
     },
     "foreign_5d": {
       "label": "外資 5 日",
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "+7.20 億股",
+      "display": "+6.34 億股",
       "detail": "上市外資買賣超彙總，正值代表偏多",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/fund/TWT38U",
-      "date": "2026-08-11",
+      "date": "2026-08-12",
       "days": 5,
-      "cumulative_net_shares": 720060492
+      "cumulative_net_shares": 634148297
     },
     "breadth": {
       "label": "上漲/下跌比",
-      "score": 6.88,
+      "score": 10.0,
       "weight": 10,
       "signal": "bullish",
-      "display": "585/360",
+      "display": "691/254",
       "detail": "以站內最新 SFZ 全量清單估算市場廣度",
       "available": true,
       "source": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/data/sfz_all.json",
-      "advances": 585,
-      "declines": 360,
-      "ratio": 1.62
+      "advances": 691,
+      "declines": 254,
+      "ratio": 2.72
     },
     "us_vix": {
       "label": "US VIX",
@@ -100,7 +100,7 @@
     "OK: TAIEX - 91 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
-    "OK: local breadth - 975 SFZ rows",
+    "OK: local breadth - 977 SFZ rows",
     "OK: Cboe VIX - 40 rows"
   ],
   "future_extensions": [

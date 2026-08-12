@@ -3,7 +3,7 @@
   "schema_version": "1.0.0",
   "source_id": "tdcc_shareholder_distribution",
   "source_url": "https://openapi.tdcc.com.tw/v1/opendata/1-5",
-  "updated_at": "2026-08-12T13:58:20.240247+08:00",
+  "updated_at": "2026-08-12T22:09:42.709226+08:00",
   "latest_date": "2026-08-07",
   "snapshot_count": 7,
   "snapshots": [
@@ -17982,6 +17982,13 @@
           "major_people": 20
         },
         {
+          "security_id": "2237",
+          "name": "華德動能-創",
+          "market": "listed",
+          "major_percent": 81.91,
+          "major_people": 22
+        },
+        {
           "security_id": "2239",
           "name": "英利-KY",
           "market": "listed",
@@ -28242,6 +28249,13 @@
           "market": "otc",
           "major_percent": 64.66,
           "major_people": 2
+        },
+        {
+          "security_id": "7855",
+          "name": "和運租車",
+          "market": "listed",
+          "major_percent": 99.54,
+          "major_people": 3
         },
         {
           "security_id": "8011",
