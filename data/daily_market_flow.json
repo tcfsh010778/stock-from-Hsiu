@@ -2,7 +2,7 @@
   "dataset_id": "daily_market_flow",
   "schema_version": "1.1.0",
   "date": "2026-08-13",
-  "updated_at": "2026-08-13T22:10:23.894906+08:00",
+  "updated_at": "2026-08-13T22:57:54.529600+08:00",
   "markets": {
     "listed": {
       "stock_count": 1332,
@@ -12994,7 +12994,7 @@
     "status": "fresh",
     "data_date": "2026-08-13",
     "expected_data_date": "2026-08-13",
-    "fetched_at": "2026-08-13T22:10:23+08:00",
+    "fetched_at": "2026-08-13T22:57:54+08:00",
     "row_count": 2,
     "sla": {
       "mode": "calendar_day",
