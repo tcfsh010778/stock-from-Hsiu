@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-10T23:54:58+08:00",
+  "generated_at": "2026-08-13T19:36:11+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -415,9 +415,9 @@
       "data_date": "2026-08-13",
       "trading_date": "2026-08-13",
       "expected_data_date": "2026-08-13",
-      "fetched_at": "2026-08-13T18:46:02+08:00",
+      "fetched_at": "2026-08-13T19:36:11+08:00",
       "row_count": 2,
-      "sha256": "3eecf36fe78a17ad0c051da42efd5a2ad849e28c91f9966b55b2ce1823bdcef8",
+      "sha256": "cd98afce538c4900378cc9823f814183af4a8d7d154961197c87a26cfc95e761",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -430,7 +430,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-13T18:46:02+08:00",
+        "evaluated_at": "2026-08-13T19:36:11+08:00",
         "expected_data_date": "2026-08-13",
         "age_trading_days": null,
         "age_calendar_days": 0,
