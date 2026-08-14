@@ -2,19 +2,19 @@
   "dataset_id": "daily_market_flow",
   "schema_version": "1.1.0",
   "date": "2026-08-14",
-  "updated_at": "2026-08-14T19:34:38.859725+08:00",
+  "updated_at": "2026-08-14T22:02:46.791230+08:00",
   "markets": {
     "listed": {
-      "stock_count": 1325,
+      "stock_count": 1330,
       "ranking_eligible_count": 1071,
-      "ranking_excluded_count": 254,
-      "foreign_buy": 2783925950,
-      "foreign_sell": 2152602681,
+      "ranking_excluded_count": 259,
+      "foreign_buy": 2792097529,
+      "foreign_sell": 2160774260,
       "foreign_net": 631323269,
-      "investment_trust_buy": 168876383,
-      "investment_trust_sell": 45635474,
-      "investment_trust_net": 123240909,
-      "institutional_total_net": 1090197643,
+      "investment_trust_buy": 171604634,
+      "investment_trust_sell": 49037474,
+      "investment_trust_net": 122567160,
+      "institutional_total_net": 1089523894,
       "foreign_top_buy": [
         {
           "security_id": "6770",
@@ -100,7 +100,7 @@
         {
           "security_id": "2303",
           "name": "聯電",
-          "net": -5627921
+          "net": -8593921
         },
         {
           "security_id": "2027",
@@ -127,18 +127,18 @@
         "trading_date": "2026-08-14",
         "unit": "TWD",
         "scope": "official_market_total_all_instruments",
-        "foreign_buy_amount": 427876353162,
-        "foreign_sell_amount": 382525022741,
+        "foreign_buy_amount": 432487254209,
+        "foreign_sell_amount": 387135923788,
         "foreign_net_amount": 45351330421,
-        "investment_trust_buy_amount": 26480037999,
-        "investment_trust_sell_amount": 19283718809,
-        "investment_trust_net_amount": 7196319190,
-        "dealer_buy_amount": 49150042106,
-        "dealer_sell_amount": 50811230215,
+        "investment_trust_buy_amount": 29633900919,
+        "investment_trust_sell_amount": 21661301037,
+        "investment_trust_net_amount": 7972599882,
+        "dealer_buy_amount": 49150683003,
+        "dealer_sell_amount": 50811871112,
         "dealer_net_amount": -1661188109,
-        "institutional_total_buy_amount": 503506433267,
-        "institutional_total_sell_amount": 452619971765,
-        "institutional_total_net_amount": 50886461502
+        "institutional_total_buy_amount": 511271838131,
+        "institutional_total_sell_amount": 459609095937,
+        "institutional_total_net_amount": 51662742194
       }
     },
     "otc": {
@@ -148,10 +148,10 @@
       "foreign_buy": 242831887,
       "foreign_sell": 303282751,
       "foreign_net": -60450864,
-      "investment_trust_buy": 1969000,
+      "investment_trust_buy": 1996000,
       "investment_trust_sell": 2505300,
-      "investment_trust_net": -536300,
-      "institutional_total_net": -150423850,
+      "investment_trust_net": -509300,
+      "institutional_total_net": -150396850,
       "foreign_top_buy": [
         {
           "security_id": "6265",
@@ -267,22 +267,22 @@
         "foreign_buy_amount": 61587486488,
         "foreign_sell_amount": 72478273190,
         "foreign_net_amount": -10890786702,
-        "investment_trust_buy_amount": 2198272225,
+        "investment_trust_buy_amount": 2271432225,
         "investment_trust_sell_amount": 3075308796,
-        "investment_trust_net_amount": -877036571,
+        "investment_trust_net_amount": -803876571,
         "dealer_buy_amount": 8450479729,
         "dealer_sell_amount": 11885413779,
         "dealer_net_amount": -3434934050,
-        "institutional_total_buy_amount": 72236238442,
+        "institutional_total_buy_amount": 72309398442,
         "institutional_total_sell_amount": 87438995765,
-        "institutional_total_net_amount": -15202757323
+        "institutional_total_net_amount": -15129597323
       }
     }
   },
   "rankings": {
     "eligibility_policy": "ordinary_equity_v1",
     "eligible_count": 1856,
-    "excluded_count": 374,
+    "excluded_count": 379,
     "foreign_buy": [
       {
         "security_id": "6770",
@@ -11233,6 +11233,12 @@
         "net_shares": 2422000
       },
       {
+        "security_id": "8996",
+        "name": "高力",
+        "market": "listed",
+        "net_shares": 2204000
+      },
+      {
         "security_id": "2412",
         "name": "中華電",
         "market": "listed",
@@ -11245,16 +11251,16 @@
         "net_shares": 1474000
       },
       {
+        "security_id": "2327",
+        "name": "國巨*",
+        "market": "listed",
+        "net_shares": 1473516
+      },
+      {
         "security_id": "2368",
         "name": "金像電",
         "market": "listed",
         "net_shares": 1359915
-      },
-      {
-        "security_id": "8996",
-        "name": "高力",
-        "market": "listed",
-        "net_shares": 901000
       },
       {
         "security_id": "3017",
@@ -11305,12 +11311,6 @@
         "net_shares": 449957
       },
       {
-        "security_id": "2327",
-        "name": "國巨*",
-        "market": "listed",
-        "net_shares": 444516
-      },
-      {
         "security_id": "2633",
         "name": "台灣高鐵",
         "market": "listed",
@@ -11321,6 +11321,12 @@
         "name": "華航",
         "market": "listed",
         "net_shares": 426000
+      },
+      {
+        "security_id": "2492",
+        "name": "華新科",
+        "market": "listed",
+        "net_shares": 414000
       },
       {
         "security_id": "8112",
@@ -11371,6 +11377,12 @@
         "net_shares": 193000
       },
       {
+        "security_id": "2383",
+        "name": "台光電",
+        "market": "listed",
+        "net_shares": 169940
+      },
+      {
         "security_id": "6488",
         "name": "環球晶",
         "market": "otc",
@@ -11386,13 +11398,7 @@
         "security_id": "2308",
         "name": "台達電",
         "market": "listed",
-        "net_shares": 158391
-      },
-      {
-        "security_id": "2492",
-        "name": "華新科",
-        "market": "listed",
-        "net_shares": 152000
+        "net_shares": 155391
       },
       {
         "security_id": "2382",
@@ -11437,12 +11443,6 @@
         "net_shares": 108000
       },
       {
-        "security_id": "2383",
-        "name": "台光電",
-        "market": "listed",
-        "net_shares": 103940
-      },
-      {
         "security_id": "3702",
         "name": "大聯大",
         "market": "listed",
@@ -11477,6 +11477,12 @@
         "name": "富世達",
         "market": "listed",
         "net_shares": 75000
+      },
+      {
+        "security_id": "3653",
+        "name": "健策",
+        "market": "listed",
+        "net_shares": 69984
       },
       {
         "security_id": "9910",
@@ -11525,6 +11531,12 @@
         "name": "鈊象",
         "market": "otc",
         "net_shares": 31000
+      },
+      {
+        "security_id": "3529",
+        "name": "力旺",
+        "market": "otc",
+        "net_shares": 26848
       },
       {
         "security_id": "3131",
@@ -11707,12 +11719,6 @@
         "net_shares": 2000
       },
       {
-        "security_id": "3653",
-        "name": "健策",
-        "market": "listed",
-        "net_shares": 1984
-      },
-      {
         "security_id": "3374",
         "name": "精材",
         "market": "otc",
@@ -11796,7 +11802,7 @@
         "security_id": "2303",
         "name": "聯電",
         "market": "listed",
-        "net_shares": -5627921
+        "net_shares": -8593921
       },
       {
         "security_id": "2027",
@@ -11823,16 +11829,16 @@
         "net_shares": -2552481
       },
       {
+        "security_id": "1303",
+        "name": "南亞",
+        "market": "listed",
+        "net_shares": -1592904
+      },
+      {
         "security_id": "8028",
         "name": "昇陽半導體",
         "market": "listed",
         "net_shares": -1544000
-      },
-      {
-        "security_id": "1303",
-        "name": "南亞",
-        "market": "listed",
-        "net_shares": -1491904
       },
       {
         "security_id": "3189",
@@ -11865,6 +11871,12 @@
         "net_shares": -559417
       },
       {
+        "security_id": "2454",
+        "name": "聯發科",
+        "market": "listed",
+        "net_shares": -514292
+      },
+      {
         "security_id": "4979",
         "name": "華星光",
         "market": "otc",
@@ -11883,22 +11895,22 @@
         "net_shares": -414000
       },
       {
-        "security_id": "2454",
-        "name": "聯發科",
-        "market": "listed",
-        "net_shares": -408292
-      },
-      {
         "security_id": "2330",
         "name": "台積電",
         "market": "listed",
-        "net_shares": -380799
+        "net_shares": -380548
       },
       {
         "security_id": "2353",
         "name": "宏碁",
         "market": "listed",
         "net_shares": -335809
+      },
+      {
+        "security_id": "6515",
+        "name": "穎崴",
+        "market": "listed",
+        "net_shares": -310630
       },
       {
         "security_id": "2356",
@@ -12013,12 +12025,6 @@
         "name": "欣興",
         "market": "listed",
         "net_shares": -85242
-      },
-      {
-        "security_id": "6515",
-        "name": "穎崴",
-        "market": "listed",
-        "net_shares": -84630
       },
       {
         "security_id": "2449",
@@ -12559,12 +12565,6 @@
         "name": "新應材",
         "market": "otc",
         "net_shares": -178
-      },
-      {
-        "security_id": "3529",
-        "name": "力旺",
-        "market": "otc",
-        "net_shares": -152
       }
     ]
   },
@@ -12574,7 +12574,7 @@
       "market": "listed",
       "status": "fresh",
       "data_date": "2026-08-14",
-      "row_count": 1325,
+      "row_count": 1330,
       "error": null
     },
     {
@@ -12616,7 +12616,7 @@
     "status": "fresh",
     "data_date": "2026-08-14",
     "expected_data_date": "2026-08-14",
-    "fetched_at": "2026-08-14T19:34:38+08:00",
+    "fetched_at": "2026-08-14T22:02:46+08:00",
     "row_count": 2,
     "sla": {
       "mode": "calendar_day",

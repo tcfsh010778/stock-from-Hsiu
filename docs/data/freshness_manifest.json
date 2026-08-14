@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-14T19:34:38+08:00",
+  "generated_at": "2026-08-14T22:03:07+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -17,9 +17,9 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 70,
-      "sha256": "e81a52a2c19709b1432463c74408b5f835ba0cac0ffb59dbe04ab97c5bcfb500",
+      "sha256": "e570a9792af46775628e18a77d0009fa2128642135e61db2b58eea7bc3152795",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -32,7 +32,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -83,7 +83,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 11,
       "sha256": "ae83e7f7f7f180162f0e2e523ba3bb59b3550732630483a281b9533afee27922",
       "fallback": {
@@ -98,7 +98,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -153,7 +153,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 15,
       "sha256": "951b28f2ade4e9e5b8a86c7fadbfff87340ffe4923732d1dc24be55d4d50e082",
       "fallback": {
@@ -168,7 +168,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -224,9 +224,9 @@
       "data_date": "2026-06-01",
       "trading_date": null,
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 39,
-      "sha256": "963382b01f87ba50a877011dde1ce12fa69429cdb6c6465ec2c4caba999c0d72",
+      "sha256": "9d3f520ed5ded1fe9a8fb24efa543d3bab9bdaf287cfad9bd93a005c2d603421",
       "fallback": {
         "used": true,
         "from_source_id": "backtest_local_csv_derived",
@@ -239,7 +239,7 @@
       },
       "freshness": {
         "status": "fallback_stale",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 74,
@@ -287,9 +287,9 @@
       "data_date": "2026-05-12",
       "trading_date": null,
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 587,
-      "sha256": "175a1fd80e68b0bc4835870676c2198d76fc995042ce5fa1c85310421b73232a",
+      "sha256": "6f4a4d8c31f8608d121f6972380e2502aeabe040643e7c72e211f1e15df3e282",
       "fallback": {
         "used": true,
         "from_source_id": "carybot_local_csv_derived",
@@ -302,7 +302,7 @@
       },
       "freshness": {
         "status": "fallback_stale",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 94,
@@ -348,9 +348,9 @@
       "data_date": "2026-08-14",
       "trading_date": null,
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:49+08:00",
+      "fetched_at": "2026-08-14T22:03:00+08:00",
       "row_count": 969,
-      "sha256": "74048c35e992d77decb1cc318cbab05e6ade674f03f1f7f47ddde0e3fdbff296",
+      "sha256": "f84c95afd969365c473e738d2f472c38889e84c98f1fd89d455e031ce85e09fa",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -363,7 +363,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:49+08:00",
+        "evaluated_at": "2026-08-14T22:03:00+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 0,
@@ -415,9 +415,9 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T19:34:38+08:00",
+      "fetched_at": "2026-08-14T22:02:46+08:00",
       "row_count": 2,
-      "sha256": "68f337d32bdd561d78565c53e1b0ad2d1de5c4de28618f31b6bd96acb2f58839",
+      "sha256": "513cc22ae20c41640eb292cd149daf65b57922c20c245b9f23d8b3e44cc82598",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -430,7 +430,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T19:34:38+08:00",
+        "evaluated_at": "2026-08-14T22:02:46+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 0,
@@ -485,7 +485,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 30,
       "sha256": "6a63efe039b3364fecdb2737db06729fbbc637205f16a868805befdfefb33266",
       "fallback": {
@@ -500,7 +500,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -565,7 +565,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 24,
       "sha256": "d10b939b402a9a178dc4a98eaaa916ddd138ac12772dbde16b4781f0849b864b",
       "fallback": {
@@ -580,7 +580,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -645,7 +645,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 0,
       "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
       "fallback": {
@@ -660,7 +660,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -706,7 +706,7 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T18:44:40+08:00",
+      "fetched_at": "2026-08-14T22:02:54+08:00",
       "row_count": 4,
       "sha256": "cb900577d7a6358bd8d658f90149198fad18be56e86cfd570375b9d41ebedcd4",
       "fallback": {
@@ -721,7 +721,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T18:44:40+08:00",
+        "evaluated_at": "2026-08-14T22:02:54+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": 0,
         "age_calendar_days": 0,
@@ -777,9 +777,9 @@
       "data_date": "2026-08-07",
       "trading_date": null,
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-13T22:10:41+08:00",
+      "fetched_at": "2026-08-14T22:03:07+08:00",
       "row_count": 50,
-      "sha256": "564a7442b33d3073bbb0fa96e9f9b70ff0372a12c5a903408032a9caab1f4751",
+      "sha256": "1bbcade4e4897991ccfea47fd3b8350f336f1c4aaa82bc6e21eb3ce856e8d4b6",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -792,7 +792,7 @@
       },
       "freshness": {
         "status": "expected_lag",
-        "evaluated_at": "2026-08-13T22:10:41+08:00",
+        "evaluated_at": "2026-08-14T22:03:07+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 7,

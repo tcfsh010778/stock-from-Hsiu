@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-08-14",
-  "updated_at": "2026-08-14T18:44:34+08:00",
+  "updated_at": "2026-08-14T22:02:46+08:00",
   "score": 74,
   "regime": "bullish",
   "regime_label": "偏多",
@@ -10,51 +10,51 @@
   "indicators": {
     "taiex_ma": {
       "label": "TAIEX 均線",
-      "score": 25.0,
+      "score": 30.0,
       "weight": 30,
-      "signal": "neutral",
-      "display": "2/3",
-      "detail": "收盤 45811.01；MA5 45480.01 / MA20 43786.25 / MA60 0.00",
-      "available": false,
+      "signal": "bullish",
+      "display": "3/3",
+      "detail": "收盤 45811.01；MA5 45480.01 / MA20 43786.25 / MA60 44668.55",
+      "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/TAIEX/MI_5MINS_HIST",
       "date": "2026-08-14",
       "close": 45811.01,
       "ma5": 45480.01,
       "ma20": 43786.25,
-      "ma60": null,
+      "ma60": 44668.55,
       "lights": {
         "ma5": true,
         "ma20": true,
-        "ma60": false
+        "ma60": true
       }
     },
     "margin_weekly": {
       "label": "融資週變化",
-      "score": 7.82,
+      "score": 5.6,
       "weight": 15,
-      "signal": "bullish",
-      "display": "+0.13%",
-      "detail": "融資餘額 8,969,841；前值 8,958,262",
+      "signal": "neutral",
+      "display": "-0.76%",
+      "detail": "融資餘額 8,918,284；前值 8,986,438",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-13",
-      "latest": 8969841.0,
-      "previous": 8958262.0,
-      "weekly_change_pct": 0.13
+      "date": "2026-08-14",
+      "latest": 8918284.0,
+      "previous": 8986438.0,
+      "weekly_change_pct": -0.76
     },
     "short_weekly": {
       "label": "融券週變化",
-      "score": 6.34,
+      "score": 3.29,
       "weight": 15,
       "signal": "bearish",
-      "display": "+11.54%",
-      "detail": "融券餘額 214,046；快速增加視為偏空",
+      "display": "+15.61%",
+      "detail": "融券餘額 222,827；快速增加視為偏空",
       "available": true,
       "source": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN",
-      "date": "2026-08-13",
-      "latest": 214046.0,
-      "previous": 191897.0,
-      "weekly_change_pct": 11.54
+      "date": "2026-08-14",
+      "latest": 222827.0,
+      "previous": 192740.0,
+      "weekly_change_pct": 15.61
     },
     "foreign_5d": {
       "label": "外資 5 日",
@@ -97,7 +97,7 @@
     }
   },
   "source_status": [
-    "OK: TAIEX - 52 rows",
+    "OK: TAIEX - 93 rows",
     "OK: TWSE margin - 6 trading days",
     "OK: TWSE foreign - 5 trading days",
     "OK: local breadth - 969 SFZ rows",
