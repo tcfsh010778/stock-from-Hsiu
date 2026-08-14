@@ -11,7 +11,7 @@
     "2026-07-31",
     "2026-08-07"
   ],
-  "updated_at": "2026-08-14T22:03:07.345729+08:00",
+  "updated_at": "2026-08-14T22:46:50.267151+08:00",
   "rows": [
     {
       "security_id": "5351",
@@ -1774,46 +1774,6 @@
       "six_week_complete": true
     },
     {
-      "security_id": "3152",
-      "name": "璟德",
-      "market": "otc",
-      "data_date": "2026-08-07",
-      "previous_date": "2026-07-31",
-      "major_percent": 45.26,
-      "previous_major_percent": 43.69,
-      "major_delta_pctpt": 1.57,
-      "major_people": 16,
-      "weekly_changes": [
-        {
-          "date": "2026-07-03",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-09",
-          "delta_pctpt": -1.04
-        },
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": 0.03
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": 0.06
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": 0.06
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": 1.57
-        }
-      ],
-      "six_week_delta_pctpt": 0.68,
-      "positive_week_count": 4,
-      "six_week_complete": false
-    },
-    {
       "security_id": "2455",
       "name": "全新",
       "market": "listed",
@@ -2012,10 +1972,50 @@
       "six_week_delta_pctpt": 2.25,
       "positive_week_count": 4,
       "six_week_complete": true
+    },
+    {
+      "security_id": "2354",
+      "name": "鴻準",
+      "market": "listed",
+      "data_date": "2026-08-07",
+      "previous_date": "2026-07-31",
+      "major_percent": 46.81,
+      "previous_major_percent": 45.34,
+      "major_delta_pctpt": 1.47,
+      "major_people": 126,
+      "weekly_changes": [
+        {
+          "date": "2026-07-03",
+          "delta_pctpt": -0.67
+        },
+        {
+          "date": "2026-07-09",
+          "delta_pctpt": 0.19
+        },
+        {
+          "date": "2026-07-17",
+          "delta_pctpt": 0.2
+        },
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.32
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.1
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.47
+        }
+      ],
+      "six_week_delta_pctpt": 1.41,
+      "positive_week_count": 4,
+      "six_week_complete": true
     }
   ],
   "row_count": 50,
-  "six_week_complete_count": 49,
+  "six_week_complete_count": 50,
   "ranking_limit": 50,
   "ranking_basis": "latest_week_major_holder_change_pctpt_desc",
   "complete_positive_set": false,
@@ -2032,7 +2032,7 @@
     "status": "expected_lag",
     "data_date": "2026-08-07",
     "expected_data_date": "2026-08-14",
-    "fetched_at": "2026-08-14T22:03:07+08:00",
+    "fetched_at": "2026-08-14T22:46:50+08:00",
     "row_count": 50,
     "sla": {
       "mode": "weekly",
