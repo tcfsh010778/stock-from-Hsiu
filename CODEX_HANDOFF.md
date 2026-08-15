@@ -2531,3 +2531,25 @@ rows.
 - `python -m unittest tools.test_viewport_master -v`.
 - JavaScript syntax check for the generated `V2_JS` asset.
 - `git diff --check`.
+
+## 2026-08-15 daily candlestick annotation publication
+
+### Coordination and scope
+
+- Coordination issue: `tcfsh010778/ai-agent-coordination#30`.
+- Branch: `codex/30-desktop-7akfcau-candlestick-public`; PR #28 was retargeted
+  to public `main` after the independent viewport PR #27 merged.
+- Private source is pinned to `tw-stock-Hsiu` commit
+  `509f2102dbb854297d214562ef509346d3095e14` (merged by private PR #13).
+- Only the daily packet publishes neutral candlestick annotations. Weekly and
+  monthly packets expose no candlestick event envelope.
+- Every installed TA-Lib function is inventoried and callable on demand, while
+  the public marker layer uses a smaller, versioned whitelist and groups dense
+  same-day events.
+- Forward outcomes remain private and are never copied into public hover text.
+
+### Verification
+
+- Full V2 unittest suite, schema validation, and isolated stock `2353` build.
+- JavaScript syntax check and static assertions for neutral circle markers.
+- `git diff --check`.

@@ -36,6 +36,7 @@ class V2EngineTests(unittest.TestCase):
         root = Path(__file__).resolve().parents[1]
         cls.schema = json.loads((root / "schemas" / "technical_pattern_packet.schema.json").read_text(encoding="utf-8"))
         cls.indicator_schema = json.loads((root / "schemas" / "technical_indicator_evidence.schema.json").read_text(encoding="utf-8"))
+        cls.candlestick_schema = json.loads((root / "schemas" / "candlestick_pattern_event.schema.json").read_text(encoding="utf-8"))
 
     def test_deterministic_and_preserves_action_state(self):
         kwargs = {"stock_id": "2353", "decision": {"action_state": "SETUP"}, "freshness": {"status": "fresh"}}
@@ -44,6 +45,7 @@ class V2EngineTests(unittest.TestCase):
         self.assertEqual(stable_json(first), stable_json(second))
         self.assertEqual(first["decision"]["action_state"], "SETUP")
         Draft202012Validator(self.schema).validate(first)
+        Draft202012Validator(self.candlestick_schema).validate(first["candlestick_annotations"])
 
     def test_daily_technical_evidence_is_auxiliary_and_contract_validated(self):
         packet = analyze_ohlcv(self.frame, stock_id="2353", freshness={"status": "fresh"})
@@ -63,6 +65,8 @@ class V2EngineTests(unittest.TestCase):
         self.assertTrue(swings)
         self.assertTrue(all(swing["confirmed_index"] > swing["index"] for swing in swings))
         self.assertTrue(all(pd.Timestamp(swing["confirmed_at"]) > pd.Timestamp(swing["date"]) for swing in swings))
+        self.assertIsNotNone(packets[0]["candlestick_annotations"])
+        self.assertTrue(all(packet["candlestick_annotations"] is None for packet in packets[1:]))
 
     def test_confirmed_trendlines_need_third_touch_and_use_price_coordinates(self):
         frame = with_indicators(prepare_ohlcv(self.frame))

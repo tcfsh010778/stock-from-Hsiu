@@ -10,6 +10,7 @@
     "timeframe",
     "data_date",
     "price_adjustment",
+    "candlestick_annotations",
     "series",
     "patterns",
     "trendlines",
@@ -17,7 +18,7 @@
     "warnings"
   ],
   "properties": {
-    "schema_version": {"const": "1.0.0"},
+    "schema_version": {"const": "1.1.0"},
     "engine_version": {"type": "string", "minLength": 1},
     "stock_id": {"type": "string", "pattern": "^[0-9A-Za-z.-]+$"},
     "timeframe": {"enum": ["daily", "weekly", "monthly"]},
@@ -43,6 +44,21 @@
     "technical_evidence": {
       "type": "array",
       "items": {"$ref": "#/$defs/technical_evidence_item"}
+    },
+    "candlestick_annotations": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["schema_version", "timeframe", "events"],
+          "properties": {
+            "schema_version": {"const": "candlestick-pattern-event/1.0.0"},
+            "timeframe": {"const": "1d"},
+            "events": {"type": "array", "items": {"type": "object"}}
+          },
+          "additionalProperties": true
+        }
+      ]
     },
     "risk_control": {
       "type": "object",

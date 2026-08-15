@@ -5,11 +5,14 @@ on:
     paths:
       - "stock_v2_public/**"
       - "schemas/technical_pattern_packet.schema.json"
+      - "schemas/candlestick_pattern_event.schema.json"
+      - "THIRD_PARTY_NOTICES.md"
       - "generate_v2.py"
       - "requirements-v2.lock"
       - "tools/test_generate_v2.py"
       - "tools/test_v2_engine.py"
       - "tools/test_viewport_master.py"
+      - "tools/test_candlestick_annotations.py"
       - "tools/verify_daily_update_artifacts.py"
       - "tools/test_verify_daily_update_artifacts.py"
       - "tools/verify_v2_public.py"
@@ -21,11 +24,14 @@ on:
     paths:
       - "stock_v2_public/**"
       - "schemas/technical_pattern_packet.schema.json"
+      - "schemas/candlestick_pattern_event.schema.json"
+      - "THIRD_PARTY_NOTICES.md"
       - "generate_v2.py"
       - "requirements-v2.lock"
       - "tools/test_generate_v2.py"
       - "tools/test_v2_engine.py"
       - "tools/test_viewport_master.py"
+      - "tools/test_candlestick_annotations.py"
       - "tools/verify_daily_update_artifacts.py"
       - "tools/test_verify_daily_update_artifacts.py"
       - "tools/verify_v2_public.py"
@@ -46,7 +52,7 @@ jobs:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
       - run: python -m pip install -r requirements-v2.lock
-      - run: python -m unittest tools.test_generate_v2 tools.test_v2_engine tools.test_viewport_master tools.test_verify_daily_update_artifacts tools.test_verify_v2_public -v
+      - run: python -m unittest tools.test_generate_v2 tools.test_v2_engine tools.test_viewport_master tools.test_candlestick_annotations tools.test_verify_daily_update_artifacts tools.test_verify_v2_public -v
       - run: python generate_v2.py --only 2353 --validate
       - shell: python
         run: |
@@ -55,6 +61,10 @@ jobs:
           packets = json.loads(Path("docs/v2/data/2353.json").read_text(encoding="utf-8"))
           daily = next(packet for packet in packets if packet["timeframe"] == "daily")
           assert "decision" not in daily
+          annotations = daily["candlestick_annotations"]
+          assert annotations["timeframe"] == "1d"
+          assert annotations["talib"]["pattern_function_count"] == 61
+          assert all(event["bar_status"] == "closed" for event in annotations["events"])
           risk = daily["risk_control"]
           assert risk["stop_loss_pct"] == 15.0
           assert risk["stop_price"] == round(risk["reference_price"] * 0.85, 4)

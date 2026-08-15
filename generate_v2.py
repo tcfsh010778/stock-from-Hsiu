@@ -21,7 +21,8 @@ ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
-PRIVATE_SOURCE_SHA = "d06eb297885ca212a985a246085bf5350f9fc090"
+CANDLE_SCHEMA_PATH = ROOT / "schemas" / "candlestick_pattern_event.schema.json"
+PRIVATE_SOURCE_SHA = "509f2102dbb854297d214562ef509346d3095e14"
 FIXED_STOP_PCT = 15.0
 
 
@@ -216,6 +217,12 @@ def safe_decision(stock_id: str, decision: dict | None) -> dict:
 def trim_packet(packet: dict) -> dict:
     limit = {"daily": 120, "weekly": 60, "monthly": 36}.get(packet.get("timeframe"), 90)
     packet["series"] = packet.get("series", [])[-limit:]
+    visible_dates = {row.get("date") for row in packet["series"]}
+    annotations = packet.get("candlestick_annotations")
+    if annotations:
+        annotations["events"] = [
+            event for event in annotations.get("events", []) if event.get("bar_date") in visible_dates
+        ]
     packet.pop("swings", None)
     packet["patterns"] = packet.get("patterns", [])[:24]
     packet["trendlines"] = packet.get("trendlines", [])[:8]
@@ -240,6 +247,7 @@ def switch_navigation(path: Path, available_ids: set[str] | None = None) -> int:
 
 
 _WORKER_VALIDATOR: Draft202012Validator | None = None
+_WORKER_CANDLE_VALIDATOR: Draft202012Validator | None = None
 
 
 def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | None]:
@@ -252,17 +260,24 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
         latest_date = str(frame.iloc[-1]["date"])
         if expected_price_date and latest_date != expected_price_date:
             raise ValueError(f"stale OHLCV: latest={latest_date}, expected={expected_price_date}")
+        market = str((((decision.get("evidence") or {}).get("market_risk") or {}).get("market") or "listed"))
+        if market not in {"listed", "otc", "emerging"}:
+            market = "listed"
         packets = analyze_multi_timeframe(
             frame,
             stock_id=stock_id,
             price_adjustment={"mode": "none", "source": None, "verified": False},
             decision=decision,
             freshness={"status": freshness_status, "data_date": latest_date, "warnings": global_warnings},
+            market=market,
         )
         market_evidence = load_market_evidence(Path(data_dir), stock_id)
-        global _WORKER_VALIDATOR
+        global _WORKER_VALIDATOR, _WORKER_CANDLE_VALIDATOR
         if validate and _WORKER_VALIDATOR is None:
             _WORKER_VALIDATOR = Draft202012Validator(json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
+            _WORKER_CANDLE_VALIDATOR = Draft202012Validator(
+                json.loads(CANDLE_SCHEMA_PATH.read_text(encoding="utf-8"))
+            )
         for packet in packets:
             trim_packet(packet)
             # The public V2 is an evidence workbench.  Daily decision semantics
@@ -273,6 +288,8 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
             packet["warnings"] = sorted(set(packet.get("warnings", []) + global_warnings))
             if _WORKER_VALIDATOR:
                 _WORKER_VALIDATOR.validate(packet)
+                if packet.get("candlestick_annotations"):
+                    _WORKER_CANDLE_VALIDATOR.validate(packet["candlestick_annotations"])
         return stock_id, name, packets, None
     except Exception as exc:
         return stock_id, name, None, str(exc)
