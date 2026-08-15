@@ -2512,3 +2512,22 @@ rows.
 - `python data_contract.py validate-registry`: 40 sources and 21 datasets.
 - Full-suite and recovery-publication results are recorded in
   `codex_context/logs/2026-08-10-official-price-date-skew-recovery.md`.
+
+## 2026-08-15 daily price viewport master
+
+### Coordination and scope
+
+- Coordination issue: `tcfsh010778/ai-agent-coordination#30`.
+- Branch: `codex/30-desktop-7akfcau-viewport-master` from public main
+  `a6fe4057b06488a4edaaf6733c7d5aaff1eb2610`.
+- The daily price chart is the only viewport master. Institutional, margin,
+  foreign-ownership, and holdings panels retain independent time ranges.
+- Wheel zoom remains pinned to the newest bar when the user starts at the
+  latest edge; the explicit `最新` control restores the newest bar at any time.
+- No market data, indicators, strategy, or generated `docs/` artifacts changed.
+
+### Verification
+
+- `python -m unittest tools.test_viewport_master -v`.
+- JavaScript syntax check for the generated `V2_JS` asset.
+- `git diff --check`.
