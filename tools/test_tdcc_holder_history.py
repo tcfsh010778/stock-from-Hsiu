@@ -18,6 +18,16 @@ FORM_HTML = """
   </select>
   <table>
     <tr><th>序</th><th>持股/單位數分級</th><th>人數</th><th>股數/單位數</th><th>占集保庫存數比例 (%)</th></tr>
+    <tr><td>1</td><td>1-999</td><td>90</td><td>1</td><td>0.10</td></tr>
+    <tr><td>2</td><td>1,000-5,000</td><td>80</td><td>1</td><td>0.20</td></tr>
+    <tr><td>3</td><td>5,001-10,000</td><td>70</td><td>1</td><td>0.30</td></tr>
+    <tr><td>4</td><td>10,001-15,000</td><td>60</td><td>1</td><td>0.40</td></tr>
+    <tr><td>5</td><td>15,001-20,000</td><td>50</td><td>1</td><td>0.50</td></tr>
+    <tr><td>6</td><td>20,001-30,000</td><td>40</td><td>1</td><td>0.60</td></tr>
+    <tr><td>7</td><td>30,001-40,000</td><td>30</td><td>1</td><td>0.70</td></tr>
+    <tr><td>8</td><td>40,001-50,000</td><td>20</td><td>1</td><td>0.80</td></tr>
+    <tr><td>9</td><td>50,001-100,000</td><td>10</td><td>1</td><td>0.90</td></tr>
+    <tr><td>10</td><td>100,001-200,000</td><td>9</td><td>1</td><td>1.00</td></tr>
     <tr><td>11</td><td>200,001-400,000</td><td>9</td><td>1</td><td>1.20</td></tr>
     <tr><td>12</td><td>400,001-600,000</td><td>10</td><td>1</td><td>2.10</td></tr>
     <tr><td>13</td><td>600,001-800,000</td><td>8</td><td>1</td><td>3.20</td></tr>
@@ -53,20 +63,20 @@ class TdccHolderHistoryTests(unittest.TestCase):
         aggregate = tdcc_holder_history.extract_major_aggregate(parser)
         self.assertEqual(parser.inputs["SYNCHRONIZER_TOKEN"], "token-1")
         self.assertEqual(parser.available_dates[:2], ["2026-08-07", "2026-07-31"])
-        self.assertEqual(aggregate, {"major_percent": 40.0, "major_people": 26})
+        self.assertEqual(aggregate, {"major_percent": 40.0, "major_people": 26, "retail_200_percent": 5.5})
 
     def test_builder_ranks_latest_week_then_backfills_only_leading_candidates(self):
         codes = [f"{1100 + index}" for index in range(12)]
         security_map = {code: {"name": f"Stock {code}", "market": "listed"} for code in codes}
         latest_rows = [
-            {"security_id": code, **security_map[code], "major_percent": 50.0 + (12 - index), "major_people": 20}
+            {"security_id": code, **security_map[code], "major_percent": 50.0 + (12 - index), "major_people": 20, "retail_200_percent": 20.0 - index}
             for index, code in enumerate(codes)
         ]
         series = {}
         for index, code in enumerate(codes):
-            series[("2026-07-31", code)] = {"major_percent": 50.0, "major_people": 19}
+            series[("2026-07-31", code)] = {"major_percent": 50.0, "major_people": 19, "retail_200_percent": 21.0 - index}
             for date in ["2026-07-24", "2026-07-17", "2026-07-09", "2026-07-03", "2026-06-26"]:
-                series[(date, code)] = {"major_percent": 49.0, "major_people": 18}
+                series[(date, code)] = {"major_percent": 49.0, "major_people": 18, "retail_200_percent": 22.0 - index}
         fetcher = FakeFetcher(series)
         archive = {
             "latest_date": "2026-08-07",

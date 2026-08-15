@@ -1,5 +1,8 @@
 import unittest
+import json
+import tempfile
 from datetime import datetime
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import market_flow
@@ -116,6 +119,43 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(otc["investment_trust_net_amount"], -20)
         self.assertEqual(otc["institutional_total_net_amount"], 210)
 
+    def test_normalize_margin_rows_and_calculate_ratio(self):
+        listed = market_flow.normalize_twse_margin_payload({
+            "date": "20260814",
+            "tables": [{
+                "fields": ["代號", "名稱", "買進", "賣出", "現金償還", "前日餘額", "今日餘額", "限額", "買進", "賣出", "現券償還", "前日餘額", "今日餘額"],
+                "data": [["2330", "台積電", "1", "2", "0", "1,000", "1,120", "0", "1", "2", "0", "20", "28"]],
+            }],
+        })
+        otc = market_flow.normalize_tpex_margin_payload([{
+            "Date": "1150814",
+            "SecuritiesCompanyCode": "6488",
+            "CompanyName": "環球晶",
+            "MarginPurchaseBalancePreviousDay": "500",
+            "MarginPurchaseBalance": "400",
+            "ShortSaleBalancePreviousDay": "8",
+            "ShortSaleBalance": "20",
+        }])
+        metrics = market_flow.margin_metrics([*listed, *otc])
+        self.assertEqual(listed[0]["trading_date"], "2026-08-14")
+        self.assertEqual(metrics["2330"], {"margin_balance_delta": 120, "short_margin_ratio_pct": 2.5})
+        self.assertEqual(metrics["6488"], {"margin_balance_delta": -100, "short_margin_ratio_pct": 5.0})
+
+    def test_load_retail_weekly_metrics_uses_200_lot_or_less_ratio_reduction(self):
+        payload = {
+            "snapshots": [
+                {"date": "2026-08-01", "rows": [{"security_id": "2330", "retail_200_percent": 12.4}]},
+                {"date": "2026-08-08", "rows": [{"security_id": "2330", "retail_200_percent": 11.9}]},
+            ]
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "holders.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            metrics, reference = market_flow.load_retail_weekly_metrics(path)
+        self.assertEqual(metrics["2330"]["retail_sell_pctpt"], 0.5)
+        self.assertEqual(reference["date"], "2026-08-08")
+        self.assertEqual(reference["previous_date"], "2026-08-01")
+
     def test_full_rankings_exclude_non_ordinary_instruments(self):
         rows = [
             {"security_id": "2330", "name": "台積電", "market": "listed", "foreign_net": 100, "investment_trust_net": -10},
@@ -124,11 +164,23 @@ class MarketFlowTests(unittest.TestCase):
             {"security_id": "9103", "name": "美德醫-DR", "market": "listed", "foreign_net": 700, "investment_trust_net": 30},
             {"security_id": "6488", "name": "環球晶", "market": "otc", "foreign_net": -50, "investment_trust_net": 20},
         ]
-        rankings = market_flow.build_rankings(rows)
+        rankings = market_flow.build_rankings(rows, {"2330": {"retail_sell_pctpt": 0.5, "margin_balance_delta": 120, "short_margin_ratio_pct": 2.5}})
         self.assertEqual(rankings["eligible_count"], 2)
         self.assertEqual(rankings["excluded_count"], 3)
         self.assertEqual([row["security_id"] for row in rankings["foreign_buy"]], ["2330"])
         self.assertEqual([row["security_id"] for row in rankings["foreign_sell"]], ["6488"])
+        self.assertEqual(rankings["foreign_buy"][0]["retail_sell_pctpt"], 0.5)
+        self.assertEqual(rankings["foreign_buy"][0]["margin_balance_delta"], 120)
+
+    def test_supplemental_fields_are_limited_to_the_rendered_top_fifty(self):
+        rows = [
+            {"security_id": str(1100 + index), "name": f"Stock {index}", "market": "listed", "foreign_net": 10_000 - index}
+            for index in range(52)
+        ]
+        supplemental = {row["security_id"]: {"retail_sell_pctpt": 0.1} for row in rows}
+        ranked = market_flow.build_rankings(rows, supplemental)["foreign_buy"]
+        self.assertIn("retail_sell_pctpt", ranked[49])
+        self.assertNotIn("retail_sell_pctpt", ranked[50])
 
     def test_build_payload_exposes_missing_market_partition(self):
         payload = market_flow.build_payload([{"security_id": "2330", "foreign_net": 1}], [], data_date="2026-08-06", fetched_at="2026-08-06T20:00:00+08:00", source_errors={"otc": "timeout"})
@@ -191,6 +243,27 @@ class MarketFlowTests(unittest.TestCase):
                     "fields": ["單位名稱", "買進金額", "賣出金額", "買賣差額"],
                     "data": listed_amount_rows,
                 }
+            if url == market_flow.TWSE_MARGIN_URL:
+                requested = params["date"]
+                if requested == "20260808":
+                    return {"date": "", "tables": []}
+                return {
+                    "date": "20260807",
+                    "tables": [{
+                        "fields": ["代號", "名稱", "買進", "賣出", "現金償還", "前日餘額", "今日餘額", "限額", "買進", "賣出", "現券償還", "前日餘額", "今日餘額"],
+                        "data": [["2330", "台積電", "1", "2", "0", "1000", "1120", "0", "1", "2", "0", "20", "28"]],
+                    }],
+                }
+            if url == market_flow.TPEX_MARGIN_URL:
+                return [{
+                    "Date": "20260807",
+                    "SecuritiesCompanyCode": "6488",
+                    "CompanyName": "環球晶",
+                    "MarginPurchaseBalancePreviousDay": "500",
+                    "MarginPurchaseBalance": "400",
+                    "ShortSaleBalancePreviousDay": "8",
+                    "ShortSaleBalance": "20",
+                }]
             raise AssertionError(f"unexpected URL {url}")
 
         def fake_post(url, params, timeout=45):
@@ -206,7 +279,10 @@ class MarketFlowTests(unittest.TestCase):
 
         with patch.object(market_flow, "_fetch_json", side_effect=fake_fetch), patch.object(
             market_flow, "_post_json", side_effect=fake_post
-        ):
+        ), patch.object(market_flow, "load_retail_weekly_metrics", return_value=(
+            {"2330": {"retail_sell_pctpt": 0.5}, "6488": {"retail_sell_pctpt": -0.2}},
+            {"date": "2026-08-07", "previous_date": "2026-07-31", "coverage_count": 2},
+        )):
             payload = market_flow.collect(now=datetime(2026, 8, 8, 10, 0, tzinfo=market_flow.TAIPEI_TZ))
 
         self.assertEqual(requested_twse_dates, ["20260808", "20260807"])

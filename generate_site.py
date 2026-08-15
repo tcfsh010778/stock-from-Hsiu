@@ -755,6 +755,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .ranking-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.ranking-grid .ranking-section{margin:0;min-width:0;padding:0;overflow:hidden;border-radius:4px;border-color:#64748b}.ranking-grid .ranking-section+.ranking-section{margin-top:0}
 .ranking-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-bottom:1px solid #64748b;background:#161b22}.ranking-head .section-label{margin:0;font-size:13px}.ranking-meta{font-size:11px;font-weight:900;color:#e6edf3;white-space:nowrap}.ranking-meta span{color:#8b949e;font-weight:700}
 .flow-table-wrap{overflow:auto;max-height:720px;background:#fff}.stock-table.flow-ranking-table{font-size:11px;line-height:1.2;table-layout:fixed;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.flow-ranking-table th,.stock-table.flow-ranking-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8}.stock-table.flow-ranking-table th{position:sticky;top:0;z-index:2;padding-top:4px;padding-bottom:4px;background:#e2e8f0;color:#111827;font-size:10px;font-weight:900}.stock-table.flow-ranking-table th:last-child,.stock-table.flow-ranking-table td:last-child{border-right:0}.stock-table.flow-ranking-table tr:last-child td{border-bottom:0}.stock-table.flow-ranking-table tr:nth-child(even) td:not(.pos):not(.neg){background:#f8fafc}.stock-table.flow-ranking-table tr:hover td{background:#fff4cc}.stock-table.flow-ranking-table .pos{color:#b42318;background:#ffe0e5;font-weight:900}.stock-table.flow-ranking-table .neg{color:#067647;background:#dcfae6;font-weight:900}.stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:36px;text-align:right;color:#475569}.stock-table.flow-ranking-table th:nth-child(3),.stock-table.flow-ranking-table td:nth-child(3){width:48px;text-align:center}.stock-table.flow-ranking-table th:nth-child(4),.stock-table.flow-ranking-table td:nth-child(4){width:90px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table td:nth-child(2){font-weight:800}.stock-table.flow-ranking-table td:nth-child(2) a{color:#0f3f8c;white-space:nowrap;text-decoration:none}.stock-table.flow-ranking-table td:nth-child(2) a:hover{text-decoration:underline}
+.stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:34px}.stock-table.flow-ranking-table th:nth-child(2),.stock-table.flow-ranking-table td:nth-child(2){width:118px}.stock-table.flow-ranking-table th:nth-child(n+3),.stock-table.flow-ranking-table td:nth-child(n+3){width:72px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table th:nth-child(6),.stock-table.flow-ranking-table td:nth-child(6){width:58px}.stock-table.flow-ranking-table .supplemental-pos{color:#b42318;font-weight:800}.stock-table.flow-ranking-table .supplemental-neg{color:#067647;font-weight:800}.stock-table.flow-ranking-table .supplemental-missing{color:#94a3b8}
 .holder-history-card{padding:0;overflow:hidden;border-radius:4px}.holder-history-wrap{overflow:auto;max-height:760px;background:#fff}.stock-table.holder-history-table{min-width:960px;font-size:10px;line-height:1.2;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.holder-history-table th,.stock-table.holder-history-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.stock-table.holder-history-table th{position:sticky;top:0;z-index:2;background:#e2e8f0;color:#111827;font-weight:900}.stock-table.holder-history-table th:last-child,.stock-table.holder-history-table td:last-child{border-right:0}.stock-table.holder-history-table tr:last-child td{border-bottom:0}.stock-table.holder-history-table tr:nth-child(even) td:not(.holder-change):not(.holder-total){background:#f8fafc}.stock-table.holder-history-table tr:hover td{outline:1px solid #f59e0b;outline-offset:-1px}.stock-table.holder-history-table th:nth-child(1),.stock-table.holder-history-table td:nth-child(1){width:38px;color:#475569}.stock-table.holder-history-table th:nth-child(2),.stock-table.holder-history-table td:nth-child(2){min-width:150px;text-align:left;font-weight:800}.stock-table.holder-history-table th:nth-child(3),.stock-table.holder-history-table td:nth-child(3){width:48px;text-align:center}.stock-table.holder-history-table td:nth-child(2) a{color:#0f3f8c;text-decoration:none}.stock-table.holder-history-table td:nth-child(2) a:hover{text-decoration:underline}.holder-change.pos{color:#b42318;background:#ffe0e5;font-weight:900}.holder-change.neg{color:#067647;background:#dcfae6;font-weight:900}.holder-change.zero,.holder-change.missing{color:#64748b;background:#fff}.holder-total{color:#7c5800;background:#fff0a6;font-weight:900}.holder-positive-count{font-weight:900;color:#0f3f8c}
 
 /* Backtest dashboard */
@@ -1878,13 +1879,24 @@ def replace_home_market_flow_panel(page_html: str, panel_html: str) -> str:
 
 
 def _institutional_ranking_table(rows: list[dict], empty_text: str) -> str:
+    def supplemental_cell(value: Any, *, suffix: str = "", decimals: int = 0, signed: bool = True) -> str:
+        if value is None or value == "":
+            return '<td class="supplemental-missing">—</td>'
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return '<td class="supplemental-missing">—</td>'
+        cls = "supplemental-pos" if signed and number > 0 else "supplemental-neg" if signed and number < 0 else ""
+        number_text = f"{number:+,.{decimals}f}" if signed else f"{number:,.{decimals}f}"
+        return f'<td class="{cls}">{number_text}{suffix}</td>'
+
     row_html = "".join(
-        f'<tr data-flow-rank-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{"上市" if str(row.get("market")) == "listed" else "上櫃" if str(row.get("market")) == "otc" else esc(str(row.get("market") or "─"))}</td><td class="{"pos" if float(row.get("net_shares") or 0) > 0 else "neg"}">{_flow_number(row.get("net_shares"))}</td></tr>'
+        f'<tr data-flow-rank-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td class="{"pos" if float(row.get("net_shares") or 0) > 0 else "neg"}">{_flow_number(row.get("net_shares"))}</td>{supplemental_cell(row.get("retail_sell_pctpt"), suffix="%", decimals=2)}{supplemental_cell(row.get("margin_balance_delta"), decimals=0)}{supplemental_cell(row.get("short_margin_ratio_pct"), suffix="%", decimals=2, signed=False)}</tr>'
         for rank, row in enumerate(rows, 1)
     )
     if not row_html:
-        row_html = f'<tr><td colspan="4" style="color:#8b949e">{esc(empty_text)}</td></tr>'
-    return f'<div class="flow-table-wrap"><table class="stock-table flow-ranking-table"><thead><tr><th>排名</th><th>個股</th><th>市場</th><th>淨買賣超</th></tr></thead><tbody>{row_html}</tbody></table></div>'
+        row_html = f'<tr><td colspan="6" style="color:#8b949e">{esc(empty_text)}</td></tr>'
+    return f'<div class="flow-table-wrap"><table class="stock-table flow-ranking-table"><thead><tr><th>排名</th><th>個股</th><th>淨買賣超</th><th title="前一週 200 張以下持股比例減去本週比例；正數代表散戶持股下降">散戶賣出<br>(週)</th><th title="今日融資餘額減去前日融資餘額，單位為張">融資增減<br>(張)</th><th title="融券餘額除以融資餘額">資券比</th></tr></thead><tbody>{row_html}</tbody></table></div>'
 
 
 def build_institutional_flow_page(payload: dict | None = None) -> str:
@@ -1912,7 +1924,7 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
   <div class="card flow-overview-card">
     <div class="section-head"><div class="section-label">今日法人動向</div><div class="section-date">單位：億元</div></div>
     <div class="flow-market-grid">{_market_amount_cards(payload)}</div>
-    <div class="complete-table-note">官方全市場金額彙總；排行榜僅列一般股票 Top 50。符合 {eligible_count:,} 檔，已排除 ETF、ETN、權證、TDR 等 {excluded_count:,} 檔。</div>
+    <div class="complete-table-note">官方全市場金額彙總；每榜列一般股票 Top 50。散戶欄採 TDCC 每週 200 張以下持股變化，融資與資券比採當日官方信用交易資料。</div>
 {warning_html}
   </div>
   <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號或名稱"><span class="flow-page-count" data-flow-rank-count>顯示 {sum(len(rows) for _, _, rows, _ in display_tabs):,} 筆 · 每榜 Top 50</span></div>
@@ -2031,16 +2043,12 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
     )
     if not row_html:
         row_html = f'<tr><td colspan="{7 + len(weekly_dates)}" style="color:#8b949e">尚無完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
-    warning_html = _data_quality_warning(payload, "weekly_holder_risers")
     ranking_limit = int(payload.get("ranking_limit") or 50)
     body = f"""
 <div class="container" data-holder-risers-page>
   <div class="page-title">回顧 6 週大戶股權變化</div>
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
-  <div class="complete-table-note">最新在左側日期標示：{esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序，列出 Top {ranking_limit}。淡紅為增加、淡綠為減少、黃色為 6 週累積；這是籌碼觀察表，不等於買進訊號。</div>
-  <div class="complete-table-note"><strong>本表資料來源：</strong>TDCC OpenAPI 1-5（最新全市場快照）＋TDCC 官網歷史查詢（六週回補）。<strong>yfinance：</strong>僅可作股價與成交量輔助查核，不參與 400 張以上大戶股權比例或排行計算。</div>
-{warning_html}
-{build_holder_update_status_panel()}
+  <div class="complete-table-note">資料更新至 {esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序 Top {ranking_limit}｜淡紅為增加、淡綠為減少、黃色為 6 週累積。</div>
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
   <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
 </div>
@@ -2052,7 +2060,7 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
         "大戶股權變化",
         "holder-risers",
         body,
-        footer_source="TDCC OpenAPI 1-5＋TDCC 官網歷史查詢；yfinance 僅供股價／成交量輔助查核，不參與大戶股權計算",
+        footer_source="TDCC",
     )
 
 

@@ -27,13 +27,17 @@ from data_contract import DEFAULT_MANIFEST_PATH, prepare_artifact_manifest, upda
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 OUTPUT_PATH = DATA_DIR / "daily_market_flow.json"
+HOLDER_ARCHIVE_PATH = DATA_DIR / "holder_weekly_snapshots.json"
 TWSE_URL = "https://www.twse.com.tw/rwd/zh/fund/T86"
 TPEX_URL = "https://www.tpex.org.tw/openapi/v1/tpex_3insti_daily_trading"
 TWSE_AMOUNT_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
 TPEX_AMOUNT_URL = "https://www.tpex.org.tw/www/zh-tw/insti/summary"
+TWSE_MARGIN_URL = "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
+TPEX_MARGIN_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance"
 DERIVED_SOURCE_ID = "daily_market_flow_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 RANKING_POLICY = "ordinary_equity_v1"
+RANKING_SUPPLEMENTAL_LIMIT = 50
 NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
 MAX_AUTO_LOOKBACK_DAYS = 10
 HTTP_ATTEMPTS = 3
@@ -267,22 +271,154 @@ def normalize_amount_payload(payload: Any, market: str) -> dict[str, Any]:
     }
 
 
-def build_rankings(rows: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
+def normalize_twse_margin_payload(payload: Mapping[str, Any]) -> list[dict[str, Any]]:
+    """Normalize the per-security table in the official TWSE margin report."""
+
+    data_date = _date_text(payload.get("date"))
+    rows: list[dict[str, Any]] = []
+    for table in payload.get("tables") or []:
+        if not isinstance(table, Mapping):
+            continue
+        fields = [str(field) for field in table.get("fields") or []]
+        if len(fields) < 13 or _key_text(fields[0]) != "代號" or _key_text(fields[1]) != "名稱":
+            continue
+        for values in table.get("data") or []:
+            if not isinstance(values, Sequence) or isinstance(values, (str, bytes)) or len(values) < 13:
+                continue
+            security_id = str(values[0] or "").strip()
+            if not security_id:
+                continue
+            rows.append({
+                "trading_date": data_date,
+                "security_id": security_id,
+                "name": str(values[1] or "").strip(),
+                "market": "listed",
+                "margin_balance_previous": _number(values[5]),
+                "margin_balance": _number(values[6]),
+                "short_balance_previous": _number(values[11]),
+                "short_balance": _number(values[12]),
+            })
+    return rows
+
+
+def normalize_tpex_margin_payload(payload: Any) -> list[dict[str, Any]]:
+    """Normalize the official TPEx margin-balance OpenAPI rows."""
+
+    rows: list[dict[str, Any]] = []
+    for source in payload if isinstance(payload, list) else []:
+        if not isinstance(source, Mapping):
+            continue
+        security_id = str(source.get("SecuritiesCompanyCode") or "").strip()
+        if not security_id:
+            continue
+        rows.append({
+            "trading_date": _date_text(source.get("Date")),
+            "security_id": security_id,
+            "name": str(source.get("CompanyName") or "").strip(),
+            "market": "otc",
+            "margin_balance_previous": _number(source.get("MarginPurchaseBalancePreviousDay")),
+            "margin_balance": _number(source.get("MarginPurchaseBalance")),
+            "short_balance_previous": _number(source.get("ShortSaleBalancePreviousDay")),
+            "short_balance": _number(source.get("ShortSaleBalance")),
+        })
+    return rows
+
+
+def margin_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
+    metrics: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        security_id = str(row.get("security_id") or "")
+        if not security_id:
+            continue
+        margin_balance = _number(row.get("margin_balance"))
+        margin_previous = _number(row.get("margin_balance_previous"))
+        short_balance = _number(row.get("short_balance"))
+        metrics[security_id] = {
+            "margin_balance_delta": margin_balance - margin_previous,
+            "short_margin_ratio_pct": round(short_balance / margin_balance * 100, 2) if margin_balance > 0 else None,
+        }
+    return metrics
+
+
+def load_retail_weekly_metrics(path: Path | str = HOLDER_ARCHIVE_PATH) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+    """Return weekly reduction in TDCC 200-lot-or-less ownership by security."""
+
+    try:
+        payload = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {}, {}
+    snapshots = [
+        snapshot
+        for snapshot in payload.get("snapshots") or []
+        if isinstance(snapshot, Mapping) and snapshot.get("date") and isinstance(snapshot.get("rows"), list)
+    ]
+    snapshots.sort(key=lambda snapshot: str(snapshot.get("date")))
+    usable = [
+        snapshot
+        for snapshot in snapshots
+        if any(isinstance(row, Mapping) and "retail_200_percent" in row for row in snapshot.get("rows") or [])
+    ]
+    if len(usable) < 2:
+        return {}, {}
+    previous, current = usable[-2:]
+    previous_rows = {
+        str(row.get("security_id")): row
+        for row in previous.get("rows") or []
+        if isinstance(row, Mapping) and row.get("security_id") and "retail_200_percent" in row
+    }
+    current_rows = {
+        str(row.get("security_id")): row
+        for row in current.get("rows") or []
+        if isinstance(row, Mapping) and row.get("security_id") and "retail_200_percent" in row
+    }
+    metrics = {
+        security_id: {
+            "retail_sell_pctpt": round(
+                float(previous_rows[security_id].get("retail_200_percent") or 0)
+                - float(row.get("retail_200_percent") or 0),
+                2,
+            )
+        }
+        for security_id, row in current_rows.items()
+        if security_id in previous_rows
+    }
+    reference = {
+        "date": str(current.get("date") or ""),
+        "previous_date": str(previous.get("date") or ""),
+        "definition": "previous_week_200_lots_or_less_percent_minus_current_week_percent",
+        "coverage_count": len(metrics),
+    }
+    return metrics, reference
+
+
+def build_rankings(
+    rows: Sequence[Mapping[str, Any]],
+    supplemental_by_security: Mapping[str, Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
     clean = [dict(row) for row in rows if isinstance(row, Mapping)]
     eligible = [row for row in clean if is_ordinary_equity(row)]
+    supplemental = supplemental_by_security or {}
 
     def ranked(key: str, positive: bool) -> list[dict[str, Any]]:
         candidates = [row for row in eligible if (_number(row.get(key)) > 0) == positive and _number(row.get(key)) != 0]
         candidates.sort(key=lambda row: (_number(row.get(key)), str(row.get("security_id") or "")), reverse=positive)
-        return [
-            {
+        output: list[dict[str, Any]] = []
+        for index, row in enumerate(candidates):
+            item = {
                 "security_id": str(row.get("security_id") or ""),
                 "name": str(row.get("name") or ""),
                 "market": str(row.get("market") or ""),
                 "net_shares": _number(row.get(key)),
             }
-            for row in candidates
-        ]
+            if index < RANKING_SUPPLEMENTAL_LIMIT:
+                values = supplemental.get(item["security_id"], {})
+                item.update({
+                    "retail_sell_pctpt": values.get("retail_sell_pctpt"),
+                    "margin_balance_delta": values.get("margin_balance_delta"),
+                    "short_margin_ratio_pct": values.get("short_margin_ratio_pct"),
+                })
+            output.append(item)
+        return output
 
     return {
         "eligibility_policy": RANKING_POLICY,
@@ -335,10 +471,18 @@ def build_payload(
     listed_amounts: Mapping[str, Any] | None = None,
     otc_amounts: Mapping[str, Any] | None = None,
     amount_source_errors: Mapping[str, str] | None = None,
+    listed_margin_rows: Sequence[Mapping[str, Any]] | None = None,
+    otc_margin_rows: Sequence[Mapping[str, Any]] | None = None,
+    margin_source_errors: Mapping[str, str] | None = None,
+    retail_metrics: Mapping[str, Mapping[str, Any]] | None = None,
+    retail_reference: Mapping[str, Any] | None = None,
+    retail_source_error: str | None = None,
 ) -> dict[str, Any]:
     errors = dict(source_errors or {})
     amount_errors = dict(amount_source_errors or {})
+    margin_errors = dict(margin_source_errors or {})
     amount_map = {"listed": dict(listed_amounts or {}), "otc": dict(otc_amounts or {})}
+    margin_map = {"listed": list(listed_margin_rows or []), "otc": list(otc_margin_rows or [])}
     source_artifacts = []
     for market, rows, source_id in (("listed", listed_rows, "twse_institutional_trading"), ("otc", otc_rows, "tpex_institutional_trading")):
         source_artifacts.append({
@@ -361,27 +505,65 @@ def build_payload(
             "row_count": 1 if not missing else 0,
             "error": amount_errors.get(market) or ("amount summary unavailable" if missing else None),
         })
+    for market, source_id in (("listed", "twse_margin_short"), ("otc", "tpex_margin_short")):
+        rows = margin_map[market]
+        missing = market in margin_errors or not rows
+        source_artifacts.append({
+            "source_id": source_id,
+            "market": market,
+            "metric": "margin_short",
+            "status": "missing" if missing else "fresh",
+            "data_date": str(rows[0].get("trading_date") or "") if rows and not missing else None,
+            "row_count": len(rows),
+            "error": margin_errors.get(market) or ("margin balance unavailable" if missing else None),
+        })
+    retail_reference = dict(retail_reference or {})
+    retail_metrics = dict(retail_metrics or {})
+    retail_missing = bool(retail_source_error or not retail_metrics or not retail_reference)
+    source_artifacts.append({
+        "source_id": "tdcc_shareholder_distribution",
+        "market": "listed_otc",
+        "metric": "weekly_retail_200",
+        "status": "missing" if retail_missing else "fresh",
+        "data_date": retail_reference.get("date") if not retail_missing else None,
+        "row_count": len(retail_metrics),
+        "error": retail_source_error or ("weekly retail holder comparison unavailable" if retail_missing else None),
+    })
     markets = {"listed": aggregate_market_rows(listed_rows), "otc": aggregate_market_rows(otc_rows)}
     for market in ("listed", "otc"):
         markets[market]["amounts"] = amount_map[market]
     all_errors = {
         **{f"{market}_shares": message for market, message in errors.items()},
         **{f"{market}_amount": message for market, message in amount_errors.items()},
+        **{f"{market}_margin": message for market, message in margin_errors.items()},
     }
     for market in ("listed", "otc"):
         if not amount_map[market] and market not in amount_errors:
             all_errors[f"{market}_amount"] = "amount summary unavailable"
+        if not margin_map[market] and market not in margin_errors:
+            all_errors[f"{market}_margin"] = "margin balance unavailable"
+    if retail_missing:
+        all_errors["weekly_retail_200"] = retail_source_error or "weekly retail holder comparison unavailable"
+    supplemental: dict[str, dict[str, Any]] = {}
+    for security_id, values in margin_metrics([*margin_map["listed"], *margin_map["otc"]]).items():
+        supplemental.setdefault(security_id, {}).update(values)
+    for security_id, values in retail_metrics.items():
+        supplemental.setdefault(str(security_id), {}).update(dict(values))
     return {
         "dataset_id": "daily_market_flow",
-        "schema_version": "1.1.0",
+        "schema_version": "1.2.0",
         "date": data_date,
         "updated_at": _iso_now(fetched_at if isinstance(fetched_at, datetime) else None).isoformat(),
         "markets": markets,
-        "rankings": build_rankings([*listed_rows, *otc_rows]),
+        "rankings": build_rankings([*listed_rows, *otc_rows], supplemental),
+        "supplemental_data": {
+            "margin_date": data_date,
+            "retail_200": retail_reference,
+        },
         "source_artifacts": source_artifacts,
         "data_quality": {
             "state": "ok" if not all_errors else ("warning" if listed_rows or otc_rows else "missing"),
-            "warnings": [f"{partition} official institutional feed unavailable: {message}" for partition, message in all_errors.items()],
+            "warnings": [f"{partition} source unavailable: {message}" for partition, message in all_errors.items()],
         },
     }
 
@@ -436,6 +618,8 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
     errors: dict[str, str] = {}
     amounts: dict[str, dict[str, Any]] = {}
     amount_errors: dict[str, str] = {}
+    margin_rows: dict[str, list[dict[str, Any]]] = {"listed": [], "otc": []}
+    margin_errors: dict[str, str] = {}
     try:
         listed_rows = normalize_twse_payload(_fetch_json(TWSE_URL, {"response": "json", "selectType": "ALLBUT0999", "date": date_param}), date_param)
     except Exception as exc:
@@ -466,6 +650,16 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
             raise ValueError("TPEx amount summary returned no monetary totals")
     except Exception as exc:
         amount_errors["otc"] = str(exc)[:200]
+    try:
+        margin_rows["listed"] = normalize_twse_margin_payload(
+            _fetch_json(TWSE_MARGIN_URL, {"response": "json", "selectType": "ALL", "date": date_param})
+        )
+    except Exception as exc:
+        margin_errors["listed"] = str(exc)[:200]
+    try:
+        margin_rows["otc"] = normalize_tpex_margin_payload(_fetch_json(TPEX_MARGIN_URL))
+    except Exception as exc:
+        margin_errors["otc"] = str(exc)[:200]
 
     detail_rows = {"listed": listed_rows, "otc": otc_rows}
     for market in ("listed", "otc"):
@@ -486,6 +680,20 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
         if amount_date and amount_date != expected_date:
             amount_errors[market] = f"amount date {amount_date} does not align with requested date {expected_date}"
             amounts.pop(market, None)
+    for market in ("listed", "otc"):
+        if market in margin_errors:
+            continue
+        rows = margin_rows[market]
+        if not rows:
+            margin_errors[market] = f"no margin rows returned for {expected_date}"
+            continue
+        row_dates = {str(row.get("trading_date") or "") for row in rows}
+        if row_dates != {expected_date}:
+            actual = ", ".join(sorted(item or "missing" for item in row_dates))
+            margin_errors[market] = f"margin date {actual} does not align with requested date {expected_date}"
+            margin_rows[market] = []
+    retail_metrics, retail_reference = load_retail_weekly_metrics()
+    retail_error = None if retail_metrics and retail_reference else "TDCC archive lacks two complete 200-lot-or-less snapshots"
     return build_payload(
         detail_rows["listed"],
         detail_rows["otc"],
@@ -495,6 +703,12 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
         listed_amounts=amounts.get("listed"),
         otc_amounts=amounts.get("otc"),
         amount_source_errors=amount_errors,
+        listed_margin_rows=margin_rows["listed"],
+        otc_margin_rows=margin_rows["otc"],
+        margin_source_errors=margin_errors,
+        retail_metrics=retail_metrics,
+        retail_reference=retail_reference,
+        retail_source_error=retail_error,
     )
 
 
@@ -505,6 +719,9 @@ def _is_complete_snapshot(payload: Mapping[str, Any]) -> bool:
         "tpex_institutional_trading",
         "twse_institutional_amount_summary",
         "tpex_institutional_amount_summary",
+        "twse_margin_short",
+        "tpex_margin_short",
+        "tdcc_shareholder_distribution",
     }
     fresh = {
         str(item.get("source_id"))

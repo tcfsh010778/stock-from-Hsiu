@@ -191,15 +191,15 @@
       "source_id": "twse_margin_short",
       "provider": "TWSE",
       "official": true,
-      "endpoint": "https://openapi.twse.com.tw/v1/exchangeReport/MI_MARGN",
-      "documentation_url": "https://openapi.twse.com.tw/",
+      "endpoint": "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN?response=json&selectType=ALL",
+      "documentation_url": "https://www.twse.com.tw/zh/trading/margin/mi-margn.html",
       "terms_url": "https://www.twse.com.tw/zh/terms/use.html",
       "terms_checked_on": "2026-08-04",
       "terms_status": "official_openapi_and_government-open-data_exception_with_attribution",
       "access": "unauthenticated_https_json",
       "market_coverage": ["listed"],
       "source_frequency": "each trading day after close",
-      "field_map": {"security_id": "股票代號", "margin_buy": "融資買進", "margin_sell": "融資賣出", "margin_balance": "融資今日餘額", "short_buy": "融券買進", "short_sell": "融券賣出", "short_balance": "融券今日餘額"}
+      "field_map": {"security_id": "代號", "margin_balance_previous": "融資前日餘額", "margin_balance": "融資今日餘額", "short_balance_previous": "融券前日餘額", "short_balance": "融券今日餘額"}
     },
     "tpex_margin_short": {
       "source_id": "tpex_margin_short",
@@ -213,7 +213,7 @@
       "access": "unauthenticated_https_json",
       "market_coverage": ["otc"],
       "source_frequency": "each trading day after close",
-      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "margin_buy": "MarginPurchase", "margin_sell": "MarginSales", "margin_balance": "MarginPurchaseBalance", "short_buy": "ShortConvering", "short_sell": "ShortSale", "short_balance": "ShortSaleBalance"}
+      "field_map": {"trading_date": "Date", "security_id": "SecuritiesCompanyCode", "margin_balance_previous": "MarginPurchaseBalancePreviousDay", "margin_balance": "MarginPurchaseBalance", "short_balance_previous": "ShortSaleBalancePreviousDay", "short_balance": "ShortSaleBalance"}
     },
     "twse_securities_lending": {
       "source_id": "twse_securities_lending",
@@ -270,7 +270,7 @@
       "access": "unauthenticated_https_form_post_rate_limited_per_security",
       "market_coverage": ["listed", "otc", "emerging", "other_tdcc_custodied_securities"],
       "source_frequency": "weekly history retained for one year by the owner query page",
-      "redistribution_policy": "metadata_and_compact_400-plus-lot_aggregates_only_pending_explicit_license_confirmation",
+      "redistribution_policy": "metadata_and_compact_400-plus-lot_and-200-lot-or-less_aggregates_only_pending_explicit_license_confirmation",
       "field_map": {"data_date": "資料日期", "security_id": "證券代號 query", "holding_level": "持股/單位數分級", "holder_count": "人數", "custody_percent": "占集保庫存數比例 (%)"}
     },
     "twse_corporate_actions": {
@@ -588,11 +588,11 @@
       "documentation_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/contracts/freshness_matrix.md",
       "terms_url": null,
       "terms_checked_on": null,
-      "terms_status": "project-derived-aggregate-from-TWSE-and-TPEx-official-sources",
-      "access": "derived aggregate plus normalized ordinary-equity rankings; source partitions and missing states remain visible",
+      "terms_status": "project-derived-aggregate-from-TWSE-TPEx-and-TDCC-official-sources",
+      "access": "derived aggregate plus normalized ordinary-equity rankings with same-day official margin metrics and weekly TDCC retail-holder changes; source partitions and missing states remain visible",
       "market_coverage": ["listed", "otc"],
       "source_frequency": "each trading day after official institutional feeds",
-      "use_policy": "publish exact official market amount summaries and normalized ordinary-equity net-buy/sell rankings; exclude ETF, ETN, warrants, TDR, bonds, preferred shares and other non-common-equity instruments from rankings; preserve official source attribution",
+      "use_policy": "publish exact official market amount summaries and normalized ordinary-equity net-buy/sell rankings; attach TDCC 200-lot-or-less weekly holding-ratio reduction, official margin-balance change, and short-to-margin ratio without converting missing values to zero; exclude ETF, ETN, warrants, TDR, bonds, preferred shares and other non-common-equity instruments from rankings",
       "field_map": {}
     },
     "weekly_holder_risers_derived": {
@@ -718,8 +718,8 @@
     },
     "daily_market_flow": {
       "dataset_id": "daily_market_flow",
-      "schema_version": "1.1.0",
-      "semantic_role": "derived daily listed/OTC exact institutional amount summary plus ordinary-equity-only foreign and investment-trust rankings",
+      "schema_version": "1.2.0",
+      "semantic_role": "derived daily listed/OTC exact institutional amount summary plus ordinary-equity-only foreign and investment-trust rankings enriched with weekly TDCC retail-holder reduction and same-day official margin metrics",
       "primary_sources": [{"source_id": "daily_market_flow_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "calendar_day", "frequency": "each trading day after official institutional feeds", "max_lag_calendar_days": 2, "expected_available_by": "20:00 Asia/Taipei"},
@@ -733,7 +733,10 @@
         {"name": "investment_trust_net_amount", "type": "integer", "required": true},
         {"name": "institutional_total_net_amount", "type": "integer", "required": true},
         {"name": "ranking_eligible_count", "type": "integer", "required": true},
-        {"name": "ranking_excluded_count", "type": "integer", "required": true}
+        {"name": "ranking_excluded_count", "type": "integer", "required": true},
+        {"name": "retail_sell_pctpt", "type": "decimal|null", "required": false},
+        {"name": "margin_balance_delta", "type": "integer|null", "required": false},
+        {"name": "short_margin_ratio_pct", "type": "decimal|null", "required": false}
       ]
     },
     "margin_short": {

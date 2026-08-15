@@ -40,8 +40,12 @@ jobs:
 
       - name: Verify institutional-flow artifact
         run: |
-          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); assert p.get('data_quality', {}).get('state') == 'ok'; assert p.get('markets', {}).get('listed', {}).get('stock_count', 0) > 0; assert p.get('markets', {}).get('otc', {}).get('stock_count', 0) > 0"
+          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); assert p.get('schema_version') == '1.2.0'; assert p.get('data_quality', {}).get('state') == 'ok'; assert p.get('markets', {}).get('listed', {}).get('stock_count', 0) > 0; assert p.get('markets', {}).get('otc', {}).get('stock_count', 0) > 0; assert p.get('supplemental_data', {}).get('retail_200', {}).get('coverage_count', 0) > 0"
           grep -q 'data-flow-rank-row' docs/institutional-flow.html
+          grep -q '散戶賣出' docs/institutional-flow.html
+          grep -q '融資增減' docs/institutional-flow.html
+          grep -q '資券比' docs/institutional-flow.html
+          ! grep -q '<th>市場</th>' docs/institutional-flow.html
 
       - name: Commit and push institutional-flow pages
         run: |
