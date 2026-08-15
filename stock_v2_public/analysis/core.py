@@ -47,7 +47,7 @@ def with_indicators(frame: pd.DataFrame) -> pd.DataFrame:
         ],
         axis=1,
     ).max(axis=1)
-    out["atr14"] = true_range.rolling(14, min_periods=3).mean().bfill()
+    out["atr14"] = true_range.rolling(14, min_periods=14).mean()
     out["volume_sma20"] = out["volume"].rolling(20, min_periods=3).mean()
     out["relative_volume"] = (out["volume"] / out["volume_sma20"]).replace([np.inf, -np.inf], np.nan)
     for window in (5, 20, 60, 120, 240):

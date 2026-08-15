@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://tcfsh010778.github.io/stock-from-Hsiu/schemas/candlestick_pattern_event.schema.json",
+  "title": "Daily candlestick pattern annotation envelope",
+  "type": "object",
+  "required": ["schema_version", "feature_version", "pattern_config_version", "symbol", "market", "timeframe", "as_of", "generated_at", "source", "talib", "events"],
+  "properties": {
+    "schema_version": {"const": "candlestick-pattern-event/1.0.0"},
+    "feature_version": {"type": "string", "minLength": 1},
+    "pattern_config_version": {"type": "string", "minLength": 1},
+    "symbol": {"type": "string", "pattern": "^[0-9A-Za-z.-]+$"},
+    "market": {"enum": ["listed", "otc", "emerging"]},
+    "timeframe": {"const": "1d"},
+    "as_of": {"type": "string", "format": "date"},
+    "generated_at": {"type": "string", "format": "date-time"},
+    "source": {
+      "type": "object",
+      "required": ["dataset_id", "data_date", "price_basis", "fallback", "gaps"],
+      "properties": {
+        "dataset_id": {"type": "string", "minLength": 1},
+        "data_date": {"type": "string", "format": "date"},
+        "price_basis": {"type": "string", "minLength": 1},
+        "fallback": {"type": "boolean"},
+        "gaps": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "additionalProperties": false
+    },
+    "talib": {
+      "type": "object",
+      "required": ["version", "pattern_function_count", "calculation_state", "selection"],
+      "properties": {
+        "version": {"type": "string", "minLength": 1},
+        "pattern_function_count": {"type": "integer", "minimum": 1},
+        "calculation_state": {"const": "ok"},
+        "selection": {"enum": ["public_whitelist", "all_pattern_recognition_functions"]}
+      },
+      "additionalProperties": false
+    },
+    "events": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/event"}
+    }
+  },
+  "$defs": {
+    "nullableNumber": {"type": ["number", "null"]},
+    "event": {
+      "type": "object",
+      "required": ["event_id", "bar_date", "bar_status", "pattern_id", "label_zh", "family", "orientation", "engine", "raw", "geometry", "context", "display", "notes"],
+      "properties": {
+        "event_id": {"type": "string", "minLength": 1},
+        "bar_date": {"type": "string", "format": "date"},
+        "bar_status": {"const": "closed"},
+        "pattern_id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+        "label_zh": {"type": "string", "minLength": 1},
+        "family": {"type": "string", "minLength": 1},
+        "orientation": {"enum": ["up_body", "down_body", "neutral", "positive_raw", "negative_raw", "upper_shadow", "lower_shadow"]},
+        "engine": {"enum": ["ta-lib", "custom"]},
+        "raw": {
+          "type": "object",
+          "required": ["function", "value", "minimum_lookback"],
+          "properties": {
+            "function": {"type": ["string", "null"]},
+            "value": {"type": ["integer", "null"]},
+            "minimum_lookback": {"type": ["integer", "null"], "minimum": 0}
+          },
+          "additionalProperties": false
+        },
+        "geometry": {
+          "type": "object",
+          "required": ["component_bars", "body_ratio", "body_atr_prev", "body_percentile60", "upper_shadow_ratio", "lower_shadow_ratio", "position60"],
+          "properties": {
+            "component_bars": {"type": "integer", "minimum": 1},
+            "body_ratio": {"$ref": "#/$defs/nullableNumber"},
+            "body_atr_prev": {"$ref": "#/$defs/nullableNumber"},
+            "body_percentile60": {"$ref": "#/$defs/nullableNumber"},
+            "upper_shadow_ratio": {"$ref": "#/$defs/nullableNumber"},
+            "lower_shadow_ratio": {"$ref": "#/$defs/nullableNumber"},
+            "position60": {"$ref": "#/$defs/nullableNumber"}
+          },
+          "additionalProperties": false
+        },
+        "context": {
+          "type": "object",
+          "required": ["position", "trend", "volume", "relative_volume_prev20", "corporate_action_overlap"],
+          "properties": {
+            "position": {"enum": ["high_zone", "mid_zone", "low_zone", "unknown"]},
+            "trend": {"const": "not_required"},
+            "volume": {"enum": ["expanded", "normal", "contracted", "unknown"]},
+            "relative_volume_prev20": {"$ref": "#/$defs/nullableNumber"},
+            "corporate_action_overlap": {"type": ["boolean", "null"]}
+          },
+          "additionalProperties": false
+        },
+        "display": {
+          "type": "object",
+          "required": ["display_priority", "marker_group", "short_label"],
+          "properties": {
+            "display_priority": {"type": "integer", "minimum": 0},
+            "marker_group": {"type": "string", "minLength": 1},
+            "short_label": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": false
+        },
+        "notes": {"type": "array", "items": {"type": "string"}, "uniqueItems": true}
+      },
+      "not": {
+        "anyOf": [
+          {"required": ["signal"]}, {"required": ["action"]}, {"required": ["buy"]},
+          {"required": ["sell"]}, {"required": ["entry"]}, {"required": ["exit"]},
+          {"required": ["target_price"]}, {"required": ["stop_loss"]},
+          {"required": ["recommendation"]}, {"required": ["trade_confidence"]}
+        ]
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

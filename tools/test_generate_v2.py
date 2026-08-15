@@ -15,9 +15,18 @@ class PublicV2GenerationTests(unittest.TestCase):
         self.assertIn("不得由 AI 補寫", decision["blockers"][0])
 
     def test_packet_series_is_bounded(self):
-        packet = {"timeframe": "daily", "series": list(range(300)), "patterns": list(range(30)), "trendlines": list(range(10)), "support_resistance": list(range(20))}
+        series = [{"date": f"2026-01-{day:02d}"} for day in range(1, 31)]
+        packet = {
+            "timeframe": "daily",
+            "series": series,
+            "candlestick_annotations": {"events": [{"bar_date": "2026-01-01"}, {"bar_date": "2026-01-30"}]},
+            "patterns": list(range(30)),
+            "trendlines": list(range(10)),
+            "support_resistance": list(range(20)),
+        }
         trim_packet(packet)
-        self.assertEqual(len(packet["series"]), 120)
+        self.assertEqual(len(packet["series"]), 30)
+        self.assertEqual(len(packet["candlestick_annotations"]["events"]), 2)
         self.assertEqual(len(packet["patterns"]), 24)
         self.assertEqual(len(packet["trendlines"]), 8)
         self.assertEqual(len(packet["support_resistance"]), 12)

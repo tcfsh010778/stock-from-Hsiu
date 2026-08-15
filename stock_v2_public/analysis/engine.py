@@ -6,15 +6,15 @@ from typing import Any
 
 import pandas as pd
 
-from .candlesticks import detect_candlestick_patterns
+from .candlesticks import build_candlestick_event_envelope
 from .core import finite_float, iso_date, prepare_ohlcv, with_indicators
 from .indicators import build_technical_evidence
 from .structures import detect_price_structures, detect_support_resistance
 from .swings import detect_swings
 from .trendlines import detect_trendlines
 
-ENGINE_VERSION = "2.0.0"
-SCHEMA_VERSION = "1.0.0"
+ENGINE_VERSION = "2.1.0"
+SCHEMA_VERSION = "1.1.0"
 
 
 def _price_adjustment(value: str | dict[str, Any] | None) -> dict[str, Any]:
@@ -55,10 +55,8 @@ def analyze_ohlcv(
     frame = with_indicators(prepare_ohlcv(data))
     adjustment = _price_adjustment(price_adjustment)
     warnings: list[str] = []
-    candles, candle_warnings = detect_candlestick_patterns(frame)
-    warnings.extend(candle_warnings)
     swings = detect_swings(frame, timeframe)
-    patterns = candles + detect_price_structures(frame, swings)
+    patterns = detect_price_structures(frame, swings)
     trendlines = detect_trendlines(frame, swings, timeframe)
     zones = detect_support_resistance(frame, swings)
 
@@ -70,6 +68,17 @@ def analyze_ohlcv(
             item["quality_score"] = round(float(item["quality_score"]) * 0.8, 2)
 
     data_date = iso_date(frame.iloc[-1]["date"])
+    candlestick_annotations = (
+        build_candlestick_event_envelope(
+            frame,
+            symbol=str(stock_id),
+            market=market,
+            price_basis="raw" if adjustment["mode"] == "none" else adjustment["mode"],
+            public_only=True,
+        )
+        if timeframe == "daily"
+        else None
+    )
     technical_evidence = (
         build_technical_evidence(frame, stock_id=str(stock_id), market=market, freshness=freshness)
         if timeframe == "daily"
@@ -88,6 +97,7 @@ def analyze_ohlcv(
         "decision": safe_decision,
         "freshness": deepcopy(freshness or {"status": "unknown"}),
         "technical_evidence": technical_evidence,
+        "candlestick_annotations": candlestick_annotations,
         "series": _series(frame),
         "swings": swings,
         "patterns": sorted(patterns, key=lambda item: (item["quality_score"], item["pattern_id"]), reverse=True),
