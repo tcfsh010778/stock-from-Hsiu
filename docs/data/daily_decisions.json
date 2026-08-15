@@ -3,7 +3,7 @@
   "schema_version": "1.1.0",
   "rule_version": "daily_decisions_v1_1_market_risk",
   "date": "2026-08-14",
-  "updated_at": "2026-08-14T22:03:00+08:00",
+  "updated_at": "2026-08-15T19:36:01+08:00",
   "source_artifacts": [
     {
       "dataset_id": "mda_candidate_pool",
@@ -25,7 +25,7 @@
       "freshness": {
         "status": "fallback_stale",
         "data_date": "2026-05-12",
-        "expected_data_date": "2026-08-14",
+        "expected_data_date": "2026-08-15",
         "source_id": "carybot_preserved_json",
         "source_tier": "fallback",
         "row_count": 587,
@@ -46,11 +46,11 @@
       "path": "data/attention_disposition.json",
       "freshness": {
         "status": "fresh",
-        "data_date": "2026-08-14",
-        "expected_data_date": "2026-08-14",
+        "data_date": "2026-08-15",
+        "expected_data_date": "2026-08-15",
         "source_id": "attention_disposition_derived",
         "source_tier": "primary",
-        "row_count": 70,
+        "row_count": 34,
         "fallback": {
           "used": false,
           "from_source_id": null,
@@ -72,9 +72,9 @@
     ]
   },
   "action_counts": {
-    "NO-GO": 863,
+    "NO-GO": 862,
     "SETUP": 5,
-    "WATCH": 101
+    "WATCH": 102
   },
   "count": 969,
   "decisions": [
@@ -445,29 +445,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "08月13日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率61.09%，且08月13日當日沖銷成交量占該日總成交量比率67.05%﹝第十三款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.5 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -832,29 +828,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 20,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "因連續3個營業日達本中心作業要點第四條第一項第一款"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.7 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -992,29 +984,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達165.02%(第二款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：近3日 +22.80% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -1379,29 +1367,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "08月13日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率72.93%，且08月13日當日沖銷成交量占該日總成交量比率69.57%﹝第十三款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:1.0 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -1618,8 +1602,8 @@
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 20,
+          "effective_end_date": "2026-08-20",
+          "matching_interval_minutes": 2,
           "transition_revised": false,
           "reasons": [
             "連續三次"
@@ -1772,29 +1756,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(自當日之前一個營業日起)之當日沖銷成交量占總成交量比率達71.24%，當日之前一個營業日當日沖銷成交量占總成交量達71.86%（第十三款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.8 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -1853,29 +1833,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(自當日之前一個營業日起)之當日沖銷成交量占總成交量比率達68.73%，當日之前一個營業日當日沖銷成交量占總成交量達69.84%（第十三款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.5 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -2019,7 +1995,6 @@
           "matching_interval_minutes": null,
           "transition_revised": null,
           "reasons": [
-            "最近六個營業日累積收盤價漲幅達25.37%。且六個營業日起迄兩個營業日收盤價價差達107.50元﹝第一款﹞。",
             "115年8月13日至115年8月14日連續二次"
           ],
           "warnings": []
@@ -4403,29 +4378,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "連續三次"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.2 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -4730,7 +4701,6 @@
           "matching_interval_minutes": 2,
           "transition_revised": false,
           "reasons": [
-            "最近六個營業日累積收盤價漲幅達25.41%。且六個營業日起迄兩個營業日收盤價價差達91.00 元﹝第一款﹞。",
             "連續三次"
           ],
           "warnings": []
@@ -6708,29 +6678,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "因連續3個營業日達本中心作業要點第四條第一項第一款"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.3 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -7663,29 +7629,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "連續三次"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.2 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -8061,29 +8023,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "連續三次"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.4 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -8303,29 +8261,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(含當日)累積之最後成交價漲幅達33.97%(第一款)\n當日之成交量較最近六十個營業日日平均成交量放大6.18倍(第三款)\n當日週轉率達21.89%(第四款)\n當日本益比為132.17、股價淨值比為19.89且為其所屬產業類別股價淨值比之5.36倍(第六款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：近3日 +26.30% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -10988,29 +10942,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "連續三次"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.2 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -11382,29 +11332,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日累積收盤價漲幅達49.27%﹝第一款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：%B 122.0% (門檻 110%) + 近3日 +32.68% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -13783,29 +13729,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "08月13日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率61.12%，且08月13日當日沖銷成交量占該日總成交量比率64.93%﹝第十三款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.5 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -14484,29 +14426,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "08月13日之最近六個營業日之當日沖銷成交量占最近六個營業日總成交量比率60.83%，且08月13日當日沖銷成交量占該日總成交量比率61.84%﹝第十三款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.5 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -16958,8 +16896,8 @@
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 5,
+          "effective_end_date": "2026-08-17",
+          "matching_interval_minutes": 2,
           "transition_revised": false,
           "reasons": [
             "連續三次"
@@ -18062,29 +18000,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 2,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "連續三次"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.3 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -28499,29 +28433,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(含當日)累積之最後成交價漲幅達36.43%(第一款)\n當日週轉率達6.87%(第四款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.4 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -29200,29 +29130,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 5,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "因連續3個營業日達本中心作業要點第四條第一項第一款"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.9 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -29231,7 +29157,7 @@
       "stock_id": "6182",
       "name": "合晶",
       "rank": 373,
-      "action_state": "NO-GO",
+      "action_state": "WATCH",
       "rule_version": "daily_decisions_v1_1_market_risk",
       "candidate": true,
       "armed": false,
@@ -29279,31 +29205,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 20,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "因連續3個營業日達本中心作業要點第四條第一項第一款"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
-      "conflicts": [
-        "market_disposition_overrides_strategy_entry"
-      ],
+      "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:3.0 → 條件未完全同向，先觀察或等回測",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -33276,12 +33196,11 @@
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 20,
+          "effective_end_date": "2026-08-20",
+          "matching_interval_minutes": 2,
           "transition_revised": false,
           "reasons": [
-            "連續5個營業日",
-            "連續5個營業日及沖銷標準"
+            "連續5個營業日"
           ],
           "warnings": []
         }
@@ -35852,29 +35771,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "08月14日之本益比為86.20，且股價淨值比為23.24 。另當日週轉率為 6.61%，暨美商高盛證券商成交賣出金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為14.38%。單一投資人當日買進該有價證券之成交金額占當日該有價證券總成交金額比率10%以上，且達新台幣壹億元以上。且其股價淨值比較該類股股價淨值比四倍以上﹝第六款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：近3日 +20.19% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -42211,12 +42126,11 @@
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 5,
+          "effective_end_date": "2026-08-20",
+          "matching_interval_minutes": 2,
           "transition_revised": false,
           "reasons": [
-            "連續5個營業日",
-            "連續5個營業日及沖銷標準"
+            "連續5個營業日"
           ],
           "warnings": []
         }
@@ -47277,7 +47191,6 @@
           "matching_interval_minutes": null,
           "transition_revised": null,
           "reasons": [
-            "08月14日之本益比為 419.79，且股價淨值比為10.19 。另當日週轉率為10.76%，暨凱基證券商成交買進金額達新臺幣壹億元以上，且占當日該有價證券總成交金額比率為38.12%。單一投資人當日買進該有價證券之成交金額占當日該有價證券總成交金額比率10%以上，且達新台幣壹億元以上。且其股價淨值比較該類股股價淨值比四倍以上﹝第六款﹞。",
             "115年8月11日至115年8月14日連續四次"
           ],
           "warnings": []
@@ -49854,29 +49767,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(含當日)累積之最後成交價漲幅達36.7%(第一款)\n當日週轉率達10.33%(第四款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：%B 116.4% (門檻 110%) + 近3日 +26.91% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -50626,29 +50535,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "disposition",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
-          "effective_end_date": "2026-08-14",
-          "matching_interval_minutes": 5,
+          "effective_end_date": null,
+          "matching_interval_minutes": null,
           "transition_revised": false,
-          "reasons": [
-            "因連續3個營業日達本中心作業要點第四條第一項第一款"
-          ],
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "official disposition is active; new entry is blocked"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:1.1 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: disposition"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -53604,29 +53509,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(含當日)累積之最後成交價漲幅達29.82%，當日之成交量較最近六十個營業日日平均成交量放大6.4倍(第三款)\n當日週轉率達23.17%(第四款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：RSI 87.9 (門檻 85) + %B 121.7% (門檻 110%) + 近3日 +23.91% (門檻 20%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -55484,29 +55385,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近九十個營業日(含當日)起迄兩個營業日之最後成交價漲幅達165.55%(第二款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "強制過熱排除：%B 120.1% (門檻 110%) → 等待回測 MA20 後重新評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -57044,29 +56941,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日累積收盤價漲幅達34.25%﹝第一款﹞。"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "R:R 1:0.4 邊際不足 → 等改善至 1:2 以上再評估",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -70416,29 +70309,25 @@
           "is_current": null
         },
         "market_risk": {
-          "risk_level": "attention",
+          "risk_level": "none",
           "source_state": "complete",
           "market": "otc",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
-          "transition_revised": null,
-          "reasons": [
-            "最近六個營業日(含當日)之日平均成交量較最近六十個營業日日平均成交量放大為5.77倍，當日成交量較最近六十個營業日之日平均成交量放大為34.23倍(第九款)"
-          ],
+          "transition_revised": false,
+          "reasons": [],
           "warnings": []
         }
       },
       "conflicts": [],
       "warnings": [
         "mda_candidate_pool freshness is missing",
-        "carybot_signals freshness is fallback_stale",
-        "security is on the official attention list"
+        "carybot_signals freshness is fallback_stale"
       ],
       "reasons": [
         "風險籃（過熱/風險）→ 暫不追價，等待回測或訊號轉強",
-        "No current CaryBot B1/B2 confirmation",
-        "Official market risk: attention"
+        "No current CaryBot B1/B2 confirmation"
       ]
     },
     {
@@ -75824,10 +75713,10 @@
     "dataset_schema_version": "1.1.0",
     "source_id": "daily_decisions_derived",
     "source_tier": "primary",
-    "status": "fresh",
+    "status": "expected_lag",
     "data_date": "2026-08-14",
-    "expected_data_date": "2026-08-14",
-    "fetched_at": "2026-08-14T22:03:00+08:00",
+    "expected_data_date": "2026-08-15",
+    "fetched_at": "2026-08-15T19:36:01+08:00",
     "row_count": 969,
     "sla": {
       "mode": "calendar_day",
@@ -75836,7 +75725,7 @@
       "expected_available_by": "after the daily candidate and timing artifacts"
     },
     "age_trading_days": null,
-    "age_calendar_days": 0,
+    "age_calendar_days": 1,
     "calendar_basis": null,
     "calendar_source_ids": [],
     "fallback": {

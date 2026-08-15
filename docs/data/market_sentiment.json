@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "date": "2026-08-14",
-  "updated_at": "2026-08-14T22:02:46+08:00",
+  "updated_at": "2026-08-15T19:35:41+08:00",
   "score": 74,
   "regime": "bullish",
   "regime_label": "偏多",
@@ -87,13 +87,13 @@
       "score": 15.0,
       "weight": 15,
       "signal": "bullish",
-      "display": "14.63",
-      "detail": "5日變化 -3.43%",
+      "display": "14.25",
+      "detail": "5日變化 -4.36%",
       "available": true,
       "source": "https://cdn.cboe.com/api/global/us_indices/daily_prices/VIX_History.csv",
-      "date": "2026-08-13",
-      "latest": 14.63,
-      "change_5d_pct": -3.43
+      "date": "2026-08-14",
+      "latest": 14.25,
+      "change_5d_pct": -4.36
     }
   },
   "source_status": [

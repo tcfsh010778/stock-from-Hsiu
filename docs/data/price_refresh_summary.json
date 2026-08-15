@@ -7,39 +7,15 @@
     "twse_history": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX",
     "tpex_history": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
   },
-  "generated_at": "2026-08-14T14:02:13.956578+00:00",
+  "generated_at": "2026-08-15T11:35:01.943026+00:00",
   "query_start_date": "2026-08-07",
   "latest_data_date": "2026-08-14",
   "latest_snapshot": {
-    "mode": "historical_exact_date_recovery",
-    "date_skew_recovered": true,
-    "twse_latest_date": "2026-08-13",
+    "mode": "latest_openapi",
+    "date_skew_recovered": false,
+    "twse_latest_date": "2026-08-14",
     "tpex_latest_date": "2026-08-14",
-    "target_date": "2026-08-14",
-    "recovery_coverage": {
-      "count_basis": "unique_security_ids",
-      "reference_unique_ids": {
-        "twse": 1094,
-        "tpex": 869
-      },
-      "minimum_unique_ids": {
-        "twse": 800,
-        "tpex": 600
-      },
-      "required_reference_ids": {
-        "twse": 1084,
-        "tpex": 861
-      },
-      "covered_reference_ids": {
-        "twse": 1092,
-        "tpex": 869
-      },
-      "recovered_unique_ids": {
-        "twse": 1093,
-        "tpex": 869
-      },
-      "min_reference_ratio": 0.99
-    }
+    "target_date": "2026-08-14"
   },
   "common_trading_dates": [
     "2026-08-07",
