@@ -22,7 +22,7 @@ DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
 CANDLE_SCHEMA_PATH = ROOT / "schemas" / "candlestick_pattern_event.schema.json"
-PRIVATE_SOURCE_SHA = "dcb8c627e6ccea70b3c6014c9dc55af4e4990e07"
+PRIVATE_SOURCE_SHA = "509f2102dbb854297d214562ef509346d3095e14"
 FIXED_STOP_PCT = 15.0
 
 

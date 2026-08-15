@@ -2478,10 +2478,10 @@ rows.
 ### Coordination and scope
 
 - Coordination issue: `tcfsh010778/ai-agent-coordination#30`.
-- Stacked branch: `codex/30-desktop-7akfcau-candlestick-public`, based on the
-  viewport master branch so the two changes remain separately reviewable.
+- Branch: `codex/30-desktop-7akfcau-candlestick-public`; PR #28 was retargeted
+  to public `main` after the independent viewport PR #27 merged.
 - Private source is pinned to `tw-stock-Hsiu` commit
-  `dcb8c627e6ccea70b3c6014c9dc55af4e4990e07`.
+  `509f2102dbb854297d214562ef509346d3095e14` (merged by private PR #13).
 - Only the daily packet publishes neutral candlestick annotations. Weekly and
   monthly packets expose no candlestick event envelope.
 - Every installed TA-Lib function is inventoried and callable on demand, while
