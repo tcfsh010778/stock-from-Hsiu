@@ -1037,13 +1037,14 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
 </nav>"""
 
 
-def footer_html() -> str:
+def footer_html(source_text: str | None = None) -> str:
     freshness = ""
     if SITE_LATEST_REPORT_DATE:
         freshness = f'  <p class="site-freshness">資料更新：{esc(SITE_LATEST_REPORT_DATE)} 收盤後</p>\n'
+    source_text = source_text or "FinMind 付費版 · TWSE · Yahoo Finance"
     return f"""
 <footer>
-{freshness}  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+{freshness}  <p>資料來源：{esc(source_text)}</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© {datetime.now().year} Stockfrom脩 · 每個交易日自動更新</p>
 </footer>"""
@@ -1367,7 +1368,7 @@ def carybot_marker_cell(stock_id: str, hide_empty_col: bool = False) -> str:
 </td>"""
 
 
-def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
+def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "", footer_source: str | None = None) -> str:
     component_href = f"{nav_prefix}css/components.css"
     placeholder_js = f"{nav_prefix}js/auto-expand-placeholder.js"
     return f"""<!DOCTYPE html>
@@ -1385,7 +1386,7 @@ def html_page(title: str, nav_key: str, body: str, nav_prefix: str = "") -> str:
 <body>
 {nav_html(nav_key, nav_prefix)}
 {body}
-{footer_html()}
+{footer_html(footer_source)}
 </body>
 </html>"""
 
@@ -2036,7 +2037,8 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
 <div class="container" data-holder-risers-page>
   <div class="page-title">回顧 6 週大戶股權變化</div>
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
-  <div class="complete-table-note">最新在左側日期標示：{esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序，列出 Top {ranking_limit}。淡紅為增加、淡綠為減少、黃色為 6 週累積；資料來源為 TDCC，這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="complete-table-note">最新在左側日期標示：{esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序，列出 Top {ranking_limit}。淡紅為增加、淡綠為減少、黃色為 6 週累積；這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="complete-table-note"><strong>本表資料來源：</strong>TDCC OpenAPI 1-5（最新全市場快照）＋TDCC 官網歷史查詢（六週回補）。<strong>yfinance：</strong>僅可作股價與成交量輔助查核，不參與 400 張以上大戶股權比例或排行計算。</div>
 {warning_html}
 {build_holder_update_status_panel()}
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
@@ -2046,7 +2048,12 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
 <script>
 (function(){{var root=document.querySelector('[data-holder-risers-page]');if(!root)return;var input=root.querySelector('[data-holder-riser-search]'),count=root.querySelector('[data-holder-riser-count]'),rows=Array.from(root.querySelectorAll('[data-holder-riser-row]'));function run(){{var q=(input.value||'').trim().toLowerCase(),visible=0;rows.forEach(function(row){{var show=!q||(row.dataset.search||'').toLowerCase().indexOf(q)>=0;row.style.display=show?'':'none';if(show)visible+=1;}});count.textContent='目前顯示 '+visible+' / '+rows.length+' 檔';}}input.addEventListener('input',run);}})();
 </script>"""
-    return html_page("大戶股權變化", "holder-risers", body)
+    return html_page(
+        "大戶股權變化",
+        "holder-risers",
+        body,
+        footer_source="TDCC OpenAPI 1-5＋TDCC 官網歷史查詢；yfinance 僅供股價／成交量輔助查核，不參與大戶股權計算",
+    )
 
 
 def build_daily_decisions_panel(payload: dict | None = None, compact: bool = False, limit: int = 5) -> str:

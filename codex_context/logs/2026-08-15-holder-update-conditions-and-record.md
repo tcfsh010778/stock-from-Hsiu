@@ -55,3 +55,17 @@ holder page is committed.
 - Scheduler: `.github/workflows/holder_history_publish.yml`
 
 The JSON retains the latest 20 checks; the page shows the five most recent.
+
+## Source-label clarification
+
+The holder page uses two official TDCC routes with different roles:
+
+- TDCC OpenAPI 1-5: latest full-market holder-distribution snapshot.
+- TDCC official website history query: prior dates used to complete the
+  six-week history for selected candidates.
+
+yfinance is displayed only as a possible price and volume cross-check. Its
+generic holder fields do not implement TDCC's Taiwan-specific 400+ lot account
+distribution, so yfinance is not used in the holder ratio, weekly changes, or
+ranking. The generic site footer was overridden on this page to remove the
+previous ambiguity.
