@@ -62,11 +62,11 @@ jobs:
         if: steps.holder_date.outputs.update_required == 'true'
         run: python holder_update_status.py --finalize
 
-      - name: Refresh institutional supplemental columns
+      - name: Refresh official daily holder and rolling institutional metrics
         if: steps.holder_date.outputs.update_required == 'true'
         run: python market_flow.py
 
-      - name: Regenerate institutional ranking with the new weekly holder comparison
+      - name: Regenerate institutional ranking with rolling windows
         if: steps.holder_date.outputs.update_required == 'true'
         run: python generate_site.py --flow-only
 
@@ -79,15 +79,19 @@ jobs:
           python -c "import json; p=json.load(open('data/holder_update_status.json', encoding='utf-8')); assert p.get('last_checked_at'); assert p.get('state') in {'waiting_for_tdcc', 'published'}; assert p.get('attempts')"
           grep -q "回顧 6 週大戶股權變化" docs/holder-risers.html
           grep -q "資料更新至" docs/holder-risers.html
+          grep -q "散戶賣出" docs/holder-risers.html
+          grep -q "融資增減" docs/holder-risers.html
+          grep -q "資券比" docs/holder-risers.html
           ! grep -q "yfinance" docs/holder-risers.html
 
-      - name: Verify institutional supplemental columns
+      - name: Verify corrected page-specific columns
         if: steps.holder_date.outputs.update_required == 'true'
         run: |
-          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); h=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); r=(p.get('supplemental_data') or {}).get('retail_200', {}); assert p.get('schema_version') == '1.2.0'; assert r.get('coverage_count', 0) > 0; assert r.get('date') == h.get('date')"
-          grep -q "散戶賣出" docs/institutional-flow.html
-          grep -q "融資增減" docs/institutional-flow.html
-          grep -q "資券比" docs/institutional-flow.html
+          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); h=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); r=(p.get('supplemental_data') or {}).get('retail_200', {}); assert p.get('schema_version') == '1.3.0'; assert p.get('institutional_history', {}).get('session_count') == 20; assert r.get('coverage_count', 0) > 0; assert r.get('date') == h.get('date'); assert p.get('supplemental_data', {}).get('holder_metric_count', 0) > 0"
+          grep -q "5日" docs/institutional-flow.html
+          grep -q "10日" docs/institutional-flow.html
+          grep -q "20日" docs/institutional-flow.html
+          grep -q "法人集中比" docs/institutional-flow.html
 
       - name: Commit and push holder pages
         run: |

@@ -756,7 +756,7 @@ nav a.tab:hover,nav a.tab.active{background:#1a6bc4;color:#fff;text-decoration:n
 .ranking-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px;border-bottom:1px solid #64748b;background:#161b22}.ranking-head .section-label{margin:0;font-size:13px}.ranking-meta{font-size:11px;font-weight:900;color:#e6edf3;white-space:nowrap}.ranking-meta span{color:#8b949e;font-weight:700}
 .flow-table-wrap{overflow:auto;max-height:720px;background:#fff}.stock-table.flow-ranking-table{font-size:11px;line-height:1.2;table-layout:fixed;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.flow-ranking-table th,.stock-table.flow-ranking-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8}.stock-table.flow-ranking-table th{position:sticky;top:0;z-index:2;padding-top:4px;padding-bottom:4px;background:#e2e8f0;color:#111827;font-size:10px;font-weight:900}.stock-table.flow-ranking-table th:last-child,.stock-table.flow-ranking-table td:last-child{border-right:0}.stock-table.flow-ranking-table tr:last-child td{border-bottom:0}.stock-table.flow-ranking-table tr:nth-child(even) td:not(.pos):not(.neg){background:#f8fafc}.stock-table.flow-ranking-table tr:hover td{background:#fff4cc}.stock-table.flow-ranking-table .pos{color:#b42318;background:#ffe0e5;font-weight:900}.stock-table.flow-ranking-table .neg{color:#067647;background:#dcfae6;font-weight:900}.stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:36px;text-align:right;color:#475569}.stock-table.flow-ranking-table th:nth-child(3),.stock-table.flow-ranking-table td:nth-child(3){width:48px;text-align:center}.stock-table.flow-ranking-table th:nth-child(4),.stock-table.flow-ranking-table td:nth-child(4){width:90px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table td:nth-child(2){font-weight:800}.stock-table.flow-ranking-table td:nth-child(2) a{color:#0f3f8c;white-space:nowrap;text-decoration:none}.stock-table.flow-ranking-table td:nth-child(2) a:hover{text-decoration:underline}
 .stock-table.flow-ranking-table th:nth-child(1),.stock-table.flow-ranking-table td:nth-child(1){width:34px}.stock-table.flow-ranking-table th:nth-child(2),.stock-table.flow-ranking-table td:nth-child(2){width:118px}.stock-table.flow-ranking-table th:nth-child(n+3),.stock-table.flow-ranking-table td:nth-child(n+3){width:72px;text-align:right;font-variant-numeric:tabular-nums}.stock-table.flow-ranking-table th:nth-child(6),.stock-table.flow-ranking-table td:nth-child(6){width:58px}.stock-table.flow-ranking-table .supplemental-pos{color:#b42318;font-weight:800}.stock-table.flow-ranking-table .supplemental-neg{color:#067647;font-weight:800}.stock-table.flow-ranking-table .supplemental-missing{color:#94a3b8}
-.holder-history-card{padding:0;overflow:hidden;border-radius:4px}.holder-history-wrap{overflow:auto;max-height:760px;background:#fff}.stock-table.holder-history-table{min-width:960px;font-size:10px;line-height:1.2;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.holder-history-table th,.stock-table.holder-history-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.stock-table.holder-history-table th{position:sticky;top:0;z-index:2;background:#e2e8f0;color:#111827;font-weight:900}.stock-table.holder-history-table th:last-child,.stock-table.holder-history-table td:last-child{border-right:0}.stock-table.holder-history-table tr:last-child td{border-bottom:0}.stock-table.holder-history-table tr:nth-child(even) td:not(.holder-change):not(.holder-total){background:#f8fafc}.stock-table.holder-history-table tr:hover td{outline:1px solid #f59e0b;outline-offset:-1px}.stock-table.holder-history-table th:nth-child(1),.stock-table.holder-history-table td:nth-child(1){width:38px;color:#475569}.stock-table.holder-history-table th:nth-child(2),.stock-table.holder-history-table td:nth-child(2){min-width:150px;text-align:left;font-weight:800}.stock-table.holder-history-table th:nth-child(3),.stock-table.holder-history-table td:nth-child(3){width:48px;text-align:center}.stock-table.holder-history-table td:nth-child(2) a{color:#0f3f8c;text-decoration:none}.stock-table.holder-history-table td:nth-child(2) a:hover{text-decoration:underline}.holder-change.pos{color:#b42318;background:#ffe0e5;font-weight:900}.holder-change.neg{color:#067647;background:#dcfae6;font-weight:900}.holder-change.zero,.holder-change.missing{color:#64748b;background:#fff}.holder-total{color:#7c5800;background:#fff0a6;font-weight:900}.holder-positive-count{font-weight:900;color:#0f3f8c}
+[data-holder-risers-page]{max-width:1500px}.holder-history-card{padding:0;overflow:hidden;border-radius:4px}.holder-history-wrap{overflow:auto;max-height:760px;background:#fff}.stock-table.holder-history-table{min-width:1320px;font-size:10px;line-height:1.2;border-collapse:separate;border-spacing:0;color:#111827;background:#fff}.stock-table.holder-history-table th,.stock-table.holder-history-table td{padding:3px 5px;border-right:1px solid #94a3b8;border-bottom:1px solid #94a3b8;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.stock-table.holder-history-table th{position:sticky;top:0;z-index:2;background:#e2e8f0;color:#111827;font-weight:900}.stock-table.holder-history-table th:last-child,.stock-table.holder-history-table td:last-child{border-right:0}.stock-table.holder-history-table tr:last-child td{border-bottom:0}.stock-table.holder-history-table tr:nth-child(even) td:not(.holder-change):not(.holder-total){background:#f8fafc}.stock-table.holder-history-table tr:hover td{outline:1px solid #f59e0b;outline-offset:-1px}.stock-table.holder-history-table th:nth-child(1),.stock-table.holder-history-table td:nth-child(1){width:38px;color:#475569}.stock-table.holder-history-table th:nth-child(2),.stock-table.holder-history-table td:nth-child(2){min-width:150px;text-align:left;font-weight:800}.stock-table.holder-history-table th:nth-child(3),.stock-table.holder-history-table td:nth-child(3){width:48px;text-align:center}.stock-table.holder-history-table td:nth-child(2) a{color:#0f3f8c;text-decoration:none}.stock-table.holder-history-table td:nth-child(2) a:hover{text-decoration:underline}.stock-table.holder-history-table .supplemental-pos{color:#b42318;font-weight:800}.stock-table.holder-history-table .supplemental-neg{color:#067647;font-weight:800}.stock-table.holder-history-table .supplemental-missing{color:#94a3b8}.holder-change.pos{color:#b42318;background:#ffe0e5;font-weight:900}.holder-change.neg{color:#067647;background:#dcfae6;font-weight:900}.holder-change.zero,.holder-change.missing{color:#64748b;background:#fff}.holder-total{color:#7c5800;background:#fff0a6;font-weight:900}.holder-positive-count{font-weight:900;color:#0f3f8c}
 
 /* Backtest dashboard */
 .backtest-layout{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(300px,.65fr);gap:14px;align-items:start}
@@ -1891,12 +1891,12 @@ def _institutional_ranking_table(rows: list[dict], empty_text: str) -> str:
         return f'<td class="{cls}">{number_text}{suffix}</td>'
 
     row_html = "".join(
-        f'<tr data-flow-rank-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td class="{"pos" if float(row.get("net_shares") or 0) > 0 else "neg"}">{_flow_number(row.get("net_shares"))}</td>{supplemental_cell(row.get("retail_sell_pctpt"), suffix="%", decimals=2)}{supplemental_cell(row.get("margin_balance_delta"), decimals=0)}{supplemental_cell(row.get("short_margin_ratio_pct"), suffix="%", decimals=2, signed=False)}</tr>'
+        f'<tr data-flow-rank-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td class="{"pos" if float(row.get("net_shares") or 0) > 0 else "neg"}">{_flow_number(row.get("net_shares"))}</td><td>{_flow_number(row.get("net_5d"))}</td><td>{_flow_number(row.get("net_10d"))}</td><td>{_flow_number(row.get("net_20d"))}</td>{supplemental_cell(row.get("concentration_ratio_pct"), suffix="%", decimals=2)}</tr>'
         for rank, row in enumerate(rows, 1)
     )
     if not row_html:
-        row_html = f'<tr><td colspan="6" style="color:#8b949e">{esc(empty_text)}</td></tr>'
-    return f'<div class="flow-table-wrap"><table class="stock-table flow-ranking-table"><thead><tr><th>排名</th><th>個股</th><th>淨買賣超</th><th title="前一週 200 張以下持股比例減去本週比例；正數代表散戶持股下降">散戶賣出<br>(週)</th><th title="今日融資餘額減去前日融資餘額，單位為張">融資增減<br>(張)</th><th title="融券餘額除以融資餘額">資券比</th></tr></thead><tbody>{row_html}</tbody></table></div>'
+        row_html = f'<tr><td colspan="7" style="color:#8b949e">{esc(empty_text)}</td></tr>'
+    return f'<div class="flow-table-wrap"><table class="stock-table flow-ranking-table"><thead><tr><th>排名</th><th>個股</th><th>當日</th><th>5日</th><th>10日</th><th>20日</th><th title="同一法人近 20 日淨買賣超股數 ÷ 近 20 日成交股數">法人集中比</th></tr></thead><tbody>{row_html}</tbody></table></div>'
 
 
 def build_institutional_flow_page(payload: dict | None = None) -> str:
@@ -1924,7 +1924,7 @@ def build_institutional_flow_page(payload: dict | None = None) -> str:
   <div class="card flow-overview-card">
     <div class="section-head"><div class="section-label">今日法人動向</div><div class="section-date">單位：億元</div></div>
     <div class="flow-market-grid">{_market_amount_cards(payload)}</div>
-    <div class="complete-table-note">官方全市場金額彙總；每榜列一般股票 Top 50。散戶欄採 TDCC 每週 200 張以下持股變化，融資與資券比採當日官方信用交易資料。</div>
+    <div class="complete-table-note">官方全市場金額彙總；每榜列一般股票 Top 50。5／10／20 日為同一法人累計淨買賣超張數；法人集中比為近 20 日淨買賣超股數除以同期成交股數。</div>
 {warning_html}
   </div>
   <div class="flow-page-toolbar"><input type="search" data-flow-rank-search placeholder="搜尋代號或名稱"><span class="flow-page-count" data-flow-rank-count>顯示 {sum(len(rows) for _, _, rows, _ in display_tabs):,} 筆 · 每榜 Top 50</span></div>
@@ -2029,20 +2029,34 @@ def _holder_change_cell(value) -> str:
     return f'<td class="holder-change {cls}">{prefix}{number:.2f}</td>'
 
 
-def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
+def build_weekly_holder_risers_page(payload: dict | None = None, market_flow_payload: dict | None = None) -> str:
     payload = payload or load_weekly_holder_risers_payload()
+    market_flow_payload = market_flow_payload or load_daily_market_flow_payload()
+    holder_metrics = market_flow_payload.get("holder_metrics_by_security") if isinstance(market_flow_payload.get("holder_metrics_by_security"), dict) else {}
     rows = payload.get("rows") or []
     market_label = {"上市": "上市", "上櫃": "上櫃", "listed": "上市", "otc": "上櫃"}
     weekly_dates = [str(item) for item in payload.get("weekly_dates") or []][-6:]
     if not weekly_dates:
         weekly_dates = sorted({str(change.get("date") or "") for row in rows for change in row.get("weekly_changes") or [] if change.get("date")})[-6:]
     date_headers = "".join(f'<th title="{esc(data_date)}">{esc(data_date[5:].replace("-", "/"))}</th>' for data_date in weekly_dates)
+
+    def metric_cell(value: Any, *, suffix: str = "", decimals: int = 0, signed: bool = True) -> str:
+        if value is None or value == "":
+            return '<td class="supplemental-missing">—</td>'
+        try:
+            number = float(value)
+        except (TypeError, ValueError):
+            return '<td class="supplemental-missing">—</td>'
+        cls = "supplemental-pos" if signed and number > 0 else "supplemental-neg" if signed and number < 0 else ""
+        text = f"{number:+,.{decimals}f}" if signed else f"{number:,.{decimals}f}"
+        return f'<td class="{cls}">{text}{suffix}</td>'
+
     row_html = "".join(
-        f'<tr data-holder-riser-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td>{"".join(_holder_change_cell({str(change.get("date") or ""): change.get("delta_pctpt") for change in row.get("weekly_changes") or []}.get(data_date)) for data_date in weekly_dates)}<td class="holder-total">{float(row.get("six_week_delta_pctpt") or 0):+.2f}</td><td>{fmt_num(row.get("major_percent"), 2)}%</td><td class="holder-positive-count">{int(row.get("positive_week_count") or 0)} / {len(weekly_dates) or 6}</td><td>{fmt_num(row.get("major_people"), 0)}</td></tr>'
+        f'<tr data-holder-riser-row data-search="{esc(str(row.get("security_id") or "") + " " + str(row.get("name") or "") + " " + str(row.get("market") or ""))}"><td>{rank:,}</td><td><a href="{stock_href(str(row.get("security_id") or ""))}">{esc(str(row.get("security_id") or ""))} {esc(str(row.get("name") or ""))}</a></td><td>{market_label.get(str(row.get("market") or ""), "─")}</td>{"".join(_holder_change_cell({str(change.get("date") or ""): change.get("delta_pctpt") for change in row.get("weekly_changes") or []}.get(data_date)) for data_date in weekly_dates)}<td class="holder-total">{float(row.get("six_week_delta_pctpt") or 0):+.2f}</td><td>{fmt_num(row.get("major_percent"), 2)}%</td><td class="holder-positive-count">{int(row.get("positive_week_count") or 0)} / {len(weekly_dates) or 6}</td><td>{fmt_num(row.get("major_people"), 0)}</td>{metric_cell((holder_metrics.get(str(row.get("security_id") or "")) or {}).get("retail_sell_pctpt"), suffix="%", decimals=2)}{metric_cell((holder_metrics.get(str(row.get("security_id") or "")) or {}).get("margin_balance_delta"), decimals=0)}{metric_cell((holder_metrics.get(str(row.get("security_id") or "")) or {}).get("short_margin_ratio_pct"), suffix="%", decimals=2, signed=False)}</tr>'
         for rank, row in enumerate(rows, 1)
     )
     if not row_html:
-        row_html = f'<tr><td colspan="{7 + len(weekly_dates)}" style="color:#8b949e">尚無完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
+        row_html = f'<tr><td colspan="{10 + len(weekly_dates)}" style="color:#8b949e">尚無完整股權快照，或本週沒有大戶比例上升的股票。</td></tr>'
     ranking_limit = int(payload.get("ranking_limit") or 50)
     body = f"""
 <div class="container" data-holder-risers-page>
@@ -2050,7 +2064,7 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
   <div class="complete-table-note">資料更新至 {esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序 Top {ranking_limit}｜淡紅為增加、淡綠為減少、黃色為 6 週累積。</div>
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
-  <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
+  <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th><th title="前一週 200 張以下持股比例減去本週比例；正數代表散戶持股下降">散戶賣出<br>(週)</th><th title="今日融資餘額減去前日融資餘額，單位為張">融資增減<br>(張)</th><th title="融券餘額除以融資餘額">資券比</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
 </div>
 {TAB_JS}
 <script>
@@ -2060,7 +2074,7 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
         "大戶股權變化",
         "holder-risers",
         body,
-        footer_source="TDCC",
+        footer_source="TDCC · TWSE · TPEx",
     )
 
 

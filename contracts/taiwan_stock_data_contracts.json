@@ -718,8 +718,8 @@
     },
     "daily_market_flow": {
       "dataset_id": "daily_market_flow",
-      "schema_version": "1.2.0",
-      "semantic_role": "derived daily listed/OTC exact institutional amount summary plus ordinary-equity-only foreign and investment-trust rankings enriched with weekly TDCC retail-holder reduction and same-day official margin metrics",
+      "schema_version": "1.3.0",
+      "semantic_role": "derived daily listed/OTC exact institutional amount summary plus ordinary-equity-only foreign and investment-trust rankings with official 5, 10, and 20-session cumulative net shares and a reproducible 20-session institutional concentration ratio; weekly TDCC retail-holder reduction and same-day official margin metrics are reserved for the holder page",
       "primary_sources": [{"source_id": "daily_market_flow_derived", "coverage": ["listed", "otc"]}],
       "fallback_sources": [],
       "freshness": {"mode": "calendar_day", "frequency": "each trading day after official institutional feeds", "max_lag_calendar_days": 2, "expected_available_by": "20:00 Asia/Taipei"},
@@ -734,6 +734,10 @@
         {"name": "institutional_total_net_amount", "type": "integer", "required": true},
         {"name": "ranking_eligible_count", "type": "integer", "required": true},
         {"name": "ranking_excluded_count", "type": "integer", "required": true},
+        {"name": "net_5d", "type": "integer|null", "required": false},
+        {"name": "net_10d", "type": "integer|null", "required": false},
+        {"name": "net_20d", "type": "integer|null", "required": false},
+        {"name": "concentration_ratio_pct", "type": "decimal|null", "required": false},
         {"name": "retail_sell_pctpt", "type": "decimal|null", "required": false},
         {"name": "margin_balance_delta", "type": "integer|null", "required": false},
         {"name": "short_margin_ratio_pct", "type": "decimal|null", "required": false}

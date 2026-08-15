@@ -2,7 +2,26 @@
 
 Last updated: 2026-08-15
 
-## 2026-08-15 Compact public pages and institutional supplemental columns
+## 2026-08-15 Corrected holder and institutional page columns
+
+- Corrected the page assignment from the earlier same-day change. The holder
+  page owns the weekly 200-lots-or-less retail reduction, daily margin-balance
+  change, and short-to-margin ratio columns.
+- The institutional Top 50 tables retain the current-day net column and now add
+  the same institution's 5-, 10-, and 20-session cumulative net shares.
+- `法人集中比` is deliberately distinguished from broker concentration used by
+  third-party sites. Here it is the same institution's 20-session net shares
+  divided by the stock's official 20-session traded volume. It is signed and
+  reproducible from the project's official TWSE/TPEx flow and price history.
+- `daily_market_flow` is schema `1.3.0` and carries a reusable 20-session
+  official institutional history plus a compact holder-metric map for the
+  current TDCC Top 50. Daily flow publication also regenerates the holder page
+  so financing values do not wait for the next weekly TDCC run.
+- The section immediately below is retained as history but its placement of
+  the three holder metrics on the institutional page is superseded by this
+  correction.
+
+## 2026-08-15 Compact public pages and institutional supplemental columns (superseded column placement)
 
 - Simplified `holder-risers.html`: removed the yfinance paragraph, visible
   freshness warning, and large update-status/history card. The public page now

@@ -55,6 +55,16 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(tpex[0]["foreign_net"], -200)
         self.assertEqual(tpex[0]["investment_trust_net"], 200)
 
+    def test_normalize_tpex_dated_history_table(self):
+        values = ["6488", "環球晶", "1", "2", "-1", "0", "0", "0", "900", "1,100", "-200", "300", "100", "200", "0", "0", "0", "0", "0", "0", "10", "0", "10", "10"]
+        rows = market_flow.normalize_tpex_history_payload({
+            "date": "20260806",
+            "tables": [{"data": [values]}],
+        })
+        self.assertEqual(rows[0]["trading_date"], "2026-08-06")
+        self.assertEqual(rows[0]["foreign_net"], -200)
+        self.assertEqual(rows[0]["investment_trust_net"], 200)
+
     def test_normalizers_prefer_official_date_over_requested_date(self):
         twse = market_flow.normalize_twse_payload(
             {
@@ -164,23 +174,43 @@ class MarketFlowTests(unittest.TestCase):
             {"security_id": "9103", "name": "美德醫-DR", "market": "listed", "foreign_net": 700, "investment_trust_net": 30},
             {"security_id": "6488", "name": "環球晶", "market": "otc", "foreign_net": -50, "investment_trust_net": 20},
         ]
-        rankings = market_flow.build_rankings(rows, {"2330": {"retail_sell_pctpt": 0.5, "margin_balance_delta": 120, "short_margin_ratio_pct": 2.5}})
+        rankings = market_flow.build_rankings(rows, {"2330": {"foreign": {"net_5d": 500, "net_10d": 800, "net_20d": 1000, "concentration_ratio_pct": 1.25}}})
         self.assertEqual(rankings["eligible_count"], 2)
         self.assertEqual(rankings["excluded_count"], 3)
         self.assertEqual([row["security_id"] for row in rankings["foreign_buy"]], ["2330"])
         self.assertEqual([row["security_id"] for row in rankings["foreign_sell"]], ["6488"])
-        self.assertEqual(rankings["foreign_buy"][0]["retail_sell_pctpt"], 0.5)
-        self.assertEqual(rankings["foreign_buy"][0]["margin_balance_delta"], 120)
+        self.assertEqual(rankings["foreign_buy"][0]["net_5d"], 500)
+        self.assertEqual(rankings["foreign_buy"][0]["concentration_ratio_pct"], 1.25)
 
     def test_supplemental_fields_are_limited_to_the_rendered_top_fifty(self):
         rows = [
             {"security_id": str(1100 + index), "name": f"Stock {index}", "market": "listed", "foreign_net": 10_000 - index}
             for index in range(52)
         ]
-        supplemental = {row["security_id"]: {"retail_sell_pctpt": 0.1} for row in rows}
+        supplemental = {row["security_id"]: {"foreign": {"net_5d": 1}} for row in rows}
         ranked = market_flow.build_rankings(rows, supplemental)["foreign_buy"]
-        self.assertIn("retail_sell_pctpt", ranked[49])
-        self.assertNotIn("retail_sell_pctpt", ranked[50])
+        self.assertIn("net_5d", ranked[49])
+        self.assertNotIn("net_5d", ranked[50])
+
+    def test_rolling_metrics_sum_5_10_20_sessions_and_use_20_day_volume(self):
+        dates = [f"2026-08-{day:02d}" for day in range(1, 21)]
+        history = {
+            "snapshots": [
+                {"date": data_date, "rows": [{"security_id": "2330", "foreign_net": 1_000, "investment_trust_net": -500}]}
+                for data_date in dates
+            ]
+        }
+        with tempfile.TemporaryDirectory() as temp_dir:
+            price_dir = Path(temp_dir)
+            (price_dir / "2330.csv").write_text(
+                "date,open,high,low,close,volume\n" + "".join(f"{data_date},1,1,1,1,10000\n" for data_date in dates),
+                encoding="utf-8",
+            )
+            metrics = market_flow.rolling_institutional_metrics(history, {"2330"}, price_dir=price_dir)
+        self.assertEqual(metrics["2330"]["foreign"]["net_5d"], 5_000)
+        self.assertEqual(metrics["2330"]["foreign"]["net_10d"], 10_000)
+        self.assertEqual(metrics["2330"]["foreign"]["net_20d"], 20_000)
+        self.assertEqual(metrics["2330"]["foreign"]["concentration_ratio_pct"], 10.0)
 
     def test_build_payload_exposes_missing_market_partition(self):
         payload = market_flow.build_payload([{"security_id": "2330", "foreign_net": 1}], [], data_date="2026-08-06", fetched_at="2026-08-06T20:00:00+08:00", source_errors={"otc": "timeout"})
@@ -277,12 +307,19 @@ class MarketFlowTests(unittest.TestCase):
                 }],
             }
 
+        history = {
+            "session_count": 20,
+            "snapshots": [
+                {"date": f"2026-07-{day:02d}", "rows": [{"security_id": "2330", "foreign_net": 1}]}
+                for day in range(1, 20)
+            ] + [{"date": "2026-08-07", "rows": [{"security_id": "2330", "foreign_net": 1}]}],
+        }
         with patch.object(market_flow, "_fetch_json", side_effect=fake_fetch), patch.object(
             market_flow, "_post_json", side_effect=fake_post
         ), patch.object(market_flow, "load_retail_weekly_metrics", return_value=(
             {"2330": {"retail_sell_pctpt": 0.5}, "6488": {"retail_sell_pctpt": -0.2}},
             {"date": "2026-08-07", "previous_date": "2026-07-31", "coverage_count": 2},
-        )):
+        )), patch.object(market_flow, "build_institutional_history", return_value=(history, None)):
             payload = market_flow.collect(now=datetime(2026, 8, 8, 10, 0, tzinfo=market_flow.TAIPEI_TZ))
 
         self.assertEqual(requested_twse_dates, ["20260808", "20260807"])
