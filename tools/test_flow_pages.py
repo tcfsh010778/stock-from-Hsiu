@@ -156,6 +156,9 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn('class="stock-table holder-history-table"', page)
         self.assertIn("Top 50", page)
         self.assertIn("資料來源為 TDCC", page)
+        self.assertIn("更新時間與發布條件", page)
+        self.assertIn("TDCC 最新日期", page)
+        self.assertIn("最近檢查紀錄", page)
         self.assertNotIn("不做 Top N 截斷", page)
 
     def test_home_keeps_market_environment_and_removes_duplicate_cards(self):
