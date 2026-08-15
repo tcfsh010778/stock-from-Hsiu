@@ -30,10 +30,13 @@ class FlowPageTests(unittest.TestCase):
                 "eligibility_policy": "ordinary_equity_v1",
                 "eligible_count": 2,
                 "excluded_count": 1,
-                "foreign_buy": [{"security_id": "2330", "name": "台積電", "market": "listed", "net_shares": 100_000, "retail_sell_pctpt": 0.5, "margin_balance_delta": -120, "short_margin_ratio_pct": 2.5}],
+                "foreign_buy": [{"security_id": "2330", "name": "台積電", "market": "listed", "net_shares": 100_000, "net_5d": 500_000, "net_10d": 800_000, "net_20d": 1_000_000, "concentration_ratio_pct": 1.25}],
                 "foreign_sell": [{"security_id": "6488", "name": "環球晶", "market": "otc", "net_shares": -50_000}],
                 "investment_trust_buy": [{"security_id": "6488", "name": "環球晶", "market": "otc", "net_shares": 20_000}],
                 "investment_trust_sell": [{"security_id": "2330", "name": "台積電", "market": "listed", "net_shares": -10_000}],
+            },
+            "holder_metrics_by_security": {
+                "2330": {"retail_sell_pctpt": 0.5, "margin_balance_delta": -120, "short_margin_ratio_pct": 2.5},
             },
             "data_quality": {"state": "ok", "warnings": []},
             "freshness": {"status": "fresh"},
@@ -59,12 +62,17 @@ class FlowPageTests(unittest.TestCase):
     def test_institutional_page_contains_all_four_filtered_rankings(self):
         html = generate_site.build_institutional_flow_page(self.market_payload())
         self.assertIn("外資／投信買賣超排行", html)
-        self.assertIn("散戶賣出", html)
-        self.assertIn("融資增減", html)
-        self.assertIn("資券比", html)
-        self.assertIn("+0.50%", html)
-        self.assertIn("-120", html)
-        self.assertIn(">2.50%</td>", html)
+        self.assertIn("5日", html)
+        self.assertIn("10日", html)
+        self.assertIn("20日", html)
+        self.assertIn("法人集中比", html)
+        self.assertIn("+500 張", html)
+        self.assertIn("+800 張", html)
+        self.assertIn("+1,000 張", html)
+        self.assertIn("+1.25%", html)
+        self.assertNotIn("散戶賣出", html)
+        self.assertNotIn("融資增減", html)
+        self.assertNotIn("資券比", html)
         self.assertNotIn("<th>市場</th>", html)
         self.assertIn("2330 台積電", html)
         self.assertIn("6488 環球晶", html)
@@ -151,7 +159,11 @@ class FlowPageTests(unittest.TestCase):
             "data_quality": {"state": "ok", "warnings": []},
             "freshness": {"status": "fresh"},
         }
-        page = generate_site.build_weekly_holder_risers_page(payload)
+        page = generate_site.build_weekly_holder_risers_page(payload, {
+            "holder_metrics_by_security": {
+                "2000": {"retail_sell_pctpt": 0.5, "margin_balance_delta": -120, "short_margin_ratio_pct": 2.5},
+            }
+        })
         self.assertEqual(page.count("<tr data-holder-riser-row"), 60)
         self.assertIn("2059 測試59", page)
         self.assertIn("大戶股權變化", page)
@@ -163,6 +175,12 @@ class FlowPageTests(unittest.TestCase):
         self.assertIn("Top 50", page)
         self.assertNotIn("yfinance", page)
         self.assertIn("資料來源：TDCC", page)
+        self.assertIn("散戶賣出", page)
+        self.assertIn("融資增減", page)
+        self.assertIn("資券比", page)
+        self.assertIn("+0.50%", page)
+        self.assertIn("-120", page)
+        self.assertIn(">2.50%</td>", page)
         self.assertNotIn("資料來源：FinMind 付費版 · TWSE · Yahoo Finance", page)
         self.assertNotIn("資料品質提醒", page)
         self.assertNotIn("更新時間與發布條件", page)
