@@ -776,10 +776,10 @@
       "update_frequency": "weekly after holder-distribution refresh",
       "data_date": "2026-08-07",
       "trading_date": null,
-      "expected_data_date": "2026-08-14",
+      "expected_data_date": "2026-08-15",
       "fetched_at": "2026-08-14T22:46:50+08:00",
       "row_count": 50,
-      "sha256": "17bcc47c535e61911fb7463841ad38335b3084c219d498518fb910b8a810e630",
+      "sha256": "9a68ccd735527345da4cea8f1552be6c25bfa4335df9b96305dbe4dee688ac11",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -793,9 +793,9 @@
       "freshness": {
         "status": "expected_lag",
         "evaluated_at": "2026-08-14T22:46:50+08:00",
-        "expected_data_date": "2026-08-14",
+        "expected_data_date": "2026-08-15",
         "age_trading_days": null,
-        "age_calendar_days": 7,
+        "age_calendar_days": 8,
         "sla": {
           "mode": "weekly",
           "frequency": "weekly after holder-distribution refresh",
