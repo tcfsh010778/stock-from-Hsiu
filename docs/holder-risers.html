@@ -385,7 +385,8 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 <div class="container" data-holder-risers-page>
   <div class="page-title">回顧 6 週大戶股權變化</div>
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
-  <div class="complete-table-note">最新在左側日期標示：2026-08-07｜依最新一週大戶持股比例增加幅度排序，列出 Top 50。淡紅為增加、淡綠為減少、黃色為 6 週累積；資料來源為 TDCC，這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="complete-table-note">最新在左側日期標示：2026-08-07｜依最新一週大戶持股比例增加幅度排序，列出 Top 50。淡紅為增加、淡綠為減少、黃色為 6 週累積；這是籌碼觀察表，不等於買進訊號。</div>
+  <div class="complete-table-note"><strong>本表資料來源：</strong>TDCC OpenAPI 1-5（最新全市場快照）＋TDCC 官網歷史查詢（六週回補）。<strong>yfinance：</strong>僅可作股價與成交量輔助查核，不參與 400 張以上大戶股權比例或排行計算。</div>
 <div class="strategy-note" style="margin-top:10px"><span class="tag tag-yellow">資料品質提醒</span> weekly_holder_risers freshness is expected_lag</div>
 
 <div class="card holder-update-card" data-holder-update-status="waiting_for_tdcc">
@@ -414,7 +415,7 @@ document.addEventListener('DOMContentLoaded',function(){initPlaceholders();initR
 
 <footer>
   <p class="site-freshness">資料更新：2026-08-14 收盤後</p>
-  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
+  <p>資料來源：TDCC OpenAPI 1-5＋TDCC 官網歷史查詢；yfinance 僅供股價／成交量輔助查核，不參與大戶股權計算</p>
   <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
   <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
 </footer>

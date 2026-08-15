@@ -2,6 +2,17 @@
 
 Last updated: 2026-08-15
 
+## 2026-08-15 Holder-page source attribution clarification
+
+- Replaced the holder page's generic site footer with page-specific source
+  attribution: TDCC OpenAPI 1-5 supplies the latest full-market snapshot and
+  the TDCC official history query supplies the six-week backfill.
+- The page now names yfinance only as an optional price/volume cross-check and
+  explicitly states that it does not participate in the 400+ lot holder ratio
+  or ranking calculation.
+- This is a provenance clarification only. No holder calculation, ranking,
+  schedule, strategy, or trading rule changed.
+
 ## 2026-08-15 TDCC holder update conditions and attempt log
 
 - Confirmed the Friday 21:30 and Saturday 09:30 Asia/Taipei scheduled runs both
