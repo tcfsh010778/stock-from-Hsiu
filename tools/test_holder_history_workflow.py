@@ -11,10 +11,19 @@ class HolderHistoryWorkflowTests(unittest.TestCase):
     def setUpClass(cls):
         cls.workflow = WORKFLOW.read_text(encoding="utf-8")
 
-    def test_runs_friday_evening_with_saturday_fallback_in_taipei(self):
+    def test_runs_friday_evening_with_weekend_and_monday_fallbacks_in_taipei(self):
         self.assertIn('- cron: "30 13 * * 5"', self.workflow)
         self.assertIn('- cron: "30 1 * * 6"', self.workflow)
+        self.assertIn('- cron: "30 1 * * 0"', self.workflow)
+        self.assertIn('- cron: "30 1 * * 1"', self.workflow)
         self.assertIn("workflow_dispatch:", self.workflow)
+
+    def test_gates_rebuild_on_a_new_official_tdcc_date_and_records_every_check(self):
+        self.assertIn("python holder_update_status.py", self.workflow)
+        self.assertIn("HOLDER_EVENT_SCHEDULE: ${{ github.event.schedule }}", self.workflow)
+        self.assertIn("steps.holder_date.outputs.update_required == 'true'", self.workflow)
+        self.assertIn("data/holder_update_status.json", self.workflow)
+        self.assertIn("docs/data/holder_update_status.json", self.workflow)
 
     def test_recomputes_and_publishes_complete_tdcc_top_50(self):
         required_commands = (

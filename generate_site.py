@@ -54,6 +54,7 @@ DAILY_DECISIONS_PATH = LOCAL_DATA_DIR / "daily_decisions.json"
 ATTENTION_DISPOSITION_PATH = LOCAL_DATA_DIR / "attention_disposition.json"
 DAILY_MARKET_FLOW_PATH = LOCAL_DATA_DIR / "daily_market_flow.json"
 WEEKLY_HOLDER_RISERS_PATH = LOCAL_DATA_DIR / "weekly_holder_risers.json"
+HOLDER_UPDATE_STATUS_PATH = LOCAL_DATA_DIR / "holder_update_status.json"
 FRESHNESS_MANIFEST_PATH = LOCAL_DATA_DIR / "freshness_manifest.json"
 PRICE_REFRESH_SUMMARY_PATH = LOCAL_DATA_DIR / "price_refresh_summary.json"
 MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
@@ -67,6 +68,7 @@ PUBLIC_DATA_FILES = [
     ATTENTION_DISPOSITION_PATH,
     DAILY_MARKET_FLOW_PATH,
     WEEKLY_HOLDER_RISERS_PATH,
+    HOLDER_UPDATE_STATUS_PATH,
     FRESHNESS_MANIFEST_PATH,
     PRICE_REFRESH_SUMMARY_PATH,
 ]
@@ -1946,6 +1948,48 @@ def load_weekly_holder_risers_payload(path: Path | str = WEEKLY_HOLDER_RISERS_PA
     return payload
 
 
+def load_holder_update_status(path: Path | str = HOLDER_UPDATE_STATUS_PATH) -> dict:
+    path = Path(path)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
+def build_holder_update_status_panel(payload: dict | None = None) -> str:
+    payload = payload or load_holder_update_status()
+    state = str(payload.get("state") or "missing")
+    state_labels = {
+        "published": "已發布最新資料",
+        "waiting_for_tdcc": "等待 TDCC 新一週資料",
+        "update_available": "偵測到新資料，準備更新",
+        "verification_failed": "更新驗證未通過",
+        "missing": "尚無檢查紀錄",
+    }
+    attempts = [item for item in payload.get("attempts") or [] if isinstance(item, dict)][-5:]
+    result_labels = {
+        "published": "已發布",
+        "waiting_for_tdcc": "官方尚未更新",
+        "update_available": "發現新資料",
+        "verification_failed": "驗證未通過",
+    }
+    record_html = "".join(
+        f'<li><strong>{esc(str(item.get("checked_at") or "─").replace("T", " "))}</strong>'
+        f'｜TDCC {esc(str(item.get("official_date") or "─"))}'
+        f'｜頁面 {esc(str(item.get("published_date_after") or item.get("published_date_before") or "─"))}'
+        f'｜{esc(result_labels.get(str(item.get("result") or ""), str(item.get("result") or "─")))}</li>'
+        for item in reversed(attempts)
+    ) or "<li>尚無檢查紀錄</li>"
+    return f"""
+<div class="card holder-update-card" data-holder-update-status="{esc(state)}">
+  <div class="section-head"><div><div class="section-label">更新時間與發布條件</div><div class="strategy-note">檢查時間不代表 TDCC 保證發布時間；官方資料尚未更新時會保留上一版。</div></div><div class="section-date">{esc(state_labels.get(state, state))}</div></div>
+  <div class="flow-metric-grid"><div><div class="label">TDCC 最新日期</div><div class="flow-net">{esc(str(payload.get('official_latest_date') or '─'))}</div></div><div><div class="label">目前頁面日期</div><div class="flow-net">{esc(str(payload.get('published_data_date') or '─'))}</div></div><div><div class="label">最後檢查</div><div class="flow-net">{esc(str(payload.get('last_checked_at') or '─').replace('T', ' '))}</div></div></div>
+  <div class="complete-table-note"><strong>自動檢查：</strong>{esc(str(payload.get('check_schedule') or '週五 21:30；週六、週日、週一 09:30（Asia/Taipei）'))}<br><strong>發布條件：</strong>{esc(str(payload.get('publish_condition') or 'TDCC 官方日期晚於目前頁面，且六週資料與 Top 50 完整通過驗證'))}</div>
+  <details class="holder-update-records"><summary>最近檢查紀錄</summary><ul>{record_html}</ul></details>
+</div>"""
+
+
 def build_weekly_holder_risers_panel(payload: dict | None = None) -> str:
     payload = payload or load_weekly_holder_risers_payload()
     rows = payload.get("rows") or []
@@ -1993,7 +2037,8 @@ def build_weekly_holder_risers_page(payload: dict | None = None) -> str:
   <div class="page-title">回顧 6 週大戶股權變化</div>
   <div class="page-sub">每欄代表該週最後營業日相對前一週的 400 張以上大戶持股比例變動（百分點）。</div>
   <div class="complete-table-note">最新在左側日期標示：{esc(str(payload.get('date') or '─'))}｜依最新一週大戶持股比例增加幅度排序，列出 Top {ranking_limit}。淡紅為增加、淡綠為減少、黃色為 6 週累積；資料來源為 TDCC，這是籌碼觀察表，不等於買進訊號。</div>
-  {warning_html}
+{warning_html}
+{build_holder_update_status_panel()}
   <div class="flow-page-toolbar"><input type="search" data-holder-riser-search placeholder="搜尋代號、名稱或市場"><span class="flow-page-count" data-holder-riser-count>目前顯示 {len(rows):,} / {len(rows):,} 檔</span></div>
   <div class="card holder-history-card"><div class="holder-history-wrap"><table class="stock-table holder-history-table"><thead><tr><th>#</th><th>股票代號／名稱</th><th>市場</th>{date_headers}<th>6週累積</th><th>大戶持股%</th><th>增加週數</th><th>大戶人數</th></tr></thead><tbody>{row_html}</tbody></table></div></div>
 </div>
@@ -10530,6 +10575,20 @@ def main():
         print("   [OK] institutional-flow.html", flush=True)
         return
 
+    if holder_only:
+        public_data = publish_data_assets([WEEKLY_HOLDER_RISERS_PATH, HOLDER_UPDATE_STATUS_PATH])
+        if public_data:
+            print(f"   [OK] data/{', data/'.join(public_data)}", flush=True)
+        reports = []
+        if REPORTS_CACHE_PATH.exists():
+            reports = json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8-sig"))
+        if reports:
+            set_site_latest_report_date(reports)
+        print("\n[Build] Generating holder-history page only...", flush=True)
+        (OUTPUT_DIR / "holder-risers.html").write_text(build_weekly_holder_risers_page(), encoding="utf-8")
+        print("   [OK] holder-risers.html", flush=True)
+        return
+
     write_static_assets()
     print("   [OK] css/components.css, js/auto-expand-placeholder.js", flush=True)
     public_data = publish_data_assets()
@@ -10541,14 +10600,6 @@ def main():
         print("[ERROR] No reports parsed or cached.", flush=True)
         return
     set_site_latest_report_date(reports)
-
-    if holder_only:
-        print("\n[Build] Generating holder-history pages only...", flush=True)
-        (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
-        print("   [OK] index.html", flush=True)
-        (OUTPUT_DIR / "holder-risers.html").write_text(build_weekly_holder_risers_page(), encoding="utf-8")
-        print("   [OK] holder-risers.html", flush=True)
-        return
 
     print("\n[Build] Generating pages...", flush=True)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")

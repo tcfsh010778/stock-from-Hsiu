@@ -1,6 +1,27 @@
 # Codex Handoff
 
-Last updated: 2026-08-12
+Last updated: 2026-08-15
+
+## 2026-08-15 TDCC holder update conditions and attempt log
+
+- Confirmed the Friday 21:30 and Saturday 09:30 Asia/Taipei scheduled runs both
+  completed, but TDCC OpenAPI 1-5 still returned `2026-08-07`; the public page
+  therefore correctly remained on `2026-08-07` instead of inventing an
+  `2026-08-14` comparison.
+- Added a preflight gate: the expensive six-week rebuild runs only when the
+  official TDCC date is later than the currently published holder date.
+- Publication still requires six aligned weekly changes, 1-50 complete rows,
+  and an official-source state; otherwise the previous complete page remains.
+- Automatic checks now run Friday 21:30 and Saturday, Sunday, and Monday 09:30
+  Asia/Taipei. These are check times, not a claim that TDCC guarantees release
+  at those times.
+- `data/holder_update_status.json` records the latest source date, page date,
+  state, and the last 20 attempts. The holder page shows the conditions and the
+  five most recent checks.
+- `generate_site.py --holder-only` now rewrites only the holder page and its two
+  public JSON files, avoiding an unrelated homepage regeneration.
+- Detailed log:
+  `codex_context/logs/2026-08-15-holder-update-conditions-and-record.md`.
 
 ## 2026-08-12 Institutional-flow empty-publication repair
 

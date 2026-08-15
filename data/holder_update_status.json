@@ -1,0 +1,46 @@
+{
+  "dataset_id": "holder_update_status",
+  "schema_version": "1.0.0",
+  "schedule_timezone": "Asia/Taipei",
+  "check_schedule": "週五 21:30；週六、週日、週一 09:30（Asia/Taipei）",
+  "publish_condition": "TDCC 官方資料日期晚於目前頁面日期，且六週日期連續、Top 50 每列皆有完整六週資料",
+  "last_checked_at": "2026-08-15T14:55:36+08:00",
+  "official_latest_date": "2026-08-07",
+  "published_data_date": "2026-08-07",
+  "state": "waiting_for_tdcc",
+  "attempts": [
+    {
+      "checked_at": "2026-08-14T22:46:42+08:00",
+      "trigger": "schedule",
+      "schedule": "30 13 * * 5",
+      "official_date": "2026-08-07",
+      "published_date_before": "2026-08-07",
+      "published_date_after": "2026-08-07",
+      "result": "waiting_for_tdcc",
+      "run_id": "31809700270",
+      "run_url": "https://github.com/tcfsh010778/stock-from-Hsiu/actions/runs/31809700270"
+    },
+    {
+      "checked_at": "2026-08-15T10:40:25+08:00",
+      "trigger": "schedule",
+      "schedule": "30 1 * * 6",
+      "official_date": "2026-08-07",
+      "published_date_before": "2026-08-07",
+      "published_date_after": "2026-08-07",
+      "result": "waiting_for_tdcc",
+      "run_id": "31859385681",
+      "run_url": "https://github.com/tcfsh010778/stock-from-Hsiu/actions/runs/31859385681"
+    },
+    {
+      "checked_at": "2026-08-15T14:55:36+08:00",
+      "trigger": "manual",
+      "schedule": "",
+      "official_date": "2026-08-07",
+      "published_date_before": "2026-08-07",
+      "published_date_after": "2026-08-07",
+      "result": "waiting_for_tdcc",
+      "run_id": "",
+      "run_url": ""
+    }
+  ]
+}

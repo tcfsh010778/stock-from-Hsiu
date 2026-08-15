@@ -6,6 +6,9 @@ on:
     - cron: "30 13 * * 5"
     # Saturday 09:30 Asia/Taipei fallback if Friday TDCC data is delayed.
     - cron: "30 1 * * 6"
+    # Sunday and Monday 09:30 Asia/Taipei fallbacks for a delayed TDCC release.
+    - cron: "30 1 * * 0"
+    - cron: "30 1 * * 1"
   workflow_dispatch:
 
 permissions:
@@ -37,28 +40,43 @@ jobs:
       - name: Sync latest main
         run: git pull --ff-only origin main
 
+      - name: Check official TDCC date and record the attempt
+        id: holder_date
+        env:
+          HOLDER_EVENT_SCHEDULE: ${{ github.event.schedule }}
+        run: python holder_update_status.py
+
       - name: Archive official TDCC weekly holder aggregate
+        if: steps.holder_date.outputs.update_required == 'true'
         run: python tdcc_holder_snapshot.py
 
       - name: Backfill latest official TDCC six-week history
+        if: steps.holder_date.outputs.update_required == 'true'
         run: python tdcc_holder_history.py --limit 50
 
       - name: Generate latest complete six-week holder history
+        if: steps.holder_date.outputs.update_required == 'true'
         run: python weekly_holder_risers.py --limit 50
 
-      - name: Generate holder page and homepage card
+      - name: Finalize successful holder publication record
+        if: steps.holder_date.outputs.update_required == 'true'
+        run: python holder_update_status.py --finalize
+
+      - name: Generate holder page and update record
         run: python generate_site.py --holder-only
 
       - name: Verify holder artifact
         run: |
           python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert 0 < p.get('row_count', 0) <= 50; assert p.get('six_week_complete_count') == p.get('row_count'); assert p.get('source_state') == 'tdcc_official'"
+          python -c "import json; p=json.load(open('data/holder_update_status.json', encoding='utf-8')); assert p.get('last_checked_at'); assert p.get('state') in {'waiting_for_tdcc', 'published'}; assert p.get('attempts')"
           grep -q "回顧 6 週大戶股權變化" docs/holder-risers.html
+          grep -q "更新時間與發布條件" docs/holder-risers.html
 
       - name: Commit and push holder pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/holder-risers.html docs/index.html
+          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/holder-risers.html
           if git diff --cached --quiet; then
             echo "No holder-history changes to commit."
             exit 0
