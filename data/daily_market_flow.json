@@ -1,8 +1,8 @@
 {
   "dataset_id": "daily_market_flow",
-  "schema_version": "1.1.0",
+  "schema_version": "1.2.0",
   "date": "2026-08-14",
-  "updated_at": "2026-08-14T22:36:54.872390+08:00",
+  "updated_at": "2026-08-15T18:56:55.010329+08:00",
   "markets": {
     "listed": {
       "stock_count": 1330,
@@ -288,301 +288,451 @@
         "security_id": "6770",
         "name": "力積電",
         "market": "listed",
-        "net_shares": 144966464
+        "net_shares": 144966464,
+        "retail_sell_pctpt": 0.2,
+        "margin_balance_delta": -1862,
+        "short_margin_ratio_pct": 5.8
       },
       {
         "security_id": "2344",
         "name": "華邦電",
         "market": "listed",
-        "net_shares": 55890918
+        "net_shares": 55890918,
+        "retail_sell_pctpt": 1.29,
+        "margin_balance_delta": -8339,
+        "short_margin_ratio_pct": 3.58
       },
       {
         "security_id": "2324",
         "name": "仁寶",
         "market": "listed",
-        "net_shares": 47849797
+        "net_shares": 47849797,
+        "retail_sell_pctpt": 0.9,
+        "margin_balance_delta": 5323,
+        "short_margin_ratio_pct": 3.79
       },
       {
         "security_id": "3481",
         "name": "群創",
         "market": "listed",
-        "net_shares": 39637694
+        "net_shares": 39637694,
+        "retail_sell_pctpt": -0.53,
+        "margin_balance_delta": -1312,
+        "short_margin_ratio_pct": 1.65
       },
       {
         "security_id": "9904",
         "name": "寶成",
         "market": "listed",
-        "net_shares": 21199135
+        "net_shares": 21199135,
+        "retail_sell_pctpt": -0.65,
+        "margin_balance_delta": 115,
+        "short_margin_ratio_pct": 0.04
       },
       {
         "security_id": "2887",
         "name": "台新新光金",
         "market": "listed",
-        "net_shares": 17660523
+        "net_shares": 17660523,
+        "retail_sell_pctpt": 0.09,
+        "margin_balance_delta": -83,
+        "short_margin_ratio_pct": 1.91
       },
       {
         "security_id": "1102",
         "name": "亞泥",
         "market": "listed",
-        "net_shares": 15414529
+        "net_shares": 15414529,
+        "retail_sell_pctpt": -0.12,
+        "margin_balance_delta": -526,
+        "short_margin_ratio_pct": 1.82
       },
       {
         "security_id": "9945",
         "name": "潤泰新",
         "market": "listed",
-        "net_shares": 15244750
+        "net_shares": 15244750,
+        "retail_sell_pctpt": 0.09,
+        "margin_balance_delta": -204,
+        "short_margin_ratio_pct": 0.22
       },
       {
         "security_id": "2356",
         "name": "英業達",
         "market": "listed",
-        "net_shares": 15237019
+        "net_shares": 15237019,
+        "retail_sell_pctpt": 0.47,
+        "margin_balance_delta": 65,
+        "short_margin_ratio_pct": 1.97
       },
       {
         "security_id": "2615",
         "name": "萬海",
         "market": "listed",
-        "net_shares": 14818809
+        "net_shares": 14818809,
+        "retail_sell_pctpt": 0.14,
+        "margin_balance_delta": -1807,
+        "short_margin_ratio_pct": 1.77
       },
       {
         "security_id": "1301",
         "name": "台塑",
         "market": "listed",
-        "net_shares": 12527005
+        "net_shares": 12527005,
+        "retail_sell_pctpt": -0.27,
+        "margin_balance_delta": -1874,
+        "short_margin_ratio_pct": 2.42
       },
       {
         "security_id": "2886",
         "name": "兆豐金",
         "market": "listed",
-        "net_shares": 11358753
+        "net_shares": 11358753,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": -124,
+        "short_margin_ratio_pct": 12.15
       },
       {
         "security_id": "2353",
         "name": "宏碁",
         "market": "listed",
-        "net_shares": 11128449
+        "net_shares": 11128449,
+        "retail_sell_pctpt": 0.49,
+        "margin_balance_delta": -603,
+        "short_margin_ratio_pct": 6.66
       },
       {
         "security_id": "1303",
         "name": "南亞",
         "market": "listed",
-        "net_shares": 10619328
+        "net_shares": 10619328,
+        "retail_sell_pctpt": -0.1,
+        "margin_balance_delta": 1915,
+        "short_margin_ratio_pct": 5.74
       },
       {
         "security_id": "3706",
         "name": "神達",
         "market": "listed",
-        "net_shares": 9690320
+        "net_shares": 9690320,
+        "retail_sell_pctpt": 1.68,
+        "margin_balance_delta": -88,
+        "short_margin_ratio_pct": 0.7
       },
       {
         "security_id": "2357",
         "name": "華碩",
         "market": "listed",
-        "net_shares": 8240599
+        "net_shares": 8240599,
+        "retail_sell_pctpt": 0.58,
+        "margin_balance_delta": -277,
+        "short_margin_ratio_pct": 4.36
       },
       {
         "security_id": "2603",
         "name": "長榮",
         "market": "listed",
-        "net_shares": 7906374
+        "net_shares": 7906374,
+        "retail_sell_pctpt": 0.11,
+        "margin_balance_delta": -879,
+        "short_margin_ratio_pct": 1.84
       },
       {
         "security_id": "2882",
         "name": "國泰金",
         "market": "listed",
-        "net_shares": 7837903
+        "net_shares": 7837903,
+        "retail_sell_pctpt": 0.1,
+        "margin_balance_delta": -251,
+        "short_margin_ratio_pct": 5.96
       },
       {
         "security_id": "2337",
         "name": "旺宏",
         "market": "listed",
-        "net_shares": 7707343
+        "net_shares": 7707343,
+        "retail_sell_pctpt": 0.88,
+        "margin_balance_delta": -802,
+        "short_margin_ratio_pct": 3.65
       },
       {
         "security_id": "2382",
         "name": "廣達",
         "market": "listed",
-        "net_shares": 6634021
+        "net_shares": 6634021,
+        "retail_sell_pctpt": 0.7,
+        "margin_balance_delta": -812,
+        "short_margin_ratio_pct": 0.34
       },
       {
         "security_id": "4958",
         "name": "臻鼎-KY",
         "market": "listed",
-        "net_shares": 6383970
+        "net_shares": 6383970,
+        "retail_sell_pctpt": -0.18,
+        "margin_balance_delta": -50,
+        "short_margin_ratio_pct": 1.07
       },
       {
         "security_id": "2634",
         "name": "漢翔",
         "market": "listed",
-        "net_shares": 6343082
+        "net_shares": 6343082,
+        "retail_sell_pctpt": 0.23,
+        "margin_balance_delta": 202,
+        "short_margin_ratio_pct": 2.87
       },
       {
         "security_id": "1101",
         "name": "台泥",
         "market": "listed",
-        "net_shares": 5804732
+        "net_shares": 5804732,
+        "retail_sell_pctpt": 0.1,
+        "margin_balance_delta": -2209,
+        "short_margin_ratio_pct": 0.17
       },
       {
         "security_id": "1319",
         "name": "東陽",
         "market": "listed",
-        "net_shares": 5437383
+        "net_shares": 5437383,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": -8,
+        "short_margin_ratio_pct": 0.15
       },
       {
         "security_id": "8039",
         "name": "台虹",
         "market": "listed",
-        "net_shares": 5117916
+        "net_shares": 5117916,
+        "retail_sell_pctpt": 0.48,
+        "margin_balance_delta": 632,
+        "short_margin_ratio_pct": 10.8
       },
       {
         "security_id": "2376",
         "name": "技嘉",
         "market": "listed",
-        "net_shares": 5115635
+        "net_shares": 5115635,
+        "retail_sell_pctpt": 0.24,
+        "margin_balance_delta": -539,
+        "short_margin_ratio_pct": 6.16
       },
       {
         "security_id": "2867",
         "name": "三商壽",
         "market": "listed",
-        "net_shares": 5024000
+        "net_shares": 5024000,
+        "retail_sell_pctpt": 0.21,
+        "margin_balance_delta": -47,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "2915",
         "name": "潤泰全",
         "market": "listed",
-        "net_shares": 4436636
+        "net_shares": 4436636,
+        "retail_sell_pctpt": 0.11,
+        "margin_balance_delta": 851,
+        "short_margin_ratio_pct": 0.17
       },
       {
         "security_id": "2409",
         "name": "友達",
         "market": "listed",
-        "net_shares": 4298497
+        "net_shares": 4298497,
+        "retail_sell_pctpt": -0.14,
+        "margin_balance_delta": 1837,
+        "short_margin_ratio_pct": 6.21
       },
       {
         "security_id": "6265",
         "name": "方土昶",
         "market": "otc",
-        "net_shares": 4102000
+        "net_shares": 4102000,
+        "retail_sell_pctpt": 1.96,
+        "margin_balance_delta": -105,
+        "short_margin_ratio_pct": 5.08
       },
       {
         "security_id": "1605",
         "name": "華新",
         "market": "listed",
-        "net_shares": 3904527
+        "net_shares": 3904527,
+        "retail_sell_pctpt": 0.79,
+        "margin_balance_delta": -72,
+        "short_margin_ratio_pct": 3.27
       },
       {
         "security_id": "1504",
         "name": "東元",
         "market": "listed",
-        "net_shares": 3611832
+        "net_shares": 3611832,
+        "retail_sell_pctpt": 0.37,
+        "margin_balance_delta": -773,
+        "short_margin_ratio_pct": 0.28
       },
       {
         "security_id": "3037",
         "name": "欣興",
         "market": "listed",
-        "net_shares": 3480000
+        "net_shares": 3480000,
+        "retail_sell_pctpt": 1.16,
+        "margin_balance_delta": 336,
+        "short_margin_ratio_pct": 1.83
       },
       {
         "security_id": "2354",
         "name": "鴻準",
         "market": "listed",
-        "net_shares": 3305991
+        "net_shares": 3305991,
+        "retail_sell_pctpt": 1.42,
+        "margin_balance_delta": 0,
+        "short_margin_ratio_pct": 0.72
       },
       {
         "security_id": "1815",
         "name": "富喬",
         "market": "otc",
-        "net_shares": 3244015
+        "net_shares": 3244015,
+        "retail_sell_pctpt": 1.32,
+        "margin_balance_delta": -687,
+        "short_margin_ratio_pct": 1.51
       },
       {
         "security_id": "2359",
         "name": "所羅門",
         "market": "listed",
-        "net_shares": 3199233
+        "net_shares": 3199233,
+        "retail_sell_pctpt": 2.95,
+        "margin_balance_delta": -1574,
+        "short_margin_ratio_pct": 4.92
       },
       {
         "security_id": "2317",
         "name": "鴻海",
         "market": "listed",
-        "net_shares": 3071895
+        "net_shares": 3071895,
+        "retail_sell_pctpt": 0.81,
+        "margin_balance_delta": -297,
+        "short_margin_ratio_pct": 1.38
       },
       {
         "security_id": "3711",
         "name": "日月光投控",
         "market": "listed",
-        "net_shares": 3018131
+        "net_shares": 3018131,
+        "retail_sell_pctpt": -0.16,
+        "margin_balance_delta": -215,
+        "short_margin_ratio_pct": 1.5
       },
       {
         "security_id": "2889",
         "name": "國票金",
         "market": "listed",
-        "net_shares": 2886000
+        "net_shares": 2886000,
+        "retail_sell_pctpt": -0.2,
+        "margin_balance_delta": -135,
+        "short_margin_ratio_pct": 0.15
       },
       {
         "security_id": "1909",
         "name": "榮成",
         "market": "listed",
-        "net_shares": 2775001
+        "net_shares": 2775001,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": 383,
+        "short_margin_ratio_pct": 0.09
       },
       {
         "security_id": "1718",
         "name": "中纖",
         "market": "listed",
-        "net_shares": 2683934
+        "net_shares": 2683934,
+        "retail_sell_pctpt": -2.64,
+        "margin_balance_delta": 1068,
+        "short_margin_ratio_pct": 0.83
       },
       {
         "security_id": "3605",
         "name": "宏致",
         "market": "listed",
-        "net_shares": 2674840
+        "net_shares": 2674840,
+        "retail_sell_pctpt": 6.59,
+        "margin_balance_delta": 442,
+        "short_margin_ratio_pct": 6.89
       },
       {
         "security_id": "2605",
         "name": "新興",
         "market": "listed",
-        "net_shares": 2594254
+        "net_shares": 2594254,
+        "retail_sell_pctpt": 0.59,
+        "margin_balance_delta": -2115,
+        "short_margin_ratio_pct": 0.23
       },
       {
         "security_id": "2313",
         "name": "華通",
         "market": "listed",
-        "net_shares": 2523325
+        "net_shares": 2523325,
+        "retail_sell_pctpt": 1.89,
+        "margin_balance_delta": -186,
+        "short_margin_ratio_pct": 4.3
       },
       {
         "security_id": "3498",
         "name": "陽程",
         "market": "otc",
-        "net_shares": 2496688
+        "net_shares": 2496688,
+        "retail_sell_pctpt": 0.88,
+        "margin_balance_delta": -86,
+        "short_margin_ratio_pct": 6.24
       },
       {
         "security_id": "6278",
         "name": "台表科",
         "market": "listed",
-        "net_shares": 2477042
+        "net_shares": 2477042,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": 185,
+        "short_margin_ratio_pct": 0.96
       },
       {
         "security_id": "2399",
         "name": "映泰",
         "market": "listed",
-        "net_shares": 2464733
+        "net_shares": 2464733,
+        "retail_sell_pctpt": 0.73,
+        "margin_balance_delta": -328,
+        "short_margin_ratio_pct": 3.04
       },
       {
         "security_id": "9933",
         "name": "中鼎",
         "market": "listed",
-        "net_shares": 2079034
+        "net_shares": 2079034,
+        "retail_sell_pctpt": -0.33,
+        "margin_balance_delta": 11,
+        "short_margin_ratio_pct": 0.76
       },
       {
         "security_id": "5351",
         "name": "鈺創",
         "market": "otc",
-        "net_shares": 2039176
+        "net_shares": 2039176,
+        "retail_sell_pctpt": 8.74,
+        "margin_balance_delta": -365,
+        "short_margin_ratio_pct": 14.95
       },
       {
         "security_id": "4306",
         "name": "炎洲",
         "market": "listed",
-        "net_shares": 1956461
+        "net_shares": 1956461,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": 358,
+        "short_margin_ratio_pct": 0.1
       },
       {
         "security_id": "2851",
@@ -4508,301 +4658,451 @@
         "security_id": "2327",
         "name": "國巨*",
         "market": "listed",
-        "net_shares": -22289250
+        "net_shares": -22289250,
+        "retail_sell_pctpt": -0.72,
+        "margin_balance_delta": 713,
+        "short_margin_ratio_pct": 1.34
       },
       {
         "security_id": "2002",
         "name": "中鋼",
         "market": "listed",
-        "net_shares": -18956289
+        "net_shares": -18956289,
+        "retail_sell_pctpt": 0.12,
+        "margin_balance_delta": 681,
+        "short_margin_ratio_pct": 0.24
       },
       {
         "security_id": "2884",
         "name": "玉山金",
         "market": "listed",
-        "net_shares": -17361306
+        "net_shares": -17361306,
+        "retail_sell_pctpt": 0.14,
+        "margin_balance_delta": -49,
+        "short_margin_ratio_pct": 13.05
       },
       {
         "security_id": "2834",
         "name": "臺企銀",
         "market": "listed",
-        "net_shares": -16414530
+        "net_shares": -16414530,
+        "retail_sell_pctpt": -0.33,
+        "margin_balance_delta": 161,
+        "short_margin_ratio_pct": 0.11
       },
       {
         "security_id": "2610",
         "name": "華航",
         "market": "listed",
-        "net_shares": -16369908
+        "net_shares": -16369908,
+        "retail_sell_pctpt": 0.84,
+        "margin_balance_delta": -111,
+        "short_margin_ratio_pct": 0.39
       },
       {
         "security_id": "2618",
         "name": "長榮航",
         "market": "listed",
-        "net_shares": -16123677
+        "net_shares": -16123677,
+        "retail_sell_pctpt": 0.65,
+        "margin_balance_delta": -4065,
+        "short_margin_ratio_pct": 2.28
       },
       {
         "security_id": "6182",
         "name": "合晶",
         "market": "otc",
-        "net_shares": -11751956
+        "net_shares": -11751956,
+        "retail_sell_pctpt": 0.29,
+        "margin_balance_delta": 534,
+        "short_margin_ratio_pct": 2.1
       },
       {
         "security_id": "2408",
         "name": "南亞科",
         "market": "listed",
-        "net_shares": -10026270
+        "net_shares": -10026270,
+        "retail_sell_pctpt": 1.63,
+        "margin_balance_delta": 1397,
+        "short_margin_ratio_pct": 3.17
       },
       {
         "security_id": "2885",
         "name": "元大金",
         "market": "listed",
-        "net_shares": -9277473
+        "net_shares": -9277473,
+        "retail_sell_pctpt": 0.15,
+        "margin_balance_delta": -138,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "1717",
         "name": "長興",
         "market": "listed",
-        "net_shares": -8986209
+        "net_shares": -8986209,
+        "retail_sell_pctpt": 0.44,
+        "margin_balance_delta": -791,
+        "short_margin_ratio_pct": 3.28
       },
       {
         "security_id": "2492",
         "name": "華新科",
         "market": "listed",
-        "net_shares": -8577048
+        "net_shares": -8577048,
+        "retail_sell_pctpt": -2.58,
+        "margin_balance_delta": 348,
+        "short_margin_ratio_pct": 3.65
       },
       {
         "security_id": "2880",
         "name": "華南金",
         "market": "listed",
-        "net_shares": -6850303
+        "net_shares": -6850303,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": 517,
+        "short_margin_ratio_pct": 33.57
       },
       {
         "security_id": "2027",
         "name": "大成鋼",
         "market": "listed",
-        "net_shares": -6583749
+        "net_shares": -6583749,
+        "retail_sell_pctpt": 0.77,
+        "margin_balance_delta": 823,
+        "short_margin_ratio_pct": 2.02
       },
       {
         "security_id": "2449",
         "name": "京元電子",
         "market": "listed",
-        "net_shares": -6205401
+        "net_shares": -6205401,
+        "retail_sell_pctpt": -0.42,
+        "margin_balance_delta": 268,
+        "short_margin_ratio_pct": 1.16
       },
       {
         "security_id": "5904",
         "name": "寶雅*",
         "market": "otc",
-        "net_shares": -5769592
+        "net_shares": -5769592,
+        "retail_sell_pctpt": 24.36,
+        "margin_balance_delta": 967,
+        "short_margin_ratio_pct": 2.75
       },
       {
         "security_id": "5388",
         "name": "中磊",
         "market": "listed",
-        "net_shares": -5640927
+        "net_shares": -5640927,
+        "retail_sell_pctpt": 1.36,
+        "margin_balance_delta": 443,
+        "short_margin_ratio_pct": 0.19
       },
       {
         "security_id": "8150",
         "name": "南茂",
         "market": "listed",
-        "net_shares": -5589612
+        "net_shares": -5589612,
+        "retail_sell_pctpt": -1.07,
+        "margin_balance_delta": 299,
+        "short_margin_ratio_pct": 1.77
       },
       {
         "security_id": "2101",
         "name": "南港",
         "market": "listed",
-        "net_shares": -5110152
+        "net_shares": -5110152,
+        "retail_sell_pctpt": 0.21,
+        "margin_balance_delta": -865,
+        "short_margin_ratio_pct": 0.04
       },
       {
         "security_id": "2377",
         "name": "微星",
         "market": "listed",
-        "net_shares": -4855686
+        "net_shares": -4855686,
+        "retail_sell_pctpt": 1.95,
+        "margin_balance_delta": 527,
+        "short_margin_ratio_pct": 0.03
       },
       {
         "security_id": "3702",
         "name": "大聯大",
         "market": "listed",
-        "net_shares": -4690162
+        "net_shares": -4690162,
+        "retail_sell_pctpt": 0.51,
+        "margin_balance_delta": 637,
+        "short_margin_ratio_pct": 2.28
       },
       {
         "security_id": "8112",
         "name": "至上",
         "market": "listed",
-        "net_shares": -4579585
+        "net_shares": -4579585,
+        "retail_sell_pctpt": -0.67,
+        "margin_balance_delta": 361,
+        "short_margin_ratio_pct": 17.86
       },
       {
         "security_id": "2303",
         "name": "聯電",
         "market": "listed",
-        "net_shares": -4510131
+        "net_shares": -4510131,
+        "retail_sell_pctpt": -1.03,
+        "margin_balance_delta": -1079,
+        "short_margin_ratio_pct": 1.39
       },
       {
         "security_id": "6147",
         "name": "頎邦",
         "market": "otc",
-        "net_shares": -4441297
+        "net_shares": -4441297,
+        "retail_sell_pctpt": -0.57,
+        "margin_balance_delta": 646,
+        "short_margin_ratio_pct": 1.05
       },
       {
         "security_id": "2412",
         "name": "中華電",
         "market": "listed",
-        "net_shares": -4262279
+        "net_shares": -4262279,
+        "retail_sell_pctpt": -0.17,
+        "margin_balance_delta": 64,
+        "short_margin_ratio_pct": 1.36
       },
       {
         "security_id": "2105",
         "name": "正新",
         "market": "listed",
-        "net_shares": -4133828
+        "net_shares": -4133828,
+        "retail_sell_pctpt": -0.14,
+        "margin_balance_delta": 205,
+        "short_margin_ratio_pct": 0.24
       },
       {
         "security_id": "2883",
         "name": "凱基金",
         "market": "listed",
-        "net_shares": -4054502
+        "net_shares": -4054502,
+        "retail_sell_pctpt": 0.29,
+        "margin_balance_delta": -868,
+        "short_margin_ratio_pct": 11.73
       },
       {
         "security_id": "4541",
         "name": "晟田",
         "market": "otc",
-        "net_shares": -4036070
+        "net_shares": -4036070,
+        "retail_sell_pctpt": 0.02,
+        "margin_balance_delta": 828,
+        "short_margin_ratio_pct": 2.05
       },
       {
         "security_id": "2208",
         "name": "台船",
         "market": "listed",
-        "net_shares": -4016380
+        "net_shares": -4016380,
+        "retail_sell_pctpt": -0.08,
+        "margin_balance_delta": 0,
+        "short_margin_ratio_pct": null
       },
       {
         "security_id": "8261",
         "name": "富鼎",
         "market": "listed",
-        "net_shares": -3955133
+        "net_shares": -3955133,
+        "retail_sell_pctpt": -2.22,
+        "margin_balance_delta": 195,
+        "short_margin_ratio_pct": 0.45
       },
       {
         "security_id": "2892",
         "name": "第一金",
         "market": "listed",
-        "net_shares": -3851813
+        "net_shares": -3851813,
+        "retail_sell_pctpt": 0.07,
+        "margin_balance_delta": -82,
+        "short_margin_ratio_pct": 35.65
       },
       {
         "security_id": "2406",
         "name": "國碩",
         "market": "listed",
-        "net_shares": -3674329
+        "net_shares": -3674329,
+        "retail_sell_pctpt": -0.42,
+        "margin_balance_delta": -692,
+        "short_margin_ratio_pct": 3.73
       },
       {
         "security_id": "2352",
         "name": "佳世達",
         "market": "listed",
-        "net_shares": -3659647
+        "net_shares": -3659647,
+        "retail_sell_pctpt": 0.16,
+        "margin_balance_delta": 403,
+        "short_margin_ratio_pct": 0.3
       },
       {
         "security_id": "5871",
         "name": "中租-KY",
         "market": "listed",
-        "net_shares": -3414861
+        "net_shares": -3414861,
+        "retail_sell_pctpt": -0.13,
+        "margin_balance_delta": 175,
+        "short_margin_ratio_pct": 0.31
       },
       {
         "security_id": "2515",
         "name": "中工",
         "market": "listed",
-        "net_shares": -3239000
+        "net_shares": -3239000,
+        "retail_sell_pctpt": 0.01,
+        "margin_balance_delta": 68,
+        "short_margin_ratio_pct": 0.13
       },
       {
         "security_id": "2330",
         "name": "台積電",
         "market": "listed",
-        "net_shares": -3024347
+        "net_shares": -3024347,
+        "retail_sell_pctpt": 0.03,
+        "margin_balance_delta": 97,
+        "short_margin_ratio_pct": 0.13
       },
       {
         "security_id": "2645",
         "name": "長榮航太",
         "market": "listed",
-        "net_shares": -3022300
+        "net_shares": -3022300,
+        "retail_sell_pctpt": -0.14,
+        "margin_balance_delta": 1765,
+        "short_margin_ratio_pct": 0.27
       },
       {
         "security_id": "2890",
         "name": "永豐金",
         "market": "listed",
-        "net_shares": -2997634
+        "net_shares": -2997634,
+        "retail_sell_pctpt": 0.04,
+        "margin_balance_delta": -109,
+        "short_margin_ratio_pct": 19.09
       },
       {
         "security_id": "2375",
         "name": "凱美",
         "market": "listed",
-        "net_shares": -2960000
+        "net_shares": -2960000,
+        "retail_sell_pctpt": -1.01,
+        "margin_balance_delta": 286,
+        "short_margin_ratio_pct": 10.1
       },
       {
         "security_id": "2103",
         "name": "台橡",
         "market": "listed",
-        "net_shares": -2826461
+        "net_shares": -2826461,
+        "retail_sell_pctpt": 0.14,
+        "margin_balance_delta": -726,
+        "short_margin_ratio_pct": 1.37
       },
       {
         "security_id": "2633",
         "name": "台灣高鐵",
         "market": "listed",
-        "net_shares": -2780966
+        "net_shares": -2780966,
+        "retail_sell_pctpt": 0.03,
+        "margin_balance_delta": -2,
+        "short_margin_ratio_pct": 1.53
       },
       {
         "security_id": "8299",
         "name": "群聯",
         "market": "otc",
-        "net_shares": -2576028
+        "net_shares": -2576028,
+        "retail_sell_pctpt": 0.91,
+        "margin_balance_delta": 317,
+        "short_margin_ratio_pct": 0.6
       },
       {
         "security_id": "8069",
         "name": "元太",
         "market": "otc",
-        "net_shares": -2556425
+        "net_shares": -2556425,
+        "retail_sell_pctpt": 0.47,
+        "margin_balance_delta": -64,
+        "short_margin_ratio_pct": 9.16
       },
       {
         "security_id": "5475",
         "name": "德宏",
         "market": "otc",
-        "net_shares": -2506075
+        "net_shares": -2506075,
+        "retail_sell_pctpt": -3.84,
+        "margin_balance_delta": 0,
+        "short_margin_ratio_pct": null
       },
       {
         "security_id": "6414",
         "name": "樺漢",
         "market": "listed",
-        "net_shares": -2356168
+        "net_shares": -2356168,
+        "retail_sell_pctpt": 0.4,
+        "margin_balance_delta": 274,
+        "short_margin_ratio_pct": 0.85
       },
       {
         "security_id": "4939",
         "name": "亞電",
         "market": "otc",
-        "net_shares": -2168130
+        "net_shares": -2168130,
+        "retail_sell_pctpt": -0.4,
+        "margin_balance_delta": -164,
+        "short_margin_ratio_pct": 4.98
       },
       {
         "security_id": "2536",
         "name": "宏普",
         "market": "listed",
-        "net_shares": -2166000
+        "net_shares": -2166000,
+        "retail_sell_pctpt": -0.21,
+        "margin_balance_delta": -352,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "2014",
         "name": "中鴻",
         "market": "listed",
-        "net_shares": -2157000
+        "net_shares": -2157000,
+        "retail_sell_pctpt": 0.23,
+        "margin_balance_delta": -2,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "1477",
         "name": "聚陽",
         "market": "listed",
-        "net_shares": -2008308
+        "net_shares": -2008308,
+        "retail_sell_pctpt": 0.86,
+        "margin_balance_delta": 101,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "3045",
         "name": "台灣大",
         "market": "listed",
-        "net_shares": -1948626
+        "net_shares": -1948626,
+        "retail_sell_pctpt": -0.21,
+        "margin_balance_delta": 163,
+        "short_margin_ratio_pct": 1.06
       },
       {
         "security_id": "2349",
         "name": "錸德",
         "market": "listed",
-        "net_shares": -1865580
+        "net_shares": -1865580,
+        "retail_sell_pctpt": 0.04,
+        "margin_balance_delta": 0,
+        "short_margin_ratio_pct": null
       },
       {
         "security_id": "2897",
@@ -11170,301 +11470,451 @@
         "security_id": "2887",
         "name": "台新新光金",
         "market": "listed",
-        "net_shares": 25041136
+        "net_shares": 25041136,
+        "retail_sell_pctpt": 0.09,
+        "margin_balance_delta": -83,
+        "short_margin_ratio_pct": 1.91
       },
       {
         "security_id": "2883",
         "name": "凱基金",
         "market": "listed",
-        "net_shares": 25023853
+        "net_shares": 25023853,
+        "retail_sell_pctpt": 0.29,
+        "margin_balance_delta": -868,
+        "short_margin_ratio_pct": 11.73
       },
       {
         "security_id": "2884",
         "name": "玉山金",
         "market": "listed",
-        "net_shares": 18352271
+        "net_shares": 18352271,
+        "retail_sell_pctpt": 0.14,
+        "margin_balance_delta": -49,
+        "short_margin_ratio_pct": 13.05
       },
       {
         "security_id": "2886",
         "name": "兆豐金",
         "market": "listed",
-        "net_shares": 15554335
+        "net_shares": 15554335,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": -124,
+        "short_margin_ratio_pct": 12.15
       },
       {
         "security_id": "2892",
         "name": "第一金",
         "market": "listed",
-        "net_shares": 14618712
+        "net_shares": 14618712,
+        "retail_sell_pctpt": 0.07,
+        "margin_balance_delta": -82,
+        "short_margin_ratio_pct": 35.65
       },
       {
         "security_id": "2890",
         "name": "永豐金",
         "market": "listed",
-        "net_shares": 14420641
+        "net_shares": 14420641,
+        "retail_sell_pctpt": 0.04,
+        "margin_balance_delta": -109,
+        "short_margin_ratio_pct": 19.09
       },
       {
         "security_id": "2880",
         "name": "華南金",
         "market": "listed",
-        "net_shares": 11674296
+        "net_shares": 11674296,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": 517,
+        "short_margin_ratio_pct": 33.57
       },
       {
         "security_id": "2885",
         "name": "元大金",
         "market": "listed",
-        "net_shares": 5100912
+        "net_shares": 5100912,
+        "retail_sell_pctpt": 0.15,
+        "margin_balance_delta": -138,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "2344",
         "name": "華邦電",
         "market": "listed",
-        "net_shares": 3770315
+        "net_shares": 3770315,
+        "retail_sell_pctpt": 1.29,
+        "margin_balance_delta": -8339,
+        "short_margin_ratio_pct": 3.58
       },
       {
         "security_id": "8046",
         "name": "南電",
         "market": "listed",
-        "net_shares": 2466961
+        "net_shares": 2466961,
+        "retail_sell_pctpt": 0.18,
+        "margin_balance_delta": -1353,
+        "short_margin_ratio_pct": 6.92
       },
       {
         "security_id": "4938",
         "name": "和碩",
         "market": "listed",
-        "net_shares": 2422000
+        "net_shares": 2422000,
+        "retail_sell_pctpt": 0.6,
+        "margin_balance_delta": 68,
+        "short_margin_ratio_pct": 1.07
       },
       {
         "security_id": "8996",
         "name": "高力",
         "market": "listed",
-        "net_shares": 2204000
+        "net_shares": 2204000,
+        "retail_sell_pctpt": -0.63,
+        "margin_balance_delta": 125,
+        "short_margin_ratio_pct": 2.91
       },
       {
         "security_id": "2412",
         "name": "中華電",
         "market": "listed",
-        "net_shares": 1508867
+        "net_shares": 1508867,
+        "retail_sell_pctpt": -0.17,
+        "margin_balance_delta": 64,
+        "short_margin_ratio_pct": 1.36
       },
       {
         "security_id": "3532",
         "name": "台勝科",
         "market": "listed",
-        "net_shares": 1474000
+        "net_shares": 1474000,
+        "retail_sell_pctpt": -0.22,
+        "margin_balance_delta": -418,
+        "short_margin_ratio_pct": 2.39
       },
       {
         "security_id": "2327",
         "name": "國巨*",
         "market": "listed",
-        "net_shares": 1473516
+        "net_shares": 1473516,
+        "retail_sell_pctpt": -0.72,
+        "margin_balance_delta": 713,
+        "short_margin_ratio_pct": 1.34
       },
       {
         "security_id": "2368",
         "name": "金像電",
         "market": "listed",
-        "net_shares": 1359915
+        "net_shares": 1359915,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": -323,
+        "short_margin_ratio_pct": 8.7
       },
       {
         "security_id": "3017",
         "name": "奇鋐",
         "market": "listed",
-        "net_shares": 784941
+        "net_shares": 784941,
+        "retail_sell_pctpt": 1.95,
+        "margin_balance_delta": -89,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "4958",
         "name": "臻鼎-KY",
         "market": "listed",
-        "net_shares": 648803
+        "net_shares": 648803,
+        "retail_sell_pctpt": -0.18,
+        "margin_balance_delta": -50,
+        "short_margin_ratio_pct": 1.07
       },
       {
         "security_id": "2855",
         "name": "統一證",
         "market": "listed",
-        "net_shares": 602000
+        "net_shares": 602000,
+        "retail_sell_pctpt": 0.16,
+        "margin_balance_delta": -147,
+        "short_margin_ratio_pct": 3.23
       },
       {
         "security_id": "4764",
         "name": "雙鍵",
         "market": "listed",
-        "net_shares": 520000
+        "net_shares": 520000,
+        "retail_sell_pctpt": -0.74,
+        "margin_balance_delta": -76,
+        "short_margin_ratio_pct": 0.05
       },
       {
         "security_id": "6182",
         "name": "合晶",
         "market": "otc",
-        "net_shares": 515000
+        "net_shares": 515000,
+        "retail_sell_pctpt": 0.29,
+        "margin_balance_delta": 534,
+        "short_margin_ratio_pct": 2.1
       },
       {
         "security_id": "2618",
         "name": "長榮航",
         "market": "listed",
-        "net_shares": 451289
+        "net_shares": 451289,
+        "retail_sell_pctpt": 0.65,
+        "margin_balance_delta": -4065,
+        "short_margin_ratio_pct": 2.28
       },
       {
         "security_id": "2542",
         "name": "興富發",
         "market": "listed",
-        "net_shares": 451000
+        "net_shares": 451000,
+        "retail_sell_pctpt": 0.05,
+        "margin_balance_delta": -2,
+        "short_margin_ratio_pct": 4.24
       },
       {
         "security_id": "6669",
         "name": "緯穎",
         "market": "listed",
-        "net_shares": 449957
+        "net_shares": 449957,
+        "retail_sell_pctpt": 0.18,
+        "margin_balance_delta": -61,
+        "short_margin_ratio_pct": 1.99
       },
       {
         "security_id": "2633",
         "name": "台灣高鐵",
         "market": "listed",
-        "net_shares": 430000
+        "net_shares": 430000,
+        "retail_sell_pctpt": 0.03,
+        "margin_balance_delta": -2,
+        "short_margin_ratio_pct": 1.53
       },
       {
         "security_id": "2610",
         "name": "華航",
         "market": "listed",
-        "net_shares": 426000
+        "net_shares": 426000,
+        "retail_sell_pctpt": 0.84,
+        "margin_balance_delta": -111,
+        "short_margin_ratio_pct": 0.39
       },
       {
         "security_id": "2492",
         "name": "華新科",
         "market": "listed",
-        "net_shares": 414000
+        "net_shares": 414000,
+        "retail_sell_pctpt": -2.58,
+        "margin_balance_delta": 348,
+        "short_margin_ratio_pct": 3.65
       },
       {
         "security_id": "8112",
         "name": "至上",
         "market": "listed",
-        "net_shares": 390000
+        "net_shares": 390000,
+        "retail_sell_pctpt": -0.67,
+        "margin_balance_delta": 361,
+        "short_margin_ratio_pct": 17.86
       },
       {
         "security_id": "6187",
         "name": "萬潤",
         "market": "otc",
-        "net_shares": 332874
+        "net_shares": 332874,
+        "retail_sell_pctpt": 2.34,
+        "margin_balance_delta": -35,
+        "short_margin_ratio_pct": 2.13
       },
       {
         "security_id": "2408",
         "name": "南亞科",
         "market": "listed",
-        "net_shares": 330665
+        "net_shares": 330665,
+        "retail_sell_pctpt": 1.63,
+        "margin_balance_delta": 1397,
+        "short_margin_ratio_pct": 3.17
       },
       {
         "security_id": "5876",
         "name": "上海商銀",
         "market": "listed",
-        "net_shares": 282000
+        "net_shares": 282000,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": -31,
+        "short_margin_ratio_pct": 0.25
       },
       {
         "security_id": "2347",
         "name": "聯強",
         "market": "listed",
-        "net_shares": 233000
+        "net_shares": 233000,
+        "retail_sell_pctpt": 0.23,
+        "margin_balance_delta": -29,
+        "short_margin_ratio_pct": 0.64
       },
       {
         "security_id": "2891",
         "name": "中信金",
         "market": "listed",
-        "net_shares": 224674
+        "net_shares": 224674,
+        "retail_sell_pctpt": 0.09,
+        "margin_balance_delta": 83,
+        "short_margin_ratio_pct": 3.07
       },
       {
         "security_id": "1560",
         "name": "中砂",
         "market": "listed",
-        "net_shares": 211000
+        "net_shares": 211000,
+        "retail_sell_pctpt": 0.14,
+        "margin_balance_delta": -305,
+        "short_margin_ratio_pct": 9.49
       },
       {
         "security_id": "6278",
         "name": "台表科",
         "market": "listed",
-        "net_shares": 193000
+        "net_shares": 193000,
+        "retail_sell_pctpt": 0.06,
+        "margin_balance_delta": 185,
+        "short_margin_ratio_pct": 0.96
       },
       {
         "security_id": "2383",
         "name": "台光電",
         "market": "listed",
-        "net_shares": 169940
+        "net_shares": 169940,
+        "retail_sell_pctpt": 0.15,
+        "margin_balance_delta": -71,
+        "short_margin_ratio_pct": 2.2
       },
       {
         "security_id": "6488",
         "name": "環球晶",
         "market": "otc",
-        "net_shares": 167821
+        "net_shares": 167821,
+        "retail_sell_pctpt": -1.28,
+        "margin_balance_delta": -144,
+        "short_margin_ratio_pct": 2.1
       },
       {
         "security_id": "8358",
         "name": "金居",
         "market": "otc",
-        "net_shares": 160000
+        "net_shares": 160000,
+        "retail_sell_pctpt": -2.05,
+        "margin_balance_delta": 844,
+        "short_margin_ratio_pct": 1.83
       },
       {
         "security_id": "2308",
         "name": "台達電",
         "market": "listed",
-        "net_shares": 155391
+        "net_shares": 155391,
+        "retail_sell_pctpt": -0.21,
+        "margin_balance_delta": -384,
+        "short_margin_ratio_pct": 0.8
       },
       {
         "security_id": "2382",
         "name": "廣達",
         "market": "listed",
-        "net_shares": 147606
+        "net_shares": 147606,
+        "retail_sell_pctpt": 0.7,
+        "margin_balance_delta": -812,
+        "short_margin_ratio_pct": 0.34
       },
       {
         "security_id": "6442",
         "name": "光聖",
         "market": "listed",
-        "net_shares": 125000
+        "net_shares": 125000,
+        "retail_sell_pctpt": 0.01,
+        "margin_balance_delta": -101,
+        "short_margin_ratio_pct": 0.85
       },
       {
         "security_id": "9904",
         "name": "寶成",
         "market": "listed",
-        "net_shares": 119000
+        "net_shares": 119000,
+        "retail_sell_pctpt": -0.65,
+        "margin_balance_delta": 115,
+        "short_margin_ratio_pct": 0.04
       },
       {
         "security_id": "2105",
         "name": "正新",
         "market": "listed",
-        "net_shares": 115561
+        "net_shares": 115561,
+        "retail_sell_pctpt": -0.14,
+        "margin_balance_delta": 205,
+        "short_margin_ratio_pct": 0.24
       },
       {
         "security_id": "1402",
         "name": "遠東新",
         "market": "listed",
-        "net_shares": 114563
+        "net_shares": 114563,
+        "retail_sell_pctpt": -0.11,
+        "margin_balance_delta": -62,
+        "short_margin_ratio_pct": 0.73
       },
       {
         "security_id": "3044",
         "name": "健鼎",
         "market": "listed",
-        "net_shares": 108971
+        "net_shares": 108971,
+        "retail_sell_pctpt": 0.04,
+        "margin_balance_delta": -127,
+        "short_margin_ratio_pct": 1.1
       },
       {
         "security_id": "1319",
         "name": "東陽",
         "market": "listed",
-        "net_shares": 108000
+        "net_shares": 108000,
+        "retail_sell_pctpt": -0.03,
+        "margin_balance_delta": -8,
+        "short_margin_ratio_pct": 0.15
       },
       {
         "security_id": "3702",
         "name": "大聯大",
         "market": "listed",
-        "net_shares": 101000
+        "net_shares": 101000,
+        "retail_sell_pctpt": 0.51,
+        "margin_balance_delta": 637,
+        "short_margin_ratio_pct": 2.28
       },
       {
         "security_id": "5904",
         "name": "寶雅*",
         "market": "otc",
-        "net_shares": 91000
+        "net_shares": 91000,
+        "retail_sell_pctpt": 24.36,
+        "margin_balance_delta": 967,
+        "short_margin_ratio_pct": 2.75
       },
       {
         "security_id": "1216",
         "name": "統一",
         "market": "listed",
-        "net_shares": 87561
+        "net_shares": 87561,
+        "retail_sell_pctpt": -0.29,
+        "margin_balance_delta": 7,
+        "short_margin_ratio_pct": 0.2
       },
       {
         "security_id": "3008",
         "name": "大立光",
         "market": "listed",
-        "net_shares": 85268
+        "net_shares": 85268,
+        "retail_sell_pctpt": 0.34,
+        "margin_balance_delta": -7,
+        "short_margin_ratio_pct": 0.43
       },
       {
         "security_id": "3105",
@@ -11802,301 +12252,451 @@
         "security_id": "2303",
         "name": "聯電",
         "market": "listed",
-        "net_shares": -8593921
+        "net_shares": -8593921,
+        "retail_sell_pctpt": -1.03,
+        "margin_balance_delta": -1079,
+        "short_margin_ratio_pct": 1.39
       },
       {
         "security_id": "2027",
         "name": "大成鋼",
         "market": "listed",
-        "net_shares": -5000000
+        "net_shares": -5000000,
+        "retail_sell_pctpt": 0.77,
+        "margin_balance_delta": 823,
+        "short_margin_ratio_pct": 2.02
       },
       {
         "security_id": "3711",
         "name": "日月光投控",
         "market": "listed",
-        "net_shares": -3770456
+        "net_shares": -3770456,
+        "retail_sell_pctpt": -0.16,
+        "margin_balance_delta": -215,
+        "short_margin_ratio_pct": 1.5
       },
       {
         "security_id": "3231",
         "name": "緯創",
         "market": "listed",
-        "net_shares": -2862731
+        "net_shares": -2862731,
+        "retail_sell_pctpt": 2.86,
+        "margin_balance_delta": -801,
+        "short_margin_ratio_pct": 2.92
       },
       {
         "security_id": "2317",
         "name": "鴻海",
         "market": "listed",
-        "net_shares": -2552481
+        "net_shares": -2552481,
+        "retail_sell_pctpt": 0.81,
+        "margin_balance_delta": -297,
+        "short_margin_ratio_pct": 1.38
       },
       {
         "security_id": "1303",
         "name": "南亞",
         "market": "listed",
-        "net_shares": -1592904
+        "net_shares": -1592904,
+        "retail_sell_pctpt": -0.1,
+        "margin_balance_delta": 1915,
+        "short_margin_ratio_pct": 5.74
       },
       {
         "security_id": "8028",
         "name": "昇陽半導體",
         "market": "listed",
-        "net_shares": -1544000
+        "net_shares": -1544000,
+        "retail_sell_pctpt": -0.49,
+        "margin_balance_delta": 50,
+        "short_margin_ratio_pct": 0.92
       },
       {
         "security_id": "3189",
         "name": "景碩",
         "market": "listed",
-        "net_shares": -961000
+        "net_shares": -961000,
+        "retail_sell_pctpt": 1.75,
+        "margin_balance_delta": -25,
+        "short_margin_ratio_pct": 1.38
       },
       {
         "security_id": "8210",
         "name": "勤誠",
         "market": "listed",
-        "net_shares": -864000
+        "net_shares": -864000,
+        "retail_sell_pctpt": -0.39,
+        "margin_balance_delta": 67,
+        "short_margin_ratio_pct": 0.63
       },
       {
         "security_id": "8299",
         "name": "群聯",
         "market": "otc",
-        "net_shares": -610888
+        "net_shares": -610888,
+        "retail_sell_pctpt": 0.91,
+        "margin_balance_delta": 317,
+        "short_margin_ratio_pct": 0.6
       },
       {
         "security_id": "2313",
         "name": "華通",
         "market": "listed",
-        "net_shares": -598000
+        "net_shares": -598000,
+        "retail_sell_pctpt": 1.89,
+        "margin_balance_delta": -186,
+        "short_margin_ratio_pct": 4.3
       },
       {
         "security_id": "4904",
         "name": "遠傳",
         "market": "listed",
-        "net_shares": -559417
+        "net_shares": -559417,
+        "retail_sell_pctpt": -0.06,
+        "margin_balance_delta": -188,
+        "short_margin_ratio_pct": 0.32
       },
       {
         "security_id": "2454",
         "name": "聯發科",
         "market": "listed",
-        "net_shares": -514292
+        "net_shares": -514292,
+        "retail_sell_pctpt": 0.04,
+        "margin_balance_delta": -297,
+        "short_margin_ratio_pct": 0.69
       },
       {
         "security_id": "4979",
         "name": "華星光",
         "market": "otc",
-        "net_shares": -496000
+        "net_shares": -496000,
+        "retail_sell_pctpt": 2.15,
+        "margin_balance_delta": -461,
+        "short_margin_ratio_pct": 3.35
       },
       {
         "security_id": "6239",
         "name": "力成",
         "market": "listed",
-        "net_shares": -490000
+        "net_shares": -490000,
+        "retail_sell_pctpt": -0.86,
+        "margin_balance_delta": -85,
+        "short_margin_ratio_pct": 0.5
       },
       {
         "security_id": "2404",
         "name": "漢唐",
         "market": "listed",
-        "net_shares": -414000
+        "net_shares": -414000,
+        "retail_sell_pctpt": 0.07,
+        "margin_balance_delta": -12,
+        "short_margin_ratio_pct": 0.3
       },
       {
         "security_id": "2330",
         "name": "台積電",
         "market": "listed",
-        "net_shares": -380548
+        "net_shares": -380548,
+        "retail_sell_pctpt": 0.03,
+        "margin_balance_delta": 97,
+        "short_margin_ratio_pct": 0.13
       },
       {
         "security_id": "2353",
         "name": "宏碁",
         "market": "listed",
-        "net_shares": -335809
+        "net_shares": -335809,
+        "retail_sell_pctpt": 0.49,
+        "margin_balance_delta": -603,
+        "short_margin_ratio_pct": 6.66
       },
       {
         "security_id": "6515",
         "name": "穎崴",
         "market": "listed",
-        "net_shares": -310630
+        "net_shares": -310630,
+        "retail_sell_pctpt": -0.35,
+        "margin_balance_delta": -4,
+        "short_margin_ratio_pct": 0.59
       },
       {
         "security_id": "2356",
         "name": "英業達",
         "market": "listed",
-        "net_shares": -308227
+        "net_shares": -308227,
+        "retail_sell_pctpt": 0.47,
+        "margin_balance_delta": 65,
+        "short_margin_ratio_pct": 1.97
       },
       {
         "security_id": "2834",
         "name": "臺企銀",
         "market": "listed",
-        "net_shares": -282000
+        "net_shares": -282000,
+        "retail_sell_pctpt": -0.33,
+        "margin_balance_delta": 161,
+        "short_margin_ratio_pct": 0.11
       },
       {
         "security_id": "3533",
         "name": "嘉澤",
         "market": "listed",
-        "net_shares": -281000
+        "net_shares": -281000,
+        "retail_sell_pctpt": -0.58,
+        "margin_balance_delta": 240,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "3661",
         "name": "世芯-KY",
         "market": "listed",
-        "net_shares": -277014
+        "net_shares": -277014,
+        "retail_sell_pctpt": 0.9,
+        "margin_balance_delta": -75,
+        "short_margin_ratio_pct": 0.95
       },
       {
         "security_id": "5347",
         "name": "世界",
         "market": "otc",
-        "net_shares": -259700
+        "net_shares": -259700,
+        "retail_sell_pctpt": -0.87,
+        "margin_balance_delta": -482,
+        "short_margin_ratio_pct": 2.01
       },
       {
         "security_id": "3045",
         "name": "台灣大",
         "market": "listed",
-        "net_shares": -257050
+        "net_shares": -257050,
+        "retail_sell_pctpt": -0.21,
+        "margin_balance_delta": 163,
+        "short_margin_ratio_pct": 1.06
       },
       {
         "security_id": "2357",
         "name": "華碩",
         "market": "listed",
-        "net_shares": -217917
+        "net_shares": -217917,
+        "retail_sell_pctpt": 0.58,
+        "margin_balance_delta": -277,
+        "short_margin_ratio_pct": 4.36
       },
       {
         "security_id": "3583",
         "name": "辛耘",
         "market": "listed",
-        "net_shares": -184000
+        "net_shares": -184000,
+        "retail_sell_pctpt": 0.48,
+        "margin_balance_delta": 28,
+        "short_margin_ratio_pct": 0.7
       },
       {
         "security_id": "3665",
         "name": "貿聯-KY",
         "market": "listed",
-        "net_shares": -171041
+        "net_shares": -171041,
+        "retail_sell_pctpt": 1.08,
+        "margin_balance_delta": -33,
+        "short_margin_ratio_pct": 0.63
       },
       {
         "security_id": "2345",
         "name": "智邦",
         "market": "listed",
-        "net_shares": -168969
+        "net_shares": -168969,
+        "retail_sell_pctpt": -0.08,
+        "margin_balance_delta": -115,
+        "short_margin_ratio_pct": 0.94
       },
       {
         "security_id": "5536",
         "name": "聖暉*",
         "market": "otc",
-        "net_shares": -152000
+        "net_shares": -152000,
+        "retail_sell_pctpt": -0.87,
+        "margin_balance_delta": -3,
+        "short_margin_ratio_pct": 0.58
       },
       {
         "security_id": "2458",
         "name": "義隆",
         "market": "listed",
-        "net_shares": -148000
+        "net_shares": -148000,
+        "retail_sell_pctpt": -1.4,
+        "margin_balance_delta": -84,
+        "short_margin_ratio_pct": 0.44
       },
       {
         "security_id": "1773",
         "name": "勝一",
         "market": "listed",
-        "net_shares": -144000
+        "net_shares": -144000,
+        "retail_sell_pctpt": -0.27,
+        "margin_balance_delta": 3,
+        "short_margin_ratio_pct": 0.09
       },
       {
         "security_id": "2812",
         "name": "台中銀",
         "market": "listed",
-        "net_shares": -121000
+        "net_shares": -121000,
+        "retail_sell_pctpt": -0.66,
+        "margin_balance_delta": 24,
+        "short_margin_ratio_pct": 0.75
       },
       {
         "security_id": "1342",
         "name": "八貫",
         "market": "listed",
-        "net_shares": -120000
+        "net_shares": -120000,
+        "retail_sell_pctpt": -1.13,
+        "margin_balance_delta": -2,
+        "short_margin_ratio_pct": 0.56
       },
       {
         "security_id": "1590",
         "name": "亞德客-KY",
         "market": "listed",
-        "net_shares": -120000
+        "net_shares": -120000,
+        "retail_sell_pctpt": -0.05,
+        "margin_balance_delta": 3,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "3081",
         "name": "聯亞",
         "market": "otc",
-        "net_shares": -108600
+        "net_shares": -108600,
+        "retail_sell_pctpt": 1.53,
+        "margin_balance_delta": -116,
+        "short_margin_ratio_pct": 2.42
       },
       {
         "security_id": "3264",
         "name": "欣銓",
         "market": "otc",
-        "net_shares": -90000
+        "net_shares": -90000,
+        "retail_sell_pctpt": 0.28,
+        "margin_balance_delta": 669,
+        "short_margin_ratio_pct": 2.33
       },
       {
         "security_id": "3037",
         "name": "欣興",
         "market": "listed",
-        "net_shares": -85242
+        "net_shares": -85242,
+        "retail_sell_pctpt": 1.16,
+        "margin_balance_delta": 336,
+        "short_margin_ratio_pct": 1.83
       },
       {
         "security_id": "2449",
         "name": "京元電子",
         "market": "listed",
-        "net_shares": -79385
+        "net_shares": -79385,
+        "retail_sell_pctpt": -0.42,
+        "margin_balance_delta": 268,
+        "short_margin_ratio_pct": 1.16
       },
       {
         "security_id": "6782",
         "name": "視陽",
         "market": "listed",
-        "net_shares": -78000
+        "net_shares": -78000,
+        "retail_sell_pctpt": 1.1,
+        "margin_balance_delta": 29,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "3481",
         "name": "群創",
         "market": "listed",
-        "net_shares": -73779
+        "net_shares": -73779,
+        "retail_sell_pctpt": -0.53,
+        "margin_balance_delta": -1312,
+        "short_margin_ratio_pct": 1.65
       },
       {
         "security_id": "7734",
         "name": "印能科技",
         "market": "otc",
-        "net_shares": -71000
+        "net_shares": -71000,
+        "retail_sell_pctpt": 1.11,
+        "margin_balance_delta": 5,
+        "short_margin_ratio_pct": 0.15
       },
       {
         "security_id": "2472",
         "name": "立隆電",
         "market": "listed",
-        "net_shares": -61000
+        "net_shares": -61000,
+        "retail_sell_pctpt": -0.48,
+        "margin_balance_delta": -125,
+        "short_margin_ratio_pct": 0.0
       },
       {
         "security_id": "3004",
         "name": "豐達科",
         "market": "listed",
-        "net_shares": -60000
+        "net_shares": -60000,
+        "retail_sell_pctpt": 1.09,
+        "margin_balance_delta": 24,
+        "short_margin_ratio_pct": 0.16
       },
       {
         "security_id": "6510",
         "name": "精測",
         "market": "otc",
-        "net_shares": -55053
+        "net_shares": -55053,
+        "retail_sell_pctpt": 1.22,
+        "margin_balance_delta": 6,
+        "short_margin_ratio_pct": 0.98
       },
       {
         "security_id": "3034",
         "name": "聯詠",
         "market": "listed",
-        "net_shares": -53078
+        "net_shares": -53078,
+        "retail_sell_pctpt": 0.26,
+        "margin_balance_delta": 83,
+        "short_margin_ratio_pct": 10.18
       },
       {
         "security_id": "2002",
         "name": "中鋼",
         "market": "listed",
-        "net_shares": -52000
+        "net_shares": -52000,
+        "retail_sell_pctpt": 0.12,
+        "margin_balance_delta": 681,
+        "short_margin_ratio_pct": 0.24
       },
       {
         "security_id": "3551",
         "name": "世禾",
         "market": "otc",
-        "net_shares": -50000
+        "net_shares": -50000,
+        "retail_sell_pctpt": -0.82,
+        "margin_balance_delta": 2,
+        "short_margin_ratio_pct": 0.22
       },
       {
         "security_id": "2409",
         "name": "友達",
         "market": "listed",
-        "net_shares": -49890
+        "net_shares": -49890,
+        "retail_sell_pctpt": -0.14,
+        "margin_balance_delta": 1837,
+        "short_margin_ratio_pct": 6.21
       },
       {
         "security_id": "2324",
         "name": "仁寶",
         "market": "listed",
-        "net_shares": -46924
+        "net_shares": -46924,
+        "retail_sell_pctpt": 0.9,
+        "margin_balance_delta": 5323,
+        "short_margin_ratio_pct": 3.79
       },
       {
         "security_id": "2731",
@@ -12568,6 +13168,15 @@
       }
     ]
   },
+  "supplemental_data": {
+    "margin_date": "2026-08-14",
+    "retail_200": {
+      "date": "2026-08-07",
+      "previous_date": "2026-07-31",
+      "definition": "previous_week_200_lots_or_less_percent_minus_current_week_percent",
+      "coverage_count": 1972
+    }
+  },
   "source_artifacts": [
     {
       "source_id": "twse_institutional_trading",
@@ -12602,6 +13211,33 @@
       "data_date": "2026-08-14",
       "row_count": 1,
       "error": null
+    },
+    {
+      "source_id": "twse_margin_short",
+      "market": "listed",
+      "metric": "margin_short",
+      "status": "fresh",
+      "data_date": "2026-08-14",
+      "row_count": 1294,
+      "error": null
+    },
+    {
+      "source_id": "tpex_margin_short",
+      "market": "otc",
+      "metric": "margin_short",
+      "status": "fresh",
+      "data_date": "2026-08-14",
+      "row_count": 918,
+      "error": null
+    },
+    {
+      "source_id": "tdcc_shareholder_distribution",
+      "market": "listed_otc",
+      "metric": "weekly_retail_200",
+      "status": "fresh",
+      "data_date": "2026-08-07",
+      "row_count": 1972,
+      "error": null
     }
   ],
   "data_quality": {
@@ -12610,13 +13246,13 @@
   },
   "freshness": {
     "dataset_id": "daily_market_flow",
-    "dataset_schema_version": "1.1.0",
+    "dataset_schema_version": "1.2.0",
     "source_id": "daily_market_flow_derived",
     "source_tier": "primary",
     "status": "fresh",
     "data_date": "2026-08-14",
     "expected_data_date": "2026-08-14",
-    "fetched_at": "2026-08-14T22:36:54+08:00",
+    "fetched_at": "2026-08-15T18:56:55+08:00",
     "row_count": 2,
     "sla": {
       "mode": "calendar_day",

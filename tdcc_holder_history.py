@@ -6,7 +6,8 @@ historical shareholder-distribution data through its public per-security query
 page, so this module uses that page conservatively: query the immediately prior
 week for the current ordinary-equity universe, rank the latest positive changes,
 then fetch the remaining five weeks only for enough leading candidates to
-produce a complete Top 50. Only compact 400+ lot aggregates are retained.
+produce a complete Top 50. Only compact 400+ lot and 200-lot-or-less
+aggregates are retained.
 """
 
 from __future__ import annotations
@@ -37,6 +38,7 @@ from tdcc_holder_snapshot import (
 TDCC_HISTORY_URL = "https://www.tdcc.com.tw/portal/zh/smWeb/qryStock"
 USER_AGENT = "stock-from-Hsiu/1.0 (+https://github.com/tcfsh010778/stock-from-Hsiu)"
 MAJOR_SEQUENCES = {"12", "13", "14", "15"}
+RETAIL_200_SEQUENCES = {str(level) for level in range(1, 11)}
 
 
 def _number(value: Any, default: float = 0.0) -> float:
@@ -121,7 +123,7 @@ def parse_query_page(html: str) -> TdccPageParser:
     return parser
 
 
-def extract_major_aggregate(parser: TdccPageParser) -> dict[str, Any] | None:
+def extract_holder_aggregates(parser: TdccPageParser) -> dict[str, Any] | None:
     for table in parser.tables:
         if not table:
             continue
@@ -130,19 +132,32 @@ def extract_major_aggregate(parser: TdccPageParser) -> dict[str, Any] | None:
             continue
         major_percent = 0.0
         major_people = 0
-        found: set[str] = set()
+        retail_200_percent = 0.0
+        found_major: set[str] = set()
+        found_retail: set[str] = set()
         for cells in table[1:]:
-            if len(cells) < 5 or cells[0] not in MAJOR_SEQUENCES:
+            if len(cells) < 5:
                 continue
-            found.add(cells[0])
-            major_people += int(_number(cells[2]))
-            major_percent += _number(cells[4])
-        if found == MAJOR_SEQUENCES:
+            if cells[0] in MAJOR_SEQUENCES:
+                found_major.add(cells[0])
+                major_people += int(_number(cells[2]))
+                major_percent += _number(cells[4])
+            elif cells[0] in RETAIL_200_SEQUENCES:
+                found_retail.add(cells[0])
+                retail_200_percent += _number(cells[4])
+        if found_major == MAJOR_SEQUENCES and found_retail == RETAIL_200_SEQUENCES:
             return {
                 "major_percent": round(major_percent, 2),
                 "major_people": major_people,
+                "retail_200_percent": round(retail_200_percent, 2),
             }
     return None
+
+
+def extract_major_aggregate(parser: TdccPageParser) -> dict[str, Any] | None:
+    """Backward-compatible name for callers of the former major-only parser."""
+
+    return extract_holder_aggregates(parser)
 
 
 class RequestRateLimiter:
@@ -214,7 +229,7 @@ class TdccHistoryClient:
                 self.token = parser.inputs.get("SYNCHRONIZER_TOKEN", "")
                 if not self.token:
                     raise RuntimeError("TDCC historical response omitted the synchronizer token")
-                return extract_major_aggregate(parser)
+                return extract_holder_aggregates(parser)
             except (requests.RequestException, RuntimeError) as exc:
                 last_error = exc
                 self.session.close()
@@ -335,7 +350,8 @@ def build_latest_history(
     universe = [code for code in latest_rows if code in security_map]
     previous = by_date.get(previous_date)
     previous_rows = _rows_by_code(previous)
-    if len(previous_rows) < max(1, int(len(universe) * 0.9)):
+    previous_has_retail = previous_rows and all("retail_200_percent" in row for row in previous_rows.values())
+    if len(previous_rows) < max(1, int(len(universe) * 0.9)) or not previous_has_retail:
         rows, no_data = fetcher.fetch_many(universe, previous_date, security_map, progress=_progress)
         previous = {"date": previous_date, "rows": rows}
     else:

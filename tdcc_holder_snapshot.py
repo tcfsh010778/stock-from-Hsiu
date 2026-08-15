@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-"""Archive a compact weekly 400-lot holder snapshot from official TDCC data.
+"""Archive compact weekly holder aggregates from official TDCC data.
 
-Only the derived 400+ lot aggregate is retained. The 68k-row raw TDCC response
-is never written to disk or published.
+Only the derived 400+ lot and 200-lot-or-less percentages are retained. The
+68k-row raw TDCC response is never written to disk or published.
 """
 
 from __future__ import annotations
@@ -25,6 +25,7 @@ OUTPUT_PATH = DATA_DIR / "holder_weekly_snapshots.json"
 TDCC_URL = "https://openapi.tdcc.com.tw/v1/opendata/1-5"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 MAJOR_LEVELS = {"12", "13", "14", "15"}  # 400,001 shares and above
+RETAIL_200_LEVELS = {str(level) for level in range(1, 11)}  # 200,000 shares and below
 
 
 def _field(row: dict[str, Any], name: str) -> Any:
@@ -81,7 +82,8 @@ def aggregate_snapshot(raw_rows: list[dict[str, Any]], security_map: dict[str, d
     observed_dates: set[str] = set()
     for raw in raw_rows:
         code = str(_field(raw, "證券代號") or "").strip()
-        if code not in security_map or str(_field(raw, "持股分級") or "").strip() not in MAJOR_LEVELS:
+        level = str(_field(raw, "持股分級") or "").strip()
+        if code not in security_map or level not in MAJOR_LEVELS | RETAIL_200_LEVELS:
             continue
         data_date = _date(_field(raw, "資料日期"))
         if not data_date:
@@ -96,15 +98,21 @@ def aggregate_snapshot(raw_rows: list[dict[str, Any]], security_map: dict[str, d
                 "market": ref.get("market") or "",
                 "major_percent": 0.0,
                 "major_people": 0,
+                "retail_200_percent": 0.0,
             },
         )
-        item["major_percent"] += _number(_field(raw, "占集保庫存數比例%"))
-        item["major_people"] += int(_number(_field(raw, "人數")))
+        percent = _number(_field(raw, "占集保庫存數比例%"))
+        if level in MAJOR_LEVELS:
+            item["major_percent"] += percent
+            item["major_people"] += int(_number(_field(raw, "人數")))
+        elif level in RETAIL_200_LEVELS:
+            item["retail_200_percent"] += percent
     if len(observed_dates) != 1:
         raise RuntimeError(f"TDCC snapshot dates are not aligned: {sorted(observed_dates)}")
     rows = sorted(by_code.values(), key=lambda row: str(row["security_id"]))
     for row in rows:
         row["major_percent"] = round(float(row["major_percent"]), 2)
+        row["retail_200_percent"] = round(float(row["retail_200_percent"]), 2)
     if not rows:
         raise RuntimeError("TDCC snapshot contained no listed/OTC common security rows")
     return {"date": next(iter(observed_dates)), "rows": rows}
@@ -121,7 +129,7 @@ def merge_archive(snapshot: dict[str, Any], existing: dict[str, Any] | None = No
     dates = sorted(by_date)[-keep_weeks:]
     return {
         "dataset_id": "holder_weekly_snapshots",
-        "schema_version": "1.0.0",
+        "schema_version": "1.1.0",
         "source_id": "tdcc_shareholder_distribution",
         "source_url": TDCC_URL,
         "updated_at": datetime.now(TAIPEI_TZ).isoformat(),

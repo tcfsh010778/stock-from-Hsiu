@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-14T22:46:50+08:00",
+  "generated_at": "2026-08-15T18:56:55+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -403,7 +403,7 @@
     "daily_market_flow:daily_market_flow_derived": {
       "manifest_schema_version": "1.0.0",
       "dataset_id": "daily_market_flow",
-      "dataset_schema_version": "1.1.0",
+      "dataset_schema_version": "1.2.0",
       "source_id": "daily_market_flow_derived",
       "source_tier": "primary",
       "source_url": "https://github.com/tcfsh010778/stock-from-Hsiu/blob/main/market_flow.py",
@@ -415,9 +415,9 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-14T22:36:54+08:00",
+      "fetched_at": "2026-08-15T18:56:55+08:00",
       "row_count": 2,
-      "sha256": "c173bb50f063cf0a418ed47c8e6ff3f71a5819eff6b5a0ba61280366877c4ea5",
+      "sha256": "4daf8f3cc99e4e3ff563ca483509a77640f88a07095dd5db554fbc2ea85e4fe1",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -430,7 +430,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-14T22:36:54+08:00",
+        "evaluated_at": "2026-08-15T18:56:55+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 0,
@@ -777,9 +777,9 @@
       "data_date": "2026-08-07",
       "trading_date": null,
       "expected_data_date": "2026-08-15",
-      "fetched_at": "2026-08-14T22:46:50+08:00",
+      "fetched_at": "2026-08-15T18:56:36+08:00",
       "row_count": 50,
-      "sha256": "9a68ccd735527345da4cea8f1552be6c25bfa4335df9b96305dbe4dee688ac11",
+      "sha256": "7f5e9b09581173b6239aa5dfd53d976537a9b4c144eaa42b3c24b91d2a77e339",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -792,7 +792,7 @@
       },
       "freshness": {
         "status": "expected_lag",
-        "evaluated_at": "2026-08-14T22:46:50+08:00",
+        "evaluated_at": "2026-08-15T18:56:36+08:00",
         "expected_data_date": "2026-08-15",
         "age_trading_days": null,
         "age_calendar_days": 8,

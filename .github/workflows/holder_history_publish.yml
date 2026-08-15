@@ -62,6 +62,14 @@ jobs:
         if: steps.holder_date.outputs.update_required == 'true'
         run: python holder_update_status.py --finalize
 
+      - name: Refresh institutional supplemental columns
+        if: steps.holder_date.outputs.update_required == 'true'
+        run: python market_flow.py
+
+      - name: Regenerate institutional ranking with the new weekly holder comparison
+        if: steps.holder_date.outputs.update_required == 'true'
+        run: python generate_site.py --flow-only
+
       - name: Generate holder page and update record
         run: python generate_site.py --holder-only
 
@@ -70,13 +78,22 @@ jobs:
           python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert 0 < p.get('row_count', 0) <= 50; assert p.get('six_week_complete_count') == p.get('row_count'); assert p.get('source_state') == 'tdcc_official'"
           python -c "import json; p=json.load(open('data/holder_update_status.json', encoding='utf-8')); assert p.get('last_checked_at'); assert p.get('state') in {'waiting_for_tdcc', 'published'}; assert p.get('attempts')"
           grep -q "回顧 6 週大戶股權變化" docs/holder-risers.html
-          grep -q "更新時間與發布條件" docs/holder-risers.html
+          grep -q "資料更新至" docs/holder-risers.html
+          ! grep -q "yfinance" docs/holder-risers.html
+
+      - name: Verify institutional supplemental columns
+        if: steps.holder_date.outputs.update_required == 'true'
+        run: |
+          python -c "import json; p=json.load(open('data/daily_market_flow.json', encoding='utf-8')); h=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); r=(p.get('supplemental_data') or {}).get('retail_200', {}); assert p.get('schema_version') == '1.2.0'; assert r.get('coverage_count', 0) > 0; assert r.get('date') == h.get('date')"
+          grep -q "散戶賣出" docs/institutional-flow.html
+          grep -q "融資增減" docs/institutional-flow.html
+          grep -q "資券比" docs/institutional-flow.html
 
       - name: Commit and push holder pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/holder-risers.html
+          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/daily_market_flow.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/holder-risers.html docs/institutional-flow.html docs/index.html
           if git diff --cached --quiet; then
             echo "No holder-history changes to commit."
             exit 0

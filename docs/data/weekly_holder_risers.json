@@ -11,8 +11,48 @@
     "2026-07-31",
     "2026-08-07"
   ],
-  "updated_at": "2026-08-14T22:46:50.267151+08:00",
+  "updated_at": "2026-08-15T18:56:36.122298+08:00",
   "rows": [
+    {
+      "security_id": "5904",
+      "name": "寶雅*",
+      "market": "otc",
+      "data_date": "2026-08-07",
+      "previous_date": "2026-07-31",
+      "major_percent": 100.0,
+      "previous_major_percent": 69.42,
+      "major_delta_pctpt": 30.58,
+      "major_people": 1,
+      "weekly_changes": [
+        {
+          "date": "2026-07-03",
+          "delta_pctpt": -1.17
+        },
+        {
+          "date": "2026-07-09",
+          "delta_pctpt": 0.76
+        },
+        {
+          "date": "2026-07-17",
+          "delta_pctpt": -0.29
+        },
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.29
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.24
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 30.58
+        }
+      ],
+      "six_week_delta_pctpt": 30.41,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
     {
       "security_id": "5351",
       "name": "鈺創",
@@ -1972,46 +2012,6 @@
       "six_week_delta_pctpt": 2.25,
       "positive_week_count": 4,
       "six_week_complete": true
-    },
-    {
-      "security_id": "2354",
-      "name": "鴻準",
-      "market": "listed",
-      "data_date": "2026-08-07",
-      "previous_date": "2026-07-31",
-      "major_percent": 46.81,
-      "previous_major_percent": 45.34,
-      "major_delta_pctpt": 1.47,
-      "major_people": 126,
-      "weekly_changes": [
-        {
-          "date": "2026-07-03",
-          "delta_pctpt": -0.67
-        },
-        {
-          "date": "2026-07-09",
-          "delta_pctpt": 0.19
-        },
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": 0.2
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": 0.32
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": -0.1
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": 1.47
-        }
-      ],
-      "six_week_delta_pctpt": 1.41,
-      "positive_week_count": 4,
-      "six_week_complete": true
     }
   ],
   "row_count": 50,
@@ -2032,7 +2032,7 @@
     "status": "expected_lag",
     "data_date": "2026-08-07",
     "expected_data_date": "2026-08-15",
-    "fetched_at": "2026-08-14T22:46:50+08:00",
+    "fetched_at": "2026-08-15T18:56:36+08:00",
     "row_count": 50,
     "sla": {
       "mode": "weekly",

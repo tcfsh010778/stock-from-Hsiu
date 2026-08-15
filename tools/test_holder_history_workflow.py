@@ -31,6 +31,8 @@ class HolderHistoryWorkflowTests(unittest.TestCase):
             "python tdcc_holder_history.py --limit 50",
             "python weekly_holder_risers.py --limit 50",
             "python generate_site.py --holder-only",
+            "python market_flow.py",
+            "python generate_site.py --flow-only",
         )
         for command in required_commands:
             with self.subTest(command=command):

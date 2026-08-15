@@ -2,14 +2,41 @@
 
 Last updated: 2026-08-15
 
+## 2026-08-15 Compact public pages and institutional supplemental columns
+
+- Simplified `holder-risers.html`: removed the yfinance paragraph, visible
+  freshness warning, and large update-status/history card. The public page now
+  keeps one compact update/legend line and a `TDCC` footer; the underlying
+  status JSON and scheduled-attempt record remain available for maintenance.
+- Removed the listed/OTC display column from all four institutional Top 50
+  tables and added weekly retail reduction, margin-balance change, and
+  short-to-margin ratio.
+- `retail_sell_pctpt` is a derived ownership change, not transaction-level sell
+  volume: previous-week TDCC 200-lots-or-less custody percentage minus the
+  current-week percentage. Positive means the small-holder percentage fell.
+- `margin_balance_delta` is current official margin balance minus previous-day
+  balance, in trading units (lots). `short_margin_ratio_pct` is official short
+  balance divided by official margin balance times 100. A missing/non-marginable
+  security stays null and renders as an em dash; no zero is invented.
+- The daily flow artifact is schema `1.2.0`. Publication now requires aligned
+  TWSE/TPEx institutional detail and amount partitions, aligned TWSE/TPEx
+  margin partitions, and two usable TDCC weekly retail snapshots. The holder
+  workflow refreshes the institutional page when a new TDCC week is published.
+- TDCC history retains only compact 400-plus-lot and 200-lots-or-less
+  aggregates. Raw official distribution tables are not stored or published.
+- Current verified joins: institutional/margin date `2026-08-14`; TDCC weekly
+  comparison `2026-07-31` to `2026-08-07`; retail coverage 1,972 securities.
+- Detailed record:
+  `codex_context/logs/2026-08-15-compact-pages-and-flow-supplemental-columns.md`.
+
 ## 2026-08-15 Holder-page source attribution clarification
 
-- Replaced the holder page's generic site footer with page-specific source
-  attribution: TDCC OpenAPI 1-5 supplies the latest full-market snapshot and
-  the TDCC official history query supplies the six-week backfill.
-- The page now names yfinance only as an optional price/volume cross-check and
-  explicitly states that it does not participate in the 400+ lot holder ratio
-  or ranking calculation.
+- Superseded on the same date by the compact-public-page decision above. The
+  holder page now shows only `TDCC`; the internal source split remains TDCC
+  OpenAPI 1-5 for the latest full-market snapshot and the TDCC official history
+  query for the six-week backfill.
+- yfinance does not participate in the holder calculation and is no longer
+  named on the public holder page.
 - This is a provenance clarification only. No holder calculation, ranking,
   schedule, strategy, or trading rule changed.
 
