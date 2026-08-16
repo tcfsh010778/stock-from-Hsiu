@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": "1.0.0",
-  "generated_at": "2026-08-15T19:36:09+08:00",
+  "generated_at": "2026-08-16T10:51:39+08:00",
   "artifacts": {
     "attention_disposition_risk:attention_disposition_derived": {
       "manifest_schema_version": "1.0.0",
@@ -397,9 +397,9 @@
       "data_date": "2026-08-14",
       "trading_date": "2026-08-14",
       "expected_data_date": "2026-08-14",
-      "fetched_at": "2026-08-15T19:35:41+08:00",
+      "fetched_at": "2026-08-16T10:51:39+08:00",
       "row_count": 2,
-      "sha256": "09111313b02817cc07c018d2c8d5961857ee0e97cbf6ece3896790cc80cf7ac3",
+      "sha256": "90390d53699de8c8a7131b4803404cb9040dc828f22f4062af42a04319b27bd1",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -412,7 +412,7 @@
       },
       "freshness": {
         "status": "fresh",
-        "evaluated_at": "2026-08-15T19:35:41+08:00",
+        "evaluated_at": "2026-08-16T10:51:39+08:00",
         "expected_data_date": "2026-08-14",
         "age_trading_days": null,
         "age_calendar_days": 0,
@@ -756,12 +756,12 @@
         "otc"
       ],
       "update_frequency": "weekly after holder-distribution refresh",
-      "data_date": "2026-08-07",
+      "data_date": "2026-08-14",
       "trading_date": null,
-      "expected_data_date": "2026-08-15",
-      "fetched_at": "2026-08-15T19:36:09+08:00",
+      "expected_data_date": "2026-08-16",
+      "fetched_at": "2026-08-16T10:51:39+08:00",
       "row_count": 50,
-      "sha256": "9be2305a5619fc686f54a6277fec99570b9c974a375c0ad04faab0928c2385e2",
+      "sha256": "5c404b18a916a0fb4851bea881a087f1b31818002ebff9550f0cdd52a42d4967",
       "fallback": {
         "used": false,
         "from_source_id": null,
@@ -774,10 +774,10 @@
       },
       "freshness": {
         "status": "expected_lag",
-        "evaluated_at": "2026-08-15T19:36:09+08:00",
-        "expected_data_date": "2026-08-15",
+        "evaluated_at": "2026-08-16T10:51:39+08:00",
+        "expected_data_date": "2026-08-16",
         "age_trading_days": null,
-        "age_calendar_days": 8,
+        "age_calendar_days": 2,
         "sla": {
           "mode": "weekly",
           "frequency": "weekly after holder-distribution refresh",
