@@ -4,10 +4,10 @@
   "schedule_timezone": "Asia/Taipei",
   "check_schedule": "週五 21:30；週六、週日、週一 09:30（Asia/Taipei）",
   "publish_condition": "TDCC 官方資料日期晚於目前頁面日期，且六週日期連續、Top 50 每列皆有完整六週資料",
-  "last_checked_at": "2026-08-16T10:50:42+08:00",
+  "last_checked_at": "2026-08-17T10:54:01+08:00",
   "official_latest_date": "2026-08-14",
   "published_data_date": "2026-08-14",
-  "state": "published",
+  "state": "waiting_for_tdcc",
   "attempts": [
     {
       "checked_at": "2026-08-14T22:46:42+08:00",
@@ -63,6 +63,17 @@
       "result": "published",
       "run_id": "31922377951",
       "run_url": "https://github.com/tcfsh010778/stock-from-Hsiu/actions/runs/31922377951"
+    },
+    {
+      "checked_at": "2026-08-17T10:54:01+08:00",
+      "trigger": "schedule",
+      "schedule": "30 1 * * 1",
+      "official_date": "2026-08-14",
+      "published_date_before": "2026-08-14",
+      "published_date_after": "2026-08-14",
+      "result": "waiting_for_tdcc",
+      "run_id": "31988776044",
+      "run_url": "https://github.com/tcfsh010778/stock-from-Hsiu/actions/runs/31988776044"
     }
   ]
 }
