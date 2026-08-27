@@ -3,7 +3,7 @@
   "schema_version": "1.1.0",
   "rule_version": "daily_decisions_v1_1_market_risk",
   "date": "2026-08-27",
-  "updated_at": "2026-08-28T04:06:41+08:00",
+  "updated_at": "2026-08-28T06:38:28+08:00",
   "source_artifacts": [
     {
       "dataset_id": "mda_candidate_pool",
@@ -28203,7 +28203,7 @@
       "data_date": "2026-08-27",
       "security_id": "6176",
       "stock_id": "6176",
-      "name": "6176",
+      "name": "瑞儀",
       "rank": 361,
       "action_state": "NO-GO",
       "rule_version": "daily_decisions_v1_1_market_risk",
@@ -28259,7 +28259,7 @@
         "market_risk": {
           "risk_level": "none",
           "source_state": "complete",
-          "market": null,
+          "market": "listed",
           "rule_version": "tw_attention_disposition_2026_08_10",
           "effective_end_date": null,
           "matching_interval_minutes": null,
@@ -76056,7 +76056,7 @@
     "status": "expected_lag",
     "data_date": "2026-08-27",
     "expected_data_date": "2026-08-28",
-    "fetched_at": "2026-08-28T04:06:41+08:00",
+    "fetched_at": "2026-08-28T06:38:28+08:00",
     "row_count": 974,
     "sla": {
       "mode": "calendar_day",

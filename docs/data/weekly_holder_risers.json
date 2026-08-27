@@ -11,7 +11,7 @@
     "2026-08-14",
     "2026-08-21"
   ],
-  "updated_at": "2026-08-28T04:06:48.540676+08:00",
+  "updated_at": "2026-08-28T06:38:37.422319+08:00",
   "rows": [
     {
       "security_id": "3490",
@@ -370,46 +370,6 @@
         }
       ],
       "six_week_delta_pctpt": 3.8,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "8105",
-      "name": "凌巨",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 64.66,
-      "previous_major_percent": 61.18,
-      "major_delta_pctpt": 3.48,
-      "major_people": 41,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.17
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.48
-        }
-      ],
-      "six_week_delta_pctpt": 3.65,
       "positive_week_count": 2,
       "six_week_complete": false
     },
@@ -2012,6 +1972,46 @@
       "six_week_delta_pctpt": 1.45,
       "positive_week_count": 2,
       "six_week_complete": false
+    },
+    {
+      "security_id": "4114",
+      "name": "健喬",
+      "market": "otc",
+      "data_date": "2026-08-21",
+      "previous_date": "2026-08-14",
+      "major_percent": 44.35,
+      "previous_major_percent": 43.26,
+      "major_delta_pctpt": 1.09,
+      "major_people": 116,
+      "weekly_changes": [
+        {
+          "date": "2026-07-17",
+          "delta_pctpt": null
+        },
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": null
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": null
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": null
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.4
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 1.09
+        }
+      ],
+      "six_week_delta_pctpt": 1.49,
+      "positive_week_count": 2,
+      "six_week_complete": false
     }
   ],
   "row_count": 50,
@@ -2032,7 +2032,7 @@
     "status": "expected_lag",
     "data_date": "2026-08-21",
     "expected_data_date": "2026-08-28",
-    "fetched_at": "2026-08-28T04:06:48+08:00",
+    "fetched_at": "2026-08-28T06:38:37+08:00",
     "row_count": 50,
     "sla": {
       "mode": "weekly",

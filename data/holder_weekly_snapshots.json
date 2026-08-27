@@ -3,7 +3,7 @@
   "schema_version": "1.1.0",
   "source_id": "tdcc_shareholder_distribution",
   "source_url": "https://openapi.tdcc.com.tw/v1/opendata/1-5",
-  "updated_at": "2026-08-28T04:06:44.248774+08:00",
+  "updated_at": "2026-08-28T06:38:31.752214+08:00",
   "latest_date": "2026-08-21",
   "snapshot_count": 9,
   "snapshots": [
@@ -38669,14 +38669,6 @@
           "retail_200_percent": 20.08
         },
         {
-          "security_id": "2867",
-          "name": "三商壽",
-          "market": "listed",
-          "major_percent": 87.28,
-          "major_people": 536,
-          "retail_200_percent": 10.54
-        },
-        {
           "security_id": "2880",
           "name": "華南金",
           "market": "listed",
@@ -42118,7 +42110,7 @@
         },
         {
           "security_id": "4530",
-          "name": "宏易",
+          "name": "天意能創",
           "market": "otc",
           "major_percent": 72.85,
           "major_people": 6,
@@ -42619,14 +42611,6 @@
           "major_percent": 43.96,
           "major_people": 42,
           "retail_200_percent": 50.69
-        },
-        {
-          "security_id": "4747",
-          "name": "強生",
-          "market": "otc",
-          "major_percent": 66.4,
-          "major_people": 23,
-          "retail_200_percent": 23.59
         },
         {
           "security_id": "4749",
@@ -43675,14 +43659,6 @@
           "major_percent": 70.28,
           "major_people": 14,
           "retail_200_percent": 23.28
-        },
-        {
-          "security_id": "5371",
-          "name": "中光電",
-          "market": "otc",
-          "major_percent": 43.55,
-          "major_people": 58,
-          "retail_200_percent": 53.73
         },
         {
           "security_id": "5381",
@@ -44867,6 +44843,14 @@
           "major_percent": 61.66,
           "major_people": 25,
           "retail_200_percent": 36.47
+        },
+        {
+          "security_id": "6176",
+          "name": "瑞儀",
+          "market": "listed",
+          "major_percent": 100.0,
+          "major_people": 1,
+          "retail_200_percent": 0.0
         },
         {
           "security_id": "6177",
@@ -48851,14 +48835,6 @@
           "major_percent": 33.62,
           "major_people": 7,
           "retail_200_percent": 61.27
-        },
-        {
-          "security_id": "8105",
-          "name": "凌巨",
-          "market": "listed",
-          "major_percent": 64.66,
-          "major_people": 41,
-          "retail_200_percent": 31.83
         },
         {
           "security_id": "8107",
