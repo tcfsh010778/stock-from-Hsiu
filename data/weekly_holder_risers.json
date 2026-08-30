@@ -1,564 +1,40 @@
 {
   "dataset_id": "weekly_holder_risers",
   "schema_version": "1.3.0",
-  "date": "2026-08-21",
-  "previous_date": "2026-08-14",
+  "date": "2026-08-28",
+  "previous_date": "2026-08-21",
   "weekly_dates": [
-    "2026-07-17",
     "2026-07-24",
     "2026-07-31",
     "2026-08-07",
     "2026-08-14",
-    "2026-08-21"
+    "2026-08-21",
+    "2026-08-28"
   ],
-  "updated_at": "2026-08-28T06:38:37.422319+08:00",
+  "updated_at": "2026-08-30T15:11:08.644201+08:00",
   "rows": [
     {
-      "security_id": "3490",
-      "name": "單井",
+      "security_id": "3095",
+      "name": "及成",
       "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 27.55,
-      "previous_major_percent": 15.72,
-      "major_delta_pctpt": 11.83,
-      "major_people": 15,
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 54.41,
+      "previous_major_percent": 33.08,
+      "major_delta_pctpt": 21.33,
+      "major_people": 4,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": 0.0
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": 0.0
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -1.26
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 11.83
-        }
-      ],
-      "six_week_delta_pctpt": 10.57,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1815",
-      "name": "富喬",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 41.28,
-      "previous_major_percent": 33.16,
-      "major_delta_pctpt": 8.12,
-      "major_people": 82,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.18
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 8.12
-        }
-      ],
-      "six_week_delta_pctpt": 7.94,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3441",
-      "name": "聯一光",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 29.76,
-      "previous_major_percent": 22.06,
-      "major_delta_pctpt": 7.7,
-      "major_people": 13,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -1.7
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 7.7
-        }
-      ],
-      "six_week_delta_pctpt": 6.0,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6492",
-      "name": "生華科",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 39.44,
-      "previous_major_percent": 31.9,
-      "major_delta_pctpt": 7.54,
-      "major_people": 24,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.35
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 7.54
-        }
-      ],
-      "six_week_delta_pctpt": 7.89,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3498",
-      "name": "陽程",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 57.33,
-      "previous_major_percent": 50.22,
-      "major_delta_pctpt": 7.11,
-      "major_people": 17,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": -0.26
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": -0.49
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": -0.01
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": -0.75
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 2.57
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 7.11
-        }
-      ],
-      "six_week_delta_pctpt": 8.17,
-      "positive_week_count": 2,
-      "six_week_complete": true
-    },
-    {
-      "security_id": "6214",
-      "name": "精誠",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 62.81,
-      "previous_major_percent": 57.46,
-      "major_delta_pctpt": 5.35,
-      "major_people": 72,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.04
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 5.35
-        }
-      ],
-      "six_week_delta_pctpt": 5.39,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2426",
-      "name": "鼎元",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 47.42,
-      "previous_major_percent": 42.68,
-      "major_delta_pctpt": 4.74,
-      "major_people": 60,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.26
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 4.74
-        }
-      ],
-      "six_week_delta_pctpt": 5.0,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2634",
-      "name": "漢翔",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 55.68,
-      "previous_major_percent": 51.89,
-      "major_delta_pctpt": 3.79,
-      "major_people": 76,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 1.11
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.79
-        }
-      ],
-      "six_week_delta_pctpt": 4.9,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1294",
-      "name": "漢田生技",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 60.03,
-      "previous_major_percent": 56.32,
-      "major_delta_pctpt": 3.71,
-      "major_people": 16,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.09
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.71
-        }
-      ],
-      "six_week_delta_pctpt": 3.8,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2609",
-      "name": "陽明",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 61.16,
-      "previous_major_percent": 57.72,
-      "major_delta_pctpt": 3.44,
-      "major_people": 343,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.35
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.44
-        }
-      ],
-      "six_week_delta_pctpt": 3.79,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2755",
-      "name": "揚秦",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 66.75,
-      "previous_major_percent": 63.37,
-      "major_delta_pctpt": 3.38,
-      "major_people": 16,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.13
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.38
-        }
-      ],
-      "six_week_delta_pctpt": 3.25,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3455",
-      "name": "由田",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 33.53,
-      "previous_major_percent": 30.31,
-      "major_delta_pctpt": 3.22,
-      "major_people": 26,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.75
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 3.22
-        }
-      ],
-      "six_week_delta_pctpt": 3.97,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "4931",
-      "name": "新盛力",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 40.24,
-      "previous_major_percent": 37.48,
-      "major_delta_pctpt": 2.76,
-      "major_people": 24,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": -6.32
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": 0.3
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": -1.21
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": 2.55
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 6.14
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.76
-        }
-      ],
-      "six_week_delta_pctpt": 4.22,
-      "positive_week_count": 4,
-      "six_week_complete": true
-    },
-    {
-      "security_id": "7842",
-      "name": "天能綠電",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 67.4,
-      "previous_major_percent": 64.66,
-      "major_delta_pctpt": 2.74,
-      "major_people": 3,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 0.0
         },
         {
           "date": "2026-08-14",
@@ -566,239 +42,39 @@
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 2.74
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 21.33
         }
       ],
-      "six_week_delta_pctpt": 2.74,
+      "six_week_delta_pctpt": 21.33,
       "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6672",
-      "name": "騰輝電子-KY",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 31.51,
-      "previous_major_percent": 28.88,
-      "major_delta_pctpt": 2.63,
-      "major_people": 25,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.15
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.63
-        }
-      ],
-      "six_week_delta_pctpt": 2.48,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2603",
-      "name": "長榮",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 75.04,
-      "previous_major_percent": 72.51,
-      "major_delta_pctpt": 2.53,
-      "major_people": 363,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.55
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.53
-        }
-      ],
-      "six_week_delta_pctpt": 3.08,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2364",
-      "name": "倫飛",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 59.15,
-      "previous_major_percent": 56.68,
-      "major_delta_pctpt": 2.47,
-      "major_people": 14,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 1.66
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.47
-        }
-      ],
-      "six_week_delta_pctpt": 4.13,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1727",
-      "name": "中華化",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 56.42,
-      "previous_major_percent": 54.13,
-      "major_delta_pctpt": 2.29,
-      "major_people": 27,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.31
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.29
-        }
-      ],
-      "six_week_delta_pctpt": 1.98,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6538",
-      "name": "倉和",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 47.29,
-      "previous_major_percent": 45.15,
-      "major_delta_pctpt": 2.14,
-      "major_people": 20,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": 3.78
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": 0.31
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": -0.85
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": 4.2
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 4.72
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.14
-        }
-      ],
-      "six_week_delta_pctpt": 14.3,
-      "positive_week_count": 5,
       "six_week_complete": true
     },
     {
       "security_id": "6226",
       "name": "光鼎",
       "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 19.72,
-      "previous_major_percent": 17.66,
-      "major_delta_pctpt": 2.06,
-      "major_people": 17,
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 28.73,
+      "previous_major_percent": 19.72,
+      "major_delta_pctpt": 9.01,
+      "major_people": 21,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": -4.97
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": -2.3
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 2.95
         },
         {
           "date": "2026-08-14",
@@ -807,958 +83,278 @@
         {
           "date": "2026-08-21",
           "delta_pctpt": 2.06
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 9.01
         }
       ],
-      "six_week_delta_pctpt": -7.36,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6517",
-      "name": "保勝光學",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 21.73,
-      "previous_major_percent": 19.7,
-      "major_delta_pctpt": 2.03,
-      "major_people": 5,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 2.03
-        }
-      ],
-      "six_week_delta_pctpt": 2.03,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "4971",
-      "name": "IET-KY",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 46.27,
-      "previous_major_percent": 44.42,
-      "major_delta_pctpt": 1.85,
-      "major_people": 24,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -1.0
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.85
-        }
-      ],
-      "six_week_delta_pctpt": 0.85,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3037",
-      "name": "欣興",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 77.48,
-      "previous_major_percent": 75.69,
-      "major_delta_pctpt": 1.79,
-      "major_people": 397,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.29
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.79
-        }
-      ],
-      "six_week_delta_pctpt": 2.08,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6727",
-      "name": "亞泰金屬",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 24.56,
-      "previous_major_percent": 22.78,
-      "major_delta_pctpt": 1.78,
-      "major_people": 10,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -1.68
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.78
-        }
-      ],
-      "six_week_delta_pctpt": 0.1,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3043",
-      "name": "科風",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 19.62,
-      "previous_major_percent": 17.89,
-      "major_delta_pctpt": 1.73,
-      "major_people": 7,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.12
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.73
-        }
-      ],
-      "six_week_delta_pctpt": 1.61,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3625",
-      "name": "西勝",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 47.25,
-      "previous_major_percent": 45.52,
-      "major_delta_pctpt": 1.73,
-      "major_people": 30,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.14
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.73
-        }
-      ],
-      "six_week_delta_pctpt": 1.87,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3356",
-      "name": "奇偶",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 36.83,
-      "previous_major_percent": 35.17,
-      "major_delta_pctpt": 1.66,
-      "major_people": 18,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 1.26
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.66
-        }
-      ],
-      "six_week_delta_pctpt": 2.92,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6706",
-      "name": "惠特",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 28.38,
-      "previous_major_percent": 26.75,
-      "major_delta_pctpt": 1.63,
-      "major_people": 23,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.41
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.63
-        }
-      ],
-      "six_week_delta_pctpt": 2.04,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2729",
-      "name": "瓦城",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 68.72,
-      "previous_major_percent": 67.12,
-      "major_delta_pctpt": 1.6,
-      "major_people": 14,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.6
-        }
-      ],
-      "six_week_delta_pctpt": 1.6,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2615",
-      "name": "萬海",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 89.04,
-      "previous_major_percent": 87.46,
-      "major_delta_pctpt": 1.58,
-      "major_people": 278,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.63
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.58
-        }
-      ],
-      "six_week_delta_pctpt": 2.21,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6225",
-      "name": "天瀚",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 71.28,
-      "previous_major_percent": 69.7,
-      "major_delta_pctpt": 1.58,
-      "major_people": 7,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": 1.26
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 3.36
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.58
-        }
-      ],
-      "six_week_delta_pctpt": 6.2,
+      "six_week_delta_pctpt": -2.67,
       "positive_week_count": 3,
       "six_week_complete": true
     },
     {
-      "security_id": "3406",
-      "name": "玉晶光",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 55.32,
-      "previous_major_percent": 53.77,
-      "major_delta_pctpt": 1.55,
-      "major_people": 48,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.5
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.55
-        }
-      ],
-      "six_week_delta_pctpt": 2.05,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6108",
-      "name": "競國",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 55.89,
-      "previous_major_percent": 54.38,
-      "major_delta_pctpt": 1.51,
-      "major_people": 41,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 1.49
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.51
-        }
-      ],
-      "six_week_delta_pctpt": 3.0,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3489",
-      "name": "森寶",
+      "security_id": "3163",
+      "name": "波若威",
       "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 81.11,
-      "previous_major_percent": 79.63,
-      "major_delta_pctpt": 1.48,
-      "major_people": 9,
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 37.31,
+      "previous_major_percent": 28.81,
+      "major_delta_pctpt": 8.5,
+      "major_people": 19,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": 0.46
+          "date": "2026-07-24",
+          "delta_pctpt": 1.94
         },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -3.25
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.51
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.04
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.25
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 8.5
+        }
+      ],
+      "six_week_delta_pctpt": 4.89,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "1815",
+      "name": "富喬",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 49.45,
+      "previous_major_percent": 41.28,
+      "major_delta_pctpt": 8.17,
+      "major_people": 88,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.07
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.47
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.34
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.18
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 8.12
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 8.17
+        }
+      ],
+      "six_week_delta_pctpt": 16.91,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "4939",
+      "name": "亞電",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 42.72,
+      "previous_major_percent": 35.25,
+      "major_delta_pctpt": 7.47,
+      "major_people": 26,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -1.34
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 1.82
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.79
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.39
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.52
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 7.47
+        }
+      ],
+      "six_week_delta_pctpt": 6.25,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2426",
+      "name": "鼎元",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 53.4,
+      "previous_major_percent": 47.42,
+      "major_delta_pctpt": 5.98,
+      "major_people": 60,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.02
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.24
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.26
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 4.74
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 5.98
+        }
+      ],
+      "six_week_delta_pctpt": 10.76,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6016",
+      "name": "康和證",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 56.24,
+      "previous_major_percent": 50.77,
+      "major_delta_pctpt": 5.47,
+      "major_people": 131,
+      "weekly_changes": [
         {
           "date": "2026-07-24",
           "delta_pctpt": -0.43
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": 0.18
+          "delta_pctpt": -0.44
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": 1.89
+          "delta_pctpt": 0.03
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": 4.21
+          "delta_pctpt": -0.05
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.48
+          "delta_pctpt": 0.1
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 5.47
         }
       ],
-      "six_week_delta_pctpt": 7.79,
-      "positive_week_count": 5,
+      "six_week_delta_pctpt": 4.68,
+      "positive_week_count": 3,
       "six_week_complete": true
     },
     {
-      "security_id": "3587",
-      "name": "閎康",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 32.83,
-      "previous_major_percent": 31.44,
-      "major_delta_pctpt": 1.39,
-      "major_people": 16,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.93
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.39
-        }
-      ],
-      "six_week_delta_pctpt": 0.46,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6569",
-      "name": "醫揚",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 68.0,
-      "previous_major_percent": 66.61,
-      "major_delta_pctpt": 1.39,
-      "major_people": 9,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.39
-        }
-      ],
-      "six_week_delta_pctpt": 1.39,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1295",
-      "name": "生合",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 57.89,
-      "previous_major_percent": 56.52,
-      "major_delta_pctpt": 1.37,
-      "major_people": 15,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.02
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.37
-        }
-      ],
-      "six_week_delta_pctpt": 1.39,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6207",
-      "name": "雷科",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 20.35,
-      "previous_major_percent": 19.0,
-      "major_delta_pctpt": 1.35,
-      "major_people": 18,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.96
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.35
-        }
-      ],
-      "six_week_delta_pctpt": 2.31,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1709",
-      "name": "和益",
+      "security_id": "2464",
+      "name": "盟立",
       "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 71.53,
-      "previous_major_percent": 70.21,
-      "major_delta_pctpt": 1.32,
-      "major_people": 130,
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 55.83,
+      "previous_major_percent": 50.7,
+      "major_delta_pctpt": 5.13,
+      "major_people": 52,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": 2.79
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": 0.62
+          "delta_pctpt": -0.16
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": 0.59
+          "delta_pctpt": 0.03
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": 0.31
+          "delta_pctpt": 5.18
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": 1.94
+          "delta_pctpt": 6.42
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.32
+          "delta_pctpt": -0.14
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 5.13
         }
       ],
-      "six_week_delta_pctpt": 7.57,
-      "positive_week_count": 6,
+      "six_week_delta_pctpt": 16.46,
+      "positive_week_count": 4,
       "six_week_complete": true
-    },
-    {
-      "security_id": "3169",
-      "name": "亞信",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 37.0,
-      "previous_major_percent": 35.7,
-      "major_delta_pctpt": 1.3,
-      "major_people": 13,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -0.62
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.3
-        }
-      ],
-      "six_week_delta_pctpt": 0.68,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "2061",
-      "name": "風青",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 49.51,
-      "previous_major_percent": 48.25,
-      "major_delta_pctpt": 1.26,
-      "major_people": 25,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": -2.01
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.26
-        }
-      ],
-      "six_week_delta_pctpt": -0.75,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1336",
-      "name": "台翰",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 52.48,
-      "previous_major_percent": 51.26,
-      "major_delta_pctpt": 1.22,
-      "major_people": 24,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.67
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.22
-        }
-      ],
-      "six_week_delta_pctpt": 1.89,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "7811",
-      "name": "民盛",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 73.0,
-      "previous_major_percent": 71.79,
-      "major_delta_pctpt": 1.21,
-      "major_people": 7,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.0
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.21
-        }
-      ],
-      "six_week_delta_pctpt": 1.21,
-      "positive_week_count": 1,
-      "six_week_complete": false
     },
     {
       "security_id": "8103",
       "name": "瀚荃",
       "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 42.36,
-      "previous_major_percent": 41.17,
-      "major_delta_pctpt": 1.19,
-      "major_people": 28,
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 47.21,
+      "previous_major_percent": 42.36,
+      "major_delta_pctpt": 4.85,
+      "major_people": 30,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": -0.62
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": -0.23
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 0.0
         },
         {
           "date": "2026-08-14",
@@ -1767,198 +363,1318 @@
         {
           "date": "2026-08-21",
           "delta_pctpt": 1.19
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 4.85
         }
       ],
-      "six_week_delta_pctpt": 0.1,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "6270",
-      "name": "倍微",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 42.17,
-      "previous_major_percent": 41.0,
-      "major_delta_pctpt": 1.17,
-      "major_people": 18,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-24",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-07-31",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-07",
-          "delta_pctpt": null
-        },
-        {
-          "date": "2026-08-14",
-          "delta_pctpt": 0.6
-        },
-        {
-          "date": "2026-08-21",
-          "delta_pctpt": 1.17
-        }
-      ],
-      "six_week_delta_pctpt": 1.77,
+      "six_week_delta_pctpt": 4.1,
       "positive_week_count": 2,
-      "six_week_complete": false
+      "six_week_complete": true
     },
     {
-      "security_id": "6426",
-      "name": "統新",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 43.57,
-      "previous_major_percent": 42.43,
-      "major_delta_pctpt": 1.14,
-      "major_people": 8,
+      "security_id": "3105",
+      "name": "穩懋",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 53.51,
+      "previous_major_percent": 49.41,
+      "major_delta_pctpt": 4.1,
+      "major_people": 98,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": 1.02
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": -1.22
+          "delta_pctpt": 0.31
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": 0.16
+          "delta_pctpt": -1.02
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": -1.79
+          "delta_pctpt": 0.44
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": 2.62
+          "delta_pctpt": -1.13
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.14
+          "delta_pctpt": -1.04
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 4.1
         }
       ],
-      "six_week_delta_pctpt": 1.93,
+      "six_week_delta_pctpt": 1.66,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3260",
+      "name": "威剛",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 36.86,
+      "previous_major_percent": 32.84,
+      "major_delta_pctpt": 4.02,
+      "major_people": 68,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.43
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.11
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 2.25
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.74
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.56
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 4.02
+        }
+      ],
+      "six_week_delta_pctpt": 6.77,
       "positive_week_count": 4,
       "six_week_complete": true
     },
     {
-      "security_id": "2486",
-      "name": "一詮",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 40.92,
-      "previous_major_percent": 39.79,
-      "major_delta_pctpt": 1.13,
-      "major_people": 55,
+      "security_id": "4167",
+      "name": "松瑞藥",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 45.88,
+      "previous_major_percent": 42.06,
+      "major_delta_pctpt": 3.82,
+      "major_people": 79,
       "weekly_changes": [
         {
-          "date": "2026-07-17",
-          "delta_pctpt": null
-        },
-        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": 0.04
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": -0.81
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": -0.03
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": -1.17
+          "delta_pctpt": -0.14
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.13
-        }
-      ],
-      "six_week_delta_pctpt": -0.04,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "3229",
-      "name": "晟鈦",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 71.38,
-      "previous_major_percent": 70.27,
-      "major_delta_pctpt": 1.11,
-      "major_people": 5,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
+          "delta_pctpt": 0.65
         },
         {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.82
+        }
+      ],
+      "six_week_delta_pctpt": 3.53,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2351",
+      "name": "順德",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 75.64,
+      "previous_major_percent": 71.93,
+      "major_delta_pctpt": 3.71,
+      "major_people": 72,
+      "weekly_changes": [
+        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": -0.09
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": 0.58
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 0.2
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": -0.88
+          "delta_pctpt": -0.07
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.11
-        }
-      ],
-      "six_week_delta_pctpt": 0.23,
-      "positive_week_count": 1,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "1319",
-      "name": "東陽",
-      "market": "listed",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 80.12,
-      "previous_major_percent": 79.03,
-      "major_delta_pctpt": 1.09,
-      "major_people": 102,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
+          "delta_pctpt": 0.09
         },
         {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.71
+        }
+      ],
+      "six_week_delta_pctpt": 4.42,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "4979",
+      "name": "華星光",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 45.58,
+      "previous_major_percent": 41.89,
+      "major_delta_pctpt": 3.69,
+      "major_people": 51,
+      "weekly_changes": [
+        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": 1.98
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": -1.05
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 2.26
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 2.37
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -1.48
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.69
+        }
+      ],
+      "six_week_delta_pctpt": 7.77,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3406",
+      "name": "玉晶光",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 58.78,
+      "previous_major_percent": 55.32,
+      "major_delta_pctpt": 3.46,
+      "major_people": 54,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.15
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.21
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.04
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.5
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 1.55
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.46
+        }
+      ],
+      "six_week_delta_pctpt": 4.19,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "8358",
+      "name": "金居",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 41.01,
+      "previous_major_percent": 37.66,
+      "major_delta_pctpt": 3.35,
+      "major_people": 59,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.81
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -2.78
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.07
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -6.16
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -3.84
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.35
+        }
+      ],
+      "six_week_delta_pctpt": -11.31,
+      "positive_week_count": 1,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2221",
+      "name": "大甲",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 69.46,
+      "previous_major_percent": 66.13,
+      "major_delta_pctpt": 3.33,
+      "major_people": 8,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.17
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.42
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.03
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.02
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.33
+        }
+      ],
+      "six_week_delta_pctpt": 3.63,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3376",
+      "name": "新日興",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 46.59,
+      "previous_major_percent": 43.4,
+      "major_delta_pctpt": 3.19,
+      "major_people": 64,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.33
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.25
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.02
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.02
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.68
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.19
+        }
+      ],
+      "six_week_delta_pctpt": 1.97,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3543",
+      "name": "州巧",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 51.12,
+      "previous_major_percent": 47.96,
+      "major_delta_pctpt": 3.16,
+      "major_people": 44,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.46
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.9
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.73
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.75
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.19
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 3.16
+        }
+      ],
+      "six_week_delta_pctpt": 3.09,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3324",
+      "name": "雙鴻",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 49.62,
+      "previous_major_percent": 46.71,
+      "major_delta_pctpt": 2.91,
+      "major_people": 33,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.95
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.17
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 2.9
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.14
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.3
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.91
+        }
+      ],
+      "six_week_delta_pctpt": 6.49,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "8033",
+      "name": "雷虎",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 33.72,
+      "previous_major_percent": 30.98,
+      "major_delta_pctpt": 2.74,
+      "major_people": 43,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -1.0
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.09
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.05
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -4.67
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -2.68
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.74
+        }
+      ],
+      "six_week_delta_pctpt": -5.47,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "8111",
+      "name": "立碁",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 38.19,
+      "previous_major_percent": 35.54,
+      "major_delta_pctpt": 2.65,
+      "major_people": 29,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.65
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.44
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.72
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.64
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.57
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.65
+        }
+      ],
+      "six_week_delta_pctpt": 2.21,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3374",
+      "name": "精材",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 60.82,
+      "previous_major_percent": 58.19,
+      "major_delta_pctpt": 2.63,
+      "major_people": 37,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.69
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -2.24
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.52
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.9
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -2.81
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.63
+        }
+      ],
+      "six_week_delta_pctpt": -4.15,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6269",
+      "name": "台郡",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 34.95,
+      "previous_major_percent": 32.35,
+      "major_delta_pctpt": 2.6,
+      "major_people": 71,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.95
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.41
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.54
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 2.05
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.82
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.6
+        }
+      ],
+      "six_week_delta_pctpt": 4.65,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6840",
+      "name": "東研信超",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 52.72,
+      "previous_major_percent": 50.23,
+      "major_delta_pctpt": 2.49,
+      "major_people": 12,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.01
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.03
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.03
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.47
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -1.96
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.49
+        }
+      ],
+      "six_week_delta_pctpt": -0.93,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3363",
+      "name": "上詮",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 42.49,
+      "previous_major_percent": 40.03,
+      "major_delta_pctpt": 2.46,
+      "major_people": 36,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.16
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.24
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.39
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.11
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.18
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.46
+        }
+      ],
+      "six_week_delta_pctpt": 1.06,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3490",
+      "name": "單井",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 29.94,
+      "previous_major_percent": 27.55,
+      "major_delta_pctpt": 2.39,
+      "major_people": 16,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.1
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 1.22
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.17
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.26
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 11.83
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.39
+        }
+      ],
+      "six_week_delta_pctpt": 13.91,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3504",
+      "name": "揚明光",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 67.93,
+      "previous_major_percent": 65.54,
+      "major_delta_pctpt": 2.39,
+      "major_people": 21,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.2
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.43
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.28
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.16
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.7
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.39
+        }
+      ],
+      "six_week_delta_pctpt": 2.9,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "5425",
+      "name": "台半",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 37.14,
+      "previous_major_percent": 34.82,
+      "major_delta_pctpt": 2.32,
+      "major_people": 46,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -1.02
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.37
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.59
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.12
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -2.34
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.32
+        }
+      ],
+      "six_week_delta_pctpt": -2.88,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3234",
+      "name": "光環",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 36.24,
+      "previous_major_percent": 33.94,
+      "major_delta_pctpt": 2.3,
+      "major_people": 30,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.35
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.84
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.24
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 1.88
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.95
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.3
+        }
+      ],
+      "six_week_delta_pctpt": 4.88,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2491",
+      "name": "吉祥全",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 74.87,
+      "previous_major_percent": 72.69,
+      "major_delta_pctpt": 2.18,
+      "major_people": 26,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.8
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.5
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.46
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.03
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.77
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.18
+        }
+      ],
+      "six_week_delta_pctpt": 0.62,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6240",
+      "name": "松崗",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 84.89,
+      "previous_major_percent": 82.8,
+      "major_delta_pctpt": 2.09,
+      "major_people": 10,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.1
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.1
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.01
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.09
+        }
+      ],
+      "six_week_delta_pctpt": 2.1,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6278",
+      "name": "台表科",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 63.0,
+      "previous_major_percent": 60.95,
+      "major_delta_pctpt": 2.05,
+      "major_people": 92,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.52
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.25
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.02
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.07
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.92
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 2.05
+        }
+      ],
+      "six_week_delta_pctpt": 2.11,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6224",
+      "name": "聚鼎",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 39.78,
+      "previous_major_percent": 37.87,
+      "major_delta_pctpt": 1.91,
+      "major_people": 27,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.18
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.03
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.15
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.36
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.97
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.91
+        }
+      ],
+      "six_week_delta_pctpt": 1.22,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "5392",
+      "name": "能率",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 38.12,
+      "previous_major_percent": 36.22,
+      "major_delta_pctpt": 1.9,
+      "major_people": 24,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.06
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.61
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.75
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.05
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.69
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.9
+        }
+      ],
+      "six_week_delta_pctpt": 2.72,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3339",
+      "name": "泰谷",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 28.95,
+      "previous_major_percent": 27.11,
+      "major_delta_pctpt": 1.84,
+      "major_people": 16,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.1
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.42
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.36
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.11
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.99
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.84
+        }
+      ],
+      "six_week_delta_pctpt": 3.4,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "8271",
+      "name": "宇瞻",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 45.5,
+      "previous_major_percent": 43.68,
+      "major_delta_pctpt": 1.82,
+      "major_people": 30,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.78
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.37
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 5.57
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -2.92
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -1.49
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.82
+        }
+      ],
+      "six_week_delta_pctpt": 3.39,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6805",
+      "name": "富世達",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 63.25,
+      "previous_major_percent": 61.45,
+      "major_delta_pctpt": 1.8,
+      "major_people": 23,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.87
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 1.81
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.96
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -1.02
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.59
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.8
+        }
+      ],
+      "six_week_delta_pctpt": 5.01,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2313",
+      "name": "華通",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 61.0,
+      "previous_major_percent": 59.21,
+      "major_delta_pctpt": 1.79,
+      "major_people": 213,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.2
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.61
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 2.08
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.37
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.75
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.79
+        }
+      ],
+      "six_week_delta_pctpt": 2.84,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "1595",
+      "name": "川寶",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 48.38,
+      "previous_major_percent": 46.65,
+      "major_delta_pctpt": 1.73,
+      "major_people": 22,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.65
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.64
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.59
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 1.68
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.73
+        }
+      ],
+      "six_week_delta_pctpt": 2.71,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6782",
+      "name": "視陽",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 50.05,
+      "previous_major_percent": 48.35,
+      "major_delta_pctpt": 1.7,
+      "major_people": 23,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.27
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.39
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 1.98
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.23
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.05
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.7
+        }
+      ],
+      "six_week_delta_pctpt": 2.84,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2606",
+      "name": "裕民",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 78.26,
+      "previous_major_percent": 76.58,
+      "major_delta_pctpt": 1.68,
+      "major_people": 113,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.33
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.14
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.21
         },
         {
           "date": "2026-08-14",
@@ -1966,56 +1682,340 @@
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.09
-        }
-      ],
-      "six_week_delta_pctpt": 1.45,
-      "positive_week_count": 2,
-      "six_week_complete": false
-    },
-    {
-      "security_id": "4114",
-      "name": "健喬",
-      "market": "otc",
-      "data_date": "2026-08-21",
-      "previous_date": "2026-08-14",
-      "major_percent": 44.35,
-      "previous_major_percent": 43.26,
-      "major_delta_pctpt": 1.09,
-      "major_people": 116,
-      "weekly_changes": [
-        {
-          "date": "2026-07-17",
-          "delta_pctpt": null
+          "delta_pctpt": 0.71
         },
         {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.68
+        }
+      ],
+      "six_week_delta_pctpt": 3.15,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2612",
+      "name": "中航",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 75.95,
+      "previous_major_percent": 74.34,
+      "major_delta_pctpt": 1.61,
+      "major_people": 17,
+      "weekly_changes": [
+        {
           "date": "2026-07-24",
-          "delta_pctpt": null
+          "delta_pctpt": -0.24
         },
         {
           "date": "2026-07-31",
-          "delta_pctpt": null
+          "delta_pctpt": 0.05
         },
         {
           "date": "2026-08-07",
-          "delta_pctpt": null
+          "delta_pctpt": 0.28
         },
         {
           "date": "2026-08-14",
-          "delta_pctpt": 0.4
+          "delta_pctpt": -0.1
         },
         {
           "date": "2026-08-21",
-          "delta_pctpt": 1.09
+          "delta_pctpt": 0.65
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.61
         }
       ],
-      "six_week_delta_pctpt": 1.49,
+      "six_week_delta_pctpt": 2.25,
+      "positive_week_count": 4,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "4442",
+      "name": "竣邦-KY",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 75.96,
+      "previous_major_percent": 74.36,
+      "major_delta_pctpt": 1.6,
+      "major_people": 19,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 1.36
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -1.41
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.56
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -1.16
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.6
+        }
+      ],
+      "six_week_delta_pctpt": -1.17,
       "positive_week_count": 2,
-      "six_week_complete": false
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6771",
+      "name": "平和環保-創",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 42.44,
+      "previous_major_percent": 40.84,
+      "major_delta_pctpt": 1.6,
+      "major_people": 17,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.02
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.6
+        }
+      ],
+      "six_week_delta_pctpt": 1.58,
+      "positive_week_count": 1,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "6214",
+      "name": "精誠",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 64.39,
+      "previous_major_percent": 62.81,
+      "major_delta_pctpt": 1.58,
+      "major_people": 66,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.41
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.55
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -0.09
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.04
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 5.35
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.58
+        }
+      ],
+      "six_week_delta_pctpt": 7.84,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "7402",
+      "name": "邑錡",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 35.9,
+      "previous_major_percent": 34.36,
+      "major_delta_pctpt": 1.54,
+      "major_people": 10,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -3.01
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": -0.03
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": -1.14
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 0.02
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": -0.01
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.54
+        }
+      ],
+      "six_week_delta_pctpt": -2.63,
+      "positive_week_count": 2,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "4927",
+      "name": "泰鼎-KY",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 26.37,
+      "previous_major_percent": 24.87,
+      "major_delta_pctpt": 1.5,
+      "major_people": 68,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": 0.1
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.48
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.5
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.89
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.44
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.5
+        }
+      ],
+      "six_week_delta_pctpt": 2.13,
+      "positive_week_count": 5,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "3484",
+      "name": "崧騰",
+      "market": "otc",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 33.45,
+      "previous_major_percent": 31.99,
+      "major_delta_pctpt": 1.46,
+      "major_people": 23,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.14
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.0
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.19
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": -0.28
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.84
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.46
+        }
+      ],
+      "six_week_delta_pctpt": 2.07,
+      "positive_week_count": 3,
+      "six_week_complete": true
+    },
+    {
+      "security_id": "2030",
+      "name": "彰源",
+      "market": "listed",
+      "data_date": "2026-08-28",
+      "previous_date": "2026-08-21",
+      "major_percent": 53.6,
+      "previous_major_percent": 52.17,
+      "major_delta_pctpt": 1.43,
+      "major_people": 51,
+      "weekly_changes": [
+        {
+          "date": "2026-07-24",
+          "delta_pctpt": -0.16
+        },
+        {
+          "date": "2026-07-31",
+          "delta_pctpt": 0.3
+        },
+        {
+          "date": "2026-08-07",
+          "delta_pctpt": 0.51
+        },
+        {
+          "date": "2026-08-14",
+          "delta_pctpt": 3.15
+        },
+        {
+          "date": "2026-08-21",
+          "delta_pctpt": 0.14
+        },
+        {
+          "date": "2026-08-28",
+          "delta_pctpt": 1.43
+        }
+      ],
+      "six_week_delta_pctpt": 5.37,
+      "positive_week_count": 5,
+      "six_week_complete": true
     }
   ],
   "row_count": 50,
-  "six_week_complete_count": 7,
+  "six_week_complete_count": 50,
   "ranking_limit": 50,
   "ranking_basis": "latest_week_major_holder_change_pctpt_desc",
   "complete_positive_set": false,
@@ -2030,9 +2030,9 @@
     "source_id": "weekly_holder_risers_derived",
     "source_tier": "primary",
     "status": "expected_lag",
-    "data_date": "2026-08-21",
-    "expected_data_date": "2026-08-29",
-    "fetched_at": "2026-08-28T06:38:37+08:00",
+    "data_date": "2026-08-28",
+    "expected_data_date": "2026-08-30",
+    "fetched_at": "2026-08-30T15:11:08+08:00",
     "row_count": 50,
     "sla": {
       "mode": "weekly",
@@ -2041,7 +2041,7 @@
       "expected_available_by": "next business cycle after weekly snapshot"
     },
     "age_trading_days": null,
-    "age_calendar_days": 8,
+    "age_calendar_days": 2,
     "calendar_basis": null,
     "calendar_source_ids": [],
     "fallback": {

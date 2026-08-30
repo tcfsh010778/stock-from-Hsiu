@@ -2,7 +2,7 @@
   "dataset_id": "daily_market_flow",
   "schema_version": "1.3.0",
   "date": "2026-08-28",
-  "updated_at": "2026-08-29T07:09:13.768405+08:00",
+  "updated_at": "2026-08-30T15:11:08.897725+08:00",
   "markets": {
     "listed": {
       "stock_count": 1329,
@@ -13383,260 +13383,264 @@
     "source": "TWSE T86 + TPEx institutional daily detail"
   },
   "holder_metrics_by_security": {
-    "1294": {
-      "margin_balance_delta": -2,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 4.25
-    },
-    "1295": {
-      "margin_balance_delta": -1,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 0.62
-    },
-    "1319": {
-      "margin_balance_delta": -79,
-      "short_margin_ratio_pct": 0.1,
-      "retail_sell_pctpt": 1.0
-    },
-    "1336": {
-      "margin_balance_delta": 10,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 1.57
-    },
-    "1709": {
-      "margin_balance_delta": -741,
-      "short_margin_ratio_pct": 0.22,
-      "retail_sell_pctpt": 1.05
-    },
-    "1727": {
-      "margin_balance_delta": -398,
-      "short_margin_ratio_pct": 5.04,
-      "retail_sell_pctpt": 3.77
+    "1595": {
+      "margin_balance_delta": 20,
+      "short_margin_ratio_pct": 0.81,
+      "retail_sell_pctpt": 2.5
     },
     "1815": {
       "margin_balance_delta": 166,
       "short_margin_ratio_pct": 4.77,
-      "retail_sell_pctpt": 8.14
+      "retail_sell_pctpt": 7.6
     },
-    "2061": {
-      "margin_balance_delta": -127,
-      "short_margin_ratio_pct": 0.35,
-      "retail_sell_pctpt": -1.77
+    "2030": {
+      "margin_balance_delta": -157,
+      "short_margin_ratio_pct": 2.75,
+      "retail_sell_pctpt": 1.74
     },
-    "2364": {
-      "margin_balance_delta": -62,
-      "short_margin_ratio_pct": 0.57,
-      "retail_sell_pctpt": 1.96
+    "2221": {
+      "margin_balance_delta": 119,
+      "short_margin_ratio_pct": 6.7,
+      "retail_sell_pctpt": 1.03
+    },
+    "2313": {
+      "margin_balance_delta": 4315,
+      "short_margin_ratio_pct": 4.06,
+      "retail_sell_pctpt": 1.92
+    },
+    "2351": {
+      "margin_balance_delta": -141,
+      "short_margin_ratio_pct": 3.0,
+      "retail_sell_pctpt": 3.68
     },
     "2426": {
       "margin_balance_delta": 3106,
       "short_margin_ratio_pct": 5.2,
-      "retail_sell_pctpt": 4.26
+      "retail_sell_pctpt": 6.59
     },
-    "2486": {
-      "margin_balance_delta": -64,
-      "short_margin_ratio_pct": 2.65,
+    "2464": {
+      "margin_balance_delta": 843,
+      "short_margin_ratio_pct": 0.0,
+      "retail_sell_pctpt": 5.42
+    },
+    "2491": {
+      "margin_balance_delta": 193,
+      "short_margin_ratio_pct": 10.41,
+      "retail_sell_pctpt": 1.77
+    },
+    "2606": {
+      "margin_balance_delta": 287,
+      "short_margin_ratio_pct": 4.18,
+      "retail_sell_pctpt": 1.73
+    },
+    "2612": {
+      "margin_balance_delta": 23,
+      "short_margin_ratio_pct": 0.59,
+      "retail_sell_pctpt": 1.56
+    },
+    "3095": {
+      "margin_balance_delta": -1,
+      "short_margin_ratio_pct": 0.0,
+      "retail_sell_pctpt": 18.75
+    },
+    "3105": {
+      "margin_balance_delta": -270,
+      "short_margin_ratio_pct": 2.42,
+      "retail_sell_pctpt": 3.79
+    },
+    "3163": {
+      "margin_balance_delta": -7,
+      "short_margin_ratio_pct": 5.88,
+      "retail_sell_pctpt": 8.52
+    },
+    "3234": {
+      "margin_balance_delta": 0,
+      "short_margin_ratio_pct": null,
       "retail_sell_pctpt": 1.49
     },
-    "2603": {
-      "margin_balance_delta": 63,
-      "short_margin_ratio_pct": 2.69,
-      "retail_sell_pctpt": 2.47
+    "3260": {
+      "margin_balance_delta": 205,
+      "short_margin_ratio_pct": 3.52,
+      "retail_sell_pctpt": 4.37
     },
-    "2609": {
-      "margin_balance_delta": 2333,
-      "short_margin_ratio_pct": 5.1,
-      "retail_sell_pctpt": 3.24
+    "3324": {
+      "margin_balance_delta": 30,
+      "short_margin_ratio_pct": 1.02,
+      "retail_sell_pctpt": 1.37
     },
-    "2615": {
-      "margin_balance_delta": -277,
-      "short_margin_ratio_pct": 7.98,
-      "retail_sell_pctpt": 1.7
+    "3339": {
+      "margin_balance_delta": 423,
+      "short_margin_ratio_pct": 0.76,
+      "retail_sell_pctpt": 1.16
     },
-    "2634": {
-      "margin_balance_delta": 730,
-      "short_margin_ratio_pct": 1.71,
-      "retail_sell_pctpt": 3.91
+    "3363": {
+      "margin_balance_delta": -315,
+      "short_margin_ratio_pct": 6.04,
+      "retail_sell_pctpt": 1.55
     },
-    "2729": {
-      "margin_balance_delta": 0,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 0.0
+    "3374": {
+      "margin_balance_delta": -29,
+      "short_margin_ratio_pct": 1.77,
+      "retail_sell_pctpt": 2.81
     },
-    "2755": {
-      "margin_balance_delta": 0,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 3.74
-    },
-    "3037": {
-      "margin_balance_delta": -684,
-      "short_margin_ratio_pct": 3.53,
-      "retail_sell_pctpt": 1.8
-    },
-    "3043": {
-      "margin_balance_delta": 4,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": -0.22
-    },
-    "3169": {
-      "margin_balance_delta": 2,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 0.06
-    },
-    "3229": {
-      "margin_balance_delta": 85,
-      "short_margin_ratio_pct": 1.78,
-      "retail_sell_pctpt": 1.21
-    },
-    "3356": {
-      "margin_balance_delta": 10,
-      "short_margin_ratio_pct": 0.5,
-      "retail_sell_pctpt": 0.25
+    "3376": {
+      "margin_balance_delta": -1096,
+      "short_margin_ratio_pct": 1.95,
+      "retail_sell_pctpt": 3.15
     },
     "3406": {
       "margin_balance_delta": -883,
       "short_margin_ratio_pct": 6.51,
-      "retail_sell_pctpt": 1.98
+      "retail_sell_pctpt": 3.16
     },
-    "3441": {
-      "margin_balance_delta": -2613,
-      "short_margin_ratio_pct": 39.21,
-      "retail_sell_pctpt": 8.75
-    },
-    "3455": {
-      "margin_balance_delta": 188,
+    "3484": {
+      "margin_balance_delta": -36,
       "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 1.63
-    },
-    "3489": {
-      "margin_balance_delta": 0,
-      "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 0.8
+      "retail_sell_pctpt": -0.29
     },
     "3490": {
       "margin_balance_delta": 314,
       "short_margin_ratio_pct": 6.77,
-      "retail_sell_pctpt": 11.08
+      "retail_sell_pctpt": 2.09
     },
-    "3498": {
-      "margin_balance_delta": -168,
-      "short_margin_ratio_pct": 13.59,
-      "retail_sell_pctpt": 6.65
+    "3504": {
+      "margin_balance_delta": 92,
+      "short_margin_ratio_pct": 10.34,
+      "retail_sell_pctpt": 3.47
     },
-    "3587": {
-      "margin_balance_delta": -13,
-      "short_margin_ratio_pct": 0.21,
-      "retail_sell_pctpt": 0.46
+    "3543": {
+      "margin_balance_delta": -180,
+      "short_margin_ratio_pct": 8.85,
+      "retail_sell_pctpt": 2.09
     },
-    "3625": {
-      "margin_balance_delta": 0,
-      "short_margin_ratio_pct": null,
-      "retail_sell_pctpt": 1.3
+    "4167": {
+      "margin_balance_delta": 26,
+      "short_margin_ratio_pct": 0.11,
+      "retail_sell_pctpt": 3.6
     },
-    "4114": {
-      "margin_balance_delta": 7,
-      "short_margin_ratio_pct": 0.61,
-      "retail_sell_pctpt": 1.3
+    "4442": {
+      "margin_balance_delta": -1,
+      "short_margin_ratio_pct": 7.55,
+      "retail_sell_pctpt": 0.02
     },
-    "4931": {
-      "margin_balance_delta": 192,
-      "short_margin_ratio_pct": 2.3,
-      "retail_sell_pctpt": 2.5
+    "4927": {
+      "margin_balance_delta": -29,
+      "short_margin_ratio_pct": 1.27,
+      "retail_sell_pctpt": 1.29
     },
-    "4971": {
-      "margin_balance_delta": -42,
-      "short_margin_ratio_pct": 3.46,
-      "retail_sell_pctpt": -1.17
+    "4939": {
+      "margin_balance_delta": -1090,
+      "short_margin_ratio_pct": 28.03,
+      "retail_sell_pctpt": 7.06
     },
-    "6108": {
-      "margin_balance_delta": 212,
-      "short_margin_ratio_pct": 1.51,
-      "retail_sell_pctpt": 1.68
+    "4979": {
+      "margin_balance_delta": -909,
+      "short_margin_ratio_pct": 6.11,
+      "retail_sell_pctpt": 4.32
     },
-    "6207": {
-      "margin_balance_delta": 288,
-      "short_margin_ratio_pct": 6.51,
-      "retail_sell_pctpt": 1.39
+    "5392": {
+      "margin_balance_delta": -6,
+      "short_margin_ratio_pct": 0.0,
+      "retail_sell_pctpt": 1.52
+    },
+    "5425": {
+      "margin_balance_delta": 1555,
+      "short_margin_ratio_pct": 2.22,
+      "retail_sell_pctpt": 2.31
+    },
+    "6016": {
+      "margin_balance_delta": 165,
+      "short_margin_ratio_pct": 1.07,
+      "retail_sell_pctpt": 4.98
     },
     "6214": {
       "margin_balance_delta": -19,
       "short_margin_ratio_pct": 4.77,
-      "retail_sell_pctpt": 4.63
+      "retail_sell_pctpt": 1.76
     },
-    "6225": {
-      "margin_balance_delta": 0,
-      "short_margin_ratio_pct": null,
-      "retail_sell_pctpt": -0.94
+    "6224": {
+      "margin_balance_delta": 25,
+      "short_margin_ratio_pct": 1.78,
+      "retail_sell_pctpt": 1.24
     },
     "6226": {
       "margin_balance_delta": -361,
       "short_margin_ratio_pct": 36.01,
-      "retail_sell_pctpt": 2.51
+      "retail_sell_pctpt": 9.29
     },
-    "6270": {
-      "margin_balance_delta": -6,
-      "short_margin_ratio_pct": 0.09,
-      "retail_sell_pctpt": 0.7
-    },
-    "6426": {
-      "margin_balance_delta": -164,
+    "6240": {
+      "margin_balance_delta": 20,
       "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 3.12
+      "retail_sell_pctpt": 0.45
     },
-    "6492": {
+    "6269": {
+      "margin_balance_delta": 238,
+      "short_margin_ratio_pct": 2.41,
+      "retail_sell_pctpt": 2.5
+    },
+    "6278": {
+      "margin_balance_delta": -573,
+      "short_margin_ratio_pct": 1.41,
+      "retail_sell_pctpt": 1.9
+    },
+    "6771": {
       "margin_balance_delta": 0,
       "short_margin_ratio_pct": 0.0,
-      "retail_sell_pctpt": 8.34
+      "retail_sell_pctpt": 0.68
     },
-    "6517": {
-      "margin_balance_delta": -11,
-      "short_margin_ratio_pct": 0.33,
-      "retail_sell_pctpt": 0.51
+    "6782": {
+      "margin_balance_delta": -23,
+      "short_margin_ratio_pct": 1.28,
+      "retail_sell_pctpt": 3.51
     },
-    "6538": {
-      "margin_balance_delta": -194,
-      "short_margin_ratio_pct": 4.76,
-      "retail_sell_pctpt": 1.13
+    "6805": {
+      "margin_balance_delta": -79,
+      "short_margin_ratio_pct": 1.34,
+      "retail_sell_pctpt": 3.47
     },
-    "6569": {
-      "margin_balance_delta": 4,
-      "short_margin_ratio_pct": 0.32,
-      "retail_sell_pctpt": -0.27
+    "6840": {
+      "margin_balance_delta": 45,
+      "short_margin_ratio_pct": 10.39,
+      "retail_sell_pctpt": 2.01
     },
-    "6672": {
-      "margin_balance_delta": -3,
-      "short_margin_ratio_pct": 0.66,
-      "retail_sell_pctpt": 3.91
+    "7402": {
+      "margin_balance_delta": 41,
+      "short_margin_ratio_pct": 2.11,
+      "retail_sell_pctpt": 1.31
     },
-    "6706": {
-      "margin_balance_delta": -93,
-      "short_margin_ratio_pct": 2.15,
-      "retail_sell_pctpt": 0.61
-    },
-    "6727": {
-      "margin_balance_delta": -35,
-      "short_margin_ratio_pct": 0.67,
-      "retail_sell_pctpt": 2.12
-    },
-    "7811": {
-      "retail_sell_pctpt": 0.22
-    },
-    "7842": {
-      "retail_sell_pctpt": 2.72
+    "8033": {
+      "margin_balance_delta": 1845,
+      "short_margin_ratio_pct": 3.39,
+      "retail_sell_pctpt": 2.76
     },
     "8103": {
       "margin_balance_delta": -716,
       "short_margin_ratio_pct": 4.16,
-      "retail_sell_pctpt": 1.64
+      "retail_sell_pctpt": 4.51
+    },
+    "8111": {
+      "margin_balance_delta": 86,
+      "short_margin_ratio_pct": 2.6,
+      "retail_sell_pctpt": 2.72
+    },
+    "8271": {
+      "margin_balance_delta": -37,
+      "short_margin_ratio_pct": 9.23,
+      "retail_sell_pctpt": 1.05
+    },
+    "8358": {
+      "margin_balance_delta": -405,
+      "short_margin_ratio_pct": 3.6,
+      "retail_sell_pctpt": 3.97
     }
   },
   "supplemental_data": {
     "margin_date": "2026-08-28",
     "retail_200": {
-      "date": "2026-08-21",
-      "previous_date": "2026-08-14",
+      "date": "2026-08-28",
+      "previous_date": "2026-08-21",
       "definition": "previous_week_200_lots_or_less_percent_minus_current_week_percent",
-      "coverage_count": 1967
+      "coverage_count": 1966
     },
     "holder_metric_count": 50,
     "ranking_windows": [
@@ -13704,8 +13708,8 @@
       "market": "listed_otc",
       "metric": "weekly_retail_200",
       "status": "fresh",
-      "data_date": "2026-08-21",
-      "row_count": 1967,
+      "data_date": "2026-08-28",
+      "row_count": 1966,
       "error": null
     },
     {
@@ -13730,7 +13734,7 @@
     "status": "fresh",
     "data_date": "2026-08-28",
     "expected_data_date": "2026-08-28",
-    "fetched_at": "2026-08-29T07:09:13+08:00",
+    "fetched_at": "2026-08-30T15:11:08+08:00",
     "row_count": 2,
     "sla": {
       "mode": "calendar_day",
