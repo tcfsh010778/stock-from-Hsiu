@@ -18986,8 +18986,8 @@
     "source_tier": "fallback",
     "status": "fallback_stale",
     "data_date": "2026-05-12",
-    "expected_data_date": "2026-08-29",
-    "fetched_at": "2026-08-29T05:07:37+08:00",
+    "expected_data_date": "2026-09-01",
+    "fetched_at": "2026-09-01T01:20:05+08:00",
     "row_count": 587,
     "sla": {
       "mode": "calendar_day",
@@ -18996,7 +18996,7 @@
       "expected_available_by": "after the daily CaryBot export"
     },
     "age_trading_days": null,
-    "age_calendar_days": 109,
+    "age_calendar_days": 112,
     "calendar_basis": null,
     "calendar_source_ids": [],
     "fallback": {
