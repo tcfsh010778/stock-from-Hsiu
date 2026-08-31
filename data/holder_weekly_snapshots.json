@@ -3,7 +3,7 @@
   "schema_version": "1.1.0",
   "source_id": "tdcc_shareholder_distribution",
   "source_url": "https://openapi.tdcc.com.tw/v1/opendata/1-5",
-  "updated_at": "2026-09-01T01:20:19.449882+08:00",
+  "updated_at": "2026-09-01T03:20:59.606820+08:00",
   "latest_date": "2026-08-28",
   "snapshot_count": 10,
   "snapshots": [
@@ -27784,6 +27784,14 @@
           "major_percent": 42.09,
           "major_people": 38,
           "retail_200_percent": 51.81
+        },
+        {
+          "security_id": "4747",
+          "name": "強生*",
+          "market": "otc",
+          "major_percent": 100.0,
+          "major_people": 1,
+          "retail_200_percent": 0.0
         },
         {
           "security_id": "4749",
