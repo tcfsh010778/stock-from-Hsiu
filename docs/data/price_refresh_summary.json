@@ -7,8 +7,8 @@
     "twse_history": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX",
     "tpex_history": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
   },
-  "generated_at": "2026-09-01T14:23:08.849399+00:00",
-  "query_start_date": "2026-08-24",
+  "generated_at": "2026-09-01T17:00:38.287110+00:00",
+  "query_start_date": "2026-08-25",
   "latest_data_date": "2026-09-01",
   "latest_snapshot": {
     "mode": "historical_exact_date_recovery",
@@ -42,7 +42,6 @@
     }
   },
   "common_trading_dates": [
-    "2026-08-24",
     "2026-08-25",
     "2026-08-26",
     "2026-08-27",
@@ -56,7 +55,7 @@
     "tpex": 865
   },
   "latest_matched_stocks": 1954,
-  "written_files": 1983,
+  "written_files": 1982,
   "history_warning_count": 0,
   "history_warnings": [],
   "status": "fresh"
