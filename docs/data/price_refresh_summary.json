@@ -7,36 +7,36 @@
     "twse_history": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX",
     "tpex_history": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
   },
-  "generated_at": "2026-08-31T19:19:48.418867+00:00",
+  "generated_at": "2026-09-01T14:23:08.849399+00:00",
   "query_start_date": "2026-08-24",
-  "latest_data_date": "2026-08-31",
+  "latest_data_date": "2026-09-01",
   "latest_snapshot": {
     "mode": "historical_exact_date_recovery",
     "date_skew_recovered": true,
-    "twse_latest_date": "2026-08-28",
-    "tpex_latest_date": "2026-08-31",
-    "target_date": "2026-08-31",
+    "twse_latest_date": "2026-08-31",
+    "tpex_latest_date": "2026-09-01",
+    "target_date": "2026-09-01",
     "recovery_coverage": {
       "count_basis": "unique_security_ids",
       "reference_unique_ids": {
-        "twse": 1091,
-        "tpex": 859
+        "twse": 1092,
+        "tpex": 865
       },
       "minimum_unique_ids": {
         "twse": 800,
         "tpex": 600
       },
       "required_reference_ids": {
-        "twse": 1081,
-        "tpex": 851
+        "twse": 1082,
+        "tpex": 857
       },
       "covered_reference_ids": {
-        "twse": 1091,
-        "tpex": 859
+        "twse": 1089,
+        "tpex": 865
       },
       "recovered_unique_ids": {
-        "twse": 1092,
-        "tpex": 859
+        "twse": 1089,
+        "tpex": 865
       },
       "min_reference_ratio": 0.99
     }
@@ -47,14 +47,15 @@
     "2026-08-26",
     "2026-08-27",
     "2026-08-28",
-    "2026-08-31"
+    "2026-08-31",
+    "2026-09-01"
   ],
   "stock_scope_count": 1993,
   "latest_partition_rows": {
-    "twse": 1092,
-    "tpex": 859
+    "twse": 1089,
+    "tpex": 865
   },
-  "latest_matched_stocks": 1951,
+  "latest_matched_stocks": 1954,
   "written_files": 1983,
   "history_warning_count": 0,
   "history_warnings": [],
