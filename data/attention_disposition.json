@@ -2,8 +2,8 @@
   "dataset_id": "attention_disposition_risk",
   "schema_version": "1.0.0",
   "rule_version": "tw_attention_disposition_2026_08_10",
-  "date": "2026-09-03",
-  "updated_at": "2026-09-03T01:03:26+08:00",
+  "date": "2026-09-04",
+  "updated_at": "2026-09-04T00:47:02+08:00",
   "rule_metadata": {
     "effective_from": "2026-08-10",
     "announcement_date": "2026-08-03",
@@ -51,13 +51,13 @@
       "kind": "attention",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/notice",
       "status": "fresh",
-      "data_date": "2026-09-03",
-      "trading_date": "2026-09-03",
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
       "row_count": 0,
       "response_row_count": 0,
-      "sha256": "56d54b97340588bc25b5916bb29507aa40a69c57fe1be651af61d3b61ed73aac",
+      "sha256": "a20172cd156aa2fa5c73da95e728d07ad7c95c22c61f7477ad20a97634138f35",
       "fallback": {
         "used": false,
         "reason": null
@@ -84,13 +84,13 @@
       "kind": "disposition",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/punish",
       "status": "fresh",
-      "data_date": "2026-09-03",
-      "trading_date": "2026-09-03",
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
       "row_count": 6,
       "response_row_count": 108,
-      "sha256": "47bf057d186ae4d482f2e78627f3954001618eea936b10c743505515129c9c35",
+      "sha256": "dd4bcd809011cffd63ad5096507a53ab8c2e7ac370fe7625a03f352c39ffde6b",
       "fallback": {
         "used": false,
         "reason": null
@@ -117,13 +117,13 @@
       "kind": "near_disposition",
       "url": "https://www.twse.com.tw/rwd/zh/announcement/notetrans",
       "status": "fresh",
-      "data_date": "2026-09-03",
-      "trading_date": "2026-09-03",
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
-      "row_count": 2,
-      "response_row_count": 2,
-      "sha256": "9da2017d38598fa3f6064501d4b9a495dbd77e5f8c8145c41eb9698f96551580",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
+      "row_count": 5,
+      "response_row_count": 5,
+      "sha256": "018cc599eb7a27e83a75a87421bfb3fc040bd8b2f4b66a7b0a3766570aafca24",
       "fallback": {
         "used": false,
         "reason": null
@@ -150,13 +150,13 @@
       "kind": "attention",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/attention",
       "status": "fresh",
-      "data_date": "2026-09-03",
-      "trading_date": "2026-09-03",
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
       "row_count": 0,
       "response_row_count": 0,
-      "sha256": "edfb343c0a7b59a97cad690e7bced7cef86c9702f019a0722d458ef6d22466ee",
+      "sha256": "b8dc6da943776937fb14396ba5f23bd41215726fa5fb5e371621d54186e18152",
       "fallback": {
         "used": false,
         "reason": null
@@ -183,13 +183,13 @@
       "kind": "disposition",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/disposal",
       "status": "fresh",
-      "data_date": "2026-09-03",
-      "trading_date": "2026-09-03",
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
-      "row_count": 19,
-      "response_row_count": 163,
-      "sha256": "13ae03833bf97264613ad7e86b345f18d03304bb493e5842da75eb874f9a06a2",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
+      "row_count": 18,
+      "response_row_count": 165,
+      "sha256": "fdd0d92bee93596d8176e32317548b78f85fb82b78876a9c435722ee00b8d0d0",
       "fallback": {
         "used": false,
         "reason": null
@@ -215,43 +215,39 @@
       ],
       "kind": "near_disposition",
       "url": "https://www.tpex.org.tw/www/zh-tw/bulletin/warning",
-      "status": "missing",
-      "data_date": null,
-      "trading_date": null,
-      "expected_data_date": "2026-09-03",
-      "fetched_at": "2026-09-03T01:03:26+08:00",
-      "row_count": 0,
-      "response_row_count": 0,
-      "sha256": null,
+      "status": "fresh",
+      "data_date": "2026-09-04",
+      "trading_date": "2026-09-04",
+      "expected_data_date": "2026-09-04",
+      "fetched_at": "2026-09-04T00:47:02+08:00",
+      "row_count": 6,
+      "response_row_count": 6,
+      "sha256": "da2ddaa831817f3d1cc4d2a7d7d1d6f39f6bf8363a67ba4cb08b404e5cad2ca7",
       "fallback": {
         "used": false,
         "reason": null
       },
       "missing": {
-        "status": "missing",
+        "status": "complete",
         "missing_fields": [],
-        "missing_partitions": [
-          "tpex_near_disposition"
-        ]
+        "missing_partitions": []
       },
       "schema_validation": {
-        "status": "not_evaluated"
+        "status": "ok"
       },
-      "error": "HTTPError: HTTP Error 520: <none>"
+      "error": null
     }
   ],
   "data_quality": {
-    "state": "partial",
-    "missing_partitions": [
-      "tpex_near_disposition"
-    ],
+    "state": "complete",
+    "missing_partitions": [],
     "fallback_used": false,
-    "warning": "Absence is not treated as no risk when any required official partition is missing."
+    "warning": null
   },
   "attention": [],
   "disposition": [
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "listed",
       "security_id": "3008",
@@ -269,7 +265,7 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "listed",
       "security_id": "3406",
@@ -287,7 +283,7 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "listed",
       "security_id": "3450",
@@ -305,7 +301,7 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-31",
       "market": "listed",
       "security_id": "6226",
@@ -323,7 +319,7 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "listed",
       "security_id": "6805",
@@ -341,7 +337,7 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "listed",
       "security_id": "6933",
@@ -359,7 +355,43 @@
       "source_id": "twse_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
+      "publication_date": "2026-09-03",
+      "market": "otc",
+      "security_id": "3664",
+      "security_name": "安瑞-KY",
+      "occurrence_count": 2,
+      "reason": "因連續3個營業日達本中心作業要點第四條第一項第一款",
+      "original_start_date": "2026-09-04",
+      "original_end_date": "2026-09-10",
+      "effective_end_date": "2026-09-10",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 45,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "publication_date": "2026-09-03",
+      "market": "otc",
+      "security_id": "4991",
+      "security_name": "環宇-KY",
+      "occurrence_count": 2,
+      "reason": "最近10個營業日內有6個營業日",
+      "original_start_date": "2026-09-04",
+      "original_end_date": "2026-09-10",
+      "effective_end_date": "2026-09-10",
+      "transition_revised": false,
+      "active_on_data_date": true,
+      "day_trade_trigger": false,
+      "matching_interval_minutes": 2,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "otc",
       "security_id": "3324",
@@ -377,7 +409,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "otc",
       "security_id": "33245",
@@ -395,7 +427,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "otc",
       "security_id": "33246",
@@ -413,7 +445,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "otc",
       "security_id": "33247",
@@ -431,7 +463,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-02",
       "market": "otc",
       "security_id": "4908",
@@ -449,7 +481,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "otc",
       "security_id": "3374",
@@ -467,7 +499,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "otc",
       "security_id": "3629",
@@ -485,7 +517,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-09-01",
       "market": "otc",
       "security_id": "8358",
@@ -503,7 +535,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-31",
       "market": "otc",
       "security_id": "4939",
@@ -521,7 +553,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-31",
       "market": "otc",
       "security_id": "5314",
@@ -539,7 +571,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-28",
       "market": "otc",
       "security_id": "3163",
@@ -557,7 +589,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-28",
       "market": "otc",
       "security_id": "3441",
@@ -575,7 +607,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-28",
       "market": "otc",
       "security_id": "4188",
@@ -593,7 +625,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-28",
       "market": "otc",
       "security_id": "6103",
@@ -611,61 +643,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
-      "publication_date": "2026-08-27",
-      "market": "otc",
-      "security_id": "4979",
-      "security_name": "華星光",
-      "occurrence_count": 3,
-      "reason": "連續5個營業日",
-      "original_start_date": "2026-08-28",
-      "original_end_date": "2026-09-03",
-      "effective_end_date": "2026-09-03",
-      "transition_revised": false,
-      "active_on_data_date": true,
-      "day_trade_trigger": false,
-      "matching_interval_minutes": 2,
-      "rule_version": "tw_attention_disposition_2026_08_10",
-      "source_id": "tpex_disposition"
-    },
-    {
-      "data_date": "2026-09-03",
-      "publication_date": "2026-08-27",
-      "market": "otc",
-      "security_id": "49793",
-      "security_name": "華星光三",
-      "occurrence_count": 3,
-      "reason": "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置",
-      "original_start_date": "2026-08-28",
-      "original_end_date": "2026-09-03",
-      "effective_end_date": "2026-09-03",
-      "transition_revised": false,
-      "active_on_data_date": true,
-      "day_trade_trigger": false,
-      "matching_interval_minutes": 2,
-      "rule_version": "tw_attention_disposition_2026_08_10",
-      "source_id": "tpex_disposition"
-    },
-    {
-      "data_date": "2026-09-03",
-      "publication_date": "2026-08-27",
-      "market": "otc",
-      "security_id": "49794",
-      "security_name": "華星光四",
-      "occurrence_count": 3,
-      "reason": "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置",
-      "original_start_date": "2026-08-28",
-      "original_end_date": "2026-09-03",
-      "effective_end_date": "2026-09-03",
-      "transition_revised": false,
-      "active_on_data_date": true,
-      "day_trade_trigger": false,
-      "matching_interval_minutes": 2,
-      "rule_version": "tw_attention_disposition_2026_08_10",
-      "source_id": "tpex_disposition"
-    },
-    {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-26",
       "market": "otc",
       "security_id": "3362",
@@ -683,7 +661,7 @@
       "source_id": "tpex_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "publication_date": "2026-08-26",
       "market": "otc",
       "security_id": "33621",
@@ -703,29 +681,133 @@
   ],
   "near_disposition": [
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
-      "security_id": "2426",
-      "security_name": "鼎元",
-      "reason": "115年8月21日至115年9月2日等九個營業日已有五次",
+      "security_id": "069544",
+      "security_name": "立隆電元大5B購05",
+      "reason": "115年9月2日至115年9月3日連續二次",
       "official_near_disposition": true,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_near_disposition"
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
-      "security_id": "2455",
-      "security_name": "全新",
-      "reason": "115年9月1日至115年9月2日連續二次",
+      "security_id": "2426",
+      "security_name": "鼎元",
+      "reason": "115年8月24日至115年9月3日等九個營業日已有五次",
       "official_near_disposition": true,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "source_id": "twse_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "listed",
+      "security_id": "2455",
+      "security_name": "全新",
+      "reason": "115年8月31日至115年9月3日連續四次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "listed",
+      "security_id": "3406",
+      "security_name": "玉晶光",
+      "reason": "115年9月2日至115年9月3日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "listed",
+      "security_id": "6933",
+      "security_name": "AMAX-KY",
+      "reason": "115年9月2日至115年9月3日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "twse_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "5321",
+      "security_name": "美而快",
+      "reason": "115年08月24日至115年09月03日等九個營業日已有五次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "5475",
+      "security_name": "德宏",
+      "reason": "115年08月24日至115年09月03日等九個營業日已有五次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "6510",
+      "security_name": "精測",
+      "reason": "115年09月02日至115年09月03日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704022",
+      "security_name": "金山電統一61購01",
+      "reason": "115年09月02日至115年09月03日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704556",
+      "security_name": "力旺凱基5A購01",
+      "reason": "115年09月02日至115年09月03日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704898",
+      "security_name": "光頡統一5C購02",
+      "reason": "115年09月02日至115年09月03日連續二次",
+      "official_near_disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "source_id": "tpex_near_disposition"
     }
   ],
   "risk_summary": [
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
+      "market": "listed",
+      "security_id": "069544",
+      "security_name": "立隆電元大5B購05",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年9月2日至115年9月3日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "2426",
       "security_name": "鼎元",
@@ -735,11 +817,11 @@
       "disposition": false,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年8月21日至115年9月2日等九個營業日已有五次"
+        "115年8月24日至115年9月3日等九個營業日已有五次"
       ]
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "2455",
       "security_name": "全新",
@@ -749,11 +831,11 @@
       "disposition": false,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "115年9月1日至115年9月2日連續二次"
+        "115年8月31日至115年9月3日連續四次"
       ]
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "3008",
       "security_name": "大立光",
@@ -770,16 +852,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "3406",
       "security_name": "玉晶光",
       "risk_level": "disposition",
       "attention": false,
-      "near_disposition": false,
+      "near_disposition": true,
       "disposition": true,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "115年9月2日至115年9月3日連續二次",
         "連續三次"
       ],
       "effective_end_date": "2026-09-08",
@@ -787,7 +870,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "3450",
       "security_name": "聯鈞",
@@ -804,7 +887,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "6226",
       "security_name": "光鼎",
@@ -821,7 +904,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "6805",
       "security_name": "富世達",
@@ -838,16 +921,17 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "listed",
       "security_id": "6933",
       "security_name": "AMAX-KY",
       "risk_level": "disposition",
       "attention": false,
-      "near_disposition": false,
+      "near_disposition": true,
       "disposition": true,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
+        "115年9月2日至115年9月3日連續二次",
         "連續三次"
       ],
       "effective_end_date": "2026-09-08",
@@ -855,7 +939,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3163",
       "security_name": "波若威",
@@ -872,7 +956,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3324",
       "security_name": "雙鴻",
@@ -889,7 +973,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "33245",
       "security_name": "雙鴻五",
@@ -906,7 +990,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "33246",
       "security_name": "雙鴻六",
@@ -923,7 +1007,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "33247",
       "security_name": "雙鴻七",
@@ -940,7 +1024,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3362",
       "security_name": "先進光",
@@ -957,7 +1041,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "33621",
       "security_name": "先進光一",
@@ -974,7 +1058,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3374",
       "security_name": "精材",
@@ -991,7 +1075,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3441",
       "security_name": "聯一光",
@@ -1008,7 +1092,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "3629",
       "security_name": "地心引力",
@@ -1025,7 +1109,24 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "3664",
+      "security_name": "安瑞-KY",
+      "risk_level": "disposition",
+      "attention": false,
+      "near_disposition": false,
+      "disposition": true,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "因連續3個營業日達本中心作業要點第四條第一項第一款"
+      ],
+      "effective_end_date": "2026-09-10",
+      "matching_interval_minutes": 45,
+      "transition_revised": false
+    },
+    {
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "4188",
       "security_name": "安克",
@@ -1042,7 +1143,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "4908",
       "security_name": "前鼎",
@@ -1059,7 +1160,7 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "4939",
       "security_name": "亞電",
@@ -1076,58 +1177,24 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
-      "security_id": "4979",
-      "security_name": "華星光",
+      "security_id": "4991",
+      "security_name": "環宇-KY",
       "risk_level": "disposition",
       "attention": false,
       "near_disposition": false,
       "disposition": true,
       "rule_version": "tw_attention_disposition_2026_08_10",
       "reasons": [
-        "連續5個營業日"
+        "最近10個營業日內有6個營業日"
       ],
-      "effective_end_date": "2026-09-03",
+      "effective_end_date": "2026-09-10",
       "matching_interval_minutes": 2,
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
-      "market": "otc",
-      "security_id": "49793",
-      "security_name": "華星光三",
-      "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": false,
-      "disposition": true,
-      "rule_version": "tw_attention_disposition_2026_08_10",
-      "reasons": [
-        "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
-      ],
-      "effective_end_date": "2026-09-03",
-      "matching_interval_minutes": 2,
-      "transition_revised": false
-    },
-    {
-      "data_date": "2026-09-03",
-      "market": "otc",
-      "security_id": "49794",
-      "security_name": "華星光四",
-      "risk_level": "disposition",
-      "attention": false,
-      "near_disposition": false,
-      "disposition": true,
-      "rule_version": "tw_attention_disposition_2026_08_10",
-      "reasons": [
-        "轉(交)換公司債之標的證券經本中心或臺灣證券交易所發布處置"
-      ],
-      "effective_end_date": "2026-09-03",
-      "matching_interval_minutes": 2,
-      "transition_revised": false
-    },
-    {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "5314",
       "security_name": "世紀*",
@@ -1144,7 +1211,35 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "5321",
+      "security_name": "美而快",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年08月24日至115年09月03日等九個營業日已有五次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "5475",
+      "security_name": "德宏",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年08月24日至115年09月03日等九個營業日已有五次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "6103",
       "security_name": "合邦",
@@ -1161,7 +1256,63 @@
       "transition_revised": false
     },
     {
-      "data_date": "2026-09-03",
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "6510",
+      "security_name": "精測",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年09月02日至115年09月03日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704022",
+      "security_name": "金山電統一61購01",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年09月02日至115年09月03日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704556",
+      "security_name": "力旺凱基5A購01",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年09月02日至115年09月03日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
+      "market": "otc",
+      "security_id": "704898",
+      "security_name": "光頡統一5C購02",
+      "risk_level": "near_disposition",
+      "attention": false,
+      "near_disposition": true,
+      "disposition": false,
+      "rule_version": "tw_attention_disposition_2026_08_10",
+      "reasons": [
+        "115年09月02日至115年09月03日連續二次"
+      ]
+    },
+    {
+      "data_date": "2026-09-04",
       "market": "otc",
       "security_id": "8358",
       "security_name": "金居",
@@ -1184,10 +1335,10 @@
     "source_id": "attention_disposition_derived",
     "source_tier": "primary",
     "status": "fresh",
-    "data_date": "2026-09-03",
-    "expected_data_date": "2026-09-03",
-    "fetched_at": "2026-09-03T01:03:26+08:00",
-    "row_count": 27,
+    "data_date": "2026-09-04",
+    "expected_data_date": "2026-09-04",
+    "fetched_at": "2026-09-04T00:47:02+08:00",
+    "row_count": 33,
     "sla": {
       "mode": "trading_day",
       "frequency": "each trading day after official source partitions",
@@ -1208,11 +1359,9 @@
       "reason": null
     },
     "missing": {
-      "status": "partial",
+      "status": "complete",
       "missing_fields": [],
-      "missing_partitions": [
-        "tpex_near_disposition"
-      ]
+      "missing_partitions": []
     }
   }
 }
