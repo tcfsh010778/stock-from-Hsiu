@@ -30,7 +30,7 @@ def _rule_version(payload: Mapping[str, Any]) -> str:
     return str(payload.get("rule_version") or payload.get("version") or payload.get("schema_version") or "")
 
 
-def _source_quality(payload: Mapping[str, Any], *, as_of: str) -> dict[str, Any]:
+def _source_quality(payload: Mapping[str, Any], *, as_of: str, route_id: str) -> dict[str, Any]:
     quality = payload.get("quality") or payload.get("data_quality") or {}
     state = str(
         (quality.get("state") if isinstance(quality, Mapping) else quality)
@@ -47,9 +47,10 @@ def _source_quality(payload: Mapping[str, Any], *, as_of: str) -> dict[str, Any]
     allowed = {"ok", "complete", "fresh", "current", "ready", "published"}
     blocked = state not in allowed
     blocked = blocked or freshness_state in {"stale", "fallback_stale", "missing", "schema_error"}
-    blocked = blocked or price_verified is False
-    if source_date and source_date < as_of:
-        blocked = True
+    expected_dataset = {"sfz": "sfz_technical_candidates", "mda": "mda_candidate_pool"}[route_id]
+    blocked = blocked or str(payload.get("dataset_id") or "") != expected_dataset
+    blocked = blocked or price_verified is not True
+    blocked = blocked or not source_date or source_date != as_of
     expected_date = str(payload.get("expected_data_date") or "")
     if expected_date and source_date and source_date < expected_date:
         blocked = True
@@ -113,7 +114,7 @@ def _candidate(row: Mapping[str, Any]) -> bool:
 
 
 def _normalize_route(route_id: str, payload: Mapping[str, Any], *, as_of: str) -> dict[str, dict[str, Any]]:
-    quality = _source_quality(payload, as_of=as_of)
+    quality = _source_quality(payload, as_of=as_of, route_id=route_id)
     data_date = _data_date(payload)
     output: dict[str, dict[str, Any]] = {}
     for row in _rows(payload):
@@ -170,8 +171,6 @@ def _chip_signature(route: Mapping[str, Any]) -> tuple[Any, ...]:
 
 
 def _event(route_id: str, current: Mapping[str, Any], previous: Mapping[str, Any]) -> str | None:
-    if not previous.get("candidate") and current.get("candidate"):
-        return "first_qualified"
     if route_id == "sfz":
         stage = str(current.get("stage") or "").lower()
         old_stage = str(previous.get("stage") or "").lower()
@@ -179,12 +178,14 @@ def _event(route_id: str, current: Mapping[str, Any], previous: Mapping[str, Any
             str(item).lower() in {"condition_failure", "structure_invalidated"}
             for item in current.get("conflicts") or []
         )
-        if previous.get("candidate") and (stage == "invalidated" or explicit_failure):
+        if (previous.get("candidate") or old_stage == "breakout_wait_retest") and (stage == "invalidated" or explicit_failure):
             return "stage_invalidated"
-        if stage != old_stage and stage == "breakout_wait_retest":
+        if old_stage and stage != old_stage and stage == "breakout_wait_retest":
             return "sfz_breakout"
         if stage != old_stage and stage == "retest_confirmed":
             return "sfz_retest"
+    if not previous.get("candidate") and current.get("candidate"):
+        return "first_qualified"
     if route_id == "mda" and _chip_signature(current) and _chip_signature(current) != _chip_signature(previous):
         if _chip_signature(current):
             return "mda_chip_changed"
@@ -206,9 +207,10 @@ def build_review_queue(
         "mda": _normalize_route("mda", mda_payload, as_of=as_of),
     }
     same_day = bool(previous and str(previous.get("as_of") or "") == as_of)
-    previous_state = deepcopy(
-        ((previous or {}).get("day_baseline_route_state") if same_day else (previous or {}).get("route_state")) or {}
-    )
+    if same_day and "day_baseline_route_state" in (previous or {}):
+        previous_state = deepcopy(previous["day_baseline_route_state"])
+    else:
+        previous_state = deepcopy((previous or {}).get("route_state") or {})
     previous_versions = (previous or {}).get("rule_versions") or {}
     versions = {"sfz": _rule_version(sfz_payload), "mda": _rule_version(mda_payload)}
     baseline_only = not previous
@@ -223,7 +225,11 @@ def build_review_queue(
         for route_id in ("sfz", "mda"):
             current = current_routes[route_id].get(stock_id)
             old = (previous_state.get(stock_id) or {}).get(route_id)
-            source_quality = _source_quality(sfz_payload if route_id == "sfz" else mda_payload, as_of=as_of)
+            source_quality = _source_quality(sfz_payload if route_id == "sfz" else mda_payload, as_of=as_of, route_id=route_id)
+            if current is None and old is not None:
+                current = deepcopy(old)
+                current["quality"] = dict(source_quality, alert_eligible=False, row_state="missing")
+                current["missing"] = sorted(set(current.get("missing") or []) | {"current_row_missing"})
             if not source_quality["alert_eligible"]:
                 if old:
                     current = deepcopy(old)
@@ -275,11 +281,18 @@ def build_review_queue(
             "reasons": {route_id: list(routes[route_id].get("reasons") or []) for route_id in route_ids},
         })
     if same_day:
-        combined = [*deepcopy((previous or {}).get("alerts") or []), *alerts]
+        eligible_routes = {
+            route_id for route_id, payload in (("sfz", sfz_payload), ("mda", mda_payload))
+            if _source_quality(payload, as_of=as_of, route_id=route_id)["alert_eligible"]
+        }
+        combined = [
+            *[item for item in deepcopy((previous or {}).get("alerts") or []) if item.get("route_id") in eligible_routes],
+            *alerts,
+        ]
         alerts = list({(item["stock_id"], item["route_id"], item["event_type"]): item for item in combined}.values())
     quality = {
-        "sfz": _source_quality(sfz_payload, as_of=as_of),
-        "mda": _source_quality(mda_payload, as_of=as_of),
+        "sfz": _source_quality(sfz_payload, as_of=as_of, route_id="sfz"),
+        "mda": _source_quality(mda_payload, as_of=as_of, route_id="mda"),
     }
     return {
         "dataset_id": "review_queue",
@@ -291,13 +304,15 @@ def build_review_queue(
             "sfz": deepcopy(sfz_payload.get("conflicts") or []),
             "mda": deepcopy(mda_payload.get("conflicts") or []),
         },
-        "status": "ready" if any(item["alert_eligible"] for item in quality.values()) else "blocked",
+        "status": "ready" if all(item["alert_eligible"] for item in quality.values()) else (
+            "partial" if any(item["alert_eligible"] for item in quality.values()) else "blocked"
+        ),
         "rule_versions": versions,
         "stocks": cards,
         "alerts": sorted(alerts, key=lambda item: (item["priority"], item["stock_id"], item["route_id"])),
         "route_state": route_state,
         "day_baseline_route_state": deepcopy(
-            ((previous or {}).get("day_baseline_route_state") or (previous or {}).get("route_state")) if same_day
+            ((previous or {}).get("day_baseline_route_state") if "day_baseline_route_state" in (previous or {}) else (previous or {}).get("route_state")) if same_day
             else ((previous or {}).get("route_state") if previous else route_state)
         ),
     }

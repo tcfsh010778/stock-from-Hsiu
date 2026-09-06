@@ -4,7 +4,8 @@ from review_queue import build_review_queue
 
 
 def payload(route, rows, *, date="2026-09-04", quality="ok", version="v1"):
-    return {"dataset_id": route, "data_date": date, "quality": {"state": quality}, "rule_version": version, "stocks": rows}
+    dataset_id = {"sfz": "sfz_technical_candidates", "mda": "mda_candidate_pool"}[route]
+    return {"dataset_id": dataset_id, "data_date": date, "quality": {"state": quality}, "price_verified": True, "rule_version": version, "stocks": rows}
 
 
 class ReviewQueueTests(unittest.TestCase):
@@ -130,6 +131,41 @@ class ReviewQueueTests(unittest.TestCase):
         missing = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": False, "stage": "invalidated", "missing": ["price_history"]}], date="2026-09-06"), payload("mda", [], date="2026-09-06"), expired, as_of="2026-09-06")
         self.assertEqual(missing["alerts"], [])
         self.assertEqual(missing["stocks"][0]["status"], "blocked")
+
+    def test_same_day_blocked_route_suppresses_prior_active_alert(self):
+        base = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "box_forming"}]), payload("mda", []), as_of="2026-09-04")
+        alerted = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "retest_confirmed"}]), payload("mda", []), base, as_of="2026-09-04")
+        blocked = build_review_queue(payload("sfz", [], quality="blocked"), payload("mda", []), alerted, as_of="2026-09-04")
+        self.assertEqual(blocked["alerts"], [])
+
+    def test_explicit_empty_day_baseline_allows_same_day_new_stock_event(self):
+        start = build_review_queue(payload("sfz", []), payload("mda", []), as_of="2026-09-04")
+        changed = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), start, as_of="2026-09-04")
+        self.assertEqual(changed["alerts"][0]["event_type"], "first_qualified")
+
+    def test_fresh_source_missing_row_preserves_old_as_unknown(self):
+        first = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), as_of="2026-09-04")
+        second = build_review_queue(payload("sfz", [], date="2026-09-05"), payload("mda", [], date="2026-09-05"), first, as_of="2026-09-05")
+        card = second["stocks"][0]
+        self.assertTrue(card["candidate"])
+        self.assertIn("current_row_missing", card["missing"])
+        self.assertEqual(second["alerts"], [])
+
+    def test_retest_precedes_first_qualified_and_explicit_invalidation_alerts(self):
+        first = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": False, "stage": "breakout_wait_retest"}]), payload("mda", []), as_of="2026-09-04")
+        retest = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "retest_confirmed"}], date="2026-09-05"), payload("mda", [], date="2026-09-05"), first, as_of="2026-09-05")
+        self.assertEqual(retest["alerts"][0]["event_type"], "sfz_retest")
+        invalid = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": False, "stage": "invalidated"}], date="2026-09-05"), payload("mda", [], date="2026-09-05"), first, as_of="2026-09-05")
+        self.assertEqual(invalid["alerts"][0]["event_type"], "stage_invalidated")
+
+    def test_source_gate_requires_date_dataset_and_explicit_price_verification(self):
+        no_date = {"dataset_id": "sfz_technical_candidates", "quality": {"state": "ok"}, "price_verified": True, "stocks": []}
+        bad_id = {**no_date, "dataset_id": "wrong", "data_date": "2026-09-04"}
+        no_price = {**no_date, "data_date": "2026-09-04", "price_verified": None}
+        for source in (no_date, bad_id, no_price):
+            result = build_review_queue(source, payload("mda", []), as_of="2026-09-04")
+            self.assertFalse(result["quality"]["sfz"]["alert_eligible"])
+            self.assertEqual(result["status"], "partial")
 
 
 if __name__ == "__main__":
