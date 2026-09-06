@@ -171,14 +171,13 @@ def _chip_signature(route: Mapping[str, Any]) -> tuple[Any, ...]:
 
 
 def _event(route_id: str, current: Mapping[str, Any], previous: Mapping[str, Any]) -> str | None:
+    stage = str(current.get("stage") or "").lower()
+    old_stage = str(previous.get("stage") or "").lower()
+    explicit_failure = any(str(item).lower() in {"condition_failure", "structure_invalidated"} for item in current.get("conflicts") or [])
+    if previous.get("candidate") and (stage == "invalidated" or explicit_failure):
+        return "stage_invalidated"
     if route_id == "sfz":
-        stage = str(current.get("stage") or "").lower()
-        old_stage = str(previous.get("stage") or "").lower()
-        explicit_failure = any(
-            str(item).lower() in {"condition_failure", "structure_invalidated"}
-            for item in current.get("conflicts") or []
-        )
-        if (previous.get("candidate") or old_stage == "breakout_wait_retest") and (stage == "invalidated" or explicit_failure):
+        if old_stage == "breakout_wait_retest" and (stage == "invalidated" or explicit_failure):
             return "stage_invalidated"
         if old_stage and stage != old_stage and stage == "breakout_wait_retest":
             return "sfz_breakout"
@@ -190,6 +189,23 @@ def _event(route_id: str, current: Mapping[str, Any], previous: Mapping[str, Any
         if _chip_signature(current):
             return "mda_chip_changed"
     return None
+
+
+def _alert_still_active(alert: Mapping[str, Any], current_routes: Mapping[str, Mapping[str, Any]]) -> bool:
+    current = current_routes.get(str(alert.get("route_id") or ""), {}).get(str(alert.get("stock_id") or ""))
+    if not current or not current.get("quality", {}).get("alert_eligible"):
+        return False
+    event_type = alert.get("event_type")
+    stage = str(current.get("stage") or "").lower()
+    if event_type == "first_qualified":
+        return bool(current.get("candidate"))
+    if event_type == "sfz_breakout":
+        return stage == "breakout_wait_retest"
+    if event_type == "sfz_retest":
+        return stage == "retest_confirmed"
+    if event_type == "stage_invalidated":
+        return stage == "invalidated" or "structure_invalidated" in {str(item).lower() for item in current.get("conflicts") or []}
+    return True
 
 
 def build_review_queue(
@@ -216,6 +232,7 @@ def build_review_queue(
     baseline_only = not previous
     alerts: list[dict[str, Any]] = []
     route_state: dict[str, dict[str, Any]] = {}
+    next_baseline = deepcopy(previous_state)
     stock_ids = set(previous_state)
     stock_ids.update(current_routes["sfz"])
     stock_ids.update(current_routes["mda"])
@@ -241,8 +258,9 @@ def build_review_queue(
                 continue
             route_state[stock_id][route_id] = current
             rule_changed = bool(previous and previous_versions.get(route_id) != versions[route_id])
-            prior_source_eligible = bool(((previous or {}).get("quality") or {}).get(route_id, {}).get("alert_eligible"))
-            old_was_eligible = bool((old or {}).get("quality", {}).get("alert_eligible")) or (old is None and prior_source_eligible)
+            old_was_eligible = bool((old or {}).get("quality", {}).get("alert_eligible"))
+            if old is None or rule_changed or not old_was_eligible:
+                next_baseline.setdefault(stock_id, {})[route_id] = deepcopy(current)
             if baseline_only or rule_changed or not current.get("quality", {}).get("alert_eligible") or not old_was_eligible:
                 continue
             event_type = _event(route_id, current, old or {"candidate": False, "stage": "", "evidence": []})
@@ -281,12 +299,10 @@ def build_review_queue(
             "reasons": {route_id: list(routes[route_id].get("reasons") or []) for route_id in route_ids},
         })
     if same_day:
-        eligible_routes = {
-            route_id for route_id, payload in (("sfz", sfz_payload), ("mda", mda_payload))
-            if _source_quality(payload, as_of=as_of, route_id=route_id)["alert_eligible"]
-        }
         combined = [
-            *[item for item in deepcopy((previous or {}).get("alerts") or []) if item.get("route_id") in eligible_routes],
+            *[item for item in deepcopy((previous or {}).get("alerts") or [])
+              if previous_versions.get(item.get("route_id")) == versions.get(item.get("route_id"))
+              and _alert_still_active(item, current_routes)],
             *alerts,
         ]
         alerts = list({(item["stock_id"], item["route_id"], item["event_type"]): item for item in combined}.values())
@@ -311,8 +327,5 @@ def build_review_queue(
         "stocks": cards,
         "alerts": sorted(alerts, key=lambda item: (item["priority"], item["stock_id"], item["route_id"])),
         "route_state": route_state,
-        "day_baseline_route_state": deepcopy(
-            ((previous or {}).get("day_baseline_route_state") if "day_baseline_route_state" in (previous or {}) else (previous or {}).get("route_state")) if same_day
-            else ((previous or {}).get("route_state") if previous else route_state)
-        ),
+        "day_baseline_route_state": deepcopy(next_baseline if same_day else ((previous or {}).get("route_state") if previous else route_state)),
     }

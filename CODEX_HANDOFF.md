@@ -1,6 +1,20 @@
 # Codex Handoff
 
-Last updated: 2026-09-06
+## 2026-09-07 SFZ textbook universe and weekly MDA checklist (draft, Issue 34)
+
+- Status: implementation and partial real-data preview; NOT deployed. Full-market history, long-term holder access, and sustainable daily producer remain release blockers. Do not merge this draft as a completed data repair.
+- SFZ now uses its own textbook example universe (completed weekly MA5/21/89, volume in lots converted from raw shares, versioned momentum/price/MA34 settings). Box/retest is an entry-observation subtype, never the universe gate. Four broader patterns remain explicit manual checks. Eight-week arithmetic mean is the legacy screener interpretation, not a uniquely specified book formula.
+- MDA starts with verified weekly positive 400+ ownership Top50 across both markets. The original table uses A OR X, long B1, B2 and manual C checks; no total score. Admitted symbols remain in the watch pool after leaving Top50. Source pages 8-9 were visually checked locally; no paid book text/images are published.
+- Real weekly pool: 2026-08-28 recovered 1,968 ordinary stocks; 2026-09-04 common paired universe 1,967 (listed 1,082 / OTC 885). Top50 is complete. Price preview contains 114 verified pairs through 2026-09-04; full intended universe is 1,985. Price rows with inconsistent OHLC remain excluded.
+- FinMind register token supports per-stock raw prices but denies adjusted history, holder history and all-market daily prices. Official reference-event endpoints work. Private producer reconciles all six action sources and preserves raw volume. Long-term MDA holdings are still blocked; existing public holder caches end in June and cannot be presented as current continuous evidence.
+- Restored strict SMA windows, full-history calculation before 240-bar chart trimming, SMA5/20/60/120/240 export and chart overlays. Short histories retain null MA240 until 240 actual bars. Consumer validates basis, dates, coverage and CSV hash. Canonical LF CSV serialization prevents Windows/Linux hash drift.
+- Source writers: private tools/rebuild_finmind_price_history.py, tools/recover_weekly_holder_pool.py, tools/rebuild_mda_evidence.py. Public import: python tools/import_verified_price_batch.py --source <external-output> --as-of YYYY-MM-DD; then build_review_data.py, generate_site.py --review-only, generate_v2.py --validate. Private incremental updater is tested scaffolding but its bulk access remains unqualified; no new schedule enabled.
+- Legacy raw refresh now protects adjusted pairs and rejects mixing raw and adjusted columns. Review publication includes the new MDA datasets/page. New event semantics establishes a baseline for newly ingested/recovered data and rule changes; no first-qualified alert from history backfill.
+- Validation: 132 website/integration tests passed including final event-baseline, history-depth, corporate-action basis and watch-pool regressions. Private draft PR: https://github.com/tcfsh010778/tw-stock-Hsiu/pull/16. Local browser loaded the original-table checklist and 2026-09-04 V2 detail with 240 bars; no production release claim.
+- Rebuild raw caches and PDF audit stay outside Git. Continue the one active price batch on the owning host; do not launch competing quota-consuming runs. Obtain an authorized long-term holder source and qualify daily refresh before release. Prior draft public PR33/private PR14 are not blindly merged.
+
+
+Last updated: 2026-09-07
 
 ## 2026-09-06 Independent routes and human review homepage
 

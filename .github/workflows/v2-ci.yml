@@ -5,6 +5,14 @@ on:
     paths:
       - "stock_v2_public/**"
       - "build_review_data.py"
+      - "mda_weekly_pipeline.py"
+      - "sfz_technical_pipeline.py"
+      - "mda_checklist_page.py"
+      - "verified_price_guard.py"
+      - "tools/test_mda*"
+      - "tools/test_public_history*"
+      - "tools/test_verified_price*"
+      - "tools/*import_verified_price*"
       - "review_queue.py"
       - "review_home.py"
       - "generate_site.py"
@@ -32,6 +40,14 @@ on:
     paths:
       - "stock_v2_public/**"
       - "build_review_data.py"
+      - "mda_weekly_pipeline.py"
+      - "sfz_technical_pipeline.py"
+      - "mda_checklist_page.py"
+      - "verified_price_guard.py"
+      - "tools/test_mda*"
+      - "tools/test_public_history*"
+      - "tools/test_verified_price*"
+      - "tools/*import_verified_price*"
       - "review_queue.py"
       - "review_home.py"
       - "generate_site.py"
@@ -72,14 +88,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: python -m pytest tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py -q
-      - run: python generate_v2.py --only 2353 --validate
+      - run: python -m pytest tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py tools/test_sfz_universe.py tools/test_mda_checklist.py tools/test_mda_weekly_pipeline.py tools/test_verified_price_guard.py tools/test_public_history_contract.py tools/test_import_verified_price_batch.py -q
       - shell: python
         run: |
-          import json
           from pathlib import Path
-          packets = json.loads(Path("docs/v2/data/2353.json").read_text(encoding="utf-8"))
+          from tempfile import TemporaryDirectory
+          import sys
+          sys.path.insert(0, str(Path.cwd()))
+          from generate_v2 import analyze_stock_task
+          from tools.test_public_history_contract import fixture
+          with TemporaryDirectory() as temporary:
+              data_dir = Path(temporary)
+              fixture(data_dir, 520, sid="9001")
+              args = ("9001", "Synthetic", data_dir / "prices" / "9001.csv", data_dir, {}, "fresh", "2026-09-04", [], True)
+              stock_id, name, packets, error = analyze_stock_task(args)
+          assert error is None, error
+          assert stock_id == "9001" and name == "Synthetic"
           daily = next(packet for packet in packets if packet["timeframe"] == "daily")
+          assert daily["data_date"] == "2026-09-04"
+          assert len(daily["series"]) == 240
+          assert daily["series"][0]["sma240"] is not None
           assert "decision" not in daily
           annotations = daily["candlestick_annotations"]
           assert annotations["timeframe"] == "1d"

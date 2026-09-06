@@ -33,7 +33,8 @@ class PipelineTests(unittest.TestCase):
             as_of = write_prices(root, '9999', _qualifying_frame())
             (root / 'mda_candidates.json').write_text(json.dumps({'stocks': []}))
             (root / 'prices/8888.csv').write_text('date,close\n2025-01-01,10\n')
-            result = build_sfz(root, as_of)
+            from stock_v2_public.analysis.sfz_review import analyze_sfz
+            result = build_sfz(root, as_of, analyzer=analyze_sfz)
             self.assertEqual(result['universe_count'], 2)
             self.assertEqual([r['stock_id'] for r in result['stocks']], ['9999'])
             self.assertTrue(result['stocks'][0]['candidate'])

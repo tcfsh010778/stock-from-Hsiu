@@ -8,7 +8,7 @@ BODY = '''
   <div id="review-health" class="review-notice" role="status">正在讀取判讀資料…</div>
   <div class="review-routes">
     <section><span class="review-kicker">STOCK FROM ZERO</span><h2>技術／動能突破</h2><p>獨立價格股票池：趨勢、整理區間、突破與回測。工程化觀察規則，不代表教材完整公式或 AI 結論。</p><small id="sfz-coverage"></small></section>
-    <section><span class="review-kicker">M 大 ABC</span><h2>籌碼／布局觀察</h2><p>保留 A 長期結構、B1 長期籌碼與 B2 賣壓；區分未發動與已發動後的等待階段。</p><small id="mda-coverage"></small></section>
+    <section><span class="review-kicker">M 大 ABC</span><h2>籌碼／布局觀察</h2><p>每週大戶持股增加 Top 50，逐項核對 A／X、長期籌碼與賣壓；發動後才展開短線分析。</p><small id="mda-coverage"></small></section>
   </div>
   <div class="review-toolbar">
     <div class="review-buttons" aria-label="閱讀範圍"><button data-review-mode="alerts" aria-pressed="true">今日變化</button><button data-review-mode="pool" aria-pressed="false">觀察池</button></div>
@@ -31,7 +31,8 @@ JS = r'''
 (() => {
  'use strict';
  const $=id=>document.getElementById(id), labels={sfz:'Stock from Zero',mda:'M 大籌碼'};
- const stageLabels={no_setup:'尚未形成結構',box_forming:'整理觀察',breakout_wait_retest:'突破後等待回測',retest_confirmed:'回測結構確認',invalidated:'原結構失效'};
+ const stageLabels={universe_candidate:'通過教材初篩，待圖形複判',filtered:'未通過本期初篩',insufficient_data:'完整歷史不足',no_setup:'尚未形成結構',box_forming:'整理觀察',breakout_wait_retest:'突破後等待回測',retest_confirmed:'回測結構確認',invalidated:'原結構失效',weekly_review:'本週逐項檢核',mda_waiting:'已納觀察，等待賣壓減少',mda_ready_review:'型態與籌碼待人工複判'};
+ const checkLabels={pass:'符合',fail:'未符合',candidate:'符合工程觀察',unknown:'資料／判讀不足',manual:'人工確認',conflict:'走勢分歧'};
  const eventLabels={stage_invalidated:'原結構失效',sfz_breakout:'突破觀察',sfz_retest:'突破後回測',first_qualified:'首次符合',mda_chip_changed:'長期籌碼條件變化'};
  let payload,mode=location.pathname.endsWith('/review-pool.html')||new URLSearchParams(location.search).get('view')==='pool'?'pool':'alerts',page=0;
  const size=12;
@@ -46,7 +47,13 @@ JS = r'''
    section.append(node('div','來源日期 '+(r.data_date||'未提供')+' · '+(r.quality?.alert_eligible?'資料條件通過':'資料待補／歷史觀察'),'review-route-date'));
    const reasons=(r.reasons||[]).length?r.reasons:(r.evidence||[]).map(e=>e.summary).filter(Boolean);
    section.append(node('p',reasons.slice(0,2).join('；')||'尚無足夠判讀證據'));
-   if(r.next_observation)section.append(node('p','下一個觀察條件：'+r.next_observation));
+   if(r.route_id==='mda'){
+    const compact=node('div',undefined,'review-badges');
+    for(const [key,label] of [['long_bull_A','長多 A'],['reversal_X','轉折 X'],['long_term_B1','長期籌碼'],['long_term_comovement','價／籌碼'],['higher_lows_daily','底底高'],['selling_pressure_B2','賣壓']]){
+     const state=r.checklist?.checks?.[key]?.status||'unknown';compact.append(node('span',label+'：'+(checkLabels[state]||state),'review-badge'));
+    }
+    section.append(compact);const a=node('a','打開此股完整檢核表 →');a.href='mda-checklist.html?id='+encodeURIComponent(s.stock_id);section.append(a);
+   }else if(r.next_observation)section.append(node('p','下一個觀察條件：'+r.next_observation));
    const detail=node('details');detail.append(node('summary','查看完整證據與缺漏'));
    for(const evidence of r.evidence||[])detail.append(node('p',(evidence.summary||evidence.id)+' '+JSON.stringify(evidence.metrics||{})));
    for(const text of [...(r.conflicts||[]),...(r.missing||[])])detail.append(node('p',text==='current_source_unavailable'?'本期資料不可用，保留前次觀察。':String(text),'review-conflict'));
@@ -59,7 +66,7 @@ JS = r'''
  function render(){
   if(!payload)return;const eventMap=new Map();for(const e of payload.alerts||[]){if(!eventMap.has(e.stock_id))eventMap.set(e.stock_id,[]);eventMap.get(e.stock_id).push(e);}
   const route=$('review-route').value,q=$('review-search').value.trim().toLowerCase();
-  const observable=r=>r.candidate||['box_forming','breakout_wait_retest','retest_confirmed'].includes(r.stage);
+  const observable=r=>r.weekly_pool_member||r.watch_pool_member||r.candidate||['box_forming','breakout_wait_retest','retest_confirmed'].includes(r.stage);
   let stocks=(payload.stocks||[]).filter(s=>mode==='alerts'?(eventMap.get(s.stock_id)||[]).some(e=>route==='all'||e.route_id===route):(s.routes||[]).some(r=>observable(r)&&(route==='all'||r.route_id===route)));
   stocks=stocks.filter(s=>!q||(s.stock_id+' '+(s.name||'')).toLowerCase().includes(q));
   if(mode==='alerts')stocks.sort((a,b)=>Math.min(...eventMap.get(a.stock_id).map(e=>e.priority))-Math.min(...eventMap.get(b.stock_id).map(e=>e.priority))||a.stock_id.localeCompare(b.stock_id));
@@ -79,7 +86,7 @@ JS = r'''
   const sources=p.source_summary||{},a=sources.sfz||{},b=sources.mda||{};
   $('review-health').textContent='檢查基準日 '+p.as_of+'｜SFZ 資料 '+(a.data_date||'待補')+'｜M 大名單 '+(b.data_date||'待補')+'。'+(p.status==='blocked'?'目前資料驗證未通過，今日提醒暫停；下方觀察池保留歷史證據。':'提醒只根據可驗證的新變化；未通過的個股保留缺漏說明。');
   $('sfz-coverage').textContent=`${a.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 獨立股票池 ${a.universe_count||0} 檔 · 已驗證可計算 ${a.evaluated_count||0} 檔 · 待補 ${a.excluded_count||0} 檔`;
-  $('mda-coverage').textContent=`${b.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 既有候選 ${b.candidate_count||0} 檔 · 本期證據通過 ${b.eligible_count||0} 檔`;
+  $('mda-coverage').textContent=`${b.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 本週檢核 ${b.candidate_count||0} 檔 · 留池追蹤 ${b.retained_count||0} 檔 · 本期證據通過 ${b.eligible_count||0} 檔`;
   render();
  }).catch(()=>{$('review-health').textContent='判讀資料載入失敗，沒有產生任何今日提醒。請稍後重試。';});
 })();
@@ -97,8 +104,8 @@ def body():
     return '<link rel="stylesheet" href="css/review-home.css">' + BODY + '<script src="js/review-home.js" defer></script>'
 
 
-RULES = '''<div class="container"><div class="page-title">兩條路徑的規則與限制</div><p>規則版本 sfz-technical-review-candidate-v1.0.0。Stock from Zero 技術分析教材中的趨勢、箱型、突破、回測概念被整理為可重跑的工程候選規則；數值門檻不是教材原文公式，也不是 AI 勝率或買進指令。</p>
-<table class="review-rule-table"><tr><th>SFZ 技術觀察</th><th>目前實作</th></tr><tr><td>趨勢背景</td><td>收盤 > SMA20 > SMA60，SMA20 較五根前上升；至少完整 60 根。</td></tr><tr><td>箱型</td><td>突破前 20 根、寬度不超過 12%；上下緣各至少兩次接觸，接觸容差 2%。</td></tr><tr><td>突破</td><td>收盤高於原箱頂 1%，成交量至少為箱型均量 1.2 倍；只使用當時已知資料。</td></tr><tr><td>回測</td><td>靠近原箱頂 +2%／-1% 範圍後，重新收在箱頂以上；最新收盤不低於前一根。</td></tr><tr><td>失效</td><td>突破後曾收盤低於原箱頂 2%。不是資料缺漏或搜尋視窗結束就當作失效。</td></tr></table>
-<p>M 大使用既有候選池及原本長期條件，不要求先通過 SFZ。四／八週股權結構與 A／B1／B2 各自保留，熱族群不是新加的必要條件。只在日期、還原價及長期籌碼驗證通過後產生新提醒。</p>
+RULES = '''<div class="container"><div class="page-title">兩條路徑的規則與限制</div><p>SFZ 股票池採教材初篩，與 M 大名單獨立。週 MA5 > MA21 > MA89 須有完整 89 週；近五日成交量合計超過一萬張、八週平均漲幅超過 5%、收盤超過 20 元、收盤在日 MA34 上方且 MA34 上升。量能與動能門檻是教材當時的示例，可隨市場調整；八週平均採既有程式的每週報酬算術平均，原文未提供唯一算式。通過初篩不代表進場。</p>
+<table class="review-rule-table"><tr><th>箱型突破子項（不決定股票池）</th><th>版本化工程觀察</th></tr><tr><td>趨勢背景</td><td>收盤 > SMA20 > SMA60，SMA20 較五根前上升；至少完整 60 根。</td></tr><tr><td>箱型</td><td>突破前 20 根、寬度不超過 12%；上下緣各至少兩次接觸，接觸容差 2%。</td></tr><tr><td>突破</td><td>收盤高於原箱頂 1%，成交量至少為箱型均量 1.2 倍；只使用當時已知資料。</td></tr><tr><td>回測</td><td>靠近原箱頂 +2%／-1% 範圍後，重新收在箱頂以上；最新收盤不低於前一根。</td></tr><tr><td>失效</td><td>突破後曾收盤低於原箱頂 2%。不是資料缺漏或搜尋視窗結束就當作失效。</td></tr></table>
+<p>M 大以每週上市與上櫃合計、400 張以上大戶持股百分點增加 Top 50 為研究入口。原書的熟悉型態入口為 A 或 X；長期籌碼 B1 與賣壓 B2 分開檢核。Top 50 是使用者指定的研究流程；不代表書中固定門檻，也不代表這 50 檔全部符合條件。逐項檢核分為實測、工程觀察與人工確認，不計算綜合總分。</p>
 <p>目前不涵蓋 SFZ 所有教材章節、週／日層級切換、所有旗形與三角形、AI 選區／POC。公開歷史資料仍在修復，缺少已驗證還原價的股票會排除計算，而非假裝沒有訊號。</p>
 <p>首頁保留每日差異與完整觀察池；首次建立資料基準、規則版本改變、來源曾失效後恢復時先建立基準。來源日期與判讀日期分開，日價格與週籌碼不混成同一天。</p><a href="index.html">回人工複判首頁 →</a></div>'''

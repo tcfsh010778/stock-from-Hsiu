@@ -22,7 +22,7 @@ DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
 CANDLE_SCHEMA_PATH = ROOT / "schemas" / "candlestick_pattern_event.schema.json"
-PRIVATE_SOURCE_SHA = "509f2102dbb854297d214562ef509346d3095e14"
+PRIVATE_SOURCE_SHA = '6a45a1038c687f2abf96627138587445c9703e60'
 FIXED_STOP_PCT = 15.0
 
 
@@ -40,7 +40,7 @@ def _csv_rows(path: Path) -> list[dict]:
         return list(csv.DictReader(handle))
 
 
-def load_market_evidence(data_dir: Path, stock_id: str) -> dict:
+def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = None) -> dict:
     """Build the public-safe synchronized chip panels without importing v44.
 
     Missing datasets stay missing and are disclosed in ``gaps``.  This keeps a
@@ -136,6 +136,29 @@ def load_market_evidence(data_dir: Path, stock_id: str) -> dict:
     else:
         gaps.append("holdings")
 
+    pool_path = data_dir / 'mda_weekly_top50.json'
+    if as_of and pool_path.exists():
+        from mda_weekly_pipeline import validate_pool
+        pool = json.loads(pool_path.read_text(encoding='utf-8'))
+        try:
+            rows = validate_pool(pool, as_of)
+        except (ValueError, KeyError, TypeError):
+            rows = []
+        for row in rows:
+            if row['security_id'] != stock_id:
+                continue
+            by_date = {r['date']: r for r in holdings}
+            for day, key in ((pool['previous_date'], 'prior_major_400_percent'), (pool['data_date'], 'major_400_percent')):
+                by_date[day] = {'date': day, 'major': row[key], 'middle': None,
+                                'retail': None, 'total_people': None}
+            holdings = [by_date[d] for d in sorted(by_date)]
+    if as_of:
+        for values in (institutional, foreign_ownership, margin, holdings):
+            values[:] = [r for r in values if str(r.get('date') or '') <= as_of]
+    source_dates = {key: values[-1]['date'] for key, values in (
+        ('institutional', institutional), ('foreign_ownership', foreign_ownership),
+        ('margin', margin), ('holdings', holdings)) if values}
+    gaps = [key for key in ('institutional', 'foreign_ownership', 'margin', 'holdings') if key not in source_dates]
     return {
         "institutional": institutional,
         "foreign_ownership": foreign_ownership,
@@ -214,9 +237,30 @@ def safe_decision(stock_id: str, decision: dict | None) -> dict:
     }
 
 
+def load_price_basis(data_dir: Path, stock_id: str, frame: pd.DataFrame, expected_date: str) -> dict:
+    from build_review_data import verified_frame, read_json
+    checked = verified_frame(data_dir, stock_id, expected_date)
+    if len(checked) != len(frame) or not checked['date'].astype(str).equals(frame['date'].astype(str)):
+        raise ValueError('price frame differs from verified file')
+    for field in ('open', 'high', 'low', 'close', 'volume', 'adjustment_factor'):
+        if not pd.to_numeric(frame[field]).equals(checked[field]):
+            raise ValueError('price frame differs from verified file')
+    meta = read_json(data_dir / 'price_basis' / f'{stock_id}.json')
+    if meta['mode'].startswith('finmind_') and (
+            meta.get('data_start') != checked.iloc[0]['date']
+            or meta.get('data_end') != expected_date or meta.get('row_count') != len(checked)):
+        raise ValueError('price metadata coverage mismatch')
+    return {'mode': meta['mode'], 'verified': True,
+            'source': meta.get('source') or '; '.join([meta.get('price_source', ''), *meta.get('action_sources', [])]),
+            'adjustment_as_of': expected_date, 'volume_basis': meta['volume_basis'],
+            'event_count': meta.get('event_count', 0)}
+
+
 def trim_packet(packet: dict) -> dict:
-    limit = {"daily": 120, "weekly": 60, "monthly": 36}.get(packet.get("timeframe"), 90)
+    limit = {"daily": 240, "weekly": 60, "monthly": 36}.get(packet.get("timeframe"), 90)
     packet["series"] = packet.get("series", [])[-limit:]
+    if 'series_coverage' in packet:
+        packet['series_coverage'].update(returned_bars=len(packet['series']), requested_bars=limit)
     visible_dates = {row.get("date") for row in packet["series"]}
     annotations = packet.get("candlestick_annotations")
     if annotations:
@@ -255,23 +299,24 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
     try:
         warnings.filterwarnings("ignore", message="some peaks have a prominence of 0")
         frame = pd.read_csv(price_path)
-        if len(frame) < 30:
-            raise ValueError("fewer than 30 OHLCV rows")
+        if frame.empty:
+            raise ValueError("empty OHLCV")
         latest_date = str(frame.iloc[-1]["date"])
         if expected_price_date and latest_date != expected_price_date:
             raise ValueError(f"stale OHLCV: latest={latest_date}, expected={expected_price_date}")
         market = str((((decision.get("evidence") or {}).get("market_risk") or {}).get("market") or "listed"))
         if market not in {"listed", "otc", "emerging"}:
             market = "listed"
+        basis = load_price_basis(Path(data_dir), stock_id, frame, expected_price_date or latest_date)
         packets = analyze_multi_timeframe(
             frame,
             stock_id=stock_id,
-            price_adjustment={"mode": "none", "source": None, "verified": False},
+            price_adjustment=basis,
             decision=decision,
-            freshness={"status": freshness_status, "data_date": latest_date, "warnings": global_warnings},
+            freshness={"status": "fresh", "data_date": latest_date, "warnings": []},
             market=market,
         )
-        market_evidence = load_market_evidence(Path(data_dir), stock_id)
+        market_evidence = load_market_evidence(Path(data_dir), stock_id, as_of=latest_date)
         global _WORKER_VALIDATOR, _WORKER_CANDLE_VALIDATOR
         if validate and _WORKER_VALIDATOR is None:
             _WORKER_VALIDATOR = Draft202012Validator(json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
@@ -303,6 +348,8 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     freshness_status = str(quality.get("state") or "unknown")
     price_summary = load_price_refresh_summary(data_dir / "price_refresh_summary.json")
     expected_price_date = str(price_summary.get("latest_data_date") or "")
+    from build_review_data import expected_session
+    expected_price_date = expected_session()
     price_refresh_status = str(price_summary.get("status") or "missing")
     if price_refresh_status != "fresh":
         global_warnings.append(f"official price refresh status is {price_refresh_status}")
@@ -323,6 +370,19 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         review = json.loads(review_path.read_text(encoding="utf-8"))
         target_ids.update(str(row["stock_id"]) for row in review.get("stocks", [])
                           if row.get("candidate") or row.get("stage") in {"box_forming", "breakout_wait_retest", "retest_confirmed"})
+    mda_path = data_dir / 'mda_weekly_top50.json'
+    if mda_path.exists():
+        from mda_weekly_pipeline import validate_pool
+        pool = json.loads(mda_path.read_text(encoding='utf-8'))
+        try:
+            for row in validate_pool(pool, expected_price_date):
+                sid = str(row['security_id'])
+                target_ids.add(sid)
+                stock_map.setdefault(sid, {'name': row.get('name', '')})
+                if not stock_map[sid].get('name'):
+                    stock_map[sid]['name'] = row.get('name', '')
+        except (ValueError, KeyError, TypeError):
+            pass  # Invalid pool does not create chart eligibility.
     if only:
         target_ids = set(only)
     target_ids &= set(stock_map)

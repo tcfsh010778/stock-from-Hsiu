@@ -11,6 +11,71 @@ DOCS = ROOT / "docs"
 EXPECTED_TECHNICAL_INDICATORS = {
     "rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10",
 }
+EXPECTED_DAILY_BARS = 240
+EXPECTED_MAS = (5, 20, 60, 120, 240)
+VERIFIED_BASIS_MODES = {"finmind_raw_reconciled_reference_ratio_back_adjusted_v1"}
+
+
+def verify_daily_history(daily: dict) -> dict:
+    """Verify the release contract for a fully warmed daily history packet."""
+    if daily.get("timeframe") != "daily":
+        raise AssertionError("history verifier requires a daily packet")
+    series = daily.get("series")
+    if not isinstance(series, list):
+        raise AssertionError("daily series must be a list")
+    coverage = daily.get("series_coverage") or {}
+    try:
+        available = int(coverage.get("available_bars"))
+        returned = int(coverage.get("returned_bars"))
+    except (TypeError, ValueError) as exc:
+        raise AssertionError(f"daily series coverage bar counts are invalid: {coverage}") from exc
+    expected_returned = min(available, EXPECTED_DAILY_BARS)
+    expected_status = "available" if available >= EXPECTED_DAILY_BARS else "insufficient_history"
+    if coverage.get("requested_bars") != EXPECTED_DAILY_BARS or returned != expected_returned or len(series) != returned:
+        raise AssertionError(f"daily series coverage bar counts are invalid: {coverage}")
+    if available < 0 or coverage.get("status") != expected_status:
+        raise AssertionError(f"daily series coverage status is invalid: {coverage}")
+    dates = [row.get("date") for row in series if isinstance(row, dict)]
+    if len(dates) != returned or dates != sorted(dates) or len(set(dates)) != len(dates):
+        raise AssertionError("daily series dates are missing, duplicate, or out of order")
+    if dates and dates[-1] != daily.get("data_date"):
+        raise AssertionError("daily series latest date does not match packet data_date")
+
+    adjustment = daily.get("price_adjustment") or {}
+    if adjustment.get("mode") not in VERIFIED_BASIS_MODES or adjustment.get("verified") is not True:
+        raise AssertionError(f"daily price basis is not a verified release mode: {adjustment}")
+    if adjustment.get("volume_basis") != "finmind_raw_shares":
+        raise AssertionError(f"daily volume basis is invalid: {adjustment.get('volume_basis')}")
+
+    for index, row in enumerate(series):
+        if not isinstance(row, dict):
+            raise AssertionError(f"daily series row {index} is not an object")
+        try:
+            close = float(row["close"])
+            volume = float(row["volume"])
+            factor = float(row["adjustment_factor"])
+        except (KeyError, TypeError, ValueError) as exc:
+            raise AssertionError(f"daily series row {index} lacks numeric price-basis fields") from exc
+        if not all(math.isfinite(value) for value in (close, volume, factor)) or close <= 0 or volume < 0 or factor <= 0:
+            raise AssertionError(f"daily series row {index} has invalid price-basis values")
+        source_position = available - returned + index + 1
+        for window in EXPECTED_MAS:
+            value = row.get(f"sma{window}")
+            if source_position < window:
+                if value is not None:
+                    raise AssertionError(f"daily SMA{window} must be null before its full window at row {index}")
+            elif value is None or not math.isfinite(float(value)):
+                raise AssertionError(f"daily SMA{window} is missing after its full window at row {index}")
+
+    closes = [float(row["close"]) for row in series]
+    for window in EXPECTED_MAS:
+        if returned < window:
+            continue
+        actual = float(series[-1][f"sma{window}"])
+        expected = sum(closes[-window:]) / window
+        if not math.isclose(actual, expected, rel_tol=0.0, abs_tol=1e-5):
+            raise AssertionError(f"current SMA{window} mismatch: actual={actual}, expected={expected}")
+    return {"returned_bars": len(series), "available_bars": coverage["available_bars"], "basis_mode": adjustment["mode"]}
 
 
 def verify_price_freshness(manifest: dict, price_summary: dict) -> str:
@@ -110,6 +175,9 @@ def verify(navigation: str) -> dict:
             raise AssertionError(f"required public artifact missing: docs/{relative}")
     packets = json.loads((DOCS / "v2" / "data" / "2353.json").read_text(encoding="utf-8"))
     daily = next(packet for packet in packets if packet["timeframe"] == "daily")
+    history = verify_daily_history(daily)
+    if history["available_bars"] < EXPECTED_DAILY_BARS:
+        raise AssertionError("2353 daily release baseline requires at least 240 available bars")
     if "decision" in daily:
         raise AssertionError("public V2 packet still contains semantic decision output")
     risk = daily.get("risk_control") or {}
@@ -144,7 +212,7 @@ def verify(navigation: str) -> dict:
         raise AssertionError("TradingView-style workbench or fixed stop rendering is missing")
     if "技術分析證據卡" not in ui or "technical-evidence" not in ui or not {"RSI", "MACD", "布林"}.issubset(set(re.findall(r"RSI|MACD|布林", ui))):
         raise AssertionError("technical evidence cards are missing from the public V2 UI")
-    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "fixed_stop_2353": fixed_stop, "technical_indicators": sorted(technical_indicators), "navigation": navigation, "price_data_date": expected_price_date}
+    return {"stocks": manifest["stock_count"], "excluded": manifest.get("excluded_count", 0), "coverage": manifest.get("coverage"), "daily_history_2353": history, "fixed_stop_2353": fixed_stop, "technical_indicators": sorted(technical_indicators), "navigation": navigation, "price_data_date": expected_price_date}
 
 
 def main() -> None:

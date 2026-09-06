@@ -119,10 +119,10 @@ class ReviewQueueTests(unittest.TestCase):
         changed = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "retest_confirmed"}]), payload("mda", []), start, as_of="2026-09-04")
         self.assertEqual(changed["alerts"][0]["event_type"], "sfz_retest")
 
-    def test_new_stock_after_valid_route_baseline_alerts(self):
+    def test_new_stock_after_valid_route_baseline_is_first_observation(self):
         first = build_review_queue(payload("sfz", []), payload("mda", []), as_of="2026-09-04")
         second = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "breakout_wait_retest"}], date="2026-09-05"), payload("mda", [], date="2026-09-05"), first, as_of="2026-09-05")
-        self.assertEqual(second["alerts"][0]["event_type"], "first_qualified")
+        self.assertEqual(second["alerts"], [])
 
     def test_no_setup_expiry_and_row_missing_do_not_invalidate(self):
         first = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True, "stage": "breakout_wait_retest"}]), payload("mda", []), as_of="2026-09-04")
@@ -138,10 +138,36 @@ class ReviewQueueTests(unittest.TestCase):
         blocked = build_review_queue(payload("sfz", [], quality="blocked"), payload("mda", []), alerted, as_of="2026-09-04")
         self.assertEqual(blocked["alerts"], [])
 
-    def test_explicit_empty_day_baseline_allows_same_day_new_stock_event(self):
+    def test_explicit_empty_day_baseline_does_not_alert_for_unobserved_stock(self):
         start = build_review_queue(payload("sfz", []), payload("mda", []), as_of="2026-09-04")
         changed = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), start, as_of="2026-09-04")
-        self.assertEqual(changed["alerts"][0]["event_type"], "first_qualified")
+        self.assertEqual(changed["alerts"], [])
+
+    def test_batched_history_then_same_day_rerun_stays_baseline(self):
+        start = build_review_queue(payload("sfz", []), payload("mda", []), as_of="2026-09-04")
+        added = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), start, as_of="2026-09-04")
+        rerun = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), added, as_of="2026-09-04")
+        self.assertEqual(added["alerts"], [])
+        self.assertEqual(rerun["alerts"], [])
+
+    def test_rule_change_same_day_rebaselines_repeated_runs(self):
+        start = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": False}], version="v1"), payload("mda", []), as_of="2026-09-04")
+        changed = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}], version="v2"), payload("mda", []), start, as_of="2026-09-04")
+        rerun = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}], version="v2"), payload("mda", []), changed, as_of="2026-09-04")
+        self.assertEqual(changed["alerts"], [])
+        self.assertEqual(rerun["alerts"], [])
+
+    def test_mda_candidate_invalidation_emits_stage_invalidated(self):
+        first = build_review_queue(payload("sfz", []), payload("mda", [{"stock_id": "2330", "candidate": True, "stage": "activated"}]), as_of="2026-09-04")
+        second = build_review_queue(payload("sfz", [], date="2026-09-05"), payload("mda", [{"stock_id": "2330", "candidate": False, "stage": "invalidated"}], date="2026-09-05"), first, as_of="2026-09-05")
+        self.assertEqual(second["alerts"][0]["event_type"], "stage_invalidated")
+
+    def test_data_recovery_rebaselines_same_day(self):
+        blocked = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": False}], quality="blocked"), payload("mda", []), as_of="2026-09-04")
+        recovered = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), blocked, as_of="2026-09-04")
+        rerun = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), recovered, as_of="2026-09-04")
+        self.assertEqual(recovered["alerts"], [])
+        self.assertEqual(rerun["alerts"], [])
 
     def test_fresh_source_missing_row_preserves_old_as_unknown(self):
         first = build_review_queue(payload("sfz", [{"stock_id": "2330", "candidate": True}]), payload("mda", []), as_of="2026-09-04")

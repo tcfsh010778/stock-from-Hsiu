@@ -2,7 +2,8 @@
 (() => {
  'use strict';
  const $=id=>document.getElementById(id), labels={sfz:'Stock from Zero',mda:'M 大籌碼'};
- const stageLabels={no_setup:'尚未形成結構',box_forming:'整理觀察',breakout_wait_retest:'突破後等待回測',retest_confirmed:'回測結構確認',invalidated:'原結構失效'};
+ const stageLabels={universe_candidate:'通過教材初篩，待圖形複判',filtered:'未通過本期初篩',insufficient_data:'完整歷史不足',no_setup:'尚未形成結構',box_forming:'整理觀察',breakout_wait_retest:'突破後等待回測',retest_confirmed:'回測結構確認',invalidated:'原結構失效',weekly_review:'本週逐項檢核',mda_waiting:'已納觀察，等待賣壓減少',mda_ready_review:'型態與籌碼待人工複判'};
+ const checkLabels={pass:'符合',fail:'未符合',candidate:'符合工程觀察',unknown:'資料／判讀不足',manual:'人工確認',conflict:'走勢分歧'};
  const eventLabels={stage_invalidated:'原結構失效',sfz_breakout:'突破觀察',sfz_retest:'突破後回測',first_qualified:'首次符合',mda_chip_changed:'長期籌碼條件變化'};
  let payload,mode=location.pathname.endsWith('/review-pool.html')||new URLSearchParams(location.search).get('view')==='pool'?'pool':'alerts',page=0;
  const size=12;
@@ -17,7 +18,13 @@
    section.append(node('div','來源日期 '+(r.data_date||'未提供')+' · '+(r.quality?.alert_eligible?'資料條件通過':'資料待補／歷史觀察'),'review-route-date'));
    const reasons=(r.reasons||[]).length?r.reasons:(r.evidence||[]).map(e=>e.summary).filter(Boolean);
    section.append(node('p',reasons.slice(0,2).join('；')||'尚無足夠判讀證據'));
-   if(r.next_observation)section.append(node('p','下一個觀察條件：'+r.next_observation));
+   if(r.route_id==='mda'){
+    const compact=node('div',undefined,'review-badges');
+    for(const [key,label] of [['long_bull_A','長多 A'],['reversal_X','轉折 X'],['long_term_B1','長期籌碼'],['long_term_comovement','價／籌碼'],['higher_lows_daily','底底高'],['selling_pressure_B2','賣壓']]){
+     const state=r.checklist?.checks?.[key]?.status||'unknown';compact.append(node('span',label+'：'+(checkLabels[state]||state),'review-badge'));
+    }
+    section.append(compact);const a=node('a','打開此股完整檢核表 →');a.href='mda-checklist.html?id='+encodeURIComponent(s.stock_id);section.append(a);
+   }else if(r.next_observation)section.append(node('p','下一個觀察條件：'+r.next_observation));
    const detail=node('details');detail.append(node('summary','查看完整證據與缺漏'));
    for(const evidence of r.evidence||[])detail.append(node('p',(evidence.summary||evidence.id)+' '+JSON.stringify(evidence.metrics||{})));
    for(const text of [...(r.conflicts||[]),...(r.missing||[])])detail.append(node('p',text==='current_source_unavailable'?'本期資料不可用，保留前次觀察。':String(text),'review-conflict'));
@@ -30,7 +37,7 @@
  function render(){
   if(!payload)return;const eventMap=new Map();for(const e of payload.alerts||[]){if(!eventMap.has(e.stock_id))eventMap.set(e.stock_id,[]);eventMap.get(e.stock_id).push(e);}
   const route=$('review-route').value,q=$('review-search').value.trim().toLowerCase();
-  const observable=r=>r.candidate||['box_forming','breakout_wait_retest','retest_confirmed'].includes(r.stage);
+  const observable=r=>r.weekly_pool_member||r.watch_pool_member||r.candidate||['box_forming','breakout_wait_retest','retest_confirmed'].includes(r.stage);
   let stocks=(payload.stocks||[]).filter(s=>mode==='alerts'?(eventMap.get(s.stock_id)||[]).some(e=>route==='all'||e.route_id===route):(s.routes||[]).some(r=>observable(r)&&(route==='all'||r.route_id===route)));
   stocks=stocks.filter(s=>!q||(s.stock_id+' '+(s.name||'')).toLowerCase().includes(q));
   if(mode==='alerts')stocks.sort((a,b)=>Math.min(...eventMap.get(a.stock_id).map(e=>e.priority))-Math.min(...eventMap.get(b.stock_id).map(e=>e.priority))||a.stock_id.localeCompare(b.stock_id));
@@ -50,7 +57,7 @@
   const sources=p.source_summary||{},a=sources.sfz||{},b=sources.mda||{};
   $('review-health').textContent='檢查基準日 '+p.as_of+'｜SFZ 資料 '+(a.data_date||'待補')+'｜M 大名單 '+(b.data_date||'待補')+'。'+(p.status==='blocked'?'目前資料驗證未通過，今日提醒暫停；下方觀察池保留歷史證據。':'提醒只根據可驗證的新變化；未通過的個股保留缺漏說明。');
   $('sfz-coverage').textContent=`${a.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 獨立股票池 ${a.universe_count||0} 檔 · 已驗證可計算 ${a.evaluated_count||0} 檔 · 待補 ${a.excluded_count||0} 檔`;
-  $('mda-coverage').textContent=`${b.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 既有候選 ${b.candidate_count||0} 檔 · 本期證據通過 ${b.eligible_count||0} 檔`;
+  $('mda-coverage').textContent=`${b.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 本週檢核 ${b.candidate_count||0} 檔 · 留池追蹤 ${b.retained_count||0} 檔 · 本期證據通過 ${b.eligible_count||0} 檔`;
   render();
  }).catch(()=>{$('review-health').textContent='判讀資料載入失敗，沒有產生任何今日提醒。請稍後重試。';});
 })();

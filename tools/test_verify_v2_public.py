@@ -6,10 +6,55 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from verify_v2_public import verify_fixed_stop, verify_price_freshness, verify_technical_evidence
+from verify_v2_public import verify_daily_history, verify_fixed_stop, verify_price_freshness, verify_technical_evidence
+
+
+def daily_packet(count=240, available=None):
+    available = count if available is None else available
+    rows = []
+    for index in range(count):
+        close = float(index + 1)
+        row = {"date": f"2026-{(index // 28) + 1:02d}-{(index % 28) + 1:02d}", "close": close, "volume": 1000.0, "adjustment_factor": 1.0}
+        source_position = available - count + index + 1
+        for window in (5, 20, 60, 120, 240):
+            row[f"sma{window}"] = close if source_position >= window else None
+        rows.append(row)
+    # The verifier recomputes current values from the serialized 240 bars.
+    for window in (5, 20, 60, 120, 240):
+        if count >= window:
+            rows[-1][f"sma{window}"] = sum(row["close"] for row in rows[-window:]) / window
+    return {"timeframe": "daily", "data_date": rows[-1]["date"], "series": rows, "series_coverage": {"requested_bars": 240, "available_bars": available, "returned_bars": count, "status": "available" if available >= 240 else "insufficient_history"}, "price_adjustment": {"mode": "finmind_raw_reconciled_reference_ratio_back_adjusted_v1", "verified": True, "volume_basis": "finmind_raw_shares"}}
 
 
 class VerifyV2PublicTest(unittest.TestCase):
+    def test_daily_history_accepts_full_warmup_and_current_mas(self) -> None:
+        self.assertEqual(verify_daily_history(daily_packet(240, available=520))["returned_bars"], 240)
+
+    def test_daily_history_accepts_240_239_and_1_available_bars(self) -> None:
+        for count in (240, 239, 1):
+            result = verify_daily_history(daily_packet(count))
+            self.assertEqual(result["returned_bars"], count)
+
+    def test_daily_history_rejects_wrong_warmup_nullability(self) -> None:
+        packet = daily_packet(240)
+        packet["series"][0]["sma240"] = None
+        packet["series"][0]["sma5"] = 1.0
+        with self.assertRaisesRegex(AssertionError, "must be null"):
+            verify_daily_history(packet)
+        packet = daily_packet(240, available=520)
+        packet["series"][0]["sma240"] = None
+        with self.assertRaisesRegex(AssertionError, "missing after"):
+            verify_daily_history(packet)
+
+    def test_daily_history_rejects_legacy_basis_and_wrong_current_ma(self) -> None:
+        packet = daily_packet(240, available=520)
+        packet["price_adjustment"]["mode"] = "legacy_raw_v0"
+        with self.assertRaisesRegex(AssertionError, "verified release mode"):
+            verify_daily_history(packet)
+        packet = daily_packet(240, available=520)
+        packet["series"][-1]["sma240"] += 1
+        with self.assertRaisesRegex(AssertionError, "current SMA240 mismatch"):
+            verify_daily_history(packet)
     def test_fixed_stop_is_derived_from_current_reference_price(self) -> None:
         stop = verify_fixed_stop(
             {

@@ -363,6 +363,16 @@ def merge_price_rows(price_dir: Path, stock_ids: set[str], rows: list[dict[str, 
         sid = str(row.get("stock_id") or "").strip()
         if sid in stock_ids:
             grouped[sid].append(row)
+    # Validate every destination before changing any member of the batch.
+    for sid in grouped:
+        path = price_dir / f'{sid}.csv'
+        if (price_dir.parent / 'price_basis' / f'{sid}.json').exists():
+            raise ValueError(f'protected adjusted history cannot be merged with raw prices: {sid}')
+        if path.exists():
+            with path.open('r', encoding='utf-8-sig', newline='') as handle:
+                fields = next(csv.reader(handle), [])
+            if 'adjustment_factor' in fields or any(field.startswith('raw_') for field in fields):
+                raise ValueError(f'adjusted columns cannot be overwritten by raw prices: {sid}')
     for sid, new_rows in grouped.items():
         path = price_dir / f"{sid}.csv"
         by_date: dict[str, dict[str, Any]] = {}
