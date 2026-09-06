@@ -48,6 +48,7 @@ ROLLING_HISTORY_DAYS = max(ROLLING_WINDOWS)
 NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
 MAX_AUTO_LOOKBACK_DAYS = 10
 HTTP_ATTEMPTS = 3
+HISTORY_MIN_PARTITION_COUNTS = {"listed": 800, "otc": 600}
 
 
 def _number(value: Any, default: int = 0) -> int:
@@ -417,7 +418,11 @@ def margin_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any
     return metrics
 
 
-def load_retail_weekly_metrics(path: Path | str = HOLDER_ARCHIVE_PATH) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+def load_retail_weekly_metrics(
+    path: Path | str = HOLDER_ARCHIVE_PATH,
+    *,
+    as_of_date: str | None = None,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     """Return weekly reduction in TDCC 200-lot-or-less ownership by security."""
 
     try:
@@ -428,6 +433,7 @@ def load_retail_weekly_metrics(path: Path | str = HOLDER_ARCHIVE_PATH) -> tuple[
         snapshot
         for snapshot in payload.get("snapshots") or []
         if isinstance(snapshot, Mapping) and snapshot.get("date") and isinstance(snapshot.get("rows"), list)
+        and (not as_of_date or str(snapshot.get("date")) <= as_of_date)
     ]
     snapshots.sort(key=lambda snapshot: str(snapshot.get("date")))
     usable = [
@@ -505,7 +511,17 @@ def _history_snapshot(data_date: str, rows: Sequence[Mapping[str, Any]]) -> dict
         f"{security_id},{market},{foreign_net},{trust_net},{dealer_net}"
         for security_id, market, foreign_net, trust_net, dealer_net in compact_rows
     )
-    return {"date": data_date, "rows_csv": rows_csv, "row_count": len(compact_rows)}
+    partition_counts = {
+        "listed": sum(1 for row in compact_rows if row[1] == "l"),
+        "otc": sum(1 for row in compact_rows if row[1] == "o"),
+    }
+    return {
+        "date": data_date,
+        "format_version": 2,
+        "rows_csv": rows_csv,
+        "row_count": len(compact_rows),
+        "partition_counts": partition_counts,
+    }
 
 
 def _snapshot_rows(snapshot: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -530,7 +546,28 @@ def _snapshot_rows(snapshot: Mapping[str, Any]) -> list[dict[str, Any]]:
     return output
 
 
-def _load_existing_history(path: Path | str = OUTPUT_PATH) -> dict[str, dict[str, Any]]:
+def _valid_history_snapshot(
+    snapshot: Mapping[str, Any],
+    min_partition_counts: Mapping[str, int],
+) -> bool:
+    if int(snapshot.get("format_version") or 0) < 2:
+        return False
+    rows = _snapshot_rows(snapshot)
+    ids = [str(row.get("security_id") or "") for row in rows]
+    if not rows or any(row.get("dealer_net") is None for row in rows) or len(ids) != len(set(ids)):
+        return False
+    counts = {
+        market: sum(1 for row in rows if row.get("market") == market)
+        for market in ("listed", "otc")
+    }
+    return all(counts[market] >= int(min_partition_counts[market]) for market in counts)
+
+
+def _load_existing_history(
+    path: Path | str = OUTPUT_PATH,
+    *,
+    min_partition_counts: Mapping[str, int] = HISTORY_MIN_PARTITION_COUNTS,
+) -> dict[str, dict[str, Any]]:
     try:
         payload = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     except Exception:
@@ -541,7 +578,7 @@ def _load_existing_history(path: Path | str = OUTPUT_PATH) -> dict[str, dict[str
         if not isinstance(snapshot, Mapping) or not snapshot.get("date"):
             continue
         rows = _snapshot_rows(snapshot)
-        if rows:
+        if rows and _valid_history_snapshot(snapshot, min_partition_counts):
             output[str(snapshot.get("date"))] = _history_snapshot(str(snapshot.get("date")), rows)
     return output
 
@@ -552,14 +589,18 @@ def build_institutional_history(
     *,
     output_path: Path | str = OUTPUT_PATH,
     price_dir: Path | str = PRICE_DIR,
+    min_partition_counts: Mapping[str, int] = HISTORY_MIN_PARTITION_COUNTS,
 ) -> tuple[dict[str, Any], str | None]:
     """Build a reusable 20-session official institutional-flow window."""
 
     target_dates = _recent_trading_dates(data_date, price_dir=price_dir)
     if len(target_dates) < ROLLING_HISTORY_DAYS or target_dates[-1:] != [data_date]:
         return {}, "official price calendar lacks a complete 20-session window"
-    snapshots = _load_existing_history(output_path)
-    snapshots[data_date] = _history_snapshot(data_date, current_rows)
+    snapshots = _load_existing_history(output_path, min_partition_counts=min_partition_counts)
+    current_snapshot = _history_snapshot(data_date, current_rows)
+    if not _valid_history_snapshot(current_snapshot, min_partition_counts):
+        return {}, f"current official detail coverage below minimum: {current_snapshot['partition_counts']}"
+    snapshots[data_date] = current_snapshot
     errors: list[str] = []
     for historical_date in target_dates:
         if historical_date in snapshots and int(snapshots[historical_date].get("row_count") or 0) > 0:
@@ -586,7 +627,12 @@ def build_institutional_history(
             row_dates = {str(row.get("trading_date") or "") for row in [*listed, *otc]}
             if row_dates != {historical_date}:
                 raise ValueError(f"official detail dates do not align: {sorted(row_dates)}")
-            snapshots[historical_date] = _history_snapshot(historical_date, [*listed, *otc])
+            candidate_snapshot = _history_snapshot(historical_date, [*listed, *otc])
+            if not _valid_history_snapshot(candidate_snapshot, min_partition_counts):
+                raise ValueError(
+                    f"official detail coverage below minimum: {candidate_snapshot['partition_counts']}"
+                )
+            snapshots[historical_date] = candidate_snapshot
             sleep(0.15)
         except Exception as exc:
             errors.append(f"{historical_date}: {str(exc)[:120]}")
@@ -617,27 +663,28 @@ def _ranking_target_ids(rows: Sequence[Mapping[str, Any]]) -> set[str]:
     return {security_id for security_id in selected if security_id}
 
 
-def _volume_totals(
+def _volume_by_date(
     security_ids: set[str],
     dates: Sequence[str],
     *,
     price_dir: Path | str = PRICE_DIR,
-) -> dict[str, int]:
+) -> dict[str, dict[str, int]]:
     wanted_dates = set(dates)
-    totals: dict[str, int] = {}
+    output: dict[str, dict[str, int]] = {}
     for security_id in security_ids:
         path = Path(price_dir) / f"{security_id}.csv"
-        total = 0
+        values: dict[str, int] = {}
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
                 for row in csv.DictReader(handle):
-                    if str(row.get("date") or "") in wanted_dates:
-                        total += _number(row.get("volume"))
+                    row_date = str(row.get("date") or "")
+                    if row_date in wanted_dates and row.get("volume") not in (None, ""):
+                        values[row_date] = _number(row.get("volume"))
         except Exception:
             continue
-        if total > 0:
-            totals[security_id] = total
-    return totals
+        if values:
+            output[security_id] = values
+    return output
 
 
 def rolling_institutional_metrics(
@@ -652,7 +699,7 @@ def rolling_institutional_metrics(
         return {}
     snapshots = snapshots[-ROLLING_HISTORY_DAYS:]
     dates = [str(item.get("date") or "") for item in snapshots]
-    volume_totals = _volume_totals(security_ids, dates, price_dir=price_dir)
+    volumes = _volume_by_date(security_ids, dates, price_dir=price_dir)
     daily: dict[str, list[Mapping[str, Any]]] = {security_id: [] for security_id in security_ids}
     for snapshot in snapshots:
         by_security = {
@@ -666,15 +713,33 @@ def rolling_institutional_metrics(
     output: dict[str, dict[str, Any]] = {}
     for security_id, series in daily.items():
         item: dict[str, Any] = {}
-        total_volume = volume_totals.get(security_id, 0)
+        security_volumes = volumes.get(security_id, {})
         for label, key in (("foreign", "foreign_net"), ("investment_trust", "investment_trust_net")):
-            metrics = {
-                f"net_{window}d": sum(_number(row.get(key)) for row in series[-window:])
-                for window in ROLLING_WINDOWS
-            }
+            metrics: dict[str, Any] = {}
+            for window in ROLLING_WINDOWS:
+                window_rows = series[-window:]
+                actual = sum(1 for row in window_rows if key in row and row.get(key) is not None)
+                complete = actual == window
+                metrics[f"net_{window}d"] = (
+                    sum(_number(row.get(key)) for row in window_rows) if complete else None
+                )
+                metrics[f"coverage_{window}d"] = {
+                    "required": window,
+                    "actual": actual,
+                    "complete": complete,
+                }
+            price_actual = sum(1 for day in dates if day in security_volumes)
+            total_volume = sum(security_volumes.get(day, 0) for day in dates)
             metrics["concentration_ratio_pct"] = (
-                round(metrics["net_20d"] / total_volume * 100, 2) if total_volume > 0 else None
+                round(metrics["net_20d"] / total_volume * 100, 2)
+                if metrics["net_20d"] is not None and price_actual == ROLLING_HISTORY_DAYS and total_volume > 0
+                else None
             )
+            metrics["price_coverage_20d"] = {
+                "required": ROLLING_HISTORY_DAYS,
+                "actual": price_actual,
+                "complete": price_actual == ROLLING_HISTORY_DAYS,
+            }
             item[label] = metrics
         output[security_id] = item
     return output
@@ -1054,7 +1119,7 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
             actual = ", ".join(sorted(item or "missing" for item in row_dates))
             margin_errors[market] = f"margin date {actual} does not align with requested date {expected_date}"
             margin_rows[market] = []
-    retail_metrics, retail_reference = load_retail_weekly_metrics()
+    retail_metrics, retail_reference = load_retail_weekly_metrics(as_of_date=expected_date)
     retail_error = None if retail_metrics and retail_reference else "TDCC archive lacks two complete 200-lot-or-less snapshots"
     institutional_history: dict[str, Any] = {}
     institutional_history_error: str | None = "daily institutional detail is incomplete"

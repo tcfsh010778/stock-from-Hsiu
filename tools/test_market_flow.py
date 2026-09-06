@@ -176,6 +176,18 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(reference["date"], "2026-08-08")
         self.assertEqual(reference["previous_date"], "2026-08-01")
 
+    def test_retail_weekly_metrics_respects_daily_as_of_date(self):
+        payload = {"snapshots": [
+            {"date": "2026-08-01", "rows": [{"security_id": "2330", "retail_200_percent": 12.4}]},
+            {"date": "2026-08-08", "rows": [{"security_id": "2330", "retail_200_percent": 11.9}]},
+            {"date": "2026-08-15", "rows": [{"security_id": "2330", "retail_200_percent": 10.0}]},
+        ]}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "holders.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            _, reference = market_flow.load_retail_weekly_metrics(path, as_of_date="2026-08-10")
+        self.assertEqual(reference["date"], "2026-08-08")
+
     def test_full_rankings_exclude_non_ordinary_instruments(self):
         rows = [
             {"security_id": "2330", "name": "台積電", "market": "listed", "foreign_net": 100, "investment_trust_net": -10},
@@ -221,6 +233,32 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(metrics["2330"]["foreign"]["net_10d"], 10_000)
         self.assertEqual(metrics["2330"]["foreign"]["net_20d"], 20_000)
         self.assertEqual(metrics["2330"]["foreign"]["concentration_ratio_pct"], 10.0)
+
+    def test_history_cache_rejects_legacy_rows_without_dealer(self):
+        legacy = {"date": "2026-08-07", "rows_csv": "2330,l,1,2\n6488,o,3,4", "row_count": 2}
+        self.assertFalse(market_flow._valid_history_snapshot(legacy, {"listed": 1, "otc": 1}))
+        current = market_flow._history_snapshot("2026-08-07", [
+            {"security_id": "2330", "name": "台積電", "market": "listed", "foreign_net": 1, "investment_trust_net": 2, "dealer_net": 3},
+            {"security_id": "6488", "name": "環球晶", "market": "otc", "foreign_net": 4, "investment_trust_net": 5, "dealer_net": 6},
+        ])
+        self.assertTrue(market_flow._valid_history_snapshot(current, {"listed": 1, "otc": 1}))
+
+    def test_rolling_metrics_are_null_when_security_has_missing_sessions(self):
+        dates = [f"2026-08-{day:02d}" for day in range(1, 21)]
+        history = {"snapshots": [
+            {"date": data_date, "rows": ([] if index == 0 else [{"security_id": "2330", "foreign_net": 100, "investment_trust_net": 10}])}
+            for index, data_date in enumerate(dates)
+        ]}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            price_dir = Path(temp_dir)
+            (price_dir / "2330.csv").write_text(
+                "date,open,high,low,close,volume\n" + "".join(f"{data_date},1,1,1,1,1000\n" for data_date in dates),
+                encoding="utf-8",
+            )
+            metrics = market_flow.rolling_institutional_metrics(history, {"2330"}, price_dir=price_dir)
+        self.assertIsNone(metrics["2330"]["foreign"]["net_20d"])
+        self.assertEqual(metrics["2330"]["foreign"]["coverage_20d"]["actual"], 19)
+        self.assertIsNone(metrics["2330"]["foreign"]["concentration_ratio_pct"])
 
     def test_build_payload_exposes_missing_market_partition(self):
         payload = market_flow.build_payload([{"security_id": "2330", "foreign_net": 1}], [], data_date="2026-08-06", fetched_at="2026-08-06T20:00:00+08:00", source_errors={"otc": "timeout"})
