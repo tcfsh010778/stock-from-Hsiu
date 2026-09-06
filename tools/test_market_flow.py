@@ -11,8 +11,8 @@ import market_flow
 class MarketFlowTests(unittest.TestCase):
     def test_fetch_json_retries_truncated_official_response(self):
         response = MagicMock()
-        response.__enter__.return_value.read.return_value = b'{"ok": true}'
-        with patch.object(market_flow, "urlopen", side_effect=[OSError("truncated"), response]) as mocked, patch.object(
+        response.json.return_value = {"ok": True}
+        with patch.object(market_flow.requests, "request", side_effect=[OSError("truncated"), response]) as mocked, patch.object(
             market_flow, "sleep"
         ) as mocked_sleep:
             payload = market_flow._fetch_json("https://example.test/data")
@@ -151,6 +151,16 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(metrics["2330"], {"margin_balance_delta": 120, "short_margin_ratio_pct": 2.5})
         self.assertEqual(metrics["6488"], {"margin_balance_delta": -100, "short_margin_ratio_pct": 5.0})
 
+    def test_normalize_tpex_dated_margin_table(self):
+        payload = {"date": "20260904", "tables": [{
+            "fields": ["代號", "名稱", "前資餘額(張)", "資買", "資賣", "現償", "資餘額", "資屬證金", "資使用率(%)", "資限額", "前券餘額(張)", "券賣", "券買", "券償", "券餘額"],
+            "data": [["6488", "環球晶", "500", "1", "2", "0", "400", "0", "0", "0", "8", "1", "0", "0", "20"]],
+        }]}
+        rows = market_flow.normalize_tpex_margin_history_payload(payload)
+        self.assertEqual(rows[0]["trading_date"], "2026-09-04")
+        self.assertEqual(rows[0]["margin_balance_previous"], 500)
+        self.assertEqual(rows[0]["short_balance"], 20)
+
     def test_load_retail_weekly_metrics_uses_200_lot_or_less_ratio_reduction(self):
         payload = {
             "snapshots": [
@@ -251,20 +261,8 @@ class MarketFlowTests(unittest.TestCase):
                     "fields": detail_fields,
                     "data": [["2330", "台積電", "1200", "800", "400", "100", "50", "50", "-20", "430"]],
                 }
-            if url == market_flow.TPEX_URL:
-                return [{
-                    "Date": "20260807",
-                    "SecuritiesCompanyCode": "6488",
-                    "CompanyName": "環球晶",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-TotalBuy": "900",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-TotalSell": "1100",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-Difference": "-200",
-                    "SecuritiesInvestmentTrustCompanies-TotalBuy": "300",
-                    "SecuritiesInvestmentTrustCompanies-TotalSell": "100",
-                    "SecuritiesInvestmentTrustCompanies-Difference": "200",
-                    "Dealers-Difference": "10",
-                    "TotalDifference": "10",
-                }]
+            if url == market_flow.TPEX_HISTORY_URL:
+                return {"date": "20260807", "tables": [{"data": [["6488", "環球晶", "1", "2", "-1", "0", "0", "0", "900", "1100", "-200", "300", "100", "200", "0", "0", "0", "0", "0", "0", "10", "0", "10", "10"]]}]}
             if url == market_flow.TWSE_AMOUNT_URL:
                 if params["dayDate"] == "20260808":
                     return {"date": "", "fields": [], "data": []}
@@ -284,16 +282,11 @@ class MarketFlowTests(unittest.TestCase):
                         "data": [["2330", "台積電", "1", "2", "0", "1000", "1120", "0", "1", "2", "0", "20", "28"]],
                     }],
                 }
-            if url == market_flow.TPEX_MARGIN_URL:
-                return [{
-                    "Date": "20260807",
-                    "SecuritiesCompanyCode": "6488",
-                    "CompanyName": "環球晶",
-                    "MarginPurchaseBalancePreviousDay": "500",
-                    "MarginPurchaseBalance": "400",
-                    "ShortSaleBalancePreviousDay": "8",
-                    "ShortSaleBalance": "20",
-                }]
+            if url == market_flow.TPEX_MARGIN_HISTORY_URL:
+                return {"date": "20260807", "tables": [{
+                    "fields": ["代號", "名稱", "前資餘額(張)", "資買", "資賣", "現償", "資餘額", "資屬證金", "資使用率(%)", "資限額", "前券餘額(張)", "券賣", "券買", "券償", "券餘額"],
+                    "data": [["6488", "環球晶", "500", "0", "0", "0", "400", "0", "0", "0", "8", "0", "0", "0", "20"]],
+                }]}
             raise AssertionError(f"unexpected URL {url}")
 
         def fake_post(url, params, timeout=45):
@@ -340,11 +333,12 @@ class MarketFlowTests(unittest.TestCase):
         )
         with patch.object(market_flow, "collect", return_value=incomplete), patch.object(
             market_flow, "write_payload"
-        ) as mocked_write, patch("sys.argv", ["market_flow.py"]):
+        ) as mocked_write, patch.object(market_flow, "write_refresh_status") as mocked_status, patch("sys.argv", ["market_flow.py"]):
             result = market_flow.main()
 
-        self.assertEqual(result, 0)
+        self.assertEqual(result, 1)
         mocked_write.assert_not_called()
+        mocked_status.assert_called_once_with(incomplete, success=False)
 
 
 if __name__ == "__main__":
