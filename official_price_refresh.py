@@ -3,7 +3,9 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import re
+import tempfile
 import time
 from collections import defaultdict
 from datetime import date, datetime, timedelta, timezone
@@ -12,13 +14,20 @@ from typing import Any, Callable
 
 import requests
 
+from stock_v2_public.analysis.price_basis import PRICE_BASIS_MODE, price_basis_metadata, project_adjusted_rows
+
 
 TWSE_LATEST_URL = "https://openapi.twse.com.tw/v1/exchangeReport/STOCK_DAY_ALL"
 TPEX_LATEST_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_daily_close_quotes"
 TWSE_HISTORY_URL = "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX"
 TPEX_HISTORY_URL = "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
 USER_AGENT = "stock-from-Hsiu-official-price-refresh/1.0"
-CSV_FIELDS = ["date", "open", "high", "low", "close", "volume"]
+CSV_FIELDS = [
+    "date", "open", "high", "low", "close", "volume",
+    "raw_open", "raw_high", "raw_low", "raw_close", "raw_volume", "adjustment_factor",
+]
+TWSE_ACTIONS_URL = "https://www.twse.com.tw/rwd/zh/exRight/TWT49U"
+TPEX_ACTIONS_URL = "https://www.tpex.org.tw/www/zh-tw/bulletin/exDailyQ"
 RECOVERY_MIN_UNIQUE_IDS = {"twse": 800, "tpex": 600}
 RECOVERY_MIN_REFERENCE_RATIO = 0.99
 
@@ -346,6 +355,117 @@ def fetch_history_snapshot(query_date: date, fetch_json: Callable[..., Any] = _g
     return twse_rows + tpex_rows
 
 
+def _roc_date(value: date) -> str:
+    return f"{value.year - 1911:03d}/{value.month:02d}/{value.day:02d}"
+
+
+def normalize_twse_actions(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    fields = [str(field).strip() for field in payload.get("fields") or []]
+    required = {"資料日期", "股票代號", "除權息前收盤價", "除權息參考價", "權/息"}
+    if not required.issubset(fields):
+        raise RuntimeError("TWSE corporate-action schema mismatch")
+    ix = {field: fields.index(field) for field in required}
+    rows = []
+    for raw in payload.get("data") or []:
+        try:
+            event_date = source_date_to_iso(raw[ix["資料日期"]])
+            sid = str(raw[ix["股票代號"]]).strip()
+            previous = _number(raw[ix["除權息前收盤價"]])
+            reference = _number(raw[ix["除權息參考價"]])
+        except (IndexError, TypeError, ValueError):
+            continue
+        if event_date and re.fullmatch(r"\d{4}", sid) and previous > 0 and reference > 0:
+            rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
+                         "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "twse"})
+    return rows
+
+
+def normalize_tpex_actions(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    table = (payload.get("tables") or [None])[0]
+    if not isinstance(table, dict):
+        raise RuntimeError("TPEx corporate-action schema mismatch")
+    fields = [str(field).strip() for field in table.get("fields") or []]
+    required = {"除權息日期", "代號", "除權息前收盤價", "除權息參考價", "權/息"}
+    if not required.issubset(fields):
+        raise RuntimeError("TPEx corporate-action schema mismatch")
+    ix = {field: fields.index(field) for field in required}
+    rows = []
+    for raw in table.get("data") or []:
+        try:
+            event_date = source_date_to_iso(raw[ix["除權息日期"]])
+            sid = str(raw[ix["代號"]]).strip()
+            previous = _number(raw[ix["除權息前收盤價"]])
+            reference = _number(raw[ix["除權息參考價"]])
+        except (IndexError, TypeError, ValueError):
+            continue
+        if event_date and re.fullmatch(r"\d{4}", sid) and previous > 0 and reference > 0:
+            rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
+                         "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "tpex"})
+    return rows
+
+
+def fetch_corporate_actions(start: date, end: date, fetch_json: Callable[..., Any] = _get_json) -> list[dict[str, Any]]:
+    twse = fetch_json(TWSE_ACTIONS_URL, {"startDate": start.strftime("%Y%m%d"), "endDate": end.strftime("%Y%m%d"), "response": "json"})
+    tpex = fetch_json(TPEX_ACTIONS_URL, {"startDate": _roc_date(start), "endDate": _roc_date(end)})
+    if not isinstance(twse, dict) or not isinstance(tpex, dict):
+        raise RuntimeError("official corporate-action response is not JSON object data")
+    return normalize_twse_actions(twse) + normalize_tpex_actions(tpex)
+
+
+def default_partition_cache() -> Path:
+    base = Path(os.environ.get("LOCALAPPDATA") or tempfile.gettempdir())
+    return base / "stock-from-Hsiu" / "official-price-partitions-v1"
+
+
+def _validate_cached_partition(payload: dict[str, Any], query_date: date) -> list[dict[str, Any]]:
+    if payload.get("date") != query_date.isoformat() or payload.get("schema_version") != "1.0.0":
+        raise RuntimeError("cached partition date/schema mismatch")
+    twse = payload.get("twse")
+    tpex = payload.get("tpex")
+    if not isinstance(twse, list) or not isinstance(tpex, list):
+        raise RuntimeError("cached partition markets are missing")
+    if bool(twse) != bool(tpex):
+        raise RuntimeError("cached partition markets do not align")
+    partition_security_ids(twse, "cached TWSE")
+    partition_security_ids(tpex, "cached TPEx")
+    minimum = payload.get("minimum_unique_ids") or RECOVERY_MIN_UNIQUE_IDS
+    if twse or tpex:
+        counts = {"twse": len(partition_security_ids(twse, "cached TWSE")),
+                  "tpex": len(partition_security_ids(tpex, "cached TPEx"))}
+        if any(counts[market] < int(minimum[market]) for market in ("twse", "tpex")):
+            raise RuntimeError(f"cached partition market coverage is incomplete: counts={counts}, minimum={minimum}")
+    for market, rows in (("twse", twse), ("tpex", tpex)):
+        if any(row.get("date") != query_date.isoformat() or row.get("market") not in (None, market) for row in rows):
+            raise RuntimeError(f"cached {market} partition is not exact-date data")
+    return twse + tpex
+
+
+def cached_history_snapshot(
+    query_date: date,
+    *,
+    cache_dir: Path,
+    fetch_partitions: Callable[[date], tuple[list[dict[str, Any]], list[dict[str, Any]]]] = fetch_history_partitions,
+    minimum_unique_ids: dict[str, int] | None = None,
+) -> list[dict[str, Any]]:
+    path = cache_dir / f"{query_date.isoformat()}.json"
+    try:
+        twse, tpex = fetch_partitions(query_date)
+    except Exception:
+        if not path.exists():
+            raise
+        return _validate_cached_partition(json.loads(path.read_text(encoding="utf-8")), query_date)
+    payload = {"schema_version": "1.0.0", "date": query_date.isoformat(),
+               "minimum_unique_ids": minimum_unique_ids or RECOVERY_MIN_UNIQUE_IDS,
+               "twse": [{**row, "market": "twse"} for row in twse],
+               "tpex": [{**row, "market": "tpex"} for row in tpex]}
+    _validate_cached_partition(payload, query_date)
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    os.replace(temporary, path)
+    return payload["twse"] + payload["tpex"]
+
+
 def _read_existing(path: Path) -> list[dict[str, str]]:
     if not path.exists():
         return []
@@ -380,9 +500,89 @@ def merge_price_rows(price_dir: Path, stock_ids: set[str], rows: list[dict[str, 
     return len(grouped)
 
 
+def write_adjusted_price_rows(
+    price_dir: Path,
+    basis_dir: Path,
+    stock_ids: set[str],
+    raw_rows: list[dict[str, Any]],
+    actions: list[dict[str, Any]],
+    *,
+    adjustment_as_of: str,
+    rebuild: bool,
+) -> tuple[int, dict[str, dict[str, Any]]]:
+    """Write projected files only after every input row has been validated."""
+    grouped: dict[str, dict[str, dict[str, Any]]] = defaultdict(dict)
+    if not rebuild:
+        for sid in stock_ids:
+            existing = _read_existing(price_dir / f"{sid}.csv")
+            if existing and not set(CSV_FIELDS).issubset(existing[0]):
+                raise RuntimeError(f"legacy or mixed price cache requires --rebuild-history: {sid}")
+            for row in existing:
+                grouped[sid][row["date"]] = {
+                    "date": row["date"], "stock_id": sid,
+                    "open": row["raw_open"], "high": row["raw_high"], "low": row["raw_low"],
+                    "close": row["raw_close"], "volume": row["raw_volume"],
+                }
+    for row in raw_rows:
+        sid = str(row.get("stock_id") or "")
+        if sid in stock_ids:
+            grouped[sid][str(row["date"])] = row
+    flattened = [row for sid in grouped for row in grouped[sid].values()]
+    projected = project_adjusted_rows(flattened, actions, adjustment_as_of=adjustment_as_of)
+    projected_by_stock: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in projected:
+        projected_by_stock[row["stock_id"]].append(row)
+    if not projected_by_stock:
+        return 0, {}
+    if rebuild:
+        missing = sorted(sid for sid in stock_ids if (price_dir / f"{sid}.csv").exists() and sid not in projected_by_stock)
+        if missing:
+            raise RuntimeError(f"official rebuild would leave legacy price files untouched: count={len(missing)}, sample={missing[:10]}")
+
+    price_dir.parent.mkdir(parents=True, exist_ok=True)
+    price_dir.mkdir(parents=True, exist_ok=True)
+    basis_dir.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix="price-basis-stage-", dir=str(price_dir.parent)))
+    metadata: dict[str, dict[str, Any]] = {}
+    try:
+        for sid, stock_rows in projected_by_stock.items():
+            with (stage / f"{sid}.csv").open("w", encoding="utf-8", newline="") as handle:
+                writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS)
+                writer.writeheader()
+                writer.writerows({field: row[field] for field in CSV_FIELDS} for row in stock_rows)
+            metadata[sid] = price_basis_metadata(stock_id=sid, adjustment_as_of=adjustment_as_of, actions=actions)
+        for staged in stage.glob("*.csv"):
+            os.replace(staged, price_dir / staged.name)
+        for sid, item in metadata.items():
+            target = basis_dir / f"{sid}.json"
+            temporary = target.with_suffix(".tmp")
+            temporary.write_text(json.dumps(item, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            os.replace(temporary, target)
+    finally:
+        try:
+            stage.rmdir()
+        except OSError:
+            pass
+    return len(projected_by_stock), metadata
+
+
 def _last_csv_date(path: Path) -> str:
     rows = _read_existing(path)
     return max((str(row.get("date") or "") for row in rows), default="")
+
+
+def earliest_existing_raw_date(price_dir: Path, stock_ids: set[str]) -> date | None:
+    earliest: str | None = None
+    for sid in stock_ids:
+        rows = _read_existing(price_dir / f"{sid}.csv")
+        if not rows:
+            continue
+        if not set(CSV_FIELDS).issubset(rows[0]):
+            raise RuntimeError(f"legacy or mixed price cache requires --rebuild-history: {sid}")
+        candidate = min((str(row.get("date") or "") for row in rows if row.get("date")), default="")
+        if candidate and (earliest is None or candidate < earliest):
+            earliest = candidate
+    return date.fromisoformat(earliest) if earliest else None
 
 
 def load_previous_summary(path: Path) -> dict[str, Any]:
@@ -418,6 +618,10 @@ def refresh_official_prices(
     overlap_days: int = 7,
     fetch_latest: Callable[..., tuple] = fetch_latest_snapshot,
     fetch_history: Callable[[date], list[dict[str, Any]]] = fetch_history_snapshot,
+    rebuild_history_start: date | None = None,
+    partition_cache_dir: Path | None = None,
+    price_basis_dir: Path | None = None,
+    fetch_actions: Callable[[date, date], list[dict[str, Any]]] | None = None,
 ) -> dict[str, Any]:
     if not stock_ids:
         raise RuntimeError("official price refresh has an empty stock universe")
@@ -437,7 +641,7 @@ def refresh_official_prices(
         raise RuntimeError(f"official latest price provider returned {len(latest_result)} fields; expected 3 or 4")
     latest_date = date.fromisoformat(latest_iso)
     previous = load_previous_summary(summary_path)
-    start_date = choose_start_date(
+    start_date = rebuild_history_start or choose_start_date(
         latest_date,
         previous,
         initial_days=initial_days,
@@ -450,7 +654,10 @@ def refresh_official_prices(
     query_date = start_date
     while query_date < latest_date:
         try:
-            rows = fetch_history(query_date)
+            if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
+                rows = cached_history_snapshot(query_date, cache_dir=partition_cache_dir or default_partition_cache())
+            else:
+                rows = fetch_history(query_date)
         except Exception as exc:
             warnings.append(f"{query_date.isoformat()}: {exc}")
             rows = []
@@ -470,7 +677,16 @@ def refresh_official_prices(
     latest_matched_ids = {row["stock_id"] for row in latest_rows if row["stock_id"] in stock_ids}
     if not latest_matched_ids:
         raise RuntimeError("official latest price snapshot matched zero configured stocks")
-    written_files = merge_price_rows(price_dir, stock_ids, all_rows)
+    action_start = rebuild_history_start or earliest_existing_raw_date(price_dir, stock_ids) or start_date
+    if fetch_actions is None:
+        actions = fetch_corporate_actions(action_start, latest_date) if fetch_latest is fetch_latest_snapshot else []
+    else:
+        actions = fetch_actions(action_start, latest_date)
+    written_files, basis_by_stock = write_adjusted_price_rows(
+        price_dir, price_basis_dir or price_dir.parent / "price_basis", stock_ids, all_rows, actions,
+        adjustment_as_of=latest_iso,
+        rebuild=rebuild_history_start is not None,
+    )
     if written_files == 0:
         raise RuntimeError("official price refresh wrote zero files")
 
@@ -484,13 +700,15 @@ def refresh_official_prices(
         )
 
     summary = {
-        "schema_version": "1.1.0",
+        "schema_version": "2.0.0",
         "source": "official_twse_tpex",
         "source_urls": {
             "twse_latest": TWSE_LATEST_URL,
             "tpex_latest": TPEX_LATEST_URL,
             "twse_history": TWSE_HISTORY_URL,
             "tpex_history": TPEX_HISTORY_URL,
+            "twse_corporate_actions": TWSE_ACTIONS_URL,
+            "tpex_corporate_actions": TPEX_ACTIONS_URL,
         },
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "query_start_date": start_date.isoformat(),
@@ -501,6 +719,14 @@ def refresh_official_prices(
         "latest_partition_rows": latest_partition_counts,
         "latest_matched_stocks": len(latest_matched_ids),
         "written_files": written_files,
+        "price_basis": {
+            "mode": PRICE_BASIS_MODE,
+            "adjustment_as_of": latest_iso,
+            "volume_basis": "official_raw_shares",
+            "raw_columns": ["raw_open", "raw_high", "raw_low", "raw_close", "raw_volume"],
+            "factor_column": "adjustment_factor",
+            "verified_stock_count": len(basis_by_stock),
+        },
         "history_warning_count": len(warnings),
         "history_warnings": warnings[:20],
         "status": "fresh",

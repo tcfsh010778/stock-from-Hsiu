@@ -12,6 +12,7 @@ pipeline, but the price refresh entry point does not require a token or paid
 subscription.
 """
 
+import argparse
 import csv
 import json
 import os
@@ -355,6 +356,21 @@ def write_margin_csv(stock_id: str, rows: list[dict]) -> None:
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Refresh official raw and adjusted OHLCV prices.")
+    parser.add_argument("--rebuild-history", action="store_true", help="discard legacy/mixed rows and rebuild official history")
+    parser.add_argument("--history-start", help="first rebuild date (YYYY-MM-DD)")
+    parser.add_argument("--partition-cache", type=Path, help="external resumable exact-date partition cache")
+    args = parser.parse_args()
+    if args.history_start and not args.rebuild_history:
+        parser.error("--history-start requires --rebuild-history")
+    rebuild_start = None
+    if args.rebuild_history:
+        if not args.history_start:
+            parser.error("--rebuild-history requires --history-start")
+        try:
+            rebuild_start = date.fromisoformat(args.history_start)
+        except ValueError:
+            parser.error("--history-start must be YYYY-MM-DD")
     months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
     scope = os.environ.get("V44_REFRESH_SCOPE", "latest").strip().lower()
     stock_ids = collect_stock_ids()
@@ -367,6 +383,8 @@ def main() -> None:
         summary_path=PRICE_REFRESH_SUMMARY_PATH,
         initial_days=initial_days,
         overlap_days=overlap_days,
+        rebuild_history_start=rebuild_start,
+        partition_cache_dir=args.partition_cache,
     )
     print(
         "[refresh_prices] official prices "
