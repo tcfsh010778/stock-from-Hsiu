@@ -97,6 +97,9 @@ jobs:
       - name: Generate weekly major-holder risers
         run: python weekly_holder_risers.py --limit 50
 
+      - name: Generate independent routes and human review changes
+        run: python build_review_data.py
+
       - name: Generate static site
         run: python generate_site.py
 
