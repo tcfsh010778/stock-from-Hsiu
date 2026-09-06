@@ -75,8 +75,10 @@ jobs:
       - shell: python
         run: |
           import subprocess
+          import sys
           import tempfile
           from pathlib import Path
+          sys.path.insert(0, str(Path.cwd()))
           from stock_v2_public.site import V2_JS
           with tempfile.TemporaryDirectory() as folder:
               path = Path(folder) / "v2.js"
