@@ -4,6 +4,9 @@ Last updated: 2026-09-06
 
 ## 2026-09-06 Independent routes and human review homepage
 
+- Release evidence: public PR 34 merged as 484ba0c9f71eddf6befd42dff6bb70ca751ac8aa; Pages run 34033628759 succeeded and main CI passed. Deployed-commit HTML/assets/JSON blobs match locally verified artifacts. Direct public HTTP/browser reads timed out on this machine, so remote browser QA is not claimed.
+- Follow-up: dedicated publication checkout uses depth 1; a full-history checkout was unnecessary and delayed the first scheduled-writer run.
+
 - User authorized implementation and publication, coordinated in private Issue 33. This supersedes the older SFZ-then-MDA homepage direction for this feature.
 - SFZ scans independent common-stock histories; canonical implementation is private PR 15, mirrored source 1a6c8387bc121e93f063439807f774cbe66e5a4b. MDA eligibility and existing action/exit rules remain unchanged.
 - `build_review_data.py` produces independent SFZ observations and `review_queue.py` compares durable route state. One card per stock, separate reasons/conflicts, no composite score. First baseline, source recovery and rule changes do not fabricate alerts; stale or missing evidence suppresses alerts.

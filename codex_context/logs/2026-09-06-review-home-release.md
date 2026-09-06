@@ -9,4 +9,3 @@
 - DATA LIMITATION: expected session 2026-09-04, MDA legacy data 2026-09-03. All 1,985 price histories lack complete verified adjusted-price metadata; 960 historical MDA candidates remain in the pool, with zero current alerts. This release does not claim to fix historical depth/latest data or implement AI POC. TWSE HTTP 428 repair remains separate; prior draft PR 33 is not merged.
 - SFZ thresholds are an explicitly documented engineering v1 interpretation, not a complete textbook formula. See SFZ_REVIEW_RULES.md and the public review-rules page.
 - Rollback UI via reverting this feature merge; preserve durable review state and do not promote unverified legacy prices. See codex_context/logs/2026-09-06-review-home-release.md.
-
