@@ -41,6 +41,17 @@ class OfficialPriceRefreshTest(unittest.TestCase):
                     minimum_unique_ids={"twse": 1, "tpex": 1},
                 )
 
+    def test_cached_history_rejects_digest_valid_invalid_ohlcv(self) -> None:
+        day = date(2026, 8, 7)
+        payload = {
+            "schema_version": "1.0.0", "date": day.isoformat(),
+            "twse": [{"date": day.isoformat(), "stock_id": "2330", "open": 100, "high": 90, "low": 99, "close": 101, "volume": 1000, "market": "twse"}],
+            "tpex": [{"date": day.isoformat(), "stock_id": "8069", "open": 50, "high": 52, "low": 49, "close": 51, "volume": 2000, "market": "tpex"}],
+        }
+        payload["sha256"] = prices._partition_digest(payload)
+        with self.assertRaisesRegex(RuntimeError, "invalid OHLCV"):
+            prices._validate_cached_partition(payload, day, {"twse": 1, "tpex": 1})
+
     def test_history_rejects_two_malformed_empty_payloads(self) -> None:
         with self.assertRaisesRegex(RuntimeError, "not a recognized joint market closure"):
             prices.fetch_history_partitions(date(2026, 8, 7), lambda *_args, **_kwargs: {})

@@ -463,6 +463,14 @@ def _validate_cached_partition(payload: dict[str, Any], query_date: date, minimu
     for market, rows in (("twse", twse), ("tpex", tpex)):
         if any(row.get("date") != query_date.isoformat() or row.get("market") not in (None, market) for row in rows):
             raise RuntimeError(f"cached {market} partition is not exact-date data")
+        for row in rows:
+            validated = _price_row(
+                trading_date=query_date.isoformat(), stock_id=row.get("stock_id"),
+                open_value=row.get("open"), high_value=row.get("high"), low_value=row.get("low"),
+                close_value=row.get("close"), volume_value=row.get("volume"),
+            )
+            if validated is None:
+                raise RuntimeError(f"cached {market} partition contains invalid OHLCV")
     return twse + tpex
 
 
