@@ -318,6 +318,11 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     (asset_dir / "v2.js").write_text(V2_JS + "\n", encoding="utf-8")
 
     target_ids = set(stock_map) if all_stocks else set(decisions)
+    review_path = data_dir / "sfz_technical_candidates.json"
+    if review_path.exists():
+        review = json.loads(review_path.read_text(encoding="utf-8"))
+        target_ids.update(str(row["stock_id"]) for row in review.get("stocks", [])
+                          if row.get("candidate") or row.get("stage") in {"box_forming", "breakout_wait_retest", "retest_confirmed"})
     if only:
         target_ids = set(only)
     target_ids &= set(stock_map)

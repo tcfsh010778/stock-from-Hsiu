@@ -61,6 +61,8 @@ MARKET_CACHE_PATH = LOCAL_DATA_DIR / "stock_markets.json"
 INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 PUBLIC_DATA_FILES = [
     SFZ_ALL_PATH,
+    LOCAL_DATA_DIR / "review_queue.json",
+    LOCAL_DATA_DIR / "sfz_technical_candidates.json",
     MARKET_SENTIMENT_PATH,
     CARYBOT_SIGNALS_PATH,
     BACKTEST_DASHBOARD_PATH,
@@ -1012,7 +1014,7 @@ def nav_html(active: str = "home", prefix: str = "") -> str:
         ("home",      "index.html",     "首頁"),
         ("flow",      "institutional-flow.html", "法人排行"),
         ("holders",   "holder-risers.html", "大戶股權"),
-        ("selection", "selection.html", "選股池"),
+        ("selection", "review-pool.html", "觀察池"),
         ("mda",       "mda.html",       "M大觀察"),
         ("timing",    "timing.html",    "買賣時機"),
         ("stocks",    "stocks.html",    "個股查詢"),
@@ -5885,26 +5887,35 @@ def build_sector_heat_widget(stocks: list[dict], top_n: int = 8) -> str:
 
 
 def build_index_page(reports: list[dict]) -> str:
+    from review_home import body
     latest = latest_stock_report(reports)
     latest_stocks = with_report_date(latest.get("stocks", []), latest.get("date", ""))
-    date_str = latest.get("date", "─")
+    context = f"""<div class="container"><details class="review-method"><summary>市場背景與其他分析</summary>
+      {HOME_MARKET_FLOW_START}
+      {build_daily_market_flow_panel(load_daily_market_flow_payload())}
+      {HOME_MARKET_FLOW_END}
+      {build_market_sentiment_panel(load_market_sentiment_payload())}
+      {build_sector_heat_widget(latest_stocks)}
+      <p><a href="selection.html">既有選股分析頁</a> · <a href="institutional-flow.html">法人排行</a> · <a href="holder-risers.html">大戶股權</a></p>
+    </details></div>"""
+    return review_html_page("人工複判首頁", "home", body() + context)
 
-    body = f"""
-<div class="container">
-  <div class="page-title">Stockfrom脩 量化選股站</div>
-  <div class="page-sub">今日工作台：先看決策狀態、官方風險與市場流向，再回到個股證據。最新報告：{date_str}</div>
-  {build_daily_decisions_panel(load_daily_decisions_payload())}
-  {HOME_MARKET_FLOW_START}
-  {build_daily_market_flow_panel(load_daily_market_flow_payload())}
-  {HOME_MARKET_FLOW_END}
-  {build_market_sentiment_panel(load_market_sentiment_payload())}
-  {build_sector_heat_widget(latest_stocks)}
-  {build_today_action_card(latest_stocks, date_str)}
-  {build_top5_card(latest_stocks)}
-</div>
-{disclaimer_modal_html()}"""
 
-    return html_page("首頁", "home", body)
+def review_html_page(title: str, active: str, content: str) -> str:
+    page = html_page(title, active, content)
+    links = [("home", "index.html", "複判首頁"), ("selection", "review-pool.html", "觀察池"),
+             ("stocks", "stocks.html", "個股查詢"), ("history", "history.html", "歷史分析")]
+    nav = '<nav><span class="nav-brand">Stockfrom脩</span>' + ''.join(
+        f'<a class="tab {"active" if key == active else ""}" href="{href}">{label}</a>'
+        for key, href, label in links) + '</nav>'
+    return "\n".join(line.rstrip() for line in page.replace(nav_html(active), nav, 1).splitlines()) + "\n"
+
+
+def write_review_pages(reports: list[dict]) -> None:
+    from review_home import body, write_assets, RULES
+    write_assets(OUTPUT_DIR)
+    (OUTPUT_DIR / "review-pool.html").write_text(review_html_page("兩路徑觀察池", "selection", body()), encoding="utf-8")
+    (OUTPUT_DIR / "review-rules.html").write_text(review_html_page("判讀規則", "home", '<link rel="stylesheet" href="css/review-home.css">' + RULES), encoding="utf-8")
 
 
 def _m_check(text: str, cls: str = "") -> str:
@@ -10577,6 +10588,7 @@ def build_timing_page(reports: list[dict]) -> str:
 def main():
     import sys
     sys.stdout.reconfigure(encoding="utf-8")
+    review_only = "--review-only" in sys.argv[1:]
     holder_only = "--holder-only" in sys.argv[1:]
     flow_only = "--flow-only" in sys.argv[1:]
     print("[Stockfrom] Site Generator v1.0", flush=True)
@@ -10584,6 +10596,16 @@ def main():
     print(f"   Output:  {OUTPUT_DIR}", flush=True)
 
     (OUTPUT_DIR / "daily").mkdir(parents=True, exist_ok=True)
+    if review_only:
+        reports = json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8-sig")) if REPORTS_CACHE_PATH.exists() else []
+        if reports:
+            set_site_latest_report_date(reports)
+        publish_data_assets([LOCAL_DATA_DIR / "review_queue.json", LOCAL_DATA_DIR / "sfz_technical_candidates.json"])
+        write_review_pages(reports)
+        (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
+        print("[OK] review homepage, pool, rules and datasets")
+        return
+
     if flow_only:
         public_data = publish_data_assets([DAILY_MARKET_FLOW_PATH, FRESHNESS_MANIFEST_PATH])
         if public_data:
@@ -10631,6 +10653,7 @@ def main():
     set_site_latest_report_date(reports)
 
     print("\n[Build] Generating pages...", flush=True)
+    write_review_pages(reports)
     (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
     print("   [OK] index.html", flush=True)
     (OUTPUT_DIR / "institutional-flow.html").write_text(build_institutional_flow_page(), encoding="utf-8")
