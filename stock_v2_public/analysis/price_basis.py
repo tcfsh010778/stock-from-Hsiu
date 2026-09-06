@@ -108,6 +108,7 @@ def price_basis_metadata(*, stock_id: str, adjustment_as_of: str, actions: Itera
         if row["stock_id"] == str(stock_id) and row["date"] <= _iso(adjustment_as_of)
     ]
     return {
+        "stock_id": str(stock_id),
         "mode": PRICE_BASIS_MODE,
         "source": "TWSE TWT49U / TPEx exDailyQ official reference prices",
         "verified": True,

@@ -36,6 +36,7 @@ STOCK_PAGE_HTML = r'''<!doctype html>
       <button class="tab active" data-pane="overview">總覽</button>
       <button class="tab" data-pane="technical-evidence">技術證據</button>
       <button class="tab" data-pane="trend">A｜趨勢</button>
+      <button class="tab" data-pane="volume-profile">成交量分布</button>
       <button class="tab" data-pane="chips">B｜籌碼</button>
       <button class="tab" data-pane="plan">C｜情境計畫</button>
       <button class="tab" data-pane="patterns">型態證據</button>
@@ -67,10 +68,32 @@ STOCK_PAGE_HTML = r'''<!doctype html>
 
     <section id="trend" class="pane card">
       <div class="section-head"><div><div class="eyebrow">A · PRICE STRUCTURE</div><h2>K 線、支撐壓力與自動趨勢線</h2></div><div id="timeframes" class="tools"></div></div>
-      <div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button></div>
+      <div class="tools layers"><button class="layer active" data-layer="candles">K 線</button><button class="layer active" data-layer="patterns">型態</button><button class="layer active" data-layer="zones">支撐壓力</button><button class="layer active" data-layer="lines">趨勢線</button><button class="layer active" data-layer="mas">均線</button></div>
+      <div id="ma-status" class="notice"></div>
       <svg id="chart" viewBox="0 0 1120 520" role="img" aria-label="K 線與自動趨勢線"></svg>
       <div id="chart-detail" class="detail">點擊趨勢線可查看端點、接觸次數與品質分數。</div>
       <div id="line-list" class="grid"></div>
+    </section>
+
+    <section id="volume-profile" class="pane card">
+      <div class="section-head"><div><div class="eyebrow">FIXED RANGE VOLUME PROFILE</div><h2>固定區間・逐價成交量分布</h2></div></div>
+      <p class="notice">選取固定期間，觀察成交密集價格與價值區。分鐘 K 為推估；逐筆 CSV 可依成交價累積。POC 不是自動支撐線。</p>
+      <div class="tools vp-controls">
+        <label>價格口徑 <select id="vp-price-mode"><option value="raw">原始成交價</option><option value="adjusted">還原權息（需已驗證日 K）</option></select></label>
+        <label>起日 <input id="vp-start" type="date"></label><label>迄日 <input id="vp-end" type="date"></label>
+        <label>價格分箱 <input id="vp-bins" type="number" min="8" max="120" value="32"></label>
+        <label>價值區 % <input id="vp-va" type="number" min="1" max="100" value="70"></label>
+        <button id="vp-export" class="latest-btn">匯出分布 JSON</button>
+      </div>
+      <p id="vp-status" class="method-note" role="status"></p>
+      <svg id="vp-chart" viewBox="0 0 1120 480" role="img" aria-label="固定區間 K 線與橫向成交量分布"></svg>
+      <p id="vp-values" class="notice"></p><p id="vp-coverage" class="method-note"></p>
+      <details><summary>匯入本機分鐘／逐筆 CSV</summary>
+        <p>僅在此瀏覽器計算，不會上傳。成交量單位為股，價格使用原始成交價；選擇還原權息時，系統依已驗證日 K 因子轉換。</p>
+        <label>CSV 類型 <select id="vp-kind"><option value="minute">分鐘 K</option><option value="ticks">逐筆成交</option></select></label>
+        <label>CSV 檔案 <input id="vp-file" type="file" accept=".csv,text/csv"></label>
+        <p class="muted">分鐘：timestamp,open,high,low,close,volume；逐筆：timestamp,price,volume。時間須含時分秒，未附時區視為台北時間；每列必須加 stock_id 核對股票。</p>
+      </details>
     </section>
 
     <section id="chips" class="pane card">
@@ -98,6 +121,8 @@ STOCK_PAGE_HTML = r'''<!doctype html>
   </div>
 </main>
 <script src="https://unpkg.com/lightweight-charts@5.2.0/dist/lightweight-charts.standalone.production.js"></script>
+<script src="assets/volume_profile.js"></script>
+<script src="assets/volume_profile_ui.js"></script>
 <script src="assets/v2.js"></script>
 </body></html>
 '''
@@ -113,9 +138,11 @@ V2_JS = r'''(()=>{"use strict";
 const q=new URLSearchParams(location.search),id=(q.get("id")||"").replace(/[^0-9A-Za-z]/g,"");
 const $=s=>document.querySelector(s),all=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const fmt=(v,d=2)=>Number.isFinite(Number(v))?Number(v).toLocaleString("zh-TW",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
+const fmt=(v,d=2)=>v!=null&&v!==""&&Number.isFinite(Number(v))?Number(v).toLocaleString("zh-TW",{minimumFractionDigits:d,maximumFractionDigits:d}):"—";
 let packets=[],active=null,chartsReady=false,chartEntries=[];
-const layers={candles:true,patterns:true,zones:true,lines:true};
+const layers={candles:true,patterns:true,zones:true,lines:true,mas:true};
+const maColors={sma5:"#e2e8f0",sma20:"#f6c453",sma60:"#4da3ff",sma120:"#b98cff",sma240:"#2dd4bf"};
+const finite=v=>v!==null&&v!==undefined&&Number.isFinite(Number(v));
 const gapNames={institutional:"三大法人",foreign_ownership:"外資持股",margin:"融資融券",holdings:"股東結構"};
 function err(msg){$("#loading").classList.add("error");$("#loading").textContent=msg}
 if(!id){err("網址缺少股票代號。");return}
@@ -126,6 +153,7 @@ Promise.all([
   packets=p;active=p.find(x=>x.timeframe==="daily")||p[0];if(!active)throw Error("分析資料為空");
   const meta=index.stocks?.[id]||{};renderHeader(meta);renderTabs();renderTimeframes();renderOverview();renderTechnicalEvidence();renderTechnicalPatterns();renderPlan();renderPatterns();drawTrend();renderChipStatus();
   $("#legacy-link").href=`../stocks/${id}.html`;$("#loading").hidden=true;$("#app").hidden=false;
+  window.dispatchEvent(new CustomEvent("stock-packets-ready",{detail:packets}));
 }).catch(e=>err(`V2 載入失敗：${e.message}`));
 
 function daily(){return packets.find(x=>x.timeframe==="daily")||packets[0]}
@@ -146,7 +174,7 @@ function warningText(value){
 function renderHeader(meta){
   const d=daily(),row=latest(),rows=d.series||[],prev=rows.length>1?rows[rows.length-2]:null,change=prev&&Number(prev.close)?(Number(row.close)/Number(prev.close)-1)*100:null;
   document.title=`${id} ${meta.name||""}｜Stock from Hsiu V2`;$("#stock-title").textContent=`${id} ${meta.name||""}`;
-  $("#meta").innerHTML=`<span>資料 ${esc(d.data_date)}</span><span>引擎 ${esc(d.engine_version)}</span><span>品質 ${esc(d.freshness?.status||"unknown")}</span>`;
+  $("#meta").innerHTML=`<span>${d.price_adjustment?.verified?"官方參考比率還原價":"價格口徑未驗證"}</span><span>資料 ${esc(d.data_date)}</span><span>引擎 ${esc(d.engine_version)}</span><span>品質 ${esc(d.freshness?.status||"unknown")}</span>`;
   $("#latest-price").textContent=fmt(row.close);$("#latest-date").textContent=row.date||"";$("#support-price").textContent=zoneText(nearest("support"));$("#resistance-price").textContent=zoneText(nearest("resistance"));
   $("#stop-price").textContent=fmt(d.risk_control?.stop_price);const ce=$("#change");ce.textContent=change==null?"":`${change>=0?"+":""}${change.toFixed(2)}%`;ce.className=`change ${change>=0?"up":"down"}`;
   const warnings=[...new Set([...(d.warnings||[]),...((d.freshness||{}).warnings||[])])].map(warningText);$("#warnings").innerHTML=(warnings.length?warnings:["目前沒有額外資料警示。"] ).map(x=>`<li>${esc(x)}</li>`).join("");
@@ -219,11 +247,13 @@ function renderPatterns(){
   $("#pattern-list").innerHTML=items.length?items.map(event=>`<article class="mini annotation-note"><span class="tag">${esc(event.bar_date)} · 日 K 已收盤</span><h3>${esc(event.label_zh)}</h3><p>${esc(annotationSummary(event))}</p><p class="muted">資料 ${esc(daily().candlestick_annotations?.as_of||"")} · config ${esc(daily().candlestick_annotations?.pattern_config_version||"")}</p></article>`).join(""):"<p class=muted>目前沒有近期日 K 型態註記。</p>";
 }
 function drawTrend(){
-  const root=$("#chart");if(!root)return;root.replaceChildren();const rows=(active.series||[]).slice(-120);if(!rows.length)return;
-  const width=1120,height=520,padding={l:62,r:65,t:18,b:35},minimum=Math.min(...rows.map(row=>row.low)),maximum=Math.max(...rows.map(row=>row.high)),span=Math.max(.001,maximum-minimum),xIndex=index=>padding.l+index/Math.max(1,rows.length-1)*(width-padding.l-padding.r),y=value=>padding.t+(maximum-value)/span*(height-padding.t-padding.b),indexByDate=new Map(rows.map((row,index)=>[row.date,index]));
+  const root=$("#chart");if(!root)return;root.replaceChildren();const rows=(active.series||[]);if(!rows.length)return;
+  const width=1120,height=520,padding={l:62,r:65,t:18,b:35},minimum=Math.min(...rows.map(row=>row.low),...(layers.mas?rows.flatMap(row=>Object.keys(maColors).map(k=>row[k]).filter(finite)):[])),maximum=Math.max(...rows.map(row=>row.high),...(layers.mas?rows.flatMap(row=>Object.keys(maColors).map(k=>row[k]).filter(finite)):[])),span=Math.max(.001,maximum-minimum),xIndex=index=>padding.l+index/Math.max(1,rows.length-1)*(width-padding.l-padding.r),y=value=>padding.t+(maximum-value)/span*(height-padding.t-padding.b),indexByDate=new Map(rows.map((row,index)=>[row.date,index]));
   for(let grid=0;grid<=5;grid++){const price=minimum+span*grid/5,yy=y(price);root.append(svg("line",{x1:padding.l,x2:width-padding.r,y1:yy,y2:yy,stroke:"#202a3a"}));const label=svg("text",{x:width-padding.r+8,y:yy+4,class:"axis"});label.textContent=price.toFixed(2);root.append(label)}
   if(layers.zones)(active.support_resistance||[]).slice(0,9).forEach(zone=>root.append(svg("rect",{x:padding.l,y:y(zone.price_high),width:width-padding.l-padding.r,height:Math.max(2,y(zone.price_low)-y(zone.price_high)),fill:zone.kind==="support"?"#26a69a":"#ef5350",class:"zone"})));
   if(layers.candles)rows.forEach((row,index)=>{const xx=xIndex(index),color=row.close>=row.open?"#ef5350":"#26a69a";root.append(svg("line",{x1:xx,x2:xx,y1:y(row.high),y2:y(row.low),stroke:color}));root.append(svg("rect",{x:xx-2.8,y:y(Math.max(row.open,row.close)),width:5.6,height:Math.max(1,Math.abs(y(row.open)-y(row.close))),fill:color}))});
+  const last=rows.at(-1);$("#ma-status").innerHTML=Object.entries(maColors).map(([key,color])=>`<span style="color:${color}">MA${key.slice(3)} ${finite(last[key])?fmt(last[key]):"資料不足"}</span>`).join("　")+` · ${esc(active.series_coverage?.message||"")} · ${rows.length} 根${active.timeframe==="daily"?"日":""} K`;
+  if(layers.mas)Object.entries(maColors).forEach(([key,color])=>{let path="",connected=false;rows.forEach((row,index)=>{if(!finite(row[key])){connected=false;return;}path+=`${connected?"L":"M"}${xIndex(index)},${y(row[key])} `;connected=true;});if(path)root.append(svg("path",{d:path,fill:"none",stroke:color,"stroke-width":1.6,"data-ma":key}));});
   if(layers.patterns){
     visibleAnnotationGroups(active).forEach(group=>{const index=indexByDate.get(group.date);if(index===undefined)return;const row=rows[index],mark=svg("text",{x:xIndex(index)-5,y:y(row.high)-7,fill:markerColor(group.primary),class:"mark"});mark.textContent=`◆${group.events.length>1?`+${group.events.length-1}`:""}`;const title=svg("title");title.textContent=group.events.map(annotationSummary).join("\n");mark.append(title);root.append(mark)});
     (active.patterns||[]).slice(0,8).forEach(item=>{const index=indexByDate.get(item.end_date);if(index===undefined)return;const row=rows[index],mark=svg("text",{x:xIndex(index)-5,y:y(row.low)+17,fill:"#f6c453",class:"mark"});mark.textContent="●";const title=svg("title");title.textContent=`${item.name}｜${item.status}｜${item.quality_score}`;mark.append(title);root.append(mark)});
@@ -234,22 +264,23 @@ function drawTrend(){
 function panel(title,note,height=210,master=false){const wrap=document.createElement("section");wrap.className="tv-panel";wrap.innerHTML=`<div class="tv-panel-head"><b>${title}</b><small>${note}</small>${master?'<button class="latest-btn" type="button">最新</button>':""}</div><div class="tv-chart" style="height:${height}px"></div>`;$("#chip-workbench").append(wrap);return wrap.querySelector(".tv-chart")}
 function wireCharts(){
   chartEntries.forEach((entry,index)=>{entry.chart.subscribeCrosshairMove(param=>{const time=typeof param?.time==="string"?param.time:param?.time;if(time)$("#crosshair-date").textContent=String(time)});if(index>0)entry.chart.timeScale().fitContent()});
-  const rows=daily().series||[];if(rows.length){const from=rows[Math.max(0,rows.length-120)].date,to=rows[rows.length-1].date;try{chartEntries[0].chart.timeScale().setVisibleRange({from,to})}catch(_){chartEntries[0].chart.timeScale().fitContent()}}
+  const rows=daily().series||[];if(rows.length){const from=rows[Math.max(0,rows.length-240)].date,to=rows[rows.length-1].date;try{chartEntries[0].chart.timeScale().setVisibleRange({from,to})}catch(_){chartEntries[0].chart.timeScale().fitContent()}}
 }
 function initChipWorkbench(){
   if(chartsReady)return;chartsReady=true;const root=$("#chip-workbench"),L=window.LightweightCharts;if(!L){root.innerHTML='<div class="method-note">圖表元件載入失敗；請確認網路後重新整理。資料本身仍保留在頁面封包中。</div>';return}
   const packet=daily(),market=packet.market_evidence||{},price=packet.series||[];
   const priceElement=panel("日 K 與成交量","主視窗 · 紅漲綠跌 · 縮放保持最新端",430,true),priceChart=L.createChart(priceElement,baseOptions());
   const candles=priceChart.addSeries(L.CandlestickSeries,{upColor:"#ef5350",downColor:"#26a69a",wickUpColor:"#ef5350",wickDownColor:"#26a69a",borderVisible:false});candles.setData(price.map(row=>({time:row.date,open:row.open,high:row.high,low:row.low,close:row.close})));
+  Object.entries(maColors).forEach(([key,color])=>{const ma=priceChart.addSeries(L.LineSeries,{color,lineWidth:2,title:`MA${key.slice(3)}`,priceLineVisible:false,lastValueVisible:false});ma.setData(price.map(row=>finite(row[key])?{time:row.date,value:row[key]}:{time:row.date}));});
   const volume=priceChart.addSeries(L.HistogramSeries,{priceFormat:{type:"volume"},priceScaleId:"volume",lastValueVisible:false,priceLineVisible:false});priceChart.priceScale("volume").applyOptions({scaleMargins:{top:.78,bottom:0}});volume.setData(price.map(row=>({time:row.date,value:row.volume,color:row.close>=row.open?"rgba(239,83,80,.45)":"rgba(38,166,154,.45)"})));addEntry(priceElement,price,{chart:priceChart,series:candles},"close");
   const groups=groupedAnnotations(packet),visibleGroups=visibleAnnotationGroups(packet),byDate=new Map(groups.map(group=>[group.date,group]));currentMarkers=visibleGroups.map(group=>({time:group.date,position:"aboveBar",shape:"circle",color:markerColor(group.primary),text:`${group.primary.display?.short_label||group.primary.label_zh}${group.events.length>1?` +${group.events.length-1}`:""}`}));annotationMarkerApi=L.createSeriesMarkers(candles,currentMarkers,{autoScale:true});setAnnotationVisibility();
   priceChart.subscribeCrosshairMove(param=>{const group=byDate.get(String(param?.time||""));if(group)$("#annotation-detail").textContent=group.events.map(annotationSummary).join(" ｜ ")});
   priceElement.closest(".tv-panel").querySelector(".latest-btn").onclick=()=>priceChart.timeScale().scrollToRealTime();
   priceElement.addEventListener("wheel",()=>{const pinLatest=priceChart.timeScale().scrollPosition()<=1;if(pinLatest)setTimeout(()=>priceChart.timeScale().scrollToPosition(0,false),0)},{capture:true,passive:true});
-  if((market.institutional||[]).length){const rows=market.institutional,element=panel("三大法人買賣超","獨立副圖 · 外資／投信／自營商，單位：張"),chart=L.createChart(element,baseOptions());let primary=null;[["foreign","#4da3ff"],["trust","#f6c453"],["dealer","#b98cff"]].forEach(([key,color],index)=>{const series=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false,lastValueVisible:index===0});series.setData(rows.map(row=>({time:row.date,value:row[key]})));if(!primary)primary=series});addEntry(element,rows,{chart,series:primary},"foreign")}
+  if((market.institutional||[]).length){const rows=market.institutional,element=panel("三大法人買賣超","獨立副圖 · 外資／投信／自營商，單位：張"),chart=L.createChart(element,baseOptions());let primary=null;[["foreign","#4da3ff"],["trust","#f6c453"],["dealer","#b98cff"]].forEach(([key,color],index)=>{const series=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false,lastValueVisible:index===0});series.setData(rows.map(row=>finite(row[key])?{time:row.date,value:row[key]}:{time:row.date}));if(!primary)primary=series});addEntry(element,rows,{chart,series:primary},"foreign")}
   if((market.margin||[]).length){const rows=market.margin,element=panel("信用交易","獨立副圖 · 融資餘額／融券餘額"),chart=L.createChart(element,baseOptions()),margin=chart.addSeries(L.LineSeries,{color:"#f6c453",lineWidth:2}),short=chart.addSeries(L.LineSeries,{color:"#b98cff",lineWidth:2});margin.setData(rows.filter(row=>row.margin_balance!=null).map(row=>({time:row.date,value:row.margin_balance})));short.setData(rows.filter(row=>row.short_balance!=null).map(row=>({time:row.date,value:row.short_balance})));addEntry(element,rows,{chart,series:margin},"margin_balance")}
   if((market.foreign_ownership||[]).length){const rows=market.foreign_ownership,element=panel("外資持股","獨立副圖 · 持股比率（%）"),chart=L.createChart(element,baseOptions()),series=chart.addSeries(L.LineSeries,{color:"#4da3ff",lineWidth:2});series.setData(rows.filter(row=>row.foreign_ratio!=null).map(row=>({time:row.date,value:row.foreign_ratio})));addEntry(element,rows,{chart,series},"foreign_ratio")}
-  if((market.holdings||[]).length){const rows=market.holdings,element=panel("股東結構","獨立副圖 · 大戶／中實戶／散戶持股比（每週）",230),chart=L.createChart(element,baseOptions());let primary=null;[["major","#ef5350"],["middle","#f6c453"],["retail","#26a69a"]].forEach(([key,color])=>{const series=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false});series.setData(rows.map(row=>({time:row.date,value:row[key]})));if(!primary)primary=series});addEntry(element,rows,{chart,series:primary},"major")}
+  if((market.holdings||[]).length){const rows=market.holdings,element=panel("股東結構","獨立副圖 · 大戶／中實戶／散戶持股比（每週）",230),chart=L.createChart(element,baseOptions());let primary=null;[["major","#ef5350"],["middle","#f6c453"],["retail","#26a69a"]].forEach(([key,color])=>{const series=chart.addSeries(L.LineSeries,{color,lineWidth:2,priceLineVisible:false});series.setData(rows.map(row=>finite(row[key])?{time:row.date,value:row[key]}:{time:row.date}));if(!primary)primary=series});addEntry(element,rows,{chart,series:primary},"major")}
   if(chartEntries.length)wireCharts();else root.innerHTML='<div class="method-note">目前沒有可繪製的序列。</div>';
 }
 })();'''
@@ -264,3 +295,5 @@ def stock_redirect_html(stock_id: str) -> str:
         f'<p>正在前往 <a href="{target}">{stock_id} V2 個股頁</a>。</p>'
         f'<script>location.replace("{target}")</script></body></html>'
     )
+
+V2_CSS += r'''.vp-controls{align-items:end;margin:12px 0}.vp-controls label{display:flex;flex-direction:column;gap:4px}.vp-controls input,select,input[type="file"]{background:#111a27;border:1px solid #324158;color:#d9e2ef;border-radius:4px;padding:7px;max-width:100%}.vp-controls input[type="number"]{width:90px}#ma-status{line-height:1.9}#vp-chart{height:auto;min-height:320px}details{margin-top:16px}summary{cursor:pointer;color:#2dd4bf}'''

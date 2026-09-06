@@ -1,3 +1,9 @@
+## 2026-09-06 V2 history / Volume Profile source PR (Issue #31)
+
+Implemented strict 240-bar daily coverage and full-window exported/plotted means, verified raw/adjusted price migration, source-date/market-coverage refresh repairs, official chip sidecars, and a fixed-range Volume Profile tool. Canonical private source: PR #14 / 2b3ef38. See `codex_context/logs/2026-09-06-v2-history-volume-profile.md` for inputs, rebuild commands, validation and release gate.
+
+Production rebuild is blocked by TWSE HTTP 428; prior mixed caches must not be relabeled verified. No main merge or Pages deployment occurred. Generated production data is excluded. Complete authoritative rebuild and public semantic/date verification before release.
+
 # Codex Handoff
 
 Last updated: 2026-08-15

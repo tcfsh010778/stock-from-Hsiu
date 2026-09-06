@@ -24,7 +24,8 @@ from datetime import date, timedelta
 
 import requests
 
-from official_price_refresh import refresh_official_prices
+from official_price_refresh import CSV_FIELDS, refresh_official_prices
+from stock_v2_public.analysis.price_basis import PRICE_BASIS_MODE
 
 os.environ.setdefault("V44_LIVE_FETCH", "1")
 os.environ.setdefault("V44_FETCH_MONTHS", "24")
@@ -50,6 +51,48 @@ from generate_site import (  # noqa: E402
 
 
 PRICE_REFRESH_SUMMARY_PATH = LOCAL_PRICE_DIR.parent / "price_refresh_summary.json"
+PRICE_BASIS_DIR = LOCAL_PRICE_DIR.parent / "price_basis"
+
+
+def preflight_incremental_price_cache(
+    stock_ids: set[str],
+    *,
+    price_dir: Path | None = None,
+    basis_dir: Path | None = None,
+) -> None:
+    """Reject legacy or mixed price caches before any official HTTP request."""
+    failures: list[str] = []
+    price_dir = price_dir or LOCAL_PRICE_DIR
+    basis_dir = basis_dir or PRICE_BASIS_DIR
+    required = set(CSV_FIELDS)
+    for stock_id in sorted(stock_ids):
+        price_path = price_dir / f"{stock_id}.csv"
+        if not price_path.exists():
+            continue
+        try:
+            with price_path.open("r", encoding="utf-8-sig", newline="") as handle:
+                header = set(next(csv.reader(handle), []))
+        except (OSError, csv.Error) as exc:
+            failures.append(f"{stock_id}: unreadable price CSV ({exc})")
+            continue
+        missing = sorted(required - header)
+        if missing:
+            failures.append(f"{stock_id}: legacy CSV missing {','.join(missing)}")
+            continue
+        basis_path = basis_dir / f"{stock_id}.json"
+        try:
+            basis = json.loads(basis_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            failures.append(f"{stock_id}: missing or invalid price-basis metadata")
+            continue
+        if basis.get("mode") != PRICE_BASIS_MODE or basis.get("verified") is not True:
+            failures.append(f"{stock_id}: unverified or mixed price-basis metadata")
+    if failures:
+        sample = "; ".join(failures[:5])
+        raise RuntimeError(
+            "legacy or mixed price cache requires --rebuild-history before network refresh; "
+            f"affected={len(failures)} sample={sample}"
+        )
 
 
 def _report_stock_ids(scope: str) -> set[str]:
@@ -374,6 +417,8 @@ def main() -> None:
     months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
     scope = os.environ.get("V44_REFRESH_SCOPE", "latest").strip().lower()
     stock_ids = collect_stock_ids()
+    if not args.rebuild_history:
+        preflight_incremental_price_cache(set(stock_ids))
     print(f"[refresh_prices] scope={scope} stocks={len(stock_ids)} months={months}")
     initial_days = int(os.environ.get("V44_OFFICIAL_INITIAL_BACKFILL_DAYS", "75"))
     overlap_days = int(os.environ.get("V44_OFFICIAL_OVERLAP_DAYS", "7"))

@@ -9,6 +9,7 @@ import re
 import tempfile
 import time
 from collections import defaultdict
+from threading import Event
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -199,13 +200,21 @@ def normalize_tpex_history(payload: dict[str, Any], expected_date: date) -> list
     return normalized
 
 
+class OfficialSourceBlocked(RuntimeError):
+    """Upstream rate/verification gate; stop rather than multiplying requests."""
+
+
 def _get_json(url: str, params: dict[str, str] | None = None, *, timeout: int = 60, attempts: int = 3) -> Any:
     last_error: Exception | None = None
     for attempt in range(attempts):
         try:
             response = requests.get(url, params=params, timeout=timeout, headers={"User-Agent": USER_AGENT})
+            if response.status_code in {401, 403, 428, 429}:
+                raise OfficialSourceBlocked(f"official source HTTP {response.status_code}; retry later or complete source verification: {url}")
             response.raise_for_status()
             return response.json()
+        except OfficialSourceBlocked:
+            raise
         except Exception as exc:  # requests exposes several transport and JSON errors
             last_error = exc
             if attempt + 1 < attempts:
@@ -697,27 +706,40 @@ def refresh_official_prices(
         history_dates.append(query_date)
         query_date += timedelta(days=1)
 
+    halted = Event()
     def load_day(day: date) -> tuple[date, list[dict[str, Any]]]:
-        if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
-            return day, cached_history_snapshot(day, cache_dir=partition_cache_dir or default_partition_cache())
-        return day, fetch_history(day)
+        if halted.is_set():
+            raise OfficialSourceBlocked("historical batch halted after upstream verification/rate limit")
+        try:
+            if fetch_history is fetch_history_snapshot:
+                return day, cached_history_snapshot(day, cache_dir=partition_cache_dir or default_partition_cache())
+            return day, fetch_history(day)
+        except OfficialSourceBlocked:
+            halted.set()
+            raise
 
     results: dict[date, list[dict[str, Any]]] = {}
     errors: dict[date, Exception] = {}
     if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
-        workers = max(1, min(8, int(os.environ.get("V44_OFFICIAL_HISTORY_WORKERS", "6"))))
+        workers = max(1, min(8, int(os.environ.get("V44_OFFICIAL_HISTORY_WORKERS", "1"))))
         with ThreadPoolExecutor(max_workers=workers) as pool:
             futures = {pool.submit(load_day, day): day for day in history_dates}
             for future in as_completed(futures):
                 day = futures[future]
                 try:
                     _, results[day] = future.result()
+                except OfficialSourceBlocked:
+                    for pending in futures:
+                        pending.cancel()
+                    raise
                 except Exception as exc:
                     errors[day] = exc
     else:
         for day in history_dates:
             try:
                 _, results[day] = load_day(day)
+            except OfficialSourceBlocked:
+                raise
             except Exception as exc:
                 errors[day] = exc
 

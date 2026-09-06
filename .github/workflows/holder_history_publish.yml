@@ -71,7 +71,9 @@ jobs:
 
       - name: Finalize successful holder publication record
         if: steps.holder_date.outputs.update_required == 'true'
-        run: python holder_update_status.py --finalize
+        run: |
+          python holder_update_status.py --finalize
+          python generate_site.py --holder-only
 
       - name: Verify holder artifact
         run: |
@@ -94,11 +96,14 @@ jobs:
           grep -q "20日" docs/institutional-flow.html
           grep -q "法人集中比" docs/institutional-flow.html
 
+      - name: Refresh public V2 chip panels without changing price dates
+        run: python tools/refresh_v2_chip_panels.py
+
       - name: Commit and push holder pages
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/daily_market_flow.json data/freshness_manifest.json data/official_chip_history.json data/official_margin_snapshot.json data/market_flow_refresh_status.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/holder-risers.html docs/institutional-flow.html docs/index.html
+          git add docs/v2/data/ data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/daily_market_flow.json data/freshness_manifest.json data/official_chip_history.json data/official_margin_snapshot.json data/market_flow_refresh_status.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/holder-risers.html docs/institutional-flow.html docs/index.html
           if git diff --cached --quiet; then
             echo "No holder-history changes to commit."
             exit 0

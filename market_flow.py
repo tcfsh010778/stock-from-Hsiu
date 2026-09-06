@@ -1208,8 +1208,8 @@ def write_refresh_status(payload: Mapping[str, Any], *, success: bool, path: Pat
         "schema_version": "1.0.0",
         "checked_at": _iso_now().isoformat(),
         "requested_candidate_date": str(payload.get("date") or ""),
-        "state": "published" if success else "failed",
-        "published_data_date": str(payload.get("date") or "") if success else None,
+        "state": "updated" if success else "failed",
+        "prepared_data_date": str(payload.get("date") or "") if success else None,
         "warnings": list((payload.get("data_quality") or {}).get("warnings") or []),
     }
     target.parent.mkdir(parents=True, exist_ok=True)
@@ -1229,9 +1229,9 @@ def main() -> int:
         write_refresh_status(payload, success=False)
         print(f"[market_flow][ERROR] keeping the last verified artifact; {warnings}")
         return 1
-    write_payload(payload, args.output, args.manifest)
     from official_chip_history import build_sidecars, _write_json, CHIP_PATH, MARGIN_PATH
     chip, margin = build_sidecars(payload)
+    write_payload(payload, args.output, args.manifest)
     _write_json(CHIP_PATH, chip)
     _write_json(MARGIN_PATH, margin)
     write_refresh_status(payload, success=True)

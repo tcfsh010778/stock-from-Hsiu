@@ -4,6 +4,13 @@ on:
   pull_request:
     paths:
       - "stock_v2_public/**"
+      - "official_price_refresh.py"
+      - "official_chip_history.py"
+      - "market_flow.py"
+      - "refresh_prices.py"
+      - "tools/test_*"
+      - "tools/collect_volume_profile.py"
+      - "tools/refresh_v2_chip_panels.py"
       - "schemas/technical_pattern_packet.schema.json"
       - "schemas/candlestick_pattern_event.schema.json"
       - "THIRD_PARTY_NOTICES.md"
@@ -23,6 +30,13 @@ on:
     branches: [main]
     paths:
       - "stock_v2_public/**"
+      - "official_price_refresh.py"
+      - "official_chip_history.py"
+      - "market_flow.py"
+      - "refresh_prices.py"
+      - "tools/test_*"
+      - "tools/collect_volume_profile.py"
+      - "tools/refresh_v2_chip_panels.py"
       - "schemas/technical_pattern_packet.schema.json"
       - "schemas/candlestick_pattern_event.schema.json"
       - "THIRD_PARTY_NOTICES.md"
@@ -51,21 +65,20 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m pip install --upgrade pip
-      - run: python -m pip install -r requirements-v2.lock
+      - run: python -m pip install -r requirements-v2.lock requests
       - run: python -m unittest tools.test_generate_v2 tools.test_v2_engine tools.test_viewport_master tools.test_candlestick_annotations tools.test_verify_daily_update_artifacts tools.test_verify_v2_public -v
-      - run: python generate_v2.py --only 2353 --validate
+      - run: python -m unittest tools.test_v2_history_contract tools.test_official_price_refresh tools.test_price_basis tools.test_market_flow tools.test_official_chip_history tools.test_collect_volume_profile tools.test_refresh_prices_migration_preflight tools.test_verify_v2_daily_artifacts tools.test_official_source_gate -v
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: node tools/test_volume_profile.cjs
       - shell: python
         run: |
-          import json
+          import subprocess
+          import tempfile
           from pathlib import Path
-          packets = json.loads(Path("docs/v2/data/2353.json").read_text(encoding="utf-8"))
-          daily = next(packet for packet in packets if packet["timeframe"] == "daily")
-          assert "decision" not in daily
-          annotations = daily["candlestick_annotations"]
-          assert annotations["timeframe"] == "1d"
-          assert annotations["talib"]["pattern_function_count"] == 61
-          assert all(event["bar_status"] == "closed" for event in annotations["events"])
-          risk = daily["risk_control"]
-          assert risk["stop_loss_pct"] == 15.0
-          assert risk["stop_price"] == round(risk["reference_price"] * 0.85, 4)
-          assert all(set(line["start"]) == {"date", "price"} for line in daily["trendlines"])
+          from stock_v2_public.site import V2_JS
+          with tempfile.TemporaryDirectory() as folder:
+              path = Path(folder) / "v2.js"
+              path.write_text(V2_JS, encoding="utf-8")
+              subprocess.run(["node", "--check", str(path)], check=True)

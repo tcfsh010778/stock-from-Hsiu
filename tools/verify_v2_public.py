@@ -4,6 +4,7 @@ import argparse
 import json
 import math
 import re
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,6 +12,94 @@ DOCS = ROOT / "docs"
 EXPECTED_TECHNICAL_INDICATORS = {
     "rsi_14", "macd_12_26_9", "bollinger_20_2", "volume_vs_avg_3", "volume_vs_avg_5", "volume_vs_avg_10",
 }
+MA_WINDOWS = (5, 20, 60, 120, 240)
+DAILY_RETURNED_BARS = 240
+PRICE_BASIS_MODE = "official_reference_ratio_back_adjusted_v1"
+PRICE_BASIS_SOURCE = "TWSE TWT49U / TPEx exDailyQ official reference prices"
+
+
+def verify_daily_packet_contract(daily: dict, expected_price_date: str, *, stock_id: str) -> None:
+    if daily.get("timeframe") != "daily":
+        raise AssertionError(f"{stock_id} packet is not daily")
+    if daily.get("stock_id") != stock_id:
+        raise AssertionError(f"{stock_id} daily packet stock id mismatch: {daily.get('stock_id')}")
+    if daily.get("data_date") != expected_price_date:
+        raise AssertionError(f"{stock_id} daily packet date mismatch: {daily.get('data_date')} != {expected_price_date}")
+
+    coverage = daily.get("series_coverage")
+    if not isinstance(coverage, dict):
+        raise AssertionError(f"{stock_id} daily packet has no series coverage")
+    try:
+        requested = int(coverage.get("requested_bars"))
+        available = int(coverage.get("available_bars"))
+        returned = int(coverage.get("returned_bars"))
+    except (TypeError, ValueError) as exc:
+        raise AssertionError(f"{stock_id} daily series coverage is not numeric") from exc
+    expected_returned = min(available, DAILY_RETURNED_BARS)
+    if requested != DAILY_RETURNED_BARS or returned != expected_returned:
+        raise AssertionError(
+            f"{stock_id} daily series coverage mismatch: requested={requested}, "
+            f"available={available}, returned={returned}, expected={expected_returned}"
+        )
+    expected_status = "available" if available >= DAILY_RETURNED_BARS else "insufficient_history"
+    if coverage.get("status") != expected_status:
+        raise AssertionError(f"{stock_id} daily series coverage status mismatch: {coverage.get('status')} != {expected_status}")
+    series = daily.get("series")
+    if not isinstance(series, list) or len(series) != returned or returned <= 0:
+        raise AssertionError(f"{stock_id} daily series length differs from returned coverage")
+
+    dates: list[str] = []
+    offset = available - returned
+    for index, row in enumerate(series):
+        if not isinstance(row, dict):
+            raise AssertionError(f"{stock_id} daily series row is not an object")
+        row_date = str(row.get("date") or "")
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", row_date):
+            raise AssertionError(f"{stock_id} daily series contains invalid date: {row_date}")
+        try:
+            date.fromisoformat(row_date)
+        except ValueError as exc:
+            raise AssertionError(f"{stock_id} daily series contains invalid date: {row_date}") from exc
+        dates.append(row_date)
+        for window in MA_WINDOWS:
+            value = row.get(f"sma{window}")
+            should_exist = offset + index + 1 >= window
+            if should_exist:
+                try:
+                    numeric = float(value)
+                except (TypeError, ValueError) as exc:
+                    raise AssertionError(f"{stock_id} sma{window} missing after warmup at {row_date}") from exc
+                if not math.isfinite(numeric):
+                    raise AssertionError(f"{stock_id} sma{window} is non-finite at {row_date}")
+            elif value is not None:
+                raise AssertionError(f"{stock_id} sma{window} exists before warmup at {row_date}")
+        try:
+            factor = float(row.get("adjustment_factor"))
+            volume = float(row.get("volume"))
+        except (TypeError, ValueError) as exc:
+            raise AssertionError(f"{stock_id} daily factor or share volume is not numeric at {row_date}") from exc
+        if not math.isfinite(factor) or factor <= 0 or not math.isfinite(volume) or volume < 0:
+            raise AssertionError(f"{stock_id} daily factor or share volume is invalid at {row_date}")
+    if dates != sorted(set(dates)):
+        raise AssertionError(f"{stock_id} daily dates are duplicate or not strictly increasing")
+    if dates[-1] != expected_price_date:
+        raise AssertionError(f"{stock_id} latest daily row differs from official expected date")
+    if not math.isclose(float(series[-1]["adjustment_factor"]), 1.0, rel_tol=0.0, abs_tol=1e-12):
+        raise AssertionError(f"{stock_id} latest adjustment factor is not anchored at one")
+
+    basis = daily.get("price_adjustment")
+    if not isinstance(basis, dict):
+        raise AssertionError(f"{stock_id} daily packet has no price basis metadata")
+    required_basis = {
+        "mode": PRICE_BASIS_MODE,
+        "source": PRICE_BASIS_SOURCE,
+        "verified": True,
+        "adjustment_as_of": expected_price_date,
+        "volume_basis": "official_raw_shares",
+    }
+    mismatched = {key: (basis.get(key), expected) for key, expected in required_basis.items() if basis.get(key) != expected}
+    if mismatched:
+        raise AssertionError(f"{stock_id} daily price basis metadata mismatch: {mismatched}")
 
 
 def verify_price_freshness(manifest: dict, price_summary: dict) -> str:
@@ -105,6 +194,15 @@ def verify(navigation: str) -> dict:
         raise AssertionError(f"V2 manifest contains failures: {manifest.get('failures', [])[:3]}")
     if manifest.get("stock_count", 0) < 400:
         raise AssertionError(f"V2 stock coverage too small: {manifest.get('stock_count')}")
+    for stock_id in manifest.get("stocks") or []:
+        packet_path = DOCS / "v2" / "data" / f"{stock_id}.json"
+        if not packet_path.exists():
+            raise AssertionError(f"daily packet artifact is missing: {stock_id}")
+        stock_packets = json.loads(packet_path.read_text(encoding="utf-8"))
+        daily_packets = [packet for packet in stock_packets if isinstance(packet, dict) and packet.get("timeframe") == "daily"]
+        if len(daily_packets) != 1:
+            raise AssertionError(f"{stock_id} must have exactly one daily packet")
+        verify_daily_packet_contract(daily_packets[0], expected_price_date, stock_id=str(stock_id))
     for relative in ("v2/stock.html", "v2/stocks/2353.html", "v2/data/2353.json", "stocks/2353.html"):
         if not (DOCS / relative).exists():
             raise AssertionError(f"required public artifact missing: docs/{relative}")
