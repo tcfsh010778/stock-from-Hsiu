@@ -8,6 +8,11 @@ on:
     - cron: "30 12 * * 1-5"
   workflow_dispatch:
     inputs:
+      rebuild_price_history:
+        description: "One-time verified raw/adjusted history migration from 2024-04-01"
+        required: false
+        default: false
+        type: boolean
       backfill_tdcc_holder_history:
         description: "One-time official TDCC six-week holder-history backfill"
         required: false
@@ -44,13 +49,26 @@ jobs:
       - name: Sync latest main before refresh
         run: git pull --ff-only origin main
 
+      - name: Restore validated historical partitions
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/stock-price-partitions
+          key: official-price-v2-${{ runner.os }}-${{ github.run_id }}
+          restore-keys: official-price-v2-${{ runner.os }}-
+
       - name: Refresh official listed and OTC stock prices
         env:
           V44_REFRESH_SCOPE: "all"
           V44_OFFICIAL_INITIAL_BACKFILL_DAYS: "75"
           V44_OFFICIAL_OVERLAP_DAYS: "7"
           ENABLE_FINMIND_AUX: "0"
-        run: python refresh_prices.py
+          REBUILD_HISTORY: ${{ inputs.rebuild_price_history }}
+        run: |
+          if [ "$REBUILD_HISTORY" = "true" ]; then
+            python refresh_prices.py --rebuild-history --history-start 2024-04-01 --partition-cache "${{ runner.temp }}/stock-price-partitions"
+          else
+            python refresh_prices.py --partition-cache "${{ runner.temp }}/stock-price-partitions"
+          fi
 
       - name: Refresh optional legacy FinMind auxiliary caches
         if: ${{ vars.ENABLE_FINMIND_AUX == '1' }}
@@ -103,6 +121,10 @@ jobs:
       - name: Generate public V2 parallel pages
         run: python generate_v2.py --validate --switch-navigation
 
+      - name: Collect optional recent Volume Profile samples
+        continue-on-error: true
+        run: python tools/collect_volume_profile.py --symbol 2330.TW --symbol 6488.TWO --symbol 2317.TW --symbol 2353.TW
+
       - name: Verify generated daily artifacts
         run: python tools/verify_daily_update_artifacts.py
 
@@ -121,3 +143,10 @@ jobs:
           git commit -m "Auto update: $(TZ=Asia/Taipei date '+%Y-%m-%d')"
           git pull --rebase origin main
           git push
+
+      - name: Save resumable partitions after interrupted migration
+        if: failure() && inputs.rebuild_price_history == true
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ runner.temp }}/stock-price-partitions
+          key: official-price-v2-${{ runner.os }}-${{ github.run_id }}

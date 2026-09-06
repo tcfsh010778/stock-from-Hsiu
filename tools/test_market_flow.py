@@ -11,8 +11,8 @@ import market_flow
 class MarketFlowTests(unittest.TestCase):
     def test_fetch_json_retries_truncated_official_response(self):
         response = MagicMock()
-        response.__enter__.return_value.read.return_value = b'{"ok": true}'
-        with patch.object(market_flow, "urlopen", side_effect=[OSError("truncated"), response]) as mocked, patch.object(
+        response.json.return_value = {"ok": True}
+        with patch.object(market_flow.requests, "request", side_effect=[OSError("truncated"), response]) as mocked, patch.object(
             market_flow, "sleep"
         ) as mocked_sleep:
             payload = market_flow._fetch_json("https://example.test/data")
@@ -151,6 +151,16 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(metrics["2330"], {"margin_balance_delta": 120, "short_margin_ratio_pct": 2.5})
         self.assertEqual(metrics["6488"], {"margin_balance_delta": -100, "short_margin_ratio_pct": 5.0})
 
+    def test_normalize_tpex_dated_margin_table(self):
+        payload = {"date": "20260904", "tables": [{
+            "fields": ["代號", "名稱", "前資餘額(張)", "資買", "資賣", "現償", "資餘額", "資屬證金", "資使用率(%)", "資限額", "前券餘額(張)", "券賣", "券買", "券償", "券餘額"],
+            "data": [["6488", "環球晶", "500", "1", "2", "0", "400", "0", "0", "0", "8", "1", "0", "0", "20"]],
+        }]}
+        rows = market_flow.normalize_tpex_margin_history_payload(payload)
+        self.assertEqual(rows[0]["trading_date"], "2026-09-04")
+        self.assertEqual(rows[0]["margin_balance_previous"], 500)
+        self.assertEqual(rows[0]["short_balance"], 20)
+
     def test_load_retail_weekly_metrics_uses_200_lot_or_less_ratio_reduction(self):
         payload = {
             "snapshots": [
@@ -165,6 +175,18 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(metrics["2330"]["retail_sell_pctpt"], 0.5)
         self.assertEqual(reference["date"], "2026-08-08")
         self.assertEqual(reference["previous_date"], "2026-08-01")
+
+    def test_retail_weekly_metrics_respects_daily_as_of_date(self):
+        payload = {"snapshots": [
+            {"date": "2026-08-01", "rows": [{"security_id": "2330", "retail_200_percent": 12.4}]},
+            {"date": "2026-08-08", "rows": [{"security_id": "2330", "retail_200_percent": 11.9}]},
+            {"date": "2026-08-15", "rows": [{"security_id": "2330", "retail_200_percent": 10.0}]},
+        ]}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "holders.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            _, reference = market_flow.load_retail_weekly_metrics(path, as_of_date="2026-08-10")
+        self.assertEqual(reference["date"], "2026-08-08")
 
     def test_full_rankings_exclude_non_ordinary_instruments(self):
         rows = [
@@ -212,6 +234,32 @@ class MarketFlowTests(unittest.TestCase):
         self.assertEqual(metrics["2330"]["foreign"]["net_20d"], 20_000)
         self.assertEqual(metrics["2330"]["foreign"]["concentration_ratio_pct"], 10.0)
 
+    def test_history_cache_rejects_legacy_rows_without_dealer(self):
+        legacy = {"date": "2026-08-07", "rows_csv": "2330,l,1,2\n6488,o,3,4", "row_count": 2}
+        self.assertFalse(market_flow._valid_history_snapshot(legacy, {"listed": 1, "otc": 1}))
+        current = market_flow._history_snapshot("2026-08-07", [
+            {"security_id": "2330", "name": "台積電", "market": "listed", "foreign_net": 1, "investment_trust_net": 2, "dealer_net": 3},
+            {"security_id": "6488", "name": "環球晶", "market": "otc", "foreign_net": 4, "investment_trust_net": 5, "dealer_net": 6},
+        ])
+        self.assertTrue(market_flow._valid_history_snapshot(current, {"listed": 1, "otc": 1}))
+
+    def test_rolling_metrics_are_null_when_security_has_missing_sessions(self):
+        dates = [f"2026-08-{day:02d}" for day in range(1, 21)]
+        history = {"snapshots": [
+            {"date": data_date, "rows": ([] if index == 0 else [{"security_id": "2330", "foreign_net": 100, "investment_trust_net": 10}])}
+            for index, data_date in enumerate(dates)
+        ]}
+        with tempfile.TemporaryDirectory() as temp_dir:
+            price_dir = Path(temp_dir)
+            (price_dir / "2330.csv").write_text(
+                "date,open,high,low,close,volume\n" + "".join(f"{data_date},1,1,1,1,1000\n" for data_date in dates),
+                encoding="utf-8",
+            )
+            metrics = market_flow.rolling_institutional_metrics(history, {"2330"}, price_dir=price_dir)
+        self.assertIsNone(metrics["2330"]["foreign"]["net_20d"])
+        self.assertEqual(metrics["2330"]["foreign"]["coverage_20d"]["actual"], 19)
+        self.assertIsNone(metrics["2330"]["foreign"]["concentration_ratio_pct"])
+
     def test_build_payload_exposes_missing_market_partition(self):
         payload = market_flow.build_payload([{"security_id": "2330", "foreign_net": 1}], [], data_date="2026-08-06", fetched_at="2026-08-06T20:00:00+08:00", source_errors={"otc": "timeout"})
         self.assertEqual(payload["data_quality"]["state"], "warning")
@@ -251,20 +299,8 @@ class MarketFlowTests(unittest.TestCase):
                     "fields": detail_fields,
                     "data": [["2330", "台積電", "1200", "800", "400", "100", "50", "50", "-20", "430"]],
                 }
-            if url == market_flow.TPEX_URL:
-                return [{
-                    "Date": "20260807",
-                    "SecuritiesCompanyCode": "6488",
-                    "CompanyName": "環球晶",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-TotalBuy": "900",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-TotalSell": "1100",
-                    "ForeignInvestorsIncludeMainlandAreaInvestors-Difference": "-200",
-                    "SecuritiesInvestmentTrustCompanies-TotalBuy": "300",
-                    "SecuritiesInvestmentTrustCompanies-TotalSell": "100",
-                    "SecuritiesInvestmentTrustCompanies-Difference": "200",
-                    "Dealers-Difference": "10",
-                    "TotalDifference": "10",
-                }]
+            if url == market_flow.TPEX_HISTORY_URL:
+                return {"date": "20260807", "tables": [{"data": [["6488", "環球晶", "1", "2", "-1", "0", "0", "0", "900", "1100", "-200", "300", "100", "200", "0", "0", "0", "0", "0", "0", "10", "0", "10", "10"]]}]}
             if url == market_flow.TWSE_AMOUNT_URL:
                 if params["dayDate"] == "20260808":
                     return {"date": "", "fields": [], "data": []}
@@ -284,16 +320,11 @@ class MarketFlowTests(unittest.TestCase):
                         "data": [["2330", "台積電", "1", "2", "0", "1000", "1120", "0", "1", "2", "0", "20", "28"]],
                     }],
                 }
-            if url == market_flow.TPEX_MARGIN_URL:
-                return [{
-                    "Date": "20260807",
-                    "SecuritiesCompanyCode": "6488",
-                    "CompanyName": "環球晶",
-                    "MarginPurchaseBalancePreviousDay": "500",
-                    "MarginPurchaseBalance": "400",
-                    "ShortSaleBalancePreviousDay": "8",
-                    "ShortSaleBalance": "20",
-                }]
+            if url == market_flow.TPEX_MARGIN_HISTORY_URL:
+                return {"date": "20260807", "tables": [{
+                    "fields": ["代號", "名稱", "前資餘額(張)", "資買", "資賣", "現償", "資餘額", "資屬證金", "資使用率(%)", "資限額", "前券餘額(張)", "券賣", "券買", "券償", "券餘額"],
+                    "data": [["6488", "環球晶", "500", "0", "0", "0", "400", "0", "0", "0", "8", "0", "0", "0", "20"]],
+                }]}
             raise AssertionError(f"unexpected URL {url}")
 
         def fake_post(url, params, timeout=45):
@@ -340,11 +371,12 @@ class MarketFlowTests(unittest.TestCase):
         )
         with patch.object(market_flow, "collect", return_value=incomplete), patch.object(
             market_flow, "write_payload"
-        ) as mocked_write, patch("sys.argv", ["market_flow.py"]):
+        ) as mocked_write, patch.object(market_flow, "write_refresh_status") as mocked_status, patch("sys.argv", ["market_flow.py"]):
             result = market_flow.main()
 
-        self.assertEqual(result, 0)
+        self.assertEqual(result, 1)
         mocked_write.assert_not_called()
+        mocked_status.assert_called_once_with(incomplete, success=False)
 
 
 if __name__ == "__main__":

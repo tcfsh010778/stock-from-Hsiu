@@ -13,19 +13,32 @@ class AnalysisInputError(ValueError):
     """Raised when OHLCV input cannot be analyzed safely."""
 
 
-def prepare_ohlcv(data: pd.DataFrame | list[dict[str, Any]]) -> pd.DataFrame:
+def prepare_ohlcv(data: pd.DataFrame | list[dict[str, Any]], *, min_rows: int = 30) -> pd.DataFrame:
     frame = data.copy() if isinstance(data, pd.DataFrame) else pd.DataFrame(data)
     missing = [column for column in REQUIRED_COLUMNS if column not in frame.columns]
     if missing:
         raise AnalysisInputError(f"missing OHLCV columns: {', '.join(missing)}")
-    frame = frame.loc[:, REQUIRED_COLUMNS].copy()
+    selected_columns = [*REQUIRED_COLUMNS]
+    if "adjustment_factor" in frame.columns:
+        selected_columns.append("adjustment_factor")
+    frame = frame.loc[:, selected_columns].copy()
     frame["date"] = pd.to_datetime(frame["date"], errors="coerce")
     for column in REQUIRED_COLUMNS[1:]:
         frame[column] = pd.to_numeric(frame[column], errors="coerce")
+    if "adjustment_factor" in frame.columns:
+        original_factor = frame["adjustment_factor"]
+        frame["adjustment_factor"] = pd.to_numeric(original_factor, errors="coerce")
+        invalid_factor = original_factor.notna() & (
+            frame["adjustment_factor"].isna()
+            | ~np.isfinite(frame["adjustment_factor"])
+            | (frame["adjustment_factor"] <= 0)
+        )
+        if bool(invalid_factor.any()):
+            raise AnalysisInputError("adjustment_factor must be a positive finite number when provided")
     frame = frame.dropna(subset=REQUIRED_COLUMNS).sort_values("date")
     frame = frame.drop_duplicates("date", keep="last").reset_index(drop=True)
-    if len(frame) < 30:
-        raise AnalysisInputError("at least 30 complete OHLCV rows are required")
+    if len(frame) < min_rows:
+        raise AnalysisInputError(f"at least {min_rows} complete OHLCV rows are required")
     invalid = (
         (frame["high"] < frame[["open", "close", "low"]].max(axis=1))
         | (frame["low"] > frame[["open", "close", "high"]].min(axis=1))
@@ -51,7 +64,7 @@ def with_indicators(frame: pd.DataFrame) -> pd.DataFrame:
     out["volume_sma20"] = out["volume"].rolling(20, min_periods=3).mean()
     out["relative_volume"] = (out["volume"] / out["volume_sma20"]).replace([np.inf, -np.inf], np.nan)
     for window in (5, 20, 60, 120, 240):
-        out[f"sma{window}"] = out["close"].rolling(window, min_periods=max(3, window // 3)).mean()
+        out[f"sma{window}"] = out["close"].rolling(window, min_periods=window).mean()
     return out
 
 

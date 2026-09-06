@@ -14,6 +14,72 @@ import official_price_refresh as prices
 
 
 class OfficialPriceRefreshTest(unittest.TestCase):
+    def test_cached_history_fallback_requires_exact_date_and_both_markets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            cache = Path(tmp)
+            day = date(2026, 8, 7)
+            twse = [{"date": day.isoformat(), "stock_id": "2330", "open": 100, "high": 102, "low": 99, "close": 101, "volume": 1000}]
+            tpex = [{"date": day.isoformat(), "stock_id": "8069", "open": 50, "high": 52, "low": 49, "close": 51, "volume": 2000}]
+            first = prices.cached_history_snapshot(
+                day, cache_dir=cache, fetch_partitions=lambda _: (twse, tpex),
+                minimum_unique_ids={"twse": 1, "tpex": 1},
+            )
+            self.assertEqual(len(first), 2)
+            recovered = prices.cached_history_snapshot(
+                day, cache_dir=cache,
+                fetch_partitions=lambda _: (_ for _ in ()).throw(RuntimeError("HTTP 520")),
+                minimum_unique_ids={"twse": 1, "tpex": 1},
+            )
+            self.assertEqual(recovered, [{**twse[0], "market": "twse"}, {**tpex[0], "market": "tpex"}])
+            payload = json.loads((cache / "2026-08-07.json").read_text(encoding="utf-8"))
+            payload["date"] = "2026-08-06"
+            (cache / "2026-08-07.json").write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(RuntimeError, "date/schema mismatch"):
+                prices.cached_history_snapshot(
+                    day, cache_dir=cache,
+                    fetch_partitions=lambda _: (_ for _ in ()).throw(RuntimeError("HTTP 520")),
+                    minimum_unique_ids={"twse": 1, "tpex": 1},
+                )
+
+    def test_cached_history_rejects_digest_valid_invalid_ohlcv(self) -> None:
+        day = date(2026, 8, 7)
+        payload = {
+            "schema_version": "1.0.0", "date": day.isoformat(),
+            "twse": [{"date": day.isoformat(), "stock_id": "2330", "open": 100, "high": 90, "low": 99, "close": 101, "volume": 1000, "market": "twse"}],
+            "tpex": [{"date": day.isoformat(), "stock_id": "8069", "open": 50, "high": 52, "low": 49, "close": 51, "volume": 2000, "market": "tpex"}],
+        }
+        payload["sha256"] = prices._partition_digest(payload)
+        with self.assertRaisesRegex(RuntimeError, "invalid OHLCV"):
+            prices._validate_cached_partition(payload, day, {"twse": 1, "tpex": 1})
+
+    def test_history_rejects_two_malformed_empty_payloads(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "not a recognized joint market closure"):
+            prices.fetch_history_partitions(date(2026, 8, 7), lambda *_args, **_kwargs: {})
+
+    def test_action_normalizer_rejects_invalid_ordinary_security_row(self) -> None:
+        payload = {
+            "fields": ["資料日期", "股票代號", "除權息前收盤價", "除權息參考價", "權/息"],
+            "data": [["115年06月11日", "2330", "--", "2248.99", "息"]],
+        }
+        with self.assertRaisesRegex(RuntimeError, "invalid ordinary-security"):
+            prices.normalize_twse_actions(payload)
+
+    def test_incremental_refresh_rejects_legacy_price_schema(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            price_dir = root / "prices"
+            price_dir.mkdir()
+            (price_dir / "2330.csv").write_text(
+                "date,open,high,low,close,volume\n2026-08-06,100,102,99,101,2000\n", encoding="utf-8"
+            )
+            latest_rows = [{"date": "2026-08-07", "stock_id": "2330", "open": 102, "high": 104, "low": 101, "close": 103, "volume": 3000}]
+            with self.assertRaisesRegex(RuntimeError, "requires --rebuild-history"):
+                prices.refresh_official_prices(
+                    stock_ids={"2330"}, price_dir=price_dir, summary_path=root / "summary.json",
+                    initial_days=1, fetch_latest=lambda: ("2026-08-07", latest_rows, {"twse": 1, "tpex": 0}),
+                    fetch_history=lambda _: [],
+                )
+
     def test_latest_snapshot_keeps_aligned_openapi_as_primary_path(self) -> None:
         def fetch_json(url: str, params: dict[str, str] | None = None):
             self.assertIsNone(params)
@@ -341,7 +407,8 @@ class OfficialPriceRefreshTest(unittest.TestCase):
             price_dir.mkdir()
             summary_path = root / "price_refresh_summary.json"
             (price_dir / "2330.csv").write_text(
-                "date,open,high,low,close,volume\n2026-06-26,90,91,89,90,900\n",
+                "date,open,high,low,close,volume,raw_open,raw_high,raw_low,raw_close,raw_volume,adjustment_factor\n"
+                "2026-06-26,90,91,89,90,900,90,91,89,90,900,1\n",
                 encoding="utf-8",
             )
 
@@ -380,7 +447,7 @@ class OfficialPriceRefreshTest(unittest.TestCase):
                 rows = list(csv.DictReader(handle))
             self.assertEqual([row["date"] for row in rows], ["2026-06-26", "2026-08-06", "2026-08-07"])
             self.assertEqual(summary["latest_data_date"], "2026-08-07")
-            self.assertEqual(summary["schema_version"], "1.1.0")
+            self.assertEqual(summary["schema_version"], "2.0.0")
             self.assertEqual(summary["latest_snapshot"]["mode"], "latest_openapi")
             self.assertFalse(summary["latest_snapshot"]["date_skew_recovered"])
             self.assertEqual(summary["latest_matched_stocks"], 2)

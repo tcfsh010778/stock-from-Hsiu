@@ -15,19 +15,19 @@ import csv
 import json
 import math
 import re
+import requests
 from collections.abc import Mapping, Sequence
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from time import sleep
 from typing import Any
-from urllib.parse import urlencode
-from urllib.request import Request, urlopen
 
 from data_contract import DEFAULT_MANIFEST_PATH, prepare_artifact_manifest, update_manifest_file
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 OUTPUT_PATH = DATA_DIR / "daily_market_flow.json"
+REFRESH_STATUS_PATH = DATA_DIR / "market_flow_refresh_status.json"
 HOLDER_ARCHIVE_PATH = DATA_DIR / "holder_weekly_snapshots.json"
 HOLDER_RISERS_PATH = DATA_DIR / "weekly_holder_risers.json"
 PRICE_DIR = DATA_DIR / "prices"
@@ -38,6 +38,7 @@ TWSE_AMOUNT_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
 TPEX_AMOUNT_URL = "https://www.tpex.org.tw/www/zh-tw/insti/summary"
 TWSE_MARGIN_URL = "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
 TPEX_MARGIN_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance"
+TPEX_MARGIN_HISTORY_URL = "https://www.tpex.org.tw/www/zh-tw/margin/balance"
 DERIVED_SOURCE_ID = "daily_market_flow_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 RANKING_POLICY = "ordinary_equity_v1"
@@ -47,6 +48,7 @@ ROLLING_HISTORY_DAYS = max(ROLLING_WINDOWS)
 NON_ORDINARY_NAME_TOKENS = ("ETF", "ETN", "TDR", "-DR", "權證", "特別股", "受益證券")
 MAX_AUTO_LOOKBACK_DAYS = 10
 HTTP_ATTEMPTS = 3
+HISTORY_MIN_PARTITION_COUNTS = {"listed": 800, "otc": 600}
 
 
 def _number(value: Any, default: int = 0) -> int:
@@ -82,12 +84,25 @@ def _iso_now(now: datetime | None = None) -> datetime:
     return value.astimezone(TAIPEI_TZ)
 
 
-def _read_json(request: Request, *, timeout: int, attempts: int = HTTP_ATTEMPTS) -> Any:
+def _read_json(method: str, url: str, *, params: Mapping[str, str] | None = None, timeout: int, attempts: int = HTTP_ATTEMPTS) -> Any:
     last_error: Exception | None = None
     for attempt in range(attempts):
         try:
-            with urlopen(request, timeout=timeout) as response:
-                return json.loads(response.read().decode("utf-8-sig"))
+            response = requests.request(
+                method,
+                url,
+                params=params if method == "GET" else None,
+                data=params if method == "POST" else None,
+                timeout=timeout,
+                allow_redirects=True,
+                headers={
+                    "User-Agent": "stock-from-Hsiu/market-flow",
+                    "Accept": "application/json,text/plain,*/*",
+                    "Referer": "https://www.tpex.org.tw/zh-tw/mainboard/trading/major-institutional/summary/day.html",
+                },
+            )
+            response.raise_for_status()
+            return response.json()
         except Exception as exc:
             last_error = exc
             if attempt + 1 < attempts:
@@ -97,22 +112,11 @@ def _read_json(request: Request, *, timeout: int, attempts: int = HTTP_ATTEMPTS)
 
 
 def _fetch_json(url: str, params: Mapping[str, str] | None = None, timeout: int = 45) -> Any:
-    query = f"?{urlencode(params)}" if params else ""
-    request = Request(f"{url}{query}", headers={"User-Agent": "stock-from-Hsiu/market-flow"})
-    return _read_json(request, timeout=timeout)
+    return _read_json("GET", url, params=params, timeout=timeout)
 
 
 def _post_json(url: str, params: Mapping[str, str], timeout: int = 45) -> Any:
-    request = Request(
-        url,
-        data=urlencode(params).encode("utf-8"),
-        headers={
-            "User-Agent": "stock-from-Hsiu/market-flow",
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Referer": "https://www.tpex.org.tw/zh-tw/mainboard/trading/major-institutional/summary/day.html",
-        },
-    )
-    return _read_json(request, timeout=timeout)
+    return _read_json("POST", url, params=params, timeout=timeout)
 
 
 def _twse_value(row: Mapping[str, Any], names: Sequence[str]) -> int:
@@ -367,6 +371,37 @@ def normalize_tpex_margin_payload(payload: Any) -> list[dict[str, Any]]:
     return rows
 
 
+def normalize_tpex_margin_history_payload(payload: Any) -> list[dict[str, Any]]:
+    """Normalize the official dated TPEx margin table without inventing fields."""
+    if not isinstance(payload, Mapping):
+        return []
+    data_date = _date_text(payload.get("date"))
+    rows: list[dict[str, Any]] = []
+    for table in payload.get("tables") or []:
+        fields = [str(field) for field in table.get("fields") or []]
+        index = {_key_text(field): position for position, field in enumerate(fields)}
+        required = ("代號", "名稱", "前資餘額(張)", "資餘額", "前券餘額(張)", "券餘額")
+        if not all(key in index for key in required):
+            continue
+        for values in table.get("data") or []:
+            if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+                continue
+            security_id = str(values[index["代號"]] or "").strip()
+            if not security_id:
+                continue
+            rows.append({
+                "trading_date": data_date,
+                "security_id": security_id,
+                "name": str(values[index["名稱"]] or "").strip(),
+                "market": "otc",
+                "margin_balance_previous": _number(values[index["前資餘額(張)"]]),
+                "margin_balance": _number(values[index["資餘額"]]),
+                "short_balance_previous": _number(values[index["前券餘額(張)"]]),
+                "short_balance": _number(values[index["券餘額"]]),
+            })
+    return rows
+
+
 def margin_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
     metrics: dict[str, dict[str, Any]] = {}
     for row in rows:
@@ -383,7 +418,11 @@ def margin_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any
     return metrics
 
 
-def load_retail_weekly_metrics(path: Path | str = HOLDER_ARCHIVE_PATH) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
+def load_retail_weekly_metrics(
+    path: Path | str = HOLDER_ARCHIVE_PATH,
+    *,
+    as_of_date: str | None = None,
+) -> tuple[dict[str, dict[str, Any]], dict[str, Any]]:
     """Return weekly reduction in TDCC 200-lot-or-less ownership by security."""
 
     try:
@@ -394,6 +433,7 @@ def load_retail_weekly_metrics(path: Path | str = HOLDER_ARCHIVE_PATH) -> tuple[
         snapshot
         for snapshot in payload.get("snapshots") or []
         if isinstance(snapshot, Mapping) and snapshot.get("date") and isinstance(snapshot.get("rows"), list)
+        and (not as_of_date or str(snapshot.get("date")) <= as_of_date)
     ]
     snapshots.sort(key=lambda snapshot: str(snapshot.get("date")))
     usable = [
@@ -462,12 +502,26 @@ def _history_snapshot(data_date: str, rows: Sequence[Mapping[str, Any]]) -> dict
             "l" if str(row.get("market") or "") == "listed" else "o",
             _number(row.get("foreign_net")),
             _number(row.get("investment_trust_net")),
+            _number(row.get("dealer_net")),
         )
         for row in rows
         if is_ordinary_equity(row)
     )
-    rows_csv = "\n".join(f"{security_id},{market},{foreign_net},{trust_net}" for security_id, market, foreign_net, trust_net in compact_rows)
-    return {"date": data_date, "rows_csv": rows_csv, "row_count": len(compact_rows)}
+    rows_csv = "\n".join(
+        f"{security_id},{market},{foreign_net},{trust_net},{dealer_net}"
+        for security_id, market, foreign_net, trust_net, dealer_net in compact_rows
+    )
+    partition_counts = {
+        "listed": sum(1 for row in compact_rows if row[1] == "l"),
+        "otc": sum(1 for row in compact_rows if row[1] == "o"),
+    }
+    return {
+        "date": data_date,
+        "format_version": 2,
+        "rows_csv": rows_csv,
+        "row_count": len(compact_rows),
+        "partition_counts": partition_counts,
+    }
 
 
 def _snapshot_rows(snapshot: Mapping[str, Any]) -> list[dict[str, Any]]:
@@ -478,19 +532,42 @@ def _snapshot_rows(snapshot: Mapping[str, Any]) -> list[dict[str, Any]]:
     output: list[dict[str, Any]] = []
     for line in str(rows_csv or "").splitlines():
         values = line.split(",")
-        if len(values) != 4:
+        if len(values) not in {4, 5}:
             continue
-        security_id, market, foreign_net, trust_net = values
+        security_id, market, foreign_net, trust_net = values[:4]
+        dealer_net = values[4] if len(values) == 5 else "0"
         output.append({
             "security_id": security_id,
             "market": "listed" if market == "l" else "otc",
             "foreign_net": _number(foreign_net),
             "investment_trust_net": _number(trust_net),
+            "dealer_net": _number(dealer_net),
         })
     return output
 
 
-def _load_existing_history(path: Path | str = OUTPUT_PATH) -> dict[str, dict[str, Any]]:
+def _valid_history_snapshot(
+    snapshot: Mapping[str, Any],
+    min_partition_counts: Mapping[str, int],
+) -> bool:
+    if int(snapshot.get("format_version") or 0) < 2:
+        return False
+    rows = _snapshot_rows(snapshot)
+    ids = [str(row.get("security_id") or "") for row in rows]
+    if not rows or any(row.get("dealer_net") is None for row in rows) or len(ids) != len(set(ids)):
+        return False
+    counts = {
+        market: sum(1 for row in rows if row.get("market") == market)
+        for market in ("listed", "otc")
+    }
+    return all(counts[market] >= int(min_partition_counts[market]) for market in counts)
+
+
+def _load_existing_history(
+    path: Path | str = OUTPUT_PATH,
+    *,
+    min_partition_counts: Mapping[str, int] = HISTORY_MIN_PARTITION_COUNTS,
+) -> dict[str, dict[str, Any]]:
     try:
         payload = json.loads(Path(path).read_text(encoding="utf-8-sig"))
     except Exception:
@@ -501,7 +578,7 @@ def _load_existing_history(path: Path | str = OUTPUT_PATH) -> dict[str, dict[str
         if not isinstance(snapshot, Mapping) or not snapshot.get("date"):
             continue
         rows = _snapshot_rows(snapshot)
-        if rows:
+        if rows and _valid_history_snapshot(snapshot, min_partition_counts):
             output[str(snapshot.get("date"))] = _history_snapshot(str(snapshot.get("date")), rows)
     return output
 
@@ -512,14 +589,18 @@ def build_institutional_history(
     *,
     output_path: Path | str = OUTPUT_PATH,
     price_dir: Path | str = PRICE_DIR,
+    min_partition_counts: Mapping[str, int] = HISTORY_MIN_PARTITION_COUNTS,
 ) -> tuple[dict[str, Any], str | None]:
     """Build a reusable 20-session official institutional-flow window."""
 
     target_dates = _recent_trading_dates(data_date, price_dir=price_dir)
     if len(target_dates) < ROLLING_HISTORY_DAYS or target_dates[-1:] != [data_date]:
         return {}, "official price calendar lacks a complete 20-session window"
-    snapshots = _load_existing_history(output_path)
-    snapshots[data_date] = _history_snapshot(data_date, current_rows)
+    snapshots = _load_existing_history(output_path, min_partition_counts=min_partition_counts)
+    current_snapshot = _history_snapshot(data_date, current_rows)
+    if not _valid_history_snapshot(current_snapshot, min_partition_counts):
+        return {}, f"current official detail coverage below minimum: {current_snapshot['partition_counts']}"
+    snapshots[data_date] = current_snapshot
     errors: list[str] = []
     for historical_date in target_dates:
         if historical_date in snapshots and int(snapshots[historical_date].get("row_count") or 0) > 0:
@@ -546,7 +627,12 @@ def build_institutional_history(
             row_dates = {str(row.get("trading_date") or "") for row in [*listed, *otc]}
             if row_dates != {historical_date}:
                 raise ValueError(f"official detail dates do not align: {sorted(row_dates)}")
-            snapshots[historical_date] = _history_snapshot(historical_date, [*listed, *otc])
+            candidate_snapshot = _history_snapshot(historical_date, [*listed, *otc])
+            if not _valid_history_snapshot(candidate_snapshot, min_partition_counts):
+                raise ValueError(
+                    f"official detail coverage below minimum: {candidate_snapshot['partition_counts']}"
+                )
+            snapshots[historical_date] = candidate_snapshot
             sleep(0.15)
         except Exception as exc:
             errors.append(f"{historical_date}: {str(exc)[:120]}")
@@ -556,7 +642,7 @@ def build_institutional_history(
         "session_count": len(selected),
         "snapshots": selected,
         "window_days": list(ROLLING_WINDOWS),
-        "row_format": "security_id,market_initial,foreign_net_shares,investment_trust_net_shares",
+        "row_format": "security_id,market_initial,foreign_net_shares,investment_trust_net_shares,dealer_net_shares",
         "source": "TWSE T86 + TPEx institutional daily detail",
     }
     if len(selected) != ROLLING_HISTORY_DAYS:
@@ -577,27 +663,28 @@ def _ranking_target_ids(rows: Sequence[Mapping[str, Any]]) -> set[str]:
     return {security_id for security_id in selected if security_id}
 
 
-def _volume_totals(
+def _volume_by_date(
     security_ids: set[str],
     dates: Sequence[str],
     *,
     price_dir: Path | str = PRICE_DIR,
-) -> dict[str, int]:
+) -> dict[str, dict[str, int]]:
     wanted_dates = set(dates)
-    totals: dict[str, int] = {}
+    output: dict[str, dict[str, int]] = {}
     for security_id in security_ids:
         path = Path(price_dir) / f"{security_id}.csv"
-        total = 0
+        values: dict[str, int] = {}
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
                 for row in csv.DictReader(handle):
-                    if str(row.get("date") or "") in wanted_dates:
-                        total += _number(row.get("volume"))
+                    row_date = str(row.get("date") or "")
+                    if row_date in wanted_dates and row.get("volume") not in (None, ""):
+                        values[row_date] = _number(row.get("volume"))
         except Exception:
             continue
-        if total > 0:
-            totals[security_id] = total
-    return totals
+        if values:
+            output[security_id] = values
+    return output
 
 
 def rolling_institutional_metrics(
@@ -612,7 +699,7 @@ def rolling_institutional_metrics(
         return {}
     snapshots = snapshots[-ROLLING_HISTORY_DAYS:]
     dates = [str(item.get("date") or "") for item in snapshots]
-    volume_totals = _volume_totals(security_ids, dates, price_dir=price_dir)
+    volumes = _volume_by_date(security_ids, dates, price_dir=price_dir)
     daily: dict[str, list[Mapping[str, Any]]] = {security_id: [] for security_id in security_ids}
     for snapshot in snapshots:
         by_security = {
@@ -626,15 +713,33 @@ def rolling_institutional_metrics(
     output: dict[str, dict[str, Any]] = {}
     for security_id, series in daily.items():
         item: dict[str, Any] = {}
-        total_volume = volume_totals.get(security_id, 0)
+        security_volumes = volumes.get(security_id, {})
         for label, key in (("foreign", "foreign_net"), ("investment_trust", "investment_trust_net")):
-            metrics = {
-                f"net_{window}d": sum(_number(row.get(key)) for row in series[-window:])
-                for window in ROLLING_WINDOWS
-            }
+            metrics: dict[str, Any] = {}
+            for window in ROLLING_WINDOWS:
+                window_rows = series[-window:]
+                actual = sum(1 for row in window_rows if key in row and row.get(key) is not None)
+                complete = actual == window
+                metrics[f"net_{window}d"] = (
+                    sum(_number(row.get(key)) for row in window_rows) if complete else None
+                )
+                metrics[f"coverage_{window}d"] = {
+                    "required": window,
+                    "actual": actual,
+                    "complete": complete,
+                }
+            price_actual = sum(1 for day in dates if day in security_volumes)
+            total_volume = sum(security_volumes.get(day, 0) for day in dates)
             metrics["concentration_ratio_pct"] = (
-                round(metrics["net_20d"] / total_volume * 100, 2) if total_volume > 0 else None
+                round(metrics["net_20d"] / total_volume * 100, 2)
+                if metrics["net_20d"] is not None and price_actual == ROLLING_HISTORY_DAYS and total_volume > 0
+                else None
             )
+            metrics["price_coverage_20d"] = {
+                "required": ROLLING_HISTORY_DAYS,
+                "actual": price_actual,
+                "complete": price_actual == ROLLING_HISTORY_DAYS,
+            }
             item[label] = metrics
         output[security_id] = item
     return output
@@ -844,6 +949,30 @@ def build_payload(
         "markets": markets,
         "rankings": build_rankings(all_detail_rows, rolling_metrics),
         "institutional_history": institutional_history,
+        "official_security_data": {
+            "date": data_date,
+            "institutional_net": [
+                {
+                    "security_id": str(row.get("security_id") or ""),
+                    "market": str(row.get("market") or ""),
+                    "foreign_net_shares": _number(row.get("foreign_net")),
+                    "investment_trust_net_shares": _number(row.get("investment_trust_net")),
+                    "dealer_net_shares": _number(row.get("dealer_net")),
+                }
+                for row in all_detail_rows if row.get("security_id")
+            ],
+            "margin_balance": [
+                {
+                    "security_id": str(row.get("security_id") or ""),
+                    "market": str(row.get("market") or ""),
+                    "margin_balance_previous_lots": _number(row.get("margin_balance_previous")),
+                    "margin_balance_lots": _number(row.get("margin_balance")),
+                    "short_balance_previous_lots": _number(row.get("short_balance_previous")),
+                    "short_balance_lots": _number(row.get("short_balance")),
+                }
+                for row in [*margin_map["listed"], *margin_map["otc"]] if row.get("security_id")
+            ],
+        },
         "holder_metrics_by_security": holder_metrics,
         "supplemental_data": {
             "margin_date": data_date,
@@ -917,7 +1046,10 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
     except Exception as exc:
         errors["listed"] = str(exc)[:200]
     try:
-        otc_rows = normalize_tpex_payload(_fetch_json(TPEX_URL), date_param)
+        otc_rows = normalize_tpex_history_payload(_fetch_json(
+            TPEX_HISTORY_URL,
+            {"type": "Daily", "sect": "EW", "date": target.strftime("%Y/%m/%d"), "response": "json"},
+        ))
     except Exception as exc:
         errors["otc"] = str(exc)[:200]
     try:
@@ -949,7 +1081,10 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
     except Exception as exc:
         margin_errors["listed"] = str(exc)[:200]
     try:
-        margin_rows["otc"] = normalize_tpex_margin_payload(_fetch_json(TPEX_MARGIN_URL))
+        margin_rows["otc"] = normalize_tpex_margin_history_payload(_fetch_json(
+            TPEX_MARGIN_HISTORY_URL,
+            {"date": target.strftime("%Y/%m/%d"), "id": "", "response": "json"},
+        ))
     except Exception as exc:
         margin_errors["otc"] = str(exc)[:200]
 
@@ -984,7 +1119,7 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
             actual = ", ".join(sorted(item or "missing" for item in row_dates))
             margin_errors[market] = f"margin date {actual} does not align with requested date {expected_date}"
             margin_rows[market] = []
-    retail_metrics, retail_reference = load_retail_weekly_metrics()
+    retail_metrics, retail_reference = load_retail_weekly_metrics(as_of_date=expected_date)
     retail_error = None if retail_metrics and retail_reference else "TDCC archive lacks two complete 200-lot-or-less snapshots"
     institutional_history: dict[str, Any] = {}
     institutional_history_error: str | None = "daily institutional detail is incomplete"
@@ -1038,15 +1173,48 @@ def collect(target_date: date | None = None, *, now: datetime | None = None) -> 
     if target_date is not None:
         return _collect_for_target(target_date, fetched_at)
 
-    latest_failed: dict[str, Any] | None = None
+    failed: list[dict[str, Any]] = []
     for offset in range(MAX_AUTO_LOOKBACK_DAYS):
         candidate = fetched_at.date() - timedelta(days=offset)
         payload = _collect_for_target(candidate, fetched_at)
-        if latest_failed is None:
-            latest_failed = payload
         if _is_complete_snapshot(payload):
+            payload["collection_attempts"] = [
+                {"date": str(item.get("date") or ""), "state": (item.get("data_quality") or {}).get("state")}
+                for item in failed
+            ] + [{"date": payload.get("date"), "state": "ok"}]
             return payload
-    return latest_failed or _collect_for_target(fetched_at.date(), fetched_at)
+        failed.append(payload)
+    if not failed:
+        failed.append(_collect_for_target(fetched_at.date(), fetched_at))
+    def completeness(item: Mapping[str, Any]) -> tuple[int, str]:
+        fresh = sum(1 for artifact in item.get("source_artifacts") or [] if artifact.get("status") == "fresh")
+        return fresh, str(item.get("date") or "")
+    best = max(failed, key=completeness)
+    best["collection_attempts"] = [
+        {
+            "date": str(item.get("date") or ""),
+            "fresh_sources": completeness(item)[0],
+            "warnings": list((item.get("data_quality") or {}).get("warnings") or []),
+        }
+        for item in failed
+    ]
+    return best
+
+
+def write_refresh_status(payload: Mapping[str, Any], *, success: bool, path: Path | str = REFRESH_STATUS_PATH) -> Path:
+    target = Path(path)
+    status = {
+        "dataset_id": "market_flow_refresh_status",
+        "schema_version": "1.0.0",
+        "checked_at": _iso_now().isoformat(),
+        "requested_candidate_date": str(payload.get("date") or ""),
+        "state": "updated" if success else "failed",
+        "prepared_data_date": str(payload.get("date") or "") if success else None,
+        "warnings": list((payload.get("data_quality") or {}).get("warnings") or []),
+    }
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text(json.dumps(status, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return target
 
 
 def main() -> int:
@@ -1058,9 +1226,15 @@ def main() -> int:
     payload = collect(args.date)
     if not _is_complete_snapshot(payload):
         warnings = "; ".join((payload.get("data_quality") or {}).get("warnings") or ["official partitions incomplete"])
-        print(f"[market_flow][WARN] keeping the existing artifact; {warnings}")
-        return 0
+        write_refresh_status(payload, success=False)
+        print(f"[market_flow][ERROR] keeping the last verified artifact; {warnings}")
+        return 1
+    from official_chip_history import build_sidecars, _write_json, CHIP_PATH, MARGIN_PATH
+    chip, margin = build_sidecars(payload)
     write_payload(payload, args.output, args.manifest)
+    _write_json(CHIP_PATH, chip)
+    _write_json(MARGIN_PATH, margin)
+    write_refresh_status(payload, success=True)
     print(f"[market_flow] wrote {args.output} date={payload.get('date')} state={(payload.get('data_quality') or {}).get('state')}")
     return 0
 

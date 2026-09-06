@@ -2,8 +2,12 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures
+from copy import deepcopy
 import csv
 import html
+import math
+from functools import lru_cache
+from datetime import date as date_type
 import json
 import os
 import re
@@ -16,13 +20,14 @@ from jsonschema import Draft202012Validator
 from stock_v2_public.analysis.engine import ENGINE_VERSION, analyze_multi_timeframe, stable_json
 from stock_v2_public.site import STOCK_PAGE_HTML, V2_CSS, V2_JS, stock_redirect_html
 from stock_rules import holding_group
+from stock_v2_public.profile_page import profile_page_html
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
 CANDLE_SCHEMA_PATH = ROOT / "schemas" / "candlestick_pattern_event.schema.json"
-PRIVATE_SOURCE_SHA = "509f2102dbb854297d214562ef509346d3095e14"
+PRIVATE_SOURCE_SHA = "2b3ef38ca47f50132556dbd3c469a48c8810ab3e"
 FIXED_STOP_PCT = 15.0
 
 
@@ -40,13 +45,58 @@ def _csv_rows(path: Path) -> list[dict]:
         return list(csv.DictReader(handle))
 
 
-def load_market_evidence(data_dir: Path, stock_id: str) -> dict:
+@lru_cache(maxsize=8)
+def _official_sidecar(path: Path) -> dict:
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _validated_official_records(path: Path, *, dataset_id: str, unit: str, as_of: str | None) -> list[dict]:
+    payload = _official_sidecar(path)
+    if (
+        payload.get("dataset_id") != dataset_id
+        or payload.get("schema_version") != "1.0.0"
+        or payload.get("unit") != unit
+    ):
+        raise ValueError(f"official sidecar metadata mismatch: {path.name}")
+    data_date = str(payload.get("date") or "")
+    try:
+        data_date = date_type.fromisoformat(data_date).isoformat()
+        if as_of is not None:
+            as_of = date_type.fromisoformat(as_of).isoformat()
+    except ValueError as exc:
+        raise ValueError(f"official sidecar date mismatch: {path.name}") from exc
+    rows = payload.get("rows")
+    if not isinstance(rows, list):
+        raise ValueError(f"official sidecar rows mismatch: {path.name}")
+    validated: list[dict] = []
+    for raw in rows:
+        if not isinstance(raw, dict) or not raw.get("security_id"):
+            raise ValueError(f"official sidecar row mismatch: {path.name}")
+        row = dict(raw)
+        try:
+            row_date = date_type.fromisoformat(str(row.get("date") or "")).isoformat()
+        except ValueError as exc:
+            raise ValueError(f"official sidecar row date mismatch: {path.name}") from exc
+        if row_date > data_date:
+            raise ValueError(f"official sidecar row is newer than dataset date: {path.name}")
+        row["date"] = row_date
+        if as_of is None or row_date <= as_of:
+            validated.append(row)
+    return validated
+
+
+def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = None) -> dict:
     """Build the public-safe synchronized chip panels without importing v44.
 
     Missing datasets stay missing and are disclosed in ``gaps``.  This keeps a
     sparse public cache from silently turning zeroes into fabricated evidence.
     """
 
+    if as_of is not None:
+        try:
+            as_of = date_type.fromisoformat(as_of).isoformat()
+        except ValueError as exc:
+            raise ValueError("market evidence as-of date is invalid") from exc
     gaps: list[str] = []
     source_dates: dict[str, str] = {}
 
@@ -136,6 +186,56 @@ def load_market_evidence(data_dir: Path, stock_id: str) -> dict:
     else:
         gaps.append("holdings")
 
+    # Verified official net values override the corresponding date without inventing buy/sell legs.
+    for filename, unit in (("official_chip_history.json", "shares"), ("official_margin_snapshot.json", "lots")):
+        path = data_dir / filename
+        if not path.exists():
+            continue
+        dataset_id = "official_chip_history" if unit == "shares" else "official_margin_snapshot"
+        records = [
+            row for row in _validated_official_records(path, dataset_id=dataset_id, unit=unit, as_of=as_of)
+            if str(row.get("security_id")) == stock_id
+        ]
+        if unit == "shares":
+            merged = {row["date"]: row for row in institutional}
+            for row in records:
+                item = {"date": row["date"]}
+                for key, source_key in (("foreign", "foreign_net_shares"), ("trust", "investment_trust_net_shares"), ("dealer", "dealer_net_shares")):
+                    value = _float(row.get(source_key))
+                    item[key] = value / 1000 if value is not None else merged.get(row["date"], {}).get(key)
+                item["total"] = sum(item[key] for key in ("foreign", "trust", "dealer")) if all(item[key] is not None for key in ("foreign", "trust", "dealer")) else None
+                merged[row["date"]] = item
+            institutional = [merged[key] for key in sorted(merged)][-260:]
+            if institutional:
+                source_dates["institutional"] = institutional[-1]["date"]
+                gaps = [gap for gap in gaps if gap != "institutional"]
+        else:
+            merged = {row["date"]: row for row in margin}
+            for row in records:
+                merged[row["date"]] = {
+                    "date": row["date"],
+                    "margin_balance": _float(row.get("margin_balance_lots")),
+                    "short_balance": _float(row.get("short_balance_lots")),
+                }
+            margin = [merged[key] for key in sorted(merged)][-260:]
+            if margin:
+                source_dates["margin"] = margin[-1]["date"]
+                gaps = [gap for gap in gaps if gap != "margin"]
+
+    if as_of is not None:
+        for values in (institutional, foreign_ownership, margin, holdings):
+            values[:] = [row for row in values if str(row.get("date") or "") <= as_of]
+        source_dates = {
+            key: values[-1]["date"]
+            for key, values in (
+                ("institutional", institutional),
+                ("foreign_ownership", foreign_ownership),
+                ("margin", margin),
+                ("holdings", holdings),
+            )
+            if values
+        }
+        gaps = [key for key in ("institutional", "foreign_ownership", "margin", "holdings") if key not in source_dates]
     return {
         "institutional": institutional,
         "foreign_ownership": foreign_ownership,
@@ -201,6 +301,40 @@ def load_price_refresh_summary(path: Path) -> dict:
     return payload if isinstance(payload, dict) else {}
 
 
+def load_price_basis(data_dir: Path, stock_id: str, frame: pd.DataFrame, expected_date: str) -> dict:
+    path = data_dir / "price_basis" / f"{stock_id}.json"
+    if not path.exists():
+        raise ValueError("unverified price basis: official history rebuild required")
+    metadata = json.loads(path.read_text(encoding="utf-8"))
+    if metadata.get("mode") != "official_reference_ratio_back_adjusted_v1" or metadata.get("verified") is not True or metadata.get("volume_basis") != "official_raw_shares":
+        raise ValueError("unverified price basis metadata")
+    if str(metadata.get("stock_id") or "") != stock_id:
+        raise ValueError("price basis stock identity mismatch")
+    dates = [str(value) for value in frame["date"]]
+    if not dates or dates != sorted(set(dates)) or dates[-1] != expected_date or any(date_type.fromisoformat(value).isoformat() != value or value > expected_date for value in dates):
+        raise ValueError("price basis dates must be unique, ordered and within as-of")
+    if metadata.get("adjustment_as_of") != expected_date:
+        raise ValueError("price adjustment as-of differs from latest official date")
+    required = ["raw_open", "raw_high", "raw_low", "raw_close", "raw_volume", "adjustment_factor"]
+    if any(key not in frame for key in required):
+        raise ValueError("unverified price basis: missing raw columns")
+    for row in frame.to_dict("records"):
+        raw = {key: float(row[f"raw_{key}"]) for key in ("open", "high", "low", "close", "volume")}
+        if not all(math.isfinite(value) for value in raw.values()) or min(raw[key] for key in ("open","high","low","close")) <= 0 or raw["volume"] < 0 or raw["high"] < max(raw["open"],raw["close"],raw["low"]) or raw["low"] > min(raw["open"],raw["close"]):
+            raise ValueError("invalid raw OHLCV in adjusted price cache")
+        factor = float(row["adjustment_factor"])
+        if not math.isfinite(factor) or factor <= 0:
+            raise ValueError("invalid adjustment factor")
+        for key in ("open", "high", "low", "close"):
+            if not math.isclose(float(row[key]), float(row[f"raw_{key}"])*factor, rel_tol=1e-9, abs_tol=1e-7):
+                raise ValueError("adjusted/raw OHLC mismatch")
+        if not math.isclose(float(row["volume"]), float(row["raw_volume"]), rel_tol=0, abs_tol=1e-8):
+            raise ValueError("volume is not official raw shares")
+    if float(frame.iloc[-1]["adjustment_factor"]) != 1.0:
+        raise ValueError("latest price factor must equal one")
+    return metadata
+
+
 def safe_decision(stock_id: str, decision: dict | None) -> dict:
     if decision:
         return decision
@@ -215,8 +349,11 @@ def safe_decision(stock_id: str, decision: dict | None) -> dict:
 
 
 def trim_packet(packet: dict) -> dict:
-    limit = {"daily": 120, "weekly": 60, "monthly": 36}.get(packet.get("timeframe"), 90)
+    limit = {"daily": 240, "weekly": 60, "monthly": 36}.get(packet.get("timeframe"), 90)
     packet["series"] = packet.get("series", [])[-limit:]
+    if "series_coverage" in packet:
+        packet["series_coverage"]["returned_bars"] = len(packet["series"])
+        packet["series_coverage"]["requested_bars"] = limit
     visible_dates = {row.get("date") for row in packet["series"]}
     annotations = packet.get("candlestick_annotations")
     if annotations:
@@ -255,23 +392,24 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
     try:
         warnings.filterwarnings("ignore", message="some peaks have a prominence of 0")
         frame = pd.read_csv(price_path)
-        if len(frame) < 30:
-            raise ValueError("fewer than 30 OHLCV rows")
+        if frame.empty:
+            raise ValueError("empty OHLCV")
         latest_date = str(frame.iloc[-1]["date"])
         if expected_price_date and latest_date != expected_price_date:
             raise ValueError(f"stale OHLCV: latest={latest_date}, expected={expected_price_date}")
         market = str((((decision.get("evidence") or {}).get("market_risk") or {}).get("market") or "listed"))
         if market not in {"listed", "otc", "emerging"}:
             market = "listed"
+        basis = load_price_basis(Path(data_dir), stock_id, frame, expected_price_date or latest_date)
         packets = analyze_multi_timeframe(
             frame,
             stock_id=stock_id,
-            price_adjustment={"mode": "none", "source": None, "verified": False},
+            price_adjustment=basis,
             decision=decision,
             freshness={"status": freshness_status, "data_date": latest_date, "warnings": global_warnings},
             market=market,
         )
-        market_evidence = load_market_evidence(Path(data_dir), stock_id)
+        market_evidence = load_market_evidence(Path(data_dir), stock_id, as_of=latest_date)
         global _WORKER_VALIDATOR, _WORKER_CANDLE_VALIDATOR
         if validate and _WORKER_VALIDATOR is None:
             _WORKER_VALIDATOR = Draft202012Validator(json.loads(SCHEMA_PATH.read_text(encoding="utf-8")))
@@ -284,7 +422,7 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
             # remain in their source dataset but are intentionally not copied
             # into the public technical packet.
             packet.pop("decision", None)
-            add_public_workbench(packet, market_evidence)
+            add_public_workbench(packet, deepcopy(market_evidence))
             packet["warnings"] = sorted(set(packet.get("warnings", []) + global_warnings))
             if _WORKER_VALIDATOR:
                 _WORKER_VALIDATOR.validate(packet)
@@ -314,8 +452,11 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     for directory in (packet_dir, redirect_dir, asset_dir):
         directory.mkdir(parents=True, exist_ok=True)
     (root / "stock.html").write_text(STOCK_PAGE_HTML, encoding="utf-8")
+    (root / "volume-profile.html").write_text(profile_page_html(), encoding="utf-8")
     (asset_dir / "v2.css").write_text(V2_CSS + "\n", encoding="utf-8")
     (asset_dir / "v2.js").write_text(V2_JS + "\n", encoding="utf-8")
+    for asset in ("volume_profile.js", "volume_profile_ui.js"):
+        (asset_dir / asset).write_text((ROOT / "stock_v2_public" / asset).read_text(encoding="utf-8"), encoding="utf-8")
 
     target_ids = set(stock_map) if all_stocks else set(decisions)
     if only:
