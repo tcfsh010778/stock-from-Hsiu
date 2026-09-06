@@ -42,6 +42,14 @@ class PriceBasisTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "duplicate corporate action"):
             project_adjusted_rows([], [action, action], adjustment_as_of="2026-06-11")
 
+    def test_rejects_invalid_or_future_raw_rows(self) -> None:
+        invalid = {"date": "2026-06-10", "stock_id": "2330", "open": 100, "high": 98, "low": 99, "close": 101, "volume": 1000}
+        with self.assertRaisesRegex(ValueError, "geometry"):
+            project_adjusted_rows([invalid], [], adjustment_as_of="2026-06-11")
+        future = {**invalid, "date": "2026-06-12", "high": 102}
+        with self.assertRaisesRegex(ValueError, "later than adjustment_as_of"):
+            project_adjusted_rows([future], [], adjustment_as_of="2026-06-11")
+
 
 if __name__ == "__main__":
     unittest.main()

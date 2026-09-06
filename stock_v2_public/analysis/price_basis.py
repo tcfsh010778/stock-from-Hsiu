@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import date
+import math
 from typing import Any, Iterable
 
 
@@ -21,7 +22,7 @@ def validate_actions(actions: Iterable[dict[str, Any]]) -> list[dict[str, Any]]:
         stock_id = str(item.get("stock_id") or "").strip()
         previous_close = float(item["previous_close"])
         reference_price = float(item["reference_price"])
-        if not stock_id or previous_close <= 0 or reference_price <= 0:
+        if not stock_id or not math.isfinite(previous_close) or not math.isfinite(reference_price) or previous_close <= 0 or reference_price <= 0:
             raise ValueError("corporate action has invalid stock, previous close, or reference price")
         ratio = reference_price / previous_close
         if not 0 < ratio <= 2:
@@ -65,12 +66,22 @@ def project_adjusted_rows(
     for item in raw_rows:
         row_date = _iso(item.get("date"))
         stock_id = str(item.get("stock_id") or "").strip()
+        if not stock_id:
+            raise ValueError("raw price row is missing stock_id")
+        if row_date > as_of:
+            raise ValueError(f"raw price row is later than adjustment_as_of: {stock_id} {row_date}")
         factor = 1.0
         for action in by_stock.get(stock_id, []):
             if row_date < action["date"]:
                 factor *= float(action["ratio"])
         raw = {field: float(item[field]) for field in ("open", "high", "low", "close")}
         volume = float(item["volume"])
+        if any(not math.isfinite(value) or value <= 0 for value in raw.values()):
+            raise ValueError(f"raw OHLC contains non-finite or non-positive value: {stock_id} {row_date}")
+        if not math.isfinite(volume) or volume < 0:
+            raise ValueError(f"raw volume is invalid: {stock_id} {row_date}")
+        if raw["high"] < max(raw["open"], raw["close"], raw["low"]) or raw["low"] > min(raw["open"], raw["close"], raw["high"]):
+            raise ValueError(f"raw OHLC geometry is invalid: {stock_id} {row_date}")
         output.append(
             {
                 "date": row_date,

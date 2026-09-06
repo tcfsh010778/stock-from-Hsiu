@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import hashlib
 import json
 import math
 import os
@@ -8,6 +9,7 @@ import re
 import tempfile
 import time
 from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -227,6 +229,17 @@ def fetch_history_partitions(
         raise RuntimeError(f"official historical price schema mismatch for {query_date}")
     twse_rows = normalize_twse_history(twse_payload, query_date)
     tpex_rows = normalize_tpex_history(tpex_payload, query_date)
+    if not twse_rows and not tpex_rows:
+        twse_closed = "沒有符合條件的資料" in str(twse_payload.get("stat") or "") and not (twse_payload.get("tables") or [])
+        tpex_tables = tpex_payload.get("tables") or []
+        tpex_closed = (
+            str(tpex_payload.get("stat") or "").lower() == "ok"
+            and source_date_to_iso(tpex_payload.get("date")) == query_date.isoformat()
+            and bool(tpex_tables)
+            and all(not (table.get("data") or []) for table in tpex_tables if isinstance(table, dict))
+        )
+        if not (twse_closed and tpex_closed):
+            raise RuntimeError(f"official historical empty response is not a recognized joint market closure for {query_date}")
     if bool(twse_rows) != bool(tpex_rows):
         raise RuntimeError(
             f"official historical price partitions do not align for {query_date}: "
@@ -367,16 +380,19 @@ def normalize_twse_actions(payload: dict[str, Any]) -> list[dict[str, Any]]:
     ix = {field: fields.index(field) for field in required}
     rows = []
     for raw in payload.get("data") or []:
+        sid = str(raw[ix["股票代號"]]).strip() if len(raw) > ix["股票代號"] else ""
+        if not re.fullmatch(r"\d{4}", sid):
+            continue
         try:
             event_date = source_date_to_iso(raw[ix["資料日期"]])
-            sid = str(raw[ix["股票代號"]]).strip()
             previous = _number(raw[ix["除權息前收盤價"]])
             reference = _number(raw[ix["除權息參考價"]])
-        except (IndexError, TypeError, ValueError):
-            continue
-        if event_date and re.fullmatch(r"\d{4}", sid) and previous > 0 and reference > 0:
-            rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
-                         "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "twse"})
+        except (IndexError, TypeError, ValueError) as exc:
+            raise RuntimeError(f"TWSE corporate action has invalid ordinary-security values: {sid}") from exc
+        if not event_date or previous <= 0 or reference <= 0:
+            raise RuntimeError(f"TWSE corporate action has invalid ordinary-security values: {sid}")
+        rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
+                     "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "twse"})
     return rows
 
 
@@ -391,16 +407,19 @@ def normalize_tpex_actions(payload: dict[str, Any]) -> list[dict[str, Any]]:
     ix = {field: fields.index(field) for field in required}
     rows = []
     for raw in table.get("data") or []:
+        sid = str(raw[ix["代號"]]).strip() if len(raw) > ix["代號"] else ""
+        if not re.fullmatch(r"\d{4}", sid):
+            continue
         try:
             event_date = source_date_to_iso(raw[ix["除權息日期"]])
-            sid = str(raw[ix["代號"]]).strip()
             previous = _number(raw[ix["除權息前收盤價"]])
             reference = _number(raw[ix["除權息參考價"]])
-        except (IndexError, TypeError, ValueError):
-            continue
-        if event_date and re.fullmatch(r"\d{4}", sid) and previous > 0 and reference > 0:
-            rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
-                         "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "tpex"})
+        except (IndexError, TypeError, ValueError) as exc:
+            raise RuntimeError(f"TPEx corporate action has invalid ordinary-security values: {sid}") from exc
+        if not event_date or previous <= 0 or reference <= 0:
+            raise RuntimeError(f"TPEx corporate action has invalid ordinary-security values: {sid}")
+        rows.append({"date": event_date, "stock_id": sid, "previous_close": previous,
+                     "reference_price": reference, "kind": str(raw[ix["權/息"]]).strip(), "market": "tpex"})
     return rows
 
 
@@ -417,7 +436,12 @@ def default_partition_cache() -> Path:
     return base / "stock-from-Hsiu" / "official-price-partitions-v1"
 
 
-def _validate_cached_partition(payload: dict[str, Any], query_date: date) -> list[dict[str, Any]]:
+def _partition_digest(payload: dict[str, Any]) -> str:
+    material = {key: payload[key] for key in ("schema_version", "date", "twse", "tpex")}
+    return hashlib.sha256(json.dumps(material, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+
+
+def _validate_cached_partition(payload: dict[str, Any], query_date: date, minimum_unique_ids: dict[str, int] | None = None) -> list[dict[str, Any]]:
     if payload.get("date") != query_date.isoformat() or payload.get("schema_version") != "1.0.0":
         raise RuntimeError("cached partition date/schema mismatch")
     twse = payload.get("twse")
@@ -428,7 +452,9 @@ def _validate_cached_partition(payload: dict[str, Any], query_date: date) -> lis
         raise RuntimeError("cached partition markets do not align")
     partition_security_ids(twse, "cached TWSE")
     partition_security_ids(tpex, "cached TPEx")
-    minimum = payload.get("minimum_unique_ids") or RECOVERY_MIN_UNIQUE_IDS
+    if payload.get("sha256") != _partition_digest(payload):
+        raise RuntimeError("cached partition digest mismatch")
+    minimum = minimum_unique_ids or RECOVERY_MIN_UNIQUE_IDS
     if twse or tpex:
         counts = {"twse": len(partition_security_ids(twse, "cached TWSE")),
                   "tpex": len(partition_security_ids(tpex, "cached TPEx"))}
@@ -448,17 +474,23 @@ def cached_history_snapshot(
     minimum_unique_ids: dict[str, int] | None = None,
 ) -> list[dict[str, Any]]:
     path = cache_dir / f"{query_date.isoformat()}.json"
+    cached_error: Exception | None = None
+    if path.exists():
+        try:
+            return _validate_cached_partition(json.loads(path.read_text(encoding="utf-8")), query_date, minimum_unique_ids)
+        except Exception as exc:
+            cached_error = exc
     try:
         twse, tpex = fetch_partitions(query_date)
-    except Exception:
-        if not path.exists():
-            raise
-        return _validate_cached_partition(json.loads(path.read_text(encoding="utf-8")), query_date)
+    except Exception as exc:
+        if cached_error is not None:
+            raise cached_error from exc
+        raise
     payload = {"schema_version": "1.0.0", "date": query_date.isoformat(),
-               "minimum_unique_ids": minimum_unique_ids or RECOVERY_MIN_UNIQUE_IDS,
                "twse": [{**row, "market": "twse"} for row in twse],
                "tpex": [{**row, "market": "tpex"} for row in tpex]}
-    _validate_cached_partition(payload, query_date)
+    payload["sha256"] = _partition_digest(payload)
+    _validate_cached_partition(payload, query_date, minimum_unique_ids)
     cache_dir.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(".tmp")
     temporary.write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -651,20 +683,47 @@ def refresh_official_prices(
     all_rows: list[dict[str, Any]] = []
     common_dates: list[str] = []
     warnings: list[str] = []
+    history_dates: list[date] = []
     query_date = start_date
     while query_date < latest_date:
+        history_dates.append(query_date)
+        query_date += timedelta(days=1)
+
+    def load_day(day: date) -> tuple[date, list[dict[str, Any]]]:
+        if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
+            return day, cached_history_snapshot(day, cache_dir=partition_cache_dir or default_partition_cache())
+        return day, fetch_history(day)
+
+    results: dict[date, list[dict[str, Any]]] = {}
+    errors: dict[date, Exception] = {}
+    if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
+        workers = max(1, min(8, int(os.environ.get("V44_OFFICIAL_HISTORY_WORKERS", "6"))))
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(load_day, day): day for day in history_dates}
+            for future in as_completed(futures):
+                day = futures[future]
+                try:
+                    _, results[day] = future.result()
+                except Exception as exc:
+                    errors[day] = exc
+    else:
+        for day in history_dates:
+            try:
+                _, results[day] = load_day(day)
+            except Exception as exc:
+                errors[day] = exc
+
+    for query_date in history_dates:
         try:
-            if rebuild_history_start is not None and fetch_history is fetch_history_snapshot:
-                rows = cached_history_snapshot(query_date, cache_dir=partition_cache_dir or default_partition_cache())
-            else:
-                rows = fetch_history(query_date)
+            if query_date in errors:
+                raise errors[query_date]
+            rows = results.get(query_date, [])
         except Exception as exc:
             warnings.append(f"{query_date.isoformat()}: {exc}")
             rows = []
         if rows:
             all_rows.extend(rows)
             common_dates.append(query_date.isoformat())
-        query_date += timedelta(days=1)
     all_rows.extend(latest_rows)
     common_dates.append(latest_iso)
 

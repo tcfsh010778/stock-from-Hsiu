@@ -28,6 +28,7 @@ class OfficialPriceRefreshTest(unittest.TestCase):
             recovered = prices.cached_history_snapshot(
                 day, cache_dir=cache,
                 fetch_partitions=lambda _: (_ for _ in ()).throw(RuntimeError("HTTP 520")),
+                minimum_unique_ids={"twse": 1, "tpex": 1},
             )
             self.assertEqual(recovered, [{**twse[0], "market": "twse"}, {**tpex[0], "market": "tpex"}])
             payload = json.loads((cache / "2026-08-07.json").read_text(encoding="utf-8"))
@@ -37,7 +38,20 @@ class OfficialPriceRefreshTest(unittest.TestCase):
                 prices.cached_history_snapshot(
                     day, cache_dir=cache,
                     fetch_partitions=lambda _: (_ for _ in ()).throw(RuntimeError("HTTP 520")),
+                    minimum_unique_ids={"twse": 1, "tpex": 1},
                 )
+
+    def test_history_rejects_two_malformed_empty_payloads(self) -> None:
+        with self.assertRaisesRegex(RuntimeError, "not a recognized joint market closure"):
+            prices.fetch_history_partitions(date(2026, 8, 7), lambda *_args, **_kwargs: {})
+
+    def test_action_normalizer_rejects_invalid_ordinary_security_row(self) -> None:
+        payload = {
+            "fields": ["資料日期", "股票代號", "除權息前收盤價", "除權息參考價", "權/息"],
+            "data": [["115年06月11日", "2330", "--", "2248.99", "息"]],
+        }
+        with self.assertRaisesRegex(RuntimeError, "invalid ordinary-security"):
+            prices.normalize_twse_actions(payload)
 
     def test_incremental_refresh_rejects_legacy_price_schema(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
