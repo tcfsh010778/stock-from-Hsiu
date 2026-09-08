@@ -10,6 +10,11 @@ on:
       - 'build_review_data.py'
       - 'review_queue.py'
       - 'review_home.py'
+      - 'mda_weekly_pipeline.py'
+      - 'mda_checklist_page.py'
+      - 'sfz_technical_pipeline.py'
+      - 'stock_v2_public/analysis/mda_checklist.py'
+      - 'stock_v2_public/analysis/sfz_universe.py'
       - 'stock_v2_public/analysis/sfz_review.py'
       - '.github/workflows/review_home_publish.yml'
 
@@ -45,7 +50,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/review_queue.json data/sfz_technical_candidates.json docs/data/review_queue.json docs/data/sfz_technical_candidates.json docs/index.html docs/review-pool.html docs/review-rules.html docs/css/review-home.css docs/js/review-home.js
+          git add data/review_queue.json data/sfz_technical_candidates.json data/mda_checklist_candidates.json docs/data/review_queue.json docs/data/sfz_technical_candidates.json docs/data/mda_checklist_candidates.json docs/data/mda_weekly_top50.json docs/index.html docs/review-pool.html docs/review-rules.html docs/mda-checklist.html docs/css/review-home.css docs/js/review-home.js
           if git diff --cached --quiet; then
             echo 'changed=false' >> "$GITHUB_OUTPUT"
             exit 0

@@ -62,6 +62,8 @@ INDUSTRY_CACHE_PATH = LOCAL_DATA_DIR / "stock_industries.json"
 PUBLIC_DATA_FILES = [
     SFZ_ALL_PATH,
     LOCAL_DATA_DIR / "review_queue.json",
+    LOCAL_DATA_DIR / "mda_checklist_candidates.json",
+    LOCAL_DATA_DIR / "mda_weekly_top50.json",
     LOCAL_DATA_DIR / "sfz_technical_candidates.json",
     MARKET_SENTIMENT_PATH,
     CARYBOT_SIGNALS_PATH,
@@ -5903,6 +5905,8 @@ def build_index_page(reports: list[dict]) -> str:
 
 def review_html_page(title: str, active: str, content: str) -> str:
     page = html_page(title, active, content)
+    review_footer = '<footer><p>價格、週股權與各項證據的日期分別列示於頁面；缺漏資料不視為符合條件。</p><p>資料來源：FinMind · TWSE · TPEx · TDCC，依個股驗證紀錄。僅供研究與人工複判。</p></footer>'
+    page = page.replace(footer_html(), review_footer, 1)
     links = [("home", "index.html", "複判首頁"), ("selection", "review-pool.html", "觀察池"),
              ("stocks", "stocks.html", "個股查詢"), ("history", "history.html", "歷史分析")]
     nav = '<nav><span class="nav-brand">Stockfrom脩</span>' + ''.join(
@@ -5913,9 +5917,11 @@ def review_html_page(title: str, active: str, content: str) -> str:
 
 def write_review_pages(reports: list[dict]) -> None:
     from review_home import body, write_assets, RULES
+    from mda_checklist_page import BODY as CHECKLIST_BODY
     write_assets(OUTPUT_DIR)
     (OUTPUT_DIR / "review-pool.html").write_text(review_html_page("兩路徑觀察池", "selection", body()), encoding="utf-8")
     (OUTPUT_DIR / "review-rules.html").write_text(review_html_page("判讀規則", "home", '<link rel="stylesheet" href="css/review-home.css">' + RULES), encoding="utf-8")
+    (OUTPUT_DIR / "mda-checklist.html").write_text(review_html_page("M 大個股檢核表", "selection", '<link rel="stylesheet" href="css/review-home.css">' + CHECKLIST_BODY), encoding="utf-8")
 
 
 def _m_check(text: str, cls: str = "") -> str:
@@ -10600,7 +10606,7 @@ def main():
         reports = json.loads(REPORTS_CACHE_PATH.read_text(encoding="utf-8-sig")) if REPORTS_CACHE_PATH.exists() else []
         if reports:
             set_site_latest_report_date(reports)
-        publish_data_assets([LOCAL_DATA_DIR / "review_queue.json", LOCAL_DATA_DIR / "sfz_technical_candidates.json"])
+        publish_data_assets([LOCAL_DATA_DIR / "review_queue.json", LOCAL_DATA_DIR / "sfz_technical_candidates.json", LOCAL_DATA_DIR / "mda_checklist_candidates.json", LOCAL_DATA_DIR / "mda_weekly_top50.json"])
         write_review_pages(reports)
         (OUTPUT_DIR / "index.html").write_text(build_index_page(reports), encoding="utf-8")
         print("[OK] review homepage, pool, rules and datasets")

@@ -370,17 +370,11 @@ footer .disclaimer{color:#e74c3c;margin-top:6px;font-size:11px}
 </head>
 <body>
 <nav><span class="nav-brand">Stockfrom脩</span><a class="tab active" href="index.html">複判首頁</a><a class="tab " href="review-pool.html">觀察池</a><a class="tab " href="stocks.html">個股查詢</a><a class="tab " href="history.html">歷史分析</a></nav>
-<link rel="stylesheet" href="css/review-home.css"><div class="container"><div class="page-title">兩條路徑的規則與限制</div><p>規則版本 sfz-technical-review-candidate-v1.0.0。Stock from Zero 技術分析教材中的趨勢、箱型、突破、回測概念被整理為可重跑的工程候選規則；數值門檻不是教材原文公式，也不是 AI 勝率或買進指令。</p>
-<table class="review-rule-table"><tr><th>SFZ 技術觀察</th><th>目前實作</th></tr><tr><td>趨勢背景</td><td>收盤 > SMA20 > SMA60，SMA20 較五根前上升；至少完整 60 根。</td></tr><tr><td>箱型</td><td>突破前 20 根、寬度不超過 12%；上下緣各至少兩次接觸，接觸容差 2%。</td></tr><tr><td>突破</td><td>收盤高於原箱頂 1%，成交量至少為箱型均量 1.2 倍；只使用當時已知資料。</td></tr><tr><td>回測</td><td>靠近原箱頂 +2%／-1% 範圍後，重新收在箱頂以上；最新收盤不低於前一根。</td></tr><tr><td>失效</td><td>突破後曾收盤低於原箱頂 2%。不是資料缺漏或搜尋視窗結束就當作失效。</td></tr></table>
-<p>M 大使用既有候選池及原本長期條件，不要求先通過 SFZ。四／八週股權結構與 A／B1／B2 各自保留，熱族群不是新加的必要條件。只在日期、還原價及長期籌碼驗證通過後產生新提醒。</p>
+<link rel="stylesheet" href="css/review-home.css"><div class="container"><div class="page-title">兩條路徑的規則與限制</div><p>SFZ 股票池採教材初篩，與 M 大名單獨立。週 MA5 > MA21 > MA89 須有完整 89 週；近五日成交量合計超過一萬張、八週平均漲幅超過 5%、收盤超過 20 元、收盤在日 MA34 上方且 MA34 上升。量能與動能門檻是教材當時的示例，可隨市場調整；八週平均採既有程式的每週報酬算術平均，原文未提供唯一算式。通過初篩不代表進場。</p>
+<table class="review-rule-table"><tr><th>箱型突破子項（不決定股票池）</th><th>版本化工程觀察</th></tr><tr><td>趨勢背景</td><td>收盤 > SMA20 > SMA60，SMA20 較五根前上升；至少完整 60 根。</td></tr><tr><td>箱型</td><td>突破前 20 根、寬度不超過 12%；上下緣各至少兩次接觸，接觸容差 2%。</td></tr><tr><td>突破</td><td>收盤高於原箱頂 1%，成交量至少為箱型均量 1.2 倍；只使用當時已知資料。</td></tr><tr><td>回測</td><td>靠近原箱頂 +2%／-1% 範圍後，重新收在箱頂以上；最新收盤不低於前一根。</td></tr><tr><td>失效</td><td>突破後曾收盤低於原箱頂 2%。不是資料缺漏或搜尋視窗結束就當作失效。</td></tr></table>
+<p>M 大以每週上市與上櫃合計、400 張以上大戶持股百分點增加 Top 50 為研究入口。原書的熟悉型態入口為 A 或 X；長期籌碼 B1 與賣壓 B2 分開檢核。Top 50 是使用者指定的研究流程；不代表書中固定門檻，也不代表這 50 檔全部符合條件。逐項檢核分為實測、工程觀察與人工確認，不計算綜合總分。</p>
 <p>目前不涵蓋 SFZ 所有教材章節、週／日層級切換、所有旗形與三角形、AI 選區／POC。公開歷史資料仍在修復，缺少已驗證還原價的股票會排除計算，而非假裝沒有訊號。</p>
 <p>首頁保留每日差異與完整觀察池；首次建立資料基準、規則版本改變、來源曾失效後恢復時先建立基準。來源日期與判讀日期分開，日價格與週籌碼不混成同一天。</p><a href="index.html">回人工複判首頁 →</a></div>
-
-<footer>
-  <p class="site-freshness">資料更新：2026-09-03 收盤後</p>
-  <p>資料來源：FinMind 付費版 · TWSE · Yahoo Finance</p>
-  <p class="disclaimer">本站資訊僅供研究參考，不構成投資建議，投資人應自行判斷並承擔風險。</p>
-  <p style="margin-top:6px">© 2026 Stockfrom脩 · 每個交易日自動更新</p>
-</footer>
+<footer><p>價格、週股權與各項證據的日期分別列示於頁面；缺漏資料不視為符合條件。</p><p>資料來源：FinMind · TWSE · TPEx · TDCC，依個股驗證紀錄。僅供研究與人工複判。</p></footer>
 </body>
 </html>

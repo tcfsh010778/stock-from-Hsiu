@@ -358,11 +358,19 @@ def main() -> None:
     months = int(os.environ.get("V44_FETCH_MONTHS", "24"))
     scope = os.environ.get("V44_REFRESH_SCOPE", "latest").strip().lower()
     stock_ids = collect_stock_ids()
+    from verified_price_guard import protected_ids
+    protected = protected_ids(LOCAL_PRICE_DIR.parent)
+    raw_ids = set(stock_ids) - protected
+    if protected:
+        print(f'[refresh_prices] protected adjusted histories={len(protected)}; updated by verified source pipeline')
+    if not raw_ids:
+        print('[refresh_prices] no raw histories to update; adjusted data preserved')
+        return
     print(f"[refresh_prices] scope={scope} stocks={len(stock_ids)} months={months}")
     initial_days = int(os.environ.get("V44_OFFICIAL_INITIAL_BACKFILL_DAYS", "75"))
     overlap_days = int(os.environ.get("V44_OFFICIAL_OVERLAP_DAYS", "7"))
     summary = refresh_official_prices(
-        stock_ids=set(stock_ids),
+        stock_ids=raw_ids,
         price_dir=LOCAL_PRICE_DIR,
         summary_path=PRICE_REFRESH_SUMMARY_PATH,
         initial_days=initial_days,
