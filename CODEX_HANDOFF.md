@@ -1,5 +1,14 @@
 # Codex Handoff
 
+## 2026-09-08 Authorized partial-data feature release
+
+- User explicitly approved publication of PR36 and private PR16 after the partial-data limitations were disclosed. This supersedes the prior draft-only release hold for the feature version; it does not mark historical depth, latest prices or long-term holder repair complete.
+- Private PR16 merged as 03a0fc6fd2168b9dce96aa367d41457eef1342b3. Public release retains the reviewed 114 verified price pairs through 2026-09-04 and weekly Top50. The external batch finished with 1,459 successful and 526 rejected symbols; additional outputs are not silently imported into this release.
+- Freshness regenerated for 2026-09-08. Stale verified charts remain available with explicit historical-only warnings; future data or unverified basis is rejected. Homepage gates remain blocked with zero current alerts while daily inputs are stale. Formal full-data acceptance thresholds remain unchanged.
+- Integrated current main institutional-flow changes, preserving the scheduled writer's unrelated outputs. Tests cover verified stale display, future-date rejection, SMA coverage and existing source gates. Deployment and final CI evidence will be recorded in coordination Issue34 and the host handoff.
+- Remaining work: validate/import the larger batch, repair rejected rows through legitimate sources, update latest sessions, obtain authorized continuous long-holder history and qualify the daily producer/calendar. No order execution or new scheduler enabled.
+
+
 ## 2026-09-07 SFZ textbook universe and weekly MDA checklist (draft, Issue 34)
 
 - Status: implementation and partial real-data preview; NOT deployed. Full-market history, long-term holder access, and sustainable daily producer remain release blockers. Do not merge this draft as a completed data repair.
