@@ -101,3 +101,16 @@ def test_site_javascript_parses(tmp_path):
     script.write_text(V2_JS, encoding="utf-8")
     result = subprocess.run(["node", "--check", str(script)], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def test_verified_stale_history_remains_available_with_warning(tmp_path):
+    from generate_v2 import analyze_stock_task
+    fixture(tmp_path, 520)
+    _, _, packets, error = analyze_stock_task(("9001", "Synthetic", tmp_path / "prices/9001.csv", tmp_path, {}, "fresh", "2026-09-08", [], True))
+    assert error is None
+    daily = next(p for p in packets if p["timeframe"] == "daily")
+    assert daily["freshness"]["status"] == "stale"
+    assert daily["freshness"]["warnings"]
+    assert daily["data_date"] == "2026-09-04" and len(daily["series"]) == 240
+    _, _, packets, error = analyze_stock_task(("9001", "Synthetic", tmp_path / "prices/9001.csv", tmp_path, {}, "fresh", "2026-09-03", [], True))
+    assert packets is None and "future OHLCV" in error

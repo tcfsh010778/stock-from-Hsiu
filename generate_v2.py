@@ -302,18 +302,25 @@ def analyze_stock_task(args: tuple) -> tuple[str, str, list[dict] | None, str | 
         if frame.empty:
             raise ValueError("empty OHLCV")
         latest_date = str(frame.iloc[-1]["date"])
-        if expected_price_date and latest_date != expected_price_date:
-            raise ValueError(f"stale OHLCV: latest={latest_date}, expected={expected_price_date}")
+        if expected_price_date and latest_date > expected_price_date:
+            raise ValueError(f"future OHLCV: latest={latest_date}, expected={expected_price_date}")
+        price_stale = bool(expected_price_date and latest_date < expected_price_date)
         market = str((((decision.get("evidence") or {}).get("market_risk") or {}).get("market") or "listed"))
         if market not in {"listed", "otc", "emerging"}:
             market = "listed"
-        basis = load_price_basis(Path(data_dir), stock_id, frame, expected_price_date or latest_date)
+        try:
+            basis = load_price_basis(Path(data_dir), stock_id, frame, latest_date)
+        except ValueError as exc:
+            if price_stale:
+                raise ValueError(f"stale OHLCV without verified historical basis: {exc}") from exc
+            raise
         packets = analyze_multi_timeframe(
             frame,
             stock_id=stock_id,
             price_adjustment=basis,
             decision=decision,
-            freshness={"status": "fresh", "data_date": latest_date, "warnings": []},
+            freshness={"status": "stale" if price_stale else "fresh", "data_date": latest_date,
+                       "warnings": [f"行情尚未更新：資料 {latest_date}，預期 {expected_price_date}；僅供歷史核對。"] if price_stale else []},
             market=market,
         )
         market_evidence = load_market_evidence(Path(data_dir), stock_id, as_of=latest_date)
