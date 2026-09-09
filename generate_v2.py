@@ -10,6 +10,7 @@ import re
 import warnings
 import shutil
 from pathlib import Path
+from functools import lru_cache
 
 import pandas as pd
 from jsonschema import Draft202012Validator
@@ -17,6 +18,7 @@ from jsonschema import Draft202012Validator
 from stock_v2_public.analysis.engine import ENGINE_VERSION, analyze_multi_timeframe, stable_json
 from stock_v2_public.site import STOCK_PAGE_HTML, V2_CSS, V2_JS, stock_redirect_html
 from stock_rules import holding_group
+from tools.official_workbench import merge_official_evidence, prepare_official_evidence
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
@@ -39,6 +41,17 @@ def _csv_rows(path: Path) -> list[dict]:
         return []
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+@lru_cache(maxsize=4)
+def _prepared_market_evidence(data_dir: str, as_of: str, source_versions: tuple) -> dict:
+    """Index shared official sources once per worker and source revision."""
+    root = Path(data_dir)
+    payloads = []
+    for name in ("daily_market_flow.json", "tdcc_compact_weekly_snapshots.json"):
+        path = root / name
+        payloads.append(json.loads(path.read_text(encoding="utf-8-sig")) if path.exists() else {})
+    return prepare_official_evidence(as_of, *payloads)
 
 
 def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = None) -> dict:
@@ -160,7 +173,7 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         ('institutional', institutional), ('foreign_ownership', foreign_ownership),
         ('margin', margin), ('holdings', holdings)) if values}
     gaps = [key for key in ('institutional', 'foreign_ownership', 'margin', 'holdings') if key not in source_dates]
-    return {
+    evidence = {
         "institutional": institutional,
         "foreign_ownership": foreign_ownership,
         "margin": margin,
@@ -168,6 +181,12 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         "source_dates": source_dates,
         "gaps": gaps,
     }
+    if as_of:
+        paths = [data_dir / name for name in ("daily_market_flow.json", "tdcc_compact_weekly_snapshots.json")]
+        versions = tuple((path.stat().st_mtime_ns, path.stat().st_size) if path.exists() else None for path in paths)
+        prepared = _prepared_market_evidence(str(data_dir.resolve()), as_of, versions)
+        evidence = merge_official_evidence(evidence, stock_id, as_of, {}, {}, prepared=prepared)
+    return evidence
 
 
 def add_public_workbench(packet: dict, market_evidence: dict | None = None) -> dict:

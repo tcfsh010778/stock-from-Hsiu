@@ -75,6 +75,13 @@ jobs:
       - name: Generate holder page and update record
         run: python generate_site.py --holder-only
 
+      - name: Refresh independent review queue and MDA checklist
+        run: |
+          PRICE_DATE=$(python -c "import json; print(json.load(open('data/official_adjusted_update_manifest.json'))['data_as_of'])")
+          python build_review_data.py --as-of "$PRICE_DATE"
+          python generate_site.py --review-only
+          python tools/verify_review_home.py
+
       - name: Verify holder artifact
         run: |
           python -c "import json; p=json.load(open('data/weekly_holder_risers.json', encoding='utf-8')); assert len(p.get('weekly_dates') or []) == 6; assert 0 < p.get('row_count', 0) <= 50; assert p.get('six_week_complete_count') == p.get('row_count'); assert p.get('source_state') == 'tdcc_official'"
@@ -101,6 +108,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/official_stock_universe.json data/tdcc_compact_weekly_snapshots.json data/mda_weekly_top50.json data/stock_markets.json data/holder_weekly_snapshots.json data/weekly_holder_risers.json data/holder_update_status.json data/daily_market_flow.json data/freshness_manifest.json docs/data/weekly_holder_risers.json docs/data/holder_update_status.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/holder-risers.html docs/institutional-flow.html docs/index.html
+          git add data/review_queue.json data/sfz_technical_candidates.json data/mda_checklist_candidates.json docs/data/review_queue.json docs/data/sfz_technical_candidates.json docs/data/mda_checklist_candidates.json docs/data/mda_weekly_top50.json docs/review-pool.html docs/review-rules.html docs/mda-checklist.html docs/css/review-home.css docs/js/review-home.js
           if git diff --cached --quiet; then
             echo "No holder-history changes to commit."
             exit 0
