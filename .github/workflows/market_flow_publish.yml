@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: daily-stock-site-update
@@ -29,11 +30,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install public build dependencies
+        run: python -m pip install -r requirements-v2.lock requests
+
       - name: Sync latest main
         run: git pull --ff-only origin main
 
       - name: Refresh complete official institutional flow
-        run: python market_flow.py
+        run: python market_flow.py --strict
 
       - name: Generate focused institutional-flow pages
         run: |
@@ -53,11 +57,20 @@ jobs:
           grep -q '融資增減' docs/holder-risers.html
           grep -q '資券比' docs/holder-risers.html
 
+      - name: Refresh V2 workbench packets from official evidence
+        run: |
+          python generate_v2.py --validate --switch-navigation
+          python tools/verify_v2_public.py --navigation switched
+
       - name: Commit and push institutional-flow pages
+        id: publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data/daily_market_flow.json data/freshness_manifest.json docs/data/daily_market_flow.json docs/data/freshness_manifest.json docs/index.html docs/institutional-flow.html docs/holder-risers.html
+          test ! -e docs/.v2-staging
+          test ! -e docs/.v2-previous
+          git add docs/v2/ docs/stocks.html
           if git diff --cached --quiet; then
             echo "No institutional-flow changes to commit."
             exit 0
@@ -65,3 +78,10 @@ jobs:
           git commit -m "Update institutional flow"
           git pull --rebase origin main
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Publish generated institutional and workbench pages
+        if: steps.publish.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"

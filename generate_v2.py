@@ -72,17 +72,19 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         if not date or buy is None or sell is None:
             continue
         item = institutional_by_date.setdefault(
-            date, {"date": date, "foreign": 0.0, "trust": 0.0, "dealer": 0.0, "total": 0.0}
+            date, {"date": date, "foreign": None, "trust": None, "dealer": None, "total": None}
         )
         net_lots = (buy - sell) / 1000.0
         name = str(row.get("name") or "")
         if "Foreign" in name:
-            item["foreign"] += net_lots
+            item["foreign"] = (item["foreign"] or 0.0) + net_lots
         elif "Investment_Trust" in name:
-            item["trust"] += net_lots
+            item["trust"] = (item["trust"] or 0.0) + net_lots
         elif "Dealer" in name:
-            item["dealer"] += net_lots
-        item["total"] += net_lots
+            item["dealer"] = (item["dealer"] or 0.0) + net_lots
+    for item in institutional_by_date.values():
+        if all(item[key] is not None for key in ("foreign", "trust", "dealer")):
+            item["total"] = sum(item[key] for key in ("foreign", "trust", "dealer"))
     institutional = [institutional_by_date[key] for key in sorted(institutional_by_date)][-260:]
     if institutional:
         source_dates["institutional"] = institutional[-1]["date"]
@@ -138,7 +140,11 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
             if level == "total":
                 item["total_people"] = int(people) if people is not None else None
                 continue
-            group = holding_group(level)
+            if level.isdigit():
+                band = int(level)
+                group = "major" if 12 <= band <= 15 else "middle" if band == 11 else "retail" if 1 <= band <= 3 else "other"
+            else:
+                group = holding_group(level)
             if group in {"major", "middle", "retail"} and percent is not None:
                 item[group] += percent
         for key in ("major", "middle", "retail"):

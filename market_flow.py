@@ -1073,6 +1073,9 @@ def main() -> int:
         warnings = "; ".join((payload.get("data_quality") or {}).get("warnings") or ["official partitions incomplete"])
         print(f"[market_flow][WARN] keeping the existing artifact; {warnings}")
         return 1 if args.strict else 0
+    from tools.official_workbench import accumulate_workbench_history
+    previous = json.loads(args.output.read_text(encoding="utf-8-sig")) if args.output.exists() else {}
+    payload = accumulate_workbench_history(payload, previous)
     write_payload(payload, args.output, args.manifest)
     print(f"[market_flow] wrote {args.output} date={payload.get('date')} state={(payload.get('data_quality') or {}).get('state')}")
     return 0
