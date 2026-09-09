@@ -5900,6 +5900,8 @@ def build_index_page(reports: list[dict]) -> str:
 
 def review_html_page(title: str, active: str, content: str) -> str:
     page = html_page(title, active, content)
+    if SITE_LATEST_REPORT_DATE:
+        page = page.replace("</head>", f'<meta name="build-session" content="{esc(SITE_LATEST_REPORT_DATE)}">\n</head>', 1)
     review_footer = '<footer><p>價格、週股權與各項證據的日期分別列示於頁面；缺漏資料不視為符合條件。</p><p>資料來源：FinMind · TWSE · TPEx · TDCC，依個股驗證紀錄。僅供研究與人工複判。</p></footer>'
     page = page.replace(footer_html(), review_footer, 1)
     links = [("home", "index.html", "複判首頁"), ("selection", "review-pool.html", "觀察池"),

@@ -50,6 +50,18 @@ def html_pages(docs_dir: Path) -> list[Path]:
     )
 
 
+def contains_text(path: Path, needle: str) -> bool:
+    """Stop at the freshness header instead of loading megabytes of chart JSON."""
+    carry = ""
+    with path.open("r", encoding="utf-8", errors="replace") as handle:
+        while chunk := handle.read(65536):
+            text = carry + chunk
+            if needle in text:
+                return True
+            carry = text[-max(len(needle) - 1, 0):]
+    return False
+
+
 def fail(message: str) -> None:
     raise SystemExit(f"daily update artifact verification failed: {message}")
 
@@ -73,8 +85,7 @@ def verify_artifacts(root: Path, expected_session: str | None = None) -> Verific
 
     stale_pages: list[Path] = []
     for page in html_pages(root / "docs"):
-        page_text = page.read_text(encoding="utf-8", errors="replace")
-        if latest not in page_text:
+        if not contains_text(page, latest):
             stale_pages.append(page.relative_to(root))
     if stale_pages:
         sample = ", ".join(str(path) for path in stale_pages[:10])

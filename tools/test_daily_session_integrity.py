@@ -43,6 +43,21 @@ class DailySessionIntegrityTests(unittest.TestCase):
         )
         return root
 
+    def test_streamed_date_match_across_chunk_boundary(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "large.html"
+            path.write_text("x" * 65532 + self.SESSION + "y" * 70000, encoding="utf-8")
+            self.assertTrue(verifier.contains_text(path, self.SESSION))
+            self.assertFalse(verifier.contains_text(path, "2026-09-08"))
+
+    def test_review_shell_reports_build_session_without_claiming_all_evidence_fresh(self):
+        from unittest.mock import patch
+        import generate_site
+        with patch.object(generate_site, "SITE_LATEST_REPORT_DATE", self.SESSION):
+            page = generate_site.review_html_page("Review", "home", "content")
+        self.assertIn('<meta name="build-session" content="2026-09-09">', page)
+        self.assertNotIn('class="site-freshness"', page)
+
     def test_valid_weekday_common_session(self):
         with tempfile.TemporaryDirectory() as folder:
             result = verifier.verify_artifacts(self.make_root(folder), self.SESSION)
