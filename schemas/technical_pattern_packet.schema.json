@@ -243,6 +243,14 @@
                   "string",
                   "null"
                 ]
+              },
+              "age_days": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "freshness_window_days": {
+                "type": "integer",
+                "minimum": 0
               }
             },
             "additionalProperties": false

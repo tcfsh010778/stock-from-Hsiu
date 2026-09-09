@@ -6,7 +6,8 @@ from datetime import date
 import pytest
 
 from tools.update_weekly_mda_pool import (
-    ARCHIVE_ID, load_reliable_universe, normalize_latest, seed_compact_snapshot, top50, update,
+    ARCHIVE_ID, compact_core, compact_core_difference, load_reliable_universe, normalize_latest, seed_compact_snapshot, top50, update,
+    validate_documented_coverage,
 )
 
 
@@ -52,8 +53,9 @@ def test_complete_two_market_update_emits_public_pool_contract():
 
 
 def test_missing_stock_duplicate_level_future_date_and_one_market_fail_closed():
-    with pytest.raises(ValueError, match="missing universe"):
+    with pytest.raises(ValueError, match="count=1") as error:
         normalize_latest(raw(missing="6488"), universe(), as_of="2026-09-09")
+    assert "6488" in str(error.value) and "乙" in str(error.value) and "otc" in str(error.value)
     with pytest.raises(ValueError, match="duplicate"):
         normalize_latest(raw(duplicate=True), universe(), as_of="2026-09-09")
     with pytest.raises(ValueError, match="newer than"):
@@ -70,8 +72,19 @@ def test_same_week_is_idempotent_but_changed_raw_is_rejected():
     second_archive, second_pool = update(universe(), deepcopy(first_archive), as_of="2026-09-09", fetch_rows=raw)
     assert first_archive == second_archive and first_pool == second_pool
     changed = raw(); changed[11]["占集保庫存數比例%"] = "3"
-    with pytest.raises(ValueError, match="same-date"):
+    with pytest.raises(ValueError, match="changed.*1101"):
         update(universe(), source, as_of="2026-09-09", fetch_rows=lambda: changed)
+
+
+def test_same_date_core_uses_official_two_decimal_precision_but_reports_real_changes():
+    old = compact(); current = deepcopy(old)
+    current["rows"][0]["major_percent"] = 7.000000000000001
+    assert compact_core(old) == compact_core(current)
+    current["rows"][0]["major_percent"] = 7.01
+    diff = compact_core_difference(old, current)
+    assert diff == {"old_count": 2, "new_count": 2, "missing_ids": [], "added_ids": [],
+                    "changed": [{"security_id": "1101", "old": ("listed", 7.0, 40),
+                                 "new": ("listed", 7.01, 40)}]}
 
 
 def test_same_date_ignores_name_and_metadata_but_rejects_duplicate_or_older_archive():
@@ -127,3 +140,36 @@ def test_universe_provenance_and_date_are_recorded_and_checked():
     assert updated["snapshots"][-1]["universe_source_sha256"] == digest
     with pytest.raises(ValueError, match="stale or from the future"):
         update(universe(), archive(compact()), as_of="2026-09-09", universe_as_of="2026-09-03", fetch_rows=raw)
+
+
+def test_documented_suspension_coverage_requires_exact_arithmetic_dates_hash_and_disjoint_ids():
+    event = {"security_id": "6488", "name": "乙", "market": "otc", "event_type": "reduction",
+             "stop_date": "2026-09-02", "resume_date": "2026-09-09", "known_at": "2026-09-10T00:00:00Z",
+             "reason": "彌補虧損", "query_start": "2026-09-04", "query_end": "2026-09-10",
+             "source_url": "https://www.tpex.org.tw/www/zh-tw/bulletin/revivt", "raw_sha256": "a" * 64}
+    coverage = {"expected_count": 2, "observed_count": 1,
+                "expected_market_counts": {"listed": 1, "otc": 1},
+                "observed_market_counts": {"listed": 1, "otc": 0},
+                "excluded_official_suspensions": [event]}
+    assert validate_documented_coverage(coverage, "2026-09-04", observed_ids={"1101"})
+    bad = deepcopy(coverage); bad["observed_count"] = 2
+    with pytest.raises(ValueError, match="arithmetic"):
+        validate_documented_coverage(bad, "2026-09-04", observed_ids={"1101"})
+    with pytest.raises(ValueError, match="overlap"):
+        validate_documented_coverage(coverage, "2026-09-04", observed_ids={"1101", "6488"})
+    for key, value, message in (("expected_count", True, "nonnegative integers"),
+                                ("observed_count", -1, "nonnegative integers")):
+        bad = deepcopy(coverage); bad[key] = value
+        with pytest.raises(ValueError, match=message):
+            validate_documented_coverage(bad, "2026-09-04")
+    for key, value, message in (("source_url", "https://example.com", "identity/source"),
+                                ("reason", "", "identity/source"),
+                                ("query_end", "2026-09-08", "query bounds")):
+        bad = deepcopy(coverage); bad["excluded_official_suspensions"][0][key] = value
+        with pytest.raises(ValueError, match=message):
+            validate_documented_coverage(bad, "2026-09-04")
+
+
+def test_legacy_complete_pool_without_coverage_remains_compatible():
+    from tools.update_weekly_mda_pool import validate_pool_coverage
+    assert validate_pool_coverage({"quality": "complete", "status": "ok"})

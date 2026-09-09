@@ -263,7 +263,7 @@ def build(data: Path, as_of: str):
                 'excluded_count': len(sfz['excluded'])},
         'mda': {'status': mda['quality'], 'data_date': mda['pool_date'], 'candidate_count': mda.get('weekly_count', len(mda_ids)),
                 'retained_count': mda.get('retained_count', 0),
-                'eligible_count': mda['eligible_count']},
+                'eligible_count': mda['eligible_count'], 'coverage': mda.get('pool_coverage', {})},
     }
     atomic_json(data / 'sfz_technical_candidates.json', sfz)
     atomic_json(data / 'mda_checklist_candidates.json', mda)

@@ -8,7 +8,7 @@ import json
 import math
 import os
 import tempfile
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from typing import Any, Callable
 
@@ -16,6 +16,12 @@ from tools.recover_weekly_holder_pool import BANDS, MAJOR_LEVELS, strict_saved_r
 
 ARCHIVE_ID = "tdcc_compact_weekly_snapshots"
 SOURCE = "https://openapi.tdcc.com.tw/v1/opendata/1-5"
+OFFICIAL_SUSPENSION_SOURCES = {
+    ("listed", "reduction"): "https://www.twse.com.tw/rwd/zh/reducation/TWTAUU",
+    ("listed", "par_value"): "https://www.twse.com.tw/rwd/zh/change/TWTB8U",
+    ("otc", "reduction"): "https://www.tpex.org.tw/www/zh-tw/bulletin/revivt",
+    ("otc", "par_value"): "https://www.tpex.org.tw/www/zh-tw/bulletin/pvChgRslt",
+}
 
 
 def field(row: dict[str, Any], name: str) -> Any:
@@ -39,7 +45,8 @@ def number(value: Any) -> float:
     return result
 
 
-def normalize_latest(raw_rows: list[dict[str, Any]], universe: list[dict[str, str]], *, as_of: str) -> dict[str, Any]:
+def normalize_latest(raw_rows: list[dict[str, Any]], universe: list[dict[str, str]], *, as_of: str,
+                     documented_exclusions: dict[str, dict[str, Any]] | None = None) -> dict[str, Any]:
     refs = {row["security_id"]: row for row in universe}
     grouped: dict[str, dict[int, dict[str, Any]]] = {}
     dates: set[str] = set()
@@ -67,10 +74,38 @@ def normalize_latest(raw_rows: list[dict[str, Any]], universe: list[dict[str, st
     if data_date > date.fromisoformat(as_of).isoformat():
         raise ValueError("TDCC latest response is newer than as-of")
     missing = sorted(set(refs) - set(grouped))
-    if missing:
-        raise ValueError(f"TDCC latest response is missing universe securities: {len(missing)}")
+    exclusions = documented_exclusions or {}
+    unresolved = sorted(set(missing) - set(exclusions))
+    unexpected = sorted(set(exclusions) - set(missing))
+    if unexpected:
+        raise ValueError(f"documented suspension is not missing from TDCC: {unexpected[:20]}")
+    for sid in missing:
+        evidence = exclusions.get(sid)
+        if not isinstance(evidence, dict):
+            continue
+        try:
+            valid = (evidence.get("security_id") == sid and evidence.get("market") == refs[sid].get("market")
+                     and date.fromisoformat(evidence["stop_date"]) <= date.fromisoformat(data_date)
+                     < date.fromisoformat(evidence["resume_date"])
+                     and date.fromisoformat(evidence["known_at"][:10]) >= date.fromisoformat(evidence["resume_date"])
+                     and str(evidence.get("source_url") or "").startswith("https://")
+                     and len(str(evidence.get("raw_sha256") or "")) == 64)
+        except (KeyError, TypeError, ValueError):
+            valid = False
+        if not valid:
+            raise ValueError(f"documented suspension evidence is invalid for {sid}")
+    if unresolved:
+        safe_details = [{"security_id": sid, "name": refs[sid].get("name", ""),
+                         "market": refs[sid].get("market", ""),
+                         "listing_date": refs[sid].get("listing_date", "")}
+                        for sid in unresolved[:20]]
+        suffix = " (first 20 shown)" if len(unresolved) > 20 else ""
+        raise ValueError(f"TDCC latest response has unresolved universe securities: count={len(unresolved)} "
+                         f"details={safe_details}{suffix}")
     rows = []
     for code in sorted(refs):
+        if code in missing:
+            continue
         levels = grouped[code]
         if set(levels) != set(range(1, 18)):
             raise ValueError(f"TDCC incomplete levels for {code}")
@@ -88,7 +123,17 @@ def normalize_latest(raw_rows: list[dict[str, Any]], universe: list[dict[str, st
     counts = {market: sum(row["market"] == market for row in rows) for market in ("listed", "otc")}
     if not all(counts.values()):
         raise ValueError("TDCC snapshot must cover both markets")
-    return {"date": data_date, "row_count": len(rows), "market_counts": counts, "rows": rows}
+    expected_counts = {market: sum(row["market"] == market for row in refs.values()) for market in ("listed", "otc")}
+    result = {"date": data_date, "row_count": len(rows), "market_counts": counts,
+              "expected_count": len(refs), "observed_count": len(rows),
+              "expected_market_counts": expected_counts, "rows": rows}
+    if missing:
+        result.update({"status": "partial_with_documented_exchange_suspension",
+                       "quality": "partial_with_documented_exchange_suspension",
+                       "excluded_official_suspensions": [exclusions[sid] for sid in missing]})
+    else:
+        result.update({"status": "ok", "quality": "complete", "excluded_official_suspensions": []})
+    return result
 
 
 def validate_compact(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -109,14 +154,111 @@ def validate_compact(snapshot: dict[str, Any]) -> dict[str, dict[str, Any]]:
     if snapshot.get("market_counts") != counts or not all(counts.values()):
         raise ValueError("compact snapshot market coverage is invalid")
     date.fromisoformat(snapshot["date"])
+    exclusions = snapshot.get("excluded_official_suspensions") or []
+    if exclusions or snapshot.get("quality") == "partial_with_documented_exchange_suspension":
+        coverage = {"expected_count": snapshot.get("expected_count"),
+                    "observed_count": snapshot.get("observed_count"),
+                    "expected_market_counts": snapshot.get("expected_market_counts"),
+                    "observed_market_counts": snapshot.get("market_counts"),
+                    "excluded_official_suspensions": exclusions}
+        validate_documented_coverage(coverage, snapshot["date"], observed_ids=set(result))
     return result
+
+
+def validate_documented_coverage(coverage: dict[str, Any], tdcc_date: str,
+                                 *, observed_ids: set[str] | None = None) -> bool:
+    """Pure validator shared by producer and public consumer; performs no I/O."""
+    if not isinstance(coverage, dict):
+        raise ValueError("coverage is not an object")
+    target = date.fromisoformat(tdcc_date)
+    expected, observed = coverage.get("expected_count"), coverage.get("observed_count")
+    if type(expected) is not int or type(observed) is not int or expected < 0 or observed < 0:
+        raise ValueError("documented coverage counts must be nonnegative integers")
+    expected_markets = coverage.get("expected_market_counts")
+    observed_markets = coverage.get("observed_market_counts")
+    events = coverage.get("excluded_official_suspensions")
+    if not isinstance(expected_markets, dict) or not isinstance(observed_markets, dict) or not isinstance(events, list):
+        raise ValueError("documented coverage fields are missing")
+    if set(expected_markets) != {"listed", "otc"} or set(observed_markets) != {"listed", "otc"}:
+        raise ValueError("documented coverage market keys are invalid")
+    if any(type(counts[market]) is not int or counts[market] < 0
+           for counts in (expected_markets, observed_markets) for market in ("listed", "otc")):
+        raise ValueError("documented market counts must be nonnegative integers")
+    ids: set[str] = set()
+    excluded_markets = {"listed": 0, "otc": 0}
+    for event in events:
+        if not isinstance(event, dict):
+            raise ValueError("documented suspension is not an object")
+        sid, market = str(event.get("security_id") or ""), event.get("market")
+        event_type = event.get("event_type")
+        digest = str(event.get("raw_sha256") or "")
+        if (len(sid) != 4 or not sid.isdigit() or sid in ids or market not in excluded_markets
+                or len(digest) != 64 or any(c not in "0123456789abcdef" for c in digest)
+                or OFFICIAL_SUSPENSION_SOURCES.get((market, event_type)) != event.get("source_url")
+                or not str(event.get("reason") or "").strip()):
+            raise ValueError("documented suspension identity/source is invalid")
+        stop, resume = date.fromisoformat(event["stop_date"]), date.fromisoformat(event["resume_date"])
+        query_start, query_end = date.fromisoformat(event["query_start"]), date.fromisoformat(event["query_end"])
+        known_time = datetime.fromisoformat(str(event["known_at"]).replace("Z", "+00:00"))
+        if known_time.tzinfo is None:
+            raise ValueError("documented suspension known-at lacks timezone")
+        known = known_time.date()
+        if not query_start <= target <= query_end or not query_start <= resume <= query_end:
+            raise ValueError("documented suspension query bounds are invalid")
+        if not stop <= target < resume <= known:
+            raise ValueError("documented suspension date bounds are invalid")
+        ids.add(sid); excluded_markets[market] += 1
+    if observed_ids is not None and ids & observed_ids:
+        raise ValueError("observed and excluded security IDs overlap")
+    if expected - observed != len(events) or expected != sum(expected_markets[m] for m in excluded_markets):
+        raise ValueError("documented coverage total arithmetic is invalid")
+    if observed != sum(observed_markets[m] for m in excluded_markets):
+        raise ValueError("documented observed market arithmetic is invalid")
+    for market in excluded_markets:
+        if expected_markets[market] - observed_markets[market] != excluded_markets[market]:
+            raise ValueError("documented coverage market arithmetic is invalid")
+    return True
+
+
+def validate_pool_coverage(pool: dict[str, Any]) -> bool:
+    """Validate current and previous coverage plus ranking/exclusion separation."""
+    coverage = pool.get("coverage")
+    if coverage is None and pool.get("quality") == "complete" and pool.get("status") == "ok":
+        return True  # Legacy complete artifacts predate explicit coverage metadata.
+    if not isinstance(coverage, dict):
+        raise ValueError("pool coverage is missing")
+    previous = coverage.get("previous_coverage")
+    if not isinstance(previous, dict):
+        raise ValueError("pool previous coverage is missing")
+    row_ids = {str(row.get("security_id") or "") for row in pool.get("rows") or []}
+    current_events = coverage.get("excluded_official_suspensions") or []
+    previous_events = previous.get("excluded_official_suspensions") or []
+    validate_documented_coverage(coverage, pool["data_date"], observed_ids=row_ids)
+    validate_documented_coverage(previous, pool["previous_date"], observed_ids=row_ids)
+    excluded_ids = {str(event.get("security_id") or "") for event in current_events + previous_events}
+    if excluded_ids & row_ids:
+        raise ValueError("pool rows overlap documented exclusions")
+    expected_quality = "partial_with_documented_exchange_suspension" if excluded_ids else "complete"
+    if pool.get("quality") != expected_quality or pool.get("status") != "ok":
+        raise ValueError("pool quality/status disagrees with coverage")
+    return True
 
 
 def compact_core(snapshot: dict[str, Any]) -> dict[str, Any]:
     """Same-date identity comparison, excluding labels and incidental metadata."""
     rows = validate_compact(snapshot)
-    return {sid: (row["market"], float(row["major_percent"]), int(row["major_people"]))
+    return {sid: (row["market"], round(float(row["major_percent"]), 2), int(row["major_people"]))
             for sid, row in rows.items()}
+
+
+def compact_core_difference(existing: dict[str, Any], current: dict[str, Any]) -> dict[str, Any]:
+    old, new = compact_core(existing), compact_core(current)
+    common = sorted(set(old) & set(new))
+    return {"old_count": len(old), "new_count": len(new),
+            "missing_ids": sorted(set(old) - set(new))[:20],
+            "added_ids": sorted(set(new) - set(old))[:20],
+            "changed": [{"security_id": sid, "old": old[sid], "new": new[sid]}
+                        for sid in common if old[sid] != new[sid]][:10]}
 
 
 def seed_compact_snapshot(recovered: dict[str, Any]) -> dict[str, Any]:
@@ -156,12 +298,28 @@ def top50(current: dict[str, Any], prior: dict[str, Any]) -> dict[str, Any]:
     counts = {market: sum(now[sid]["market"] == market for sid in common) for market in ("listed", "otc")}
     if not all(counts.values()):
         raise ValueError("paired weekly universe must cover both markets")
-    return {"schema_version": 1, "dataset_id": "mda_weekly_top50", "quality": "complete", "status": "ok",
+    exclusions = list(current.get("excluded_official_suspensions") or [])
+    prior_exclusions = list(prior.get("excluded_official_suspensions") or [])
+    quality = "partial_with_documented_exchange_suspension" if exclusions or prior_exclusions else "complete"
+    result = {"schema_version": 1, "dataset_id": "mda_weekly_top50", "quality": quality, "status": "ok",
         "data_date": current["date"], "previous_date": prior["date"], "source": SOURCE,
         "paired_universe_count": len(common), "paired_market_counts": counts,
+        "coverage": {"expected_count": int(current.get("expected_count", current["row_count"])),
+                     "observed_count": int(current.get("observed_count", current["row_count"])),
+                     "expected_market_counts": current.get("expected_market_counts", current["market_counts"]),
+                     "observed_market_counts": current["market_counts"],
+                     "excluded_official_suspensions": exclusions,
+                     "previous_coverage": {
+                         "expected_count": int(prior.get("expected_count", prior["row_count"])),
+                         "observed_count": int(prior.get("observed_count", prior["row_count"])),
+                         "expected_market_counts": prior.get("expected_market_counts", prior["market_counts"]),
+                         "observed_market_counts": prior["market_counts"],
+                         "excluded_official_suspensions": prior_exclusions}},
         "excluded_new_security_ids": new_ids, "excluded_departed_security_ids": departed,
         "selection_status": "top50" if len(selected) == 50 else "fewer_than_50_positive_increases",
         "positive_increase_count": len(candidates), "rows": selected}
+    validate_pool_coverage(result)
+    return result
 
 
 def atomic_json(path: Path, payload: dict[str, Any]) -> None:
@@ -203,6 +361,7 @@ def load_reliable_universe(path: Path) -> tuple[list[dict[str, str]], str]:
 def update(universe: list[dict[str, str]], archive: dict[str, Any], *, as_of: str,
            universe_as_of: str | None = None,
            universe_source_sha256: str | None = None,
+           documented_exclusions: dict[str, dict[str, Any]] | None = None,
            fetch_rows: Callable[[], list[dict[str, Any]]]) -> tuple[dict[str, Any], dict[str, Any]]:
     if archive.get("dataset_id") != ARCHIVE_ID or not isinstance(archive.get("snapshots"), list):
         raise ValueError("compact snapshot archive is missing")
@@ -212,7 +371,8 @@ def update(universe: list[dict[str, str]], archive: dict[str, Any], *, as_of: st
         raise ValueError("compact snapshot archive has duplicate dates")
     snapshots = {item["date"]: item for item in raw_snapshots}
     for item in snapshots.values(): validate_compact(item)
-    current = normalize_latest(fetch_rows(), universe, as_of=as_of)
+    current = normalize_latest(fetch_rows(), universe, as_of=as_of,
+                               documented_exclusions=documented_exclusions)
     universe_day = date.fromisoformat(universe_as_of or as_of).isoformat()
     if not current["date"] <= universe_day <= date.fromisoformat(as_of).isoformat():
         raise ValueError("ordinary-stock universe is stale or from the future")
@@ -230,7 +390,7 @@ def update(universe: list[dict[str, str]], archive: dict[str, Any], *, as_of: st
                 raise ValueError(f"TDCC {market} coverage regressed")
     existing = snapshots.get(current["date"])
     if existing and compact_core(existing) != compact_core(current):
-        raise ValueError("same-date TDCC compact snapshot changed")
+        raise ValueError(f"same-date TDCC compact snapshot changed: {compact_core_difference(existing, current)}")
     snapshots[current["date"]] = current
     dates = sorted(snapshots)
     if len(dates) < 2:

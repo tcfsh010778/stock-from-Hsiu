@@ -8,7 +8,7 @@ from types import SimpleNamespace
 import pytest
 
 from tools.update_weekly_mda_pool import ARCHIVE_ID
-from tools.update_weekly_sources import prepare, run
+from tools.update_weekly_sources import prepare, resolve_suspensions, run
 
 
 def rosters(report="1150909"):
@@ -118,3 +118,43 @@ def test_mixed_tdcc_dates_are_rejected_before_writes(tmp_path):
             tdcc_fetch=lambda: mixed,
             roster_fetch=lambda url: raw_rosters["listed" if "twse" in url else "otc"])
     assert {p.name: p.read_bytes() for p in data.iterdir()} == before
+
+
+def test_official_reduction_evidence_allows_only_documented_missing_row(tmp_path):
+    data = tmp_path / "data"; setup_data(data); raw_rosters = rosters()
+    raw = [row for row in tdcc_rows() if row["證券代號"] != "5599"]
+    fields = ["恢復買賣日期", "股票代號", "名稱", "最後交易日之收盤價格",
+              "減資恢復買賣開始日參考價格", "漲停價格", "跌停價格", "開始交易基準價",
+              "除權參考價", "減資原因", "詳細資料"]
+    detail = "<table><tr><th>停止買賣日期:</th><td>115/09/02</td></tr></table>"
+    matched = json.dumps({"tables": [{"fields": fields, "data": [["1150909", "5599", "短599", "1", "1", "1", "1", "1", "0", "彌補虧損", detail]]}]}, ensure_ascii=False).encode()
+    empty = json.dumps({"tables": [{"fields": fields, "data": []}]}).encode()
+    public = Public()
+    def aggregate(observed, security_map):
+        ids = {row["證券代號"] for row in observed}
+        return {"date": "2026-09-04", "rows": [
+            {"security_id": sid, "name": ref["name"], "market": ref["market"],
+             "major_percent": 8.0, "major_people": 40, "retail_200_percent": 0.0}
+            for sid, ref in sorted(security_map.items()) if sid in ids]}
+    public.aggregate_snapshot = aggregate
+    outputs = prepare(data_dir=data, official_root=tmp_path, as_of="2026-09-10", public_module=public,
+                      tdcc_fetch=lambda: raw,
+                      roster_fetch=lambda url: raw_rosters["listed" if "twse" in url else "otc"],
+                      event_fetch=lambda market, kind, start, end: matched if (market, kind) == ("otc", "reduction") else empty,
+                      now=lambda: datetime(2026, 9, 10, tzinfo=timezone.utc))
+    universe = outputs["official_stock_universe.json"]
+    assert universe["row_count"] == 1400 and universe["observed_tdcc_count"] == 1399
+    assert universe["quality"] == "partial_with_documented_exchange_suspension"
+    pool = outputs["mda_weekly_top50.json"]
+    assert pool["quality"] == "partial_with_documented_exchange_suspension"
+    assert pool["coverage"]["expected_count"] - pool["coverage"]["observed_count"] == 1
+    assert pool["coverage"]["excluded_official_suspensions"][0]["security_id"] == "5599"
+
+
+def test_unmatched_missing_row_remains_fatal():
+    ref = {"security_id": "6461", "name": "益得", "market": "otc", "listing_date": "2018-03-28"}
+    empty = json.dumps({"tables": [{"fields": [], "data": []}]}).encode()
+    with pytest.raises(ValueError, match="lack official suspension evidence"):
+        resolve_suspensions([ref], tdcc_date="2026-09-04", as_of="2026-09-10",
+                            known_at="2026-09-10T00:00:00Z",
+                            fetcher=lambda market, kind, start, end: empty)

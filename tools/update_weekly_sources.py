@@ -5,6 +5,7 @@ import argparse
 import hashlib
 import importlib.util
 import json
+import re
 import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -12,9 +13,16 @@ from types import ModuleType
 from typing import Any, Callable
 
 from tools.build_official_stock_universe import SOURCES, atomic_json, build_universe, decode_rows, fetch_bytes
+from tools.build_official_stock_universe import parse_listing_date
 from tools.update_weekly_mda_pool import ARCHIVE_ID, normalize_latest, update
 
 TAIPEI = timezone(timedelta(hours=8))
+EVENT_SOURCES = {
+    ("listed", "reduction"): "https://www.twse.com.tw/rwd/zh/reducation/TWTAUU",
+    ("listed", "par_value"): "https://www.twse.com.tw/rwd/zh/change/TWTB8U",
+    ("otc", "reduction"): "https://www.tpex.org.tw/www/zh-tw/bulletin/revivt",
+    ("otc", "par_value"): "https://www.tpex.org.tw/www/zh-tw/bulletin/pvChgRslt",
+}
 
 
 def load_json(path: Path, *, required: bool) -> dict[str, Any]:
@@ -84,6 +92,76 @@ def tdcc_raw_date(raw_rows: list[dict[str, Any]], *, as_of: str) -> str:
     return result
 
 
+def fetch_event_bytes(market: str, kind: str, start: str, end: str) -> bytes:
+    import requests
+    url = EVENT_SOURCES[(market, kind)]
+    if market == "listed":
+        params = {"startDate": start.replace("-", ""), "endDate": end.replace("-", ""), "response": "json"}
+    else:
+        params = {"startDate": start.replace("-", "/"), "endDate": end.replace("-", "/"), "response": "json"}
+    response = requests.get(url, params=params, timeout=45, headers={"Accept": "application/json"})
+    if response.status_code in {402, 403, 428, 429}:
+        raise RuntimeError(f"official suspension evidence access/rate response HTTP {response.status_code}")
+    response.raise_for_status()
+    return response.content
+
+
+def event_rows(content: bytes) -> list[dict[str, Any]]:
+    try:
+        payload = json.loads(content.decode("utf-8-sig"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+        raise ValueError("official suspension evidence is not UTF-8 JSON") from exc
+    tables = payload.get("tables") if isinstance(payload, dict) else None
+    if isinstance(tables, list):
+        output = []
+        for table in tables:
+            fields = table.get("fields") or []
+            output.extend(dict(zip(fields, values)) for values in table.get("data") or [] if isinstance(values, list))
+        return output
+    if isinstance(payload, dict) and isinstance(payload.get("fields"), list):
+        return [dict(zip(payload["fields"], values)) for values in payload.get("data") or [] if isinstance(values, list)]
+    raise ValueError("official suspension evidence schema is invalid")
+
+
+def resolve_suspensions(missing_refs: list[dict[str, str]], *, tdcc_date: str, as_of: str,
+                        known_at: str, fetcher: Callable[[str, str, str, str], bytes]) -> dict[str, dict[str, Any]]:
+    missing = {row["security_id"]: row for row in missing_refs}
+    resolved: dict[str, dict[str, Any]] = {}
+    markets = sorted({row["market"] for row in missing_refs})
+    for market in markets:
+        for kind in ("reduction", "par_value"):
+            content = fetcher(market, kind, tdcc_date, as_of)
+            digest = hashlib.sha256(content).hexdigest()
+            for row in event_rows(content):
+                sid = str(row.get("股票代號") or row.get("證券代號") or "").strip()
+                if sid not in missing or missing[sid]["market"] != market:
+                    continue
+                resume = parse_listing_date(row.get("恢復買賣日期"))
+                detail = str(row.get("詳細資料") or "")
+                match = re.search(r"停止買賣日期\s*[:：]\s*</?[^>]*>*\s*(\d{3,4}/\d{2}/\d{2})", detail)
+                if not match:
+                    # The official cells are HTML; allow tags/entities between label and value.
+                    plain = re.sub(r"<[^>]+>", " ", detail).replace("&nbsp", " ").replace(";", " ")
+                    match = re.search(r"停止買賣日期\s*[:：]?\s*(\d{3,4}/\d{2}/\d{2})", plain)
+                if not match:
+                    raise ValueError(f"official suspension evidence lacks stop date for {sid}")
+                stop = parse_listing_date(match.group(1))
+                if not stop <= tdcc_date < resume:
+                    continue
+                evidence = {"security_id": sid, "name": missing[sid].get("name", ""), "market": market,
+                            "event_type": kind, "stop_date": stop, "resume_date": resume,
+                            "reason": str(row.get("減資原因") or ("面額變更" if kind == "par_value" else "")).strip(),
+                            "source_url": EVENT_SOURCES[(market, kind)], "raw_sha256": digest,
+                            "query_start": tdcc_date, "query_end": as_of, "known_at": known_at}
+                if sid in resolved and resolved[sid] != evidence:
+                    raise ValueError(f"conflicting official suspension evidence for {sid}")
+                resolved[sid] = evidence
+    unresolved = sorted(set(missing) - set(resolved))
+    if unresolved:
+        raise ValueError(f"TDCC missing securities lack official suspension evidence: {unresolved[:20]}")
+    return resolved
+
+
 def full_market_map(decoded: dict[str, list[dict[str, str]]], *, roster_dates: dict[str, str],
                     retrieved_at: str, universe_sources: dict[str, Any]) -> dict[str, Any]:
     rows = [row for market in ("listed", "otc") for row in decoded[market]]
@@ -118,6 +196,7 @@ def validate_legacy_matches(legacy_snapshot: dict[str, Any], compact_snapshot: d
 def prepare(*, data_dir: Path, official_root: Path, as_of: str,
             tdcc_fetch: Callable[[], list[dict[str, Any]]] | None = None,
             roster_fetch: Callable[[str], bytes] = fetch_bytes,
+            event_fetch: Callable[[str, str, str, str], bytes] = fetch_event_bytes,
             public_module: ModuleType | Any | None = None,
             now: Callable[[], datetime] = lambda: datetime.now(TAIPEI)) -> dict[str, dict[str, Any]]:
     cutoff = date.fromisoformat(as_of).isoformat()
@@ -144,8 +223,22 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
     for row in universe["rows"]:
         row["name"] = current_names[row["security_id"]]
     effective_rows = universe["rows"]
+    raw_ids = {str(next((v for k, v in row.items() if str(k).lstrip("\ufeff") == "證券代號"), "")).strip()
+               for row in raw_tdcc}
+    missing_refs = [row for row in effective_rows if row["security_id"] not in raw_ids]
+    exclusions = resolve_suspensions(missing_refs, tdcc_date=holder_date, as_of=cutoff,
+                                     known_at=observed, fetcher=event_fetch) if missing_refs else {}
     # Validate full TDCC distributions before calling the legacy partial-level aggregator.
-    compact_check = normalize_latest(raw_tdcc, effective_rows, as_of=cutoff)
+    compact_check = normalize_latest(raw_tdcc, effective_rows, as_of=cutoff,
+                                     documented_exclusions=exclusions)
+    universe.update({
+        "status": compact_check["status"], "quality": compact_check["quality"],
+        "expected_tdcc_count": compact_check["expected_count"],
+        "observed_tdcc_count": compact_check["observed_count"],
+        "expected_tdcc_market_counts": compact_check["expected_market_counts"],
+        "observed_tdcc_market_counts": compact_check["market_counts"],
+        "excluded_official_suspensions": compact_check["excluded_official_suspensions"],
+    })
     compact_path = data_dir / "tdcc_compact_weekly_snapshots.json"
     compact_existing = load_json(compact_path, required=True)
     compact_archive, pool = update(effective_rows, compact_existing, as_of=cutoff,
@@ -153,6 +246,7 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
                                    universe_source_sha256=hashlib.sha256(
                                        (json.dumps(universe, ensure_ascii=False, sort_keys=True,
                                                    separators=(",", ":")) + "\n").encode()).hexdigest(),
+                                   documented_exclusions=exclusions,
                                    fetch_rows=lambda: raw_tdcc)
     latest_compact = compact_archive["snapshots"][-1]
     if latest_compact["date"] != compact_check["date"] or set(r["security_id"] for r in latest_compact["rows"]) != set(r["security_id"] for r in compact_check["rows"]):

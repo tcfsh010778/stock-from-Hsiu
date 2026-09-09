@@ -498,7 +498,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
 
     worker_count = workers or min(4, os.cpu_count() or 1)
     with concurrent.futures.ProcessPoolExecutor(max_workers=worker_count) as executor:
-        for stock_id, name, packets, error in executor.map(analyze_stock_task, tasks, chunksize=1):
+        for completed_count, (stock_id, name, packets, error) in enumerate(executor.map(analyze_stock_task, tasks, chunksize=1), 1):
             if not error and packets:
                 (packet_dir / f"{stock_id}.json").write_text(stable_json(packets) + "\n", encoding="utf-8")
                 (redirect_dir / f"{stock_id}.html").write_text(stock_redirect_html(stock_id), encoding="utf-8")
@@ -509,6 +509,9 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
             else:
                 reason = error or "no packets generated"
                 failures.append({"stock_id": stock_id, "reason_code": "verified_pair_corrupt", "reason": reason})
+                print(f"[V2] failed {stock_id}: {reason[:240]}", flush=True)
+            if completed_count % 50 == 0 or completed_count == len(tasks):
+                print(f"[V2] analyzed {completed_count}/{len(tasks)}; published candidates={len(index)}; failures={len(failures)}", flush=True)
 
     fresh_count = sum(item["data_date"] == expected_price_date for item in index.values())
 

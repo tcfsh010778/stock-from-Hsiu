@@ -87,6 +87,8 @@ JS = r'''
   $('review-health').textContent='檢查基準日 '+p.as_of+'｜SFZ 資料 '+(a.data_date||'待補')+'｜M 大名單 '+(b.data_date||'待補')+'。'+(p.status==='blocked'?'目前資料驗證未通過，今日提醒暫停；下方觀察池保留歷史證據。':'提醒只根據可驗證的新變化；未通過的個股保留缺漏說明。');
   $('sfz-coverage').textContent=`${a.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 獨立股票池 ${a.universe_count||0} 檔 · 已驗證可計算 ${a.evaluated_count||0} 檔 · 待補 ${a.excluded_count||0} 檔`;
   $('mda-coverage').textContent=`${b.status==='fresh'?'本期可判讀':'資料待補，提醒暫停'} · 本週檢核 ${b.candidate_count||0} 檔 · 留池追蹤 ${b.retained_count||0} 檔 · 本期證據通過 ${b.eligible_count||0} 檔`;
+  const coverage=b.coverage||{},exceptions=[...(coverage.excluded_official_suspensions||[]),...(coverage.previous_coverage?.excluded_official_suspensions||[])];
+  if(exceptions.length)$('mda-coverage').textContent+=` · 股權涵蓋 ${coverage.observed_count}／${coverage.expected_count} 檔；${[...new Set(exceptions.map(e=>e.security_id))].join('、')} 因官方停牌缺少比較資料，未列入排行`;
   render();
  }).catch(()=>{$('review-health').textContent='判讀資料載入失敗，沒有產生任何今日提醒。請稍後重試。';});
 })();
