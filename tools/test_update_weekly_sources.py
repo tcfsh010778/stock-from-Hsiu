@@ -103,9 +103,11 @@ def test_legacy_coverage_mismatch_and_roster_date_mismatch_fail_closed(tmp_path)
     mismatched = rosters(); otc = json.loads(mismatched["otc"])
     for row in otc: row["出表日期"] = "1150908"
     mismatched["otc"] = json.dumps(otc).encode()
-    with pytest.raises(ValueError, match="report dates differ"):
-        prepare(data_dir=data, official_root=tmp_path, as_of="2026-09-10", public_module=Public(),
-                roster_fetch=lambda url: mismatched["listed" if "twse" in url else "otc"])
+    outputs = prepare(data_dir=data, official_root=tmp_path, as_of="2026-09-10", public_module=Public(),
+                      roster_fetch=lambda url: mismatched["listed" if "twse" in url else "otc"])
+    assert outputs["official_stock_universe.json"]["roster_as_of_by_market"] == {
+        "listed": "2026-09-09", "otc": "2026-09-08"}
+    assert outputs["official_stock_universe.json"]["universe_as_of"] == "2026-09-08"
 
 
 def test_mixed_tdcc_dates_are_rejected_before_writes(tmp_path):

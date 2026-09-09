@@ -50,19 +50,19 @@ def load_public_module(root: Path) -> ModuleType:
     return module
 
 
-def infer_roster_date(raw_rosters: dict[str, bytes]) -> tuple[str, dict[str, list[dict[str, str]]]]:
+def infer_roster_dates(raw_rosters: dict[str, bytes]) -> tuple[dict[str, str], dict[str, list[dict[str, str]]]]:
     decoded = {market: decode_rows(raw_rosters[market], market) for market in ("listed", "otc")}
     for market, rows in decoded.items():
         raw_rows = json.loads(raw_rosters[market].decode("utf-8-sig"))
-        short_names = {str(raw.get("公司代號") or "").strip():
-                       str(raw.get("公司簡稱") or raw.get("公司名稱") or "").strip() for raw in raw_rows}
+        short_names = {str(raw.get("公司代號") or raw.get("SecuritiesCompanyCode") or "").strip():
+                       str(raw.get("公司簡稱") or raw.get("CompanyAbbreviation")
+                           or raw.get("公司名稱") or raw.get("CompanyName") or "").strip() for raw in raw_rows}
         for row in rows:
             if short_names.get(row["security_id"]):
                 row["name"] = short_names[row["security_id"]]
-    dates = {row["roster_as_of"] for rows in decoded.values() for row in rows}
-    if len(dates) != 1:
-        raise ValueError("TWSE and TPEx official roster report dates differ")
-    return next(iter(dates)), decoded
+    source_dates = {market: next(iter({row["roster_as_of"] for row in rows}))
+                    for market, rows in decoded.items()}
+    return source_dates, decoded
 
 
 def tdcc_raw_date(raw_rows: list[dict[str, Any]], *, as_of: str) -> str:
@@ -84,7 +84,7 @@ def tdcc_raw_date(raw_rows: list[dict[str, Any]], *, as_of: str) -> str:
     return result
 
 
-def full_market_map(decoded: dict[str, list[dict[str, str]]], *, roster_date: str,
+def full_market_map(decoded: dict[str, list[dict[str, str]]], *, roster_dates: dict[str, str],
                     retrieved_at: str, universe_sources: dict[str, Any]) -> dict[str, Any]:
     rows = [row for market in ("listed", "otc") for row in decoded[market]]
     ids = [row["security_id"] for row in rows]
@@ -96,7 +96,8 @@ def full_market_map(decoded: dict[str, list[dict[str, str]]], *, roster_date: st
     markets = {sid: item["market"] for sid, item in stocks.items()}
     counts = {market: len(decoded[market]) for market in ("listed", "otc")}
     return {"schema_version": 1, "dataset_id": "official_stock_markets", "status": "ok",
-            "updated_at": retrieved_at, "universe_as_of": roster_date, "market_counts": counts,
+            "updated_at": retrieved_at, "universe_as_of": min(roster_dates.values()),
+            "roster_as_of_by_market": roster_dates, "market_counts": counts,
             "sources": universe_sources, "markets": dict(sorted(markets.items())),
             "stocks": dict(sorted(stocks.items()))}
 
@@ -126,17 +127,18 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
         raise ValueError("TDCC provider returned no raw rows")
     holder_date = tdcc_raw_date(raw_tdcc, as_of=cutoff)
     raw_rosters = {market: roster_fetch(url) for market, url in SOURCES.items()}
-    roster_date, decoded = infer_roster_date(raw_rosters)
-    roster_age = (date.fromisoformat(cutoff) - date.fromisoformat(roster_date)).days
+    roster_dates, decoded = infer_roster_dates(raw_rosters)
+    roster_ages = {market: (date.fromisoformat(cutoff) - date.fromisoformat(source_date)).days
+                   for market, source_date in roster_dates.items()}
     holder_age = (date.fromisoformat(cutoff) - date.fromisoformat(holder_date)).days
-    if not 0 <= roster_age <= 7:
-        raise ValueError("official roster report date is not fresh within seven days")
+    if any(not 0 <= age <= 7 for age in roster_ages.values()):
+        raise ValueError("an official roster report date is not fresh within seven days")
     if not 0 <= holder_age <= 7:
         raise ValueError("TDCC weekly date is not fresh within seven days")
-    if roster_date < holder_date:
-        raise ValueError("official roster predates TDCC weekly snapshot")
+    if any(source_date < holder_date for source_date in roster_dates.values()):
+        raise ValueError("an official roster predates TDCC weekly snapshot")
     observed = now().astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
-    universe = build_universe(raw_rosters, universe_as_of=roster_date, tdcc_date=holder_date,
+    universe = build_universe(raw_rosters, universe_as_of=roster_dates, tdcc_date=holder_date,
                               retrieved_at=observed)
     current_names = {row["security_id"]: row["name"] for rows in decoded.values() for row in rows}
     for row in universe["rows"]:
@@ -147,7 +149,7 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
     compact_path = data_dir / "tdcc_compact_weekly_snapshots.json"
     compact_existing = load_json(compact_path, required=True)
     compact_archive, pool = update(effective_rows, compact_existing, as_of=cutoff,
-                                   universe_as_of=roster_date,
+                                   universe_as_of=min(roster_dates.values()),
                                    universe_source_sha256=hashlib.sha256(
                                        (json.dumps(universe, ensure_ascii=False, sort_keys=True,
                                                    separators=(",", ":")) + "\n").encode()).hexdigest(),
@@ -163,7 +165,7 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
     legacy_archive = module.merge_archive(legacy_snapshot, legacy_existing)
     if legacy_archive.get("latest_date") != holder_date:
         raise ValueError("legacy holder archive latest date mismatch")
-    market_map = full_market_map(decoded, roster_date=roster_date, retrieved_at=observed,
+    market_map = full_market_map(decoded, roster_dates=roster_dates, retrieved_at=observed,
                                  universe_sources=universe["sources"])
     return {"official_stock_universe.json": universe,
             "tdcc_compact_weekly_snapshots.json": compact_archive,

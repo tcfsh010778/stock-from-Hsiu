@@ -30,6 +30,19 @@ def test_builds_two_market_dated_universe_with_hashes_and_listing_filter():
     assert payload["excluded_not_yet_listed_security_ids"] == {"listed": ["1800"], "otc": ["5600"]}
     assert len(payload["sources"]["listed"]["raw_sha256"]) == 64
     assert payload["effective_for_tdcc_date"] == "2026-09-04"
+    assert payload["roster_as_of_by_market"] == {"listed": "2026-09-09", "otc": "2026-09-09"}
+
+
+def test_distinct_market_report_dates_are_preserved_without_claiming_a_common_date():
+    raw = valid_raw(); listed = json.loads(raw["listed"])
+    for row in listed: row["出表日期"] = "1150908"
+    raw["listed"] = json.dumps(listed, ensure_ascii=False).encode()
+    payload = subject.build_universe(raw, universe_as_of={"listed": "2026-09-08", "otc": "2026-09-09"},
+                                     tdcc_date="2026-09-04", retrieved_at="2026-09-09T16:00:00Z")
+    assert payload["universe_as_of"] == "2026-09-08"
+    assert payload["roster_as_of_by_market"] == {"listed": "2026-09-08", "otc": "2026-09-09"}
+    assert payload["sources"]["listed"]["roster_as_of"] == "2026-09-08"
+    assert payload["sources"]["otc"]["roster_as_of"] == "2026-09-09"
 
 
 def test_decode_rejects_small_duplicate_bad_identity_and_bad_date():
@@ -41,9 +54,43 @@ def test_decode_rejects_small_duplicate_bad_identity_and_bad_date():
     rows = json.loads(roster("otc", 600, start=5000)); rows[0]["公司代號"] = "ETF"
     with pytest.raises(ValueError, match="identity"):
         subject.decode_rows(json.dumps(rows).encode(), "otc")
+
+
+def test_real_tpex_english_field_names_are_supported(monkeypatch):
+    monkeypatch.setitem(subject.MINIMUM_COUNTS, "otc", 1)
+    raw = [{"Date": "1150909", "SecuritiesCompanyCode": "1240",
+            "CompanyName": "茂生農經股份有限公司", "CompanyAbbreviation": "茂生農經",
+            "DateOfListing": "20180808"}]
+    assert subject.decode_rows(json.dumps(raw, ensure_ascii=False).encode(), "otc") == [{
+        "security_id": "1240", "name": "茂生農經", "market": "otc",
+        "listing_date": "2018-08-08", "roster_as_of": "2026-09-09"}]
     rows = json.loads(roster("otc", 600, start=5000)); rows[0]["上櫃日期"] = ""
     with pytest.raises(ValueError, match="listing date"):
         subject.decode_rows(json.dumps(rows).encode(), "otc")
+
+
+def test_known_four_and_six_digit_tdrs_are_excluded_and_recorded(monkeypatch):
+    monkeypatch.setitem(subject.MINIMUM_COUNTS, "listed", 1)
+    rows = [{"出表日期": "1150909", "公司代號": "1101", "公司簡稱": "台泥", "上市日期": "19620209"},
+            {"出表日期": "1150909", "公司代號": "9103", "公司簡稱": "四碼DR", "上市日期": "20100101"},
+            {"出表日期": "1150909", "公司代號": "910322", "公司簡稱": "康師傅-DR", "上市日期": "20091216"}]
+    content = json.dumps(rows, ensure_ascii=False).encode()
+    assert [row["security_id"] for row in subject.decode_rows(content, "listed")] == ["1101"]
+    monkeypatch.setitem(subject.MINIMUM_COUNTS, "otc", 1)
+    otc = json.dumps([{"Date": "1150909", "SecuritiesCompanyCode": "1240",
+                       "CompanyAbbreviation": "茂生農經", "DateOfListing": "20180808"}], ensure_ascii=False).encode()
+    payload = subject.build_universe({"listed": content, "otc": otc}, universe_as_of="2026-09-09",
+                                     tdcc_date="2026-09-04", retrieved_at="2026-09-09T16:00:00Z")
+    assert payload["excluded_tdr_security_ids"]["listed"] == ["9103", "910322"]
+    assert payload["sources"]["listed"]["excluded_tdr_security_ids"] == ["9103", "910322"]
+    assert payload["sources"]["listed"]["raw_row_count"] == 3
+
+
+def test_unknown_six_digit_company_code_still_fails(monkeypatch):
+    monkeypatch.setitem(subject.MINIMUM_COUNTS, "listed", 1)
+    raw = [{"出表日期": "1150909", "公司代號": "123456", "公司簡稱": "未知", "上市日期": "20200101"}]
+    with pytest.raises(ValueError, match="123456"):
+        subject.decode_rows(json.dumps(raw, ensure_ascii=False).encode(), "listed")
     rows = json.loads(roster("otc", 600, start=5000)); rows[0]["出表日期"] = "1150908"
     with pytest.raises(ValueError, match="one report date"):
         subject.decode_rows(json.dumps(rows).encode(), "otc")

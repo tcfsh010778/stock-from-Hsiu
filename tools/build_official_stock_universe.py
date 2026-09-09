@@ -38,6 +38,11 @@ def _field(row: dict[str, Any], *names: str) -> Any:
     return None
 
 
+def is_known_tdr_id(security_id: str) -> bool:
+    """MOPS company rosters include numeric 91-prefix TDR codes."""
+    return security_id.isdigit() and len(security_id) in {4, 6} and security_id.startswith("91")
+
+
 def parse_listing_date(value: Any) -> str:
     text = str(value or "").strip().replace("-", "").replace("/", "")
     if len(text) == 7 and text.isdigit():  # ROC calendar, if supplied by an official export.
@@ -61,16 +66,20 @@ def decode_rows(content: bytes, market: str) -> list[dict[str, str]]:
     for raw in payload:
         if not isinstance(raw, dict):
             raise ValueError(f"{market} official roster row is not an object")
-        sid = str(_field(raw, "公司代號") or "").strip()
-        name = str(_field(raw, "公司名稱", "公司簡稱") or "").strip()
+        sid = str(_field(raw, "公司代號", "SecuritiesCompanyCode") or "").strip()
+        name = str(_field(raw, "公司簡稱", "CompanyAbbreviation", "公司名稱", "CompanyName") or "").strip()
+        if is_known_tdr_id(sid):
+            continue
         if len(sid) != 4 or not sid.isdigit() or sid.startswith("0") or not name:
-            raise ValueError(f"{market} official roster identity is invalid")
+            safe_keys = sorted(str(key).lstrip("\ufeff") for key in raw)
+            raise ValueError(f"{market} official roster identity is invalid: security_id={sid!r} "
+                             f"name={name!r} available_keys={safe_keys}")
         if sid in seen:
             raise ValueError(f"{market} official roster has duplicate security {sid}")
         seen.add(sid)
-        report_dates.add(parse_listing_date(_field(raw, "出表日期")))
+        report_dates.add(parse_listing_date(_field(raw, "出表日期", "Date")))
         output.append({"security_id": sid, "name": name, "market": market,
-                       "listing_date": parse_listing_date(_field(raw, *date_names))})
+                       "listing_date": parse_listing_date(_field(raw, *date_names, "DateOfListing"))})
     if len(report_dates) != 1:
         raise ValueError(f"{market} official roster does not have one report date")
     report_date = next(iter(report_dates))
@@ -103,9 +112,15 @@ def fetch_bytes(url: str, *, attempts: int = 3, timeout: float = 30,
     raise UniverseSourceError(f"official roster transport failed after {attempts} attempts: {type(last).__name__}")
 
 
-def build_universe(raw_by_market: dict[str, bytes], *, universe_as_of: str,
+def build_universe(raw_by_market: dict[str, bytes], *, universe_as_of: str | dict[str, str],
                    tdcc_date: str, retrieved_at: str) -> dict[str, Any]:
-    as_of = date.fromisoformat(universe_as_of).isoformat()
+    if isinstance(universe_as_of, dict):
+        source_dates = {market: date.fromisoformat(universe_as_of[market]).isoformat()
+                        for market in ("listed", "otc")}
+    else:
+        shared_date = date.fromisoformat(universe_as_of).isoformat()
+        source_dates = {market: shared_date for market in ("listed", "otc")}
+    as_of = min(source_dates.values())
     target = date.fromisoformat(tdcc_date).isoformat()
     if target > as_of:
         raise ValueError("TDCC target date cannot be newer than universe as-of")
@@ -116,12 +131,18 @@ def build_universe(raw_by_market: dict[str, bytes], *, universe_as_of: str,
     hashes: dict[str, str] = {}
     raw_counts: dict[str, int] = {}
     excluded: dict[str, list[str]] = {}
+    excluded_tdr: dict[str, list[str]] = {}
     for market in ("listed", "otc"):
         content = raw_by_market.get(market)
         if not isinstance(content, bytes):
             raise ValueError(f"missing {market} official roster bytes")
+        raw_payload = json.loads(content.decode("utf-8-sig"))
+        excluded_tdr[market] = sorted(
+            str(_field(row, "公司代號", "SecuritiesCompanyCode") or "").strip()
+            for row in raw_payload if isinstance(row, dict)
+            and is_known_tdr_id(str(_field(row, "公司代號", "SecuritiesCompanyCode") or "").strip()))
         decoded = decode_rows(content, market)
-        if {row["roster_as_of"] for row in decoded} != {as_of}:
+        if {row["roster_as_of"] for row in decoded} != {source_dates[market]}:
             raise ValueError(f"{market} official roster report date differs from universe as-of")
         hashes[market] = hashlib.sha256(content).hexdigest()
         raw_counts[market] = len(decoded)
@@ -141,13 +162,18 @@ def build_universe(raw_by_market: dict[str, bytes], *, universe_as_of: str,
         "status": "ok",
         "quality": "complete_for_current_rosters_as_of_target",
         "universe_as_of": as_of,
+        "roster_as_of_by_market": source_dates,
         "effective_for_tdcc_date": target,
         "retrieved_at": retrieved.astimezone(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
         "sources": {market: {"url": SOURCES[market], "raw_sha256": hashes[market],
-                             "raw_row_count": raw_counts[market]} for market in ("listed", "otc")},
+                             "raw_row_count": raw_counts[market] + len(excluded_tdr[market]),
+                             "roster_as_of": source_dates[market],
+                             "excluded_tdr_security_ids": excluded_tdr[market]}
+                    for market in ("listed", "otc")},
         "row_count": len(all_rows),
         "market_counts": counts,
         "excluded_not_yet_listed_security_ids": excluded,
+        "excluded_tdr_security_ids": excluded_tdr,
         "rows": all_rows,
     }
 
