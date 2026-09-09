@@ -89,3 +89,23 @@ def test_untrusted_build_url_is_rejected(tmp_path):
                 "url": "https://evil.test/repos/owner/repo/pages/builds/1"
             },
         )
+
+
+def test_numeric_repository_alias_uses_configured_repository(tmp_path):
+    url = "https://api.github.com/repositories/1225747295/pages/builds/latest"
+    assert m.safe_build_endpoint("owner/repo", url) == "repos/owner/repo/pages/builds/latest"
+    assert call(tmp_path, [{"status": "built", "commit": "a" * 40}],
+                trigger=lambda repo: {"url": url})["status"] == "verified"
+    with pytest.raises(m.PublishError, match="wrong commit"):
+        call(tmp_path, [{"status": "built", "commit": "b" * 40}],
+             trigger=lambda repo: {"url": url})
+
+
+@pytest.mark.parametrize("url", [
+    "https://evil.test/repositories/1225747295/pages/builds/latest",
+    "https://api.github.com/repositories/1225747295/pages/builds/latest?redirect=evil",
+    "https://api.github.com/repositories/1225747295/pages/builds/latest/other",
+])
+def test_numeric_alias_rejects_untrusted_variants(url):
+    with pytest.raises(m.PublishError, match="untrusted"):
+        m.safe_build_endpoint("owner/repo", url)
