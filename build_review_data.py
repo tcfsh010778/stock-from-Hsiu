@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 PRICE_MODE = 'official_reference_ratio_back_adjusted_v1'
 PRICE_BASES = {
     PRICE_MODE: 'official_raw_shares',
+    'reference_ratio_back_adjusted_mixed_sources_v1': 'raw_shares',
     'finmind_raw_reconciled_reference_ratio_back_adjusted_v1': 'finmind_raw_shares',
 }
 SFZ_SOURCE_SHA = '6a45a1038c687f2abf96627138587445c9703e60'
@@ -48,7 +49,7 @@ def verified_frame(data: Path, stock_id: str, as_of: str) -> pd.DataFrame:
             or basis.get('adjustment_as_of') != as_of):
         raise ValueError('缺少當期已驗證的還原價／原始成交量資料')
     price_path = data / 'prices' / f'{stock_id}.csv'
-    if basis.get('mode') == 'finmind_raw_reconciled_reference_ratio_back_adjusted_v1':
+    if basis.get('mode') in {'finmind_raw_reconciled_reference_ratio_back_adjusted_v1', 'reference_ratio_back_adjusted_mixed_sources_v1'}:
         if hashlib.sha256(price_path.read_bytes()).hexdigest() != basis.get('csv_sha256'):
             raise ValueError('價格檔與驗證紀錄不一致')
     frame = pd.read_csv(price_path, dtype={'date': str})
@@ -61,7 +62,7 @@ def verified_frame(data: Path, stock_id: str, as_of: str) -> pd.DataFrame:
         raise ValueError('日期格式不正確')
     if dates != sorted(set(dates)) or dates[-1] != as_of:
         raise ValueError('價格日期未對齊或重複')
-    if basis.get('mode').startswith('finmind_'):
+    if basis.get('mode') in {'finmind_raw_reconciled_reference_ratio_back_adjusted_v1', 'reference_ratio_back_adjusted_mixed_sources_v1'}:
         expected_meta = {'data_start': dates[0], 'data_end': as_of, 'row_count': len(frame),
                          'available_bars': len(frame), 'ma240_required_bars': 240,
                          'direction_required_bars': 241, 'full_study_recommended_bars': 245,

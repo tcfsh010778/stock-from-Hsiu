@@ -16,6 +16,7 @@ on:
 
 permissions:
   contents: write
+  pages: write
 
 concurrency:
   group: daily-stock-site-update
@@ -60,8 +61,25 @@ jobs:
           test -n "$FINMIND_TOKEN"
           python mda_full_market_refresh.py --skip-price
 
+      - name: Update verified adjusted histories from official daily prices and actions
+        run: python update_official_adjusted_history.py --data-dir data --cache-dir "${{ runner.temp }}/official-adjusted-cache"
+
       - name: Verify adjusted history pairs remain intact
         run: python verified_price_guard.py
+
+      - name: Resolve the official common trading session
+        id: session
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          payload = json.loads(Path('data/official_adjusted_update_manifest.json').read_text())
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as handle:
+              handle.write('date=' + payload['data_as_of'] + '\n')
+          PY
+
+      - name: Refresh verified two-market weekly holder sources and Top50
+        run: python -m tools.update_weekly_sources --data-dir data --official-root .
 
       - name: Refresh MDA full-market scan from current caches
         run: python mda_universe_scan.py
@@ -76,7 +94,7 @@ jobs:
         run: python market_sentiment.py
 
       - name: Generate daily listed and OTC market flow
-        run: python market_flow.py
+        run: python market_flow.py --date "${{ steps.session.outputs.date }}"
 
       - name: Generate CaryBot signal bridge
         run: python carybot_signals.py
@@ -85,13 +103,10 @@ jobs:
         run: python backtest_dashboard.py
 
       - name: Collect official attention and disposition risk
-        run: python attention_disposition.py
+        run: python attention_disposition.py --date "${{ steps.session.outputs.date }}"
 
       - name: Generate daily decision contract
         run: python daily_decisions.py
-
-      - name: Archive official TDCC weekly holder aggregate
-        run: python tdcc_holder_snapshot.py
 
       - name: Backfill official TDCC six-week holder history
         if: ${{ inputs.backfill_tdcc_holder_history == true }}
@@ -101,7 +116,7 @@ jobs:
         run: python weekly_holder_risers.py --limit 50
 
       - name: Generate independent routes and human review changes
-        run: python build_review_data.py
+        run: python build_review_data.py --as-of "${{ steps.session.outputs.date }}"
 
       - name: Generate static site
         run: python generate_site.py
@@ -110,20 +125,31 @@ jobs:
         run: python generate_v2.py --validate --switch-navigation
 
       - name: Verify generated daily artifacts
-        run: python tools/verify_daily_update_artifacts.py
+        run: python tools/verify_daily_update_artifacts.py --expected-session "${{ steps.session.outputs.date }}"
 
       - name: Verify V2 parallel release
         run: python tools/verify_v2_public.py --navigation switched
 
       - name: Commit and push generated site
+        id: publish
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          test ! -e docs/.v2-staging
+          test ! -e docs/.v2-previous
           git add docs/ data/ reports/
           if git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No generated changes to commit."
             exit 0
           fi
           git commit -m "Auto update: $(TZ=Asia/Taipei date '+%Y-%m-%d')"
           git pull --rebase origin main
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Request Pages build for the generated commit
+        if: steps.publish.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"

@@ -1,5 +1,13 @@
 # Codex Handoff
 
+## 2026-09-10 Daily update repair in progress (Issue 34)
+
+- Run 34359527244 downloaded September 9 raw prices, but adjusted histories had no incremental producer; V2 then failed on raw-only membership (43 generated / 902 failures).
+- Imported 1,459 validated historical pairs through September 4. This is a baseline, not a current-data release. Added official incremental prices/actions, verified weekly Top50 with both-market rosters, mixed-source basis support and staged V2 generation.
+- Holder run 34090995907 completed 50 six-week records for September 4, then failed on a market-flow assertion. A named-field verifier now exposes dates, coverage and session failures.
+- Private source PR17 owns provider code. Full incremental generation and formal release/live Pages verification are pending; do not call this branch deployed. Long-term MDA holder evidence remains distinct from latest-week ranking.
+
+
 ## 2026-09-08 Authorized partial-data feature release
 
 - User explicitly approved publication of PR36 and private PR16 after the partial-data limitations were disclosed. This supersedes the prior draft-only release hold for the feature version; it does not mark historical depth, latest prices or long-term holder repair complete.

@@ -10,7 +10,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 
-SOURCE = Path(__file__).resolve().parents[2] / "daily-public" / "generate_site.py"
+SOURCE = Path(__file__).resolve().parents[1] / "generate_site.py"
 SPEC = importlib.util.spec_from_file_location("daily_public_generate_site", SOURCE)
 site = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None

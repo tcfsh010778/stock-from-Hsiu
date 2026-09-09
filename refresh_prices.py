@@ -362,7 +362,7 @@ def main() -> None:
     protected = protected_ids(LOCAL_PRICE_DIR.parent)
     raw_ids = set(stock_ids) - protected
     if protected:
-        print(f'[refresh_prices] protected adjusted histories={len(protected)}; updated by verified source pipeline')
+        print(f'[refresh_prices] protected adjusted histories={len(protected)}; preserved for the separate verified incremental step')
     if not raw_ids:
         print('[refresh_prices] no raw histories to update; adjusted data preserved')
         return

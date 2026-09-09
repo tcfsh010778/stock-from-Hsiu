@@ -76,3 +76,24 @@ class PipelineTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+def test_mixed_official_increment_contract_requires_hash_and_updated_coverage(tmp_path):
+    from tools.test_public_history_contract import fixture
+    fixture(tmp_path, 245)
+    meta_path = tmp_path / 'price_basis/9001.json'
+    meta = json.loads(meta_path.read_text(encoding='utf-8'))
+    meta.update(mode='reference_ratio_back_adjusted_mixed_sources_v1', volume_basis='raw_shares')
+    meta_path.write_text(json.dumps(meta), encoding='utf-8')
+    assert len(verified_frame(tmp_path, '9001', '2026-09-04')) == 245
+    meta['available_bars'] = 244
+    meta_path.write_text(json.dumps(meta), encoding='utf-8')
+    import pytest
+    with pytest.raises(ValueError, match='驗證紀錄'):
+        verified_frame(tmp_path, '9001', '2026-09-04')
+    meta['available_bars'] = 245
+    meta_path.write_text(json.dumps(meta), encoding='utf-8')
+    with (tmp_path / 'prices/9001.csv').open('ab') as handle:
+        handle.write(b'\n')
+    with pytest.raises(ValueError, match='驗證紀錄'):
+        verified_frame(tmp_path, '9001', '2026-09-04')
