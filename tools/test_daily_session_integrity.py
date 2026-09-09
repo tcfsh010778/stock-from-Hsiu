@@ -9,7 +9,7 @@ import unittest
 from pathlib import Path
 
 
-SOURCE = Path(__file__).resolve().parents[2] / "daily-public" / "tools" / "verify_daily_update_artifacts.py"
+SOURCE = Path(__file__).resolve().parent / "verify_daily_update_artifacts.py"
 SPEC = importlib.util.spec_from_file_location("daily_public_verify_daily_update_artifacts", SOURCE)
 verifier = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None

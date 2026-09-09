@@ -354,3 +354,10 @@ def test_event_nonjson_retries_then_caches(monkeypatch, tmp_path):
         lambda *a, **k: pytest.fail("network used"),
         cache_dir=tmp_path,
     )
+
+
+@pytest.mark.parametrize(
+    "value", ["115年09月07日", "115/09/07", "2026-09-07", "1150907", "20260907"]
+)
+def test_official_roc_event_date_formats(value):
+    assert m.iso(value) == "2026-09-07"

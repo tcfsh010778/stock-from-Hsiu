@@ -7,6 +7,7 @@ from datetime import date, timedelta, datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 import requests
+import re
 
 MODE = "reference_ratio_back_adjusted_mixed_sources_v1"
 MIN_TWSE_ROWS = 800
@@ -134,11 +135,16 @@ def load_module(root: Path, name: str):
 
 
 def iso(value: Any) -> str:
-    s = str(value or "").strip().replace("/", "-")
-    parts = s.split("-")
-    if len(parts) == 3 and len(parts[0]) == 3:
-        s = f"{int(parts[0])+1911:04d}-{int(parts[1]):02d}-{int(parts[2]):02d}"
-    return date.fromisoformat(s).isoformat()
+    text = str(value or "").strip()
+    if re.fullmatch(r"\d{7,8}", text):
+        text = text[:-4] + "-" + text[-4:-2] + "-" + text[-2:]
+    match = re.fullmatch(r"(\d{3,4})[-/年](\d{1,2})[-/月](\d{1,2})日?", text)
+    if not match:
+        raise UpdateError(f"invalid official date: {text!r}")
+    year, month, day = map(int, match.groups())
+    if len(match.group(1)) == 3:
+        year += 1911
+    return date(year, month, day).isoformat()
 
 
 def number(v: Any) -> float:

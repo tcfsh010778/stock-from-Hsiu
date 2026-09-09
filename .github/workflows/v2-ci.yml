@@ -40,6 +40,7 @@ on:
       - "tools/test_candlestick_annotations.py"
       - "tools/verify_daily_update_artifacts.py"
       - "tools/test_verify_daily_update_artifacts.py"
+      - "tools/test_daily_session_integrity.py"
       - "tools/verify_v2_public.py"
       - "tools/test_verify_v2_public.py"
       - ".github/workflows/daily_update.yml"
@@ -84,6 +85,7 @@ on:
       - "tools/test_candlestick_annotations.py"
       - "tools/verify_daily_update_artifacts.py"
       - "tools/test_verify_daily_update_artifacts.py"
+      - "tools/test_daily_session_integrity.py"
       - "tools/verify_v2_public.py"
       - "tools/test_verify_v2_public.py"
       - ".github/workflows/daily_update.yml"
@@ -106,7 +108,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: python -m pytest tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py tools/test_sfz_universe.py tools/test_mda_checklist.py tools/test_mda_weekly_pipeline.py tools/test_verified_price_guard.py tools/test_public_history_contract.py tools/test_import_verified_price_batch.py tools/test_market_reference_integrity.py tools/test_official_adjusted_history.py tools/test_update_weekly_mda_pool.py tools/test_build_official_stock_universe.py tools/test_update_weekly_sources.py tools/test_verify_holder_flow.py -q
+      - run: python -m pytest tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py tools/test_sfz_universe.py tools/test_mda_checklist.py tools/test_mda_weekly_pipeline.py tools/test_verified_price_guard.py tools/test_public_history_contract.py tools/test_import_verified_price_batch.py tools/test_market_reference_integrity.py tools/test_official_adjusted_history.py tools/test_update_weekly_mda_pool.py tools/test_build_official_stock_universe.py tools/test_update_weekly_sources.py tools/test_verify_holder_flow.py tools/test_daily_session_integrity.py -q
       - shell: python
         run: |
           from pathlib import Path
