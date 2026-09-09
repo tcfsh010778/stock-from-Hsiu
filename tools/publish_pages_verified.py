@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import subprocess
 import time
 from pathlib import Path
@@ -38,6 +39,16 @@ def safe_build_endpoint(repo: str, value: str | None) -> str:
     if not value:
         return latest
     parsed = urlparse(value)
+    # GitHub POST /pages/builds can return the numeric repository alias.
+    # Poll our configured repository instead of trusting the returned ID.
+    if (
+        parsed.scheme == "https"
+        and parsed.netloc == "api.github.com"
+        and re.fullmatch(r"/repositories/[0-9]+/pages/builds/latest", parsed.path)
+        and not parsed.query
+        and not parsed.fragment
+    ):
+        return latest
     expected_prefix = f"/repos/{repo}/pages/builds/"
     if (
         parsed.scheme == "https"
