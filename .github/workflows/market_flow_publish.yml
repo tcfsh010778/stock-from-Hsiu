@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,7 +37,9 @@ jobs:
         run: git pull --ff-only origin main
 
       - name: Refresh complete official institutional flow
-        run: python market_flow.py --strict
+        run: |
+          PRICE_DATE=$(python tools/resolve_verified_session.py)
+          python market_flow.py --strict --date "$PRICE_DATE"
 
       - name: Generate focused institutional-flow pages
         run: |
@@ -84,4 +86,4 @@ jobs:
         if: steps.publish.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+        run: python tools/publish_pages_verified.py --repo "${{ github.repository }}" --docs-dir docs

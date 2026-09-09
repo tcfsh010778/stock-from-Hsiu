@@ -26,7 +26,7 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -65,7 +65,7 @@ jobs:
       - name: Refresh official daily holder and rolling institutional metrics
         if: steps.holder_date.outputs.update_required == 'true'
         run: |
-          PRICE_DATE=$(python -c "import json; print(json.load(open('data/price_refresh_summary.json'))['latest_data_date'])")
+          PRICE_DATE=$(python tools/resolve_verified_session.py)
           python market_flow.py --strict --date "$PRICE_DATE"
 
       - name: Regenerate institutional ranking with rolling windows
@@ -77,7 +77,7 @@ jobs:
 
       - name: Refresh independent review queue and MDA checklist
         run: |
-          PRICE_DATE=$(python -c "import json; print(json.load(open('data/official_adjusted_update_manifest.json'))['data_as_of'])")
+          PRICE_DATE=$(python tools/resolve_verified_session.py)
           python build_review_data.py --as-of "$PRICE_DATE"
           python generate_site.py --review-only
           python tools/verify_review_home.py
@@ -114,6 +114,7 @@ jobs:
             exit 0
           fi
           git commit -m "Update six-week holder history"
+          git pull --rebase origin main
           git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
 
@@ -121,4 +122,4 @@ jobs:
         if: steps.publish.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+        run: python tools/publish_pages_verified.py --repo "${{ github.repository }}" --docs-dir docs
