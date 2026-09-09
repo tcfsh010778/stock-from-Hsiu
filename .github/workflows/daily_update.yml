@@ -94,7 +94,7 @@ jobs:
         run: python market_sentiment.py
 
       - name: Generate daily listed and OTC market flow
-        run: python market_flow.py --date "${{ steps.session.outputs.date }}"
+        run: python market_flow.py --strict --date "${{ steps.session.outputs.date }}"
 
       - name: Generate CaryBot signal bridge
         run: python carybot_signals.py

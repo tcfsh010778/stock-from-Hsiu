@@ -1,7 +1,11 @@
 import csv, hashlib, json
 from argparse import Namespace
+from datetime import datetime
+from zoneinfo import ZoneInfo
 import pytest
 import update_official_adjusted_history as m
+
+NOW = datetime(2026, 9, 8, 17, tzinfo=ZoneInfo("Asia/Taipei"))
 
 
 def test_dividend_urls_match_canonical_historical_provider():
@@ -185,7 +189,8 @@ def test_all_sources_prefetched_before_write(tmp_path):
             event_fetcher=lambda a, b: (_ for _ in ()).throw(
                 m.UpdateError("source failed")
             ),
-            calendar_fetcher=lambda d: ["2026-09-05"],
+            calendar_fetcher=lambda d: ["2026-09-05", "2026-09-08"],
+            now=NOW,
             min_twse=1,
             min_tpex=1,
         )
@@ -198,7 +203,8 @@ def test_multiday_update_writes_lf_hash_and_coverage(tmp_path):
         args(tmp_path),
         price_api=Prices,
         event_fetcher=lambda a, b: ([], {"six_partitions": "ok"}),
-        calendar_fetcher=lambda d: ["2026-09-05"],
+        calendar_fetcher=lambda d: ["2026-09-05", "2026-09-08"],
+        now=NOW,
         min_twse=1,
         min_tpex=1,
     )
@@ -235,7 +241,8 @@ def test_missing_expected_market_partition_fails_before_write(tmp_path):
             args(tmp_path),
             price_api=Missing,
             event_fetcher=lambda a, b: ([], {}),
-            calendar_fetcher=lambda d: ["2026-09-05"],
+            calendar_fetcher=lambda d: ["2026-09-05", "2026-09-08"],
+            now=NOW,
             min_twse=1,
             min_tpex=1,
         )
@@ -276,6 +283,8 @@ def test_noop_writes_current_manifest(tmp_path):
         args(tmp_path),
         price_api=Current,
         event_fetcher=lambda a, b: pytest.fail("events fetched"),
+        calendar_fetcher=lambda d: ["2026-09-04"],
+        now=datetime(2026, 9, 4, 17, tzinfo=ZoneInfo("Asia/Taipei")),
         min_twse=1,
         min_tpex=1,
     )
@@ -286,6 +295,36 @@ def test_noop_writes_current_manifest(tmp_path):
         )["unchanged_current"]
         == 1
     )
+    assert (
+        result["calendar_basis"] == "official_twse_tpex"
+        and result["official_sessions_sha256"]
+    )
+
+
+def test_calendar_rejects_stale_latest_before_writes(tmp_path):
+    p = seed(tmp_path)
+    before = p.read_bytes()
+
+    class Current(Prices):
+        @staticmethod
+        def fetch_latest_snapshot():
+            return (
+                "2026-09-04",
+                [{"stock_id": "2330"}, {"stock_id": "3324"}],
+                {"twse": 1, "tpex": 1},
+                {},
+            )
+
+    with pytest.raises(m.UpdateError, match="does not match completed session"):
+        m.run(
+            args(tmp_path),
+            price_api=Current,
+            calendar_fetcher=lambda d: ["2026-09-04", "2026-09-05"],
+            now=datetime(2026, 9, 5, 17, tzinfo=ZoneInfo("Asia/Taipei")),
+            min_twse=1,
+            min_tpex=1,
+        )
+    assert p.read_bytes() == before
 
 
 def test_partition_cache_is_hash_validated(tmp_path):

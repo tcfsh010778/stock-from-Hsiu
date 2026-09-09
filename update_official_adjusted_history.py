@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse, csv, hashlib, importlib, json, math, sys, tempfile
 from collections import defaultdict
 from datetime import date, timedelta, datetime, timezone
+from zoneinfo import ZoneInfo
 from pathlib import Path
 from typing import Any, Callable
 import requests
@@ -604,6 +605,7 @@ def run(
     calendar_fetcher=None,
     min_twse: int = MIN_TWSE_ROWS,
     min_tpex: int = MIN_TPEX_ROWS,
+    now: datetime | None = None,
 ) -> dict:
     price_api = price_api or load_module(args.official_root, "official_price_refresh")
     ids = _ids(args)
@@ -625,6 +627,43 @@ def run(
         min_twse=min_twse,
         min_tpex=min_tpex,
     )
+    local_now = now or datetime.now(ZoneInfo("Asia/Taipei"))
+    if local_now.tzinfo is None:
+        raise UpdateError("injected clock must be timezone-aware")
+    local_now = local_now.astimezone(ZoneInfo("Asia/Taipei"))
+    cutoff = (
+        local_now.date()
+        if local_now.hour >= 16
+        else local_now.date() - timedelta(days=1)
+    )
+    if calendar_fetcher is None:
+        calendar_fetcher = load_module(
+            args.official_root, "attention_disposition"
+        ).fetch_trading_sessions
+    official_sessions = calendar_fetcher(cutoff)
+    try:
+        canonical_sessions = [iso(d) for d in official_sessions]
+    except Exception as exc:
+        raise UpdateError("official calendar contains invalid dates") from exc
+    if (
+        canonical_sessions != official_sessions
+        or official_sessions != sorted(set(official_sessions))
+        or not official_sessions
+        or official_sessions[-1] > cutoff.isoformat()
+    ):
+        raise UpdateError(
+            "official calendar must be nonempty sorted unique ISO dates through cutoff"
+        )
+    if latest != official_sessions[-1]:
+        raise UpdateError(
+            f"official price latest {latest} does not match completed session {official_sessions[-1]}"
+        )
+    calendar_meta = {
+        "calendar_basis": "official_twse_tpex",
+        "calendar_as_of": cutoff.isoformat(),
+        "expected_completed_session": latest,
+        "official_sessions_sha256": payload_sha(official_sessions),
+    }
     if latest < maximum:
         raise UpdateError("official latest date predates verified history")
     if latest == previous:
@@ -637,6 +676,7 @@ def run(
             "requested": len(ids),
             "completed": 0,
             "unchanged_current": len(ids),
+            **calendar_meta,
             "generated_at": datetime.now(timezone.utc).isoformat(),
         }
         atomic_json(
@@ -647,13 +687,7 @@ def run(
         raise UpdateError(
             "cross-year calendar range requires explicit yearly calendar adapter"
         )
-    if calendar_fetcher is None:
-        calendar_fetcher = load_module(
-            args.official_root, "attention_disposition"
-        ).fetch_trading_sessions
-    expected = [
-        d for d in calendar_fetcher(date.fromisoformat(latest)) if previous < d < latest
-    ]
+    expected = [d for d in official_sessions if previous < d < latest]
     for day in expected:
         twse, tpex, retrieved_at = cached_partition(
             getattr(args, "cache_dir", None), day, price_api
@@ -784,6 +818,7 @@ def run(
             == len(ids)
             else "partial"
         ),
+        **calendar_meta,
         "generated_at": datetime.now(timezone.utc).isoformat(),
     }
     atomic_json(args.output_root / "official_adjusted_update_manifest.json", manifest)

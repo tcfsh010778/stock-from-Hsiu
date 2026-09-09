@@ -204,6 +204,13 @@ def load_stock_map(docs_dir: Path, data_dir: Path) -> dict[str, dict]:
             stocks[stock_id] = {"name": html.unescape(name).strip()}
     for price_path in sorted((data_dir / "prices").glob("*.csv")):
         stocks.setdefault(price_path.stem, {"name": ""})
+    for filename, key in (("stock_industries.json", "stock_name"), ("stock_markets.json", "name")):
+        path = data_dir / filename
+        if path.exists():
+            references = json.loads(path.read_text(encoding="utf-8-sig")).get("stocks", {})
+            for sid, row in references.items():
+                if row.get(key) and sid in stocks:
+                    stocks[sid]["name"] = row[key]
     return stocks
 
 
@@ -395,7 +402,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     price_summary = load_price_refresh_summary(data_dir / "price_refresh_summary.json")
     summary_price_date = str(price_summary.get("latest_data_date") or "")
     from build_review_data import expected_session
-    expected_price_date = expected_session()
+    expected_price_date = expected_session(data_dir=data_dir)
     price_refresh_status = str(price_summary.get("status") or "missing")
     if price_refresh_status != "fresh":
         global_warnings.append(f"official price refresh status is {price_refresh_status}")

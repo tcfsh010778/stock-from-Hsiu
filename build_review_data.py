@@ -30,12 +30,24 @@ def read_json(path: Path, default=None):
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
-def expected_session(now=None):
+def expected_session(now=None, data_dir=None):
     """Conservative weekday fallback; public output discloses calendar basis."""
     now = now or datetime.now(timezone(timedelta(hours=8)))
     day = now.date()
     if now.hour < 16:
         day -= timedelta(days=1)
+    if data_dir is not None:
+        manifest = read_json(Path(data_dir) / 'official_adjusted_update_manifest.json')
+        if (manifest.get('dataset_id') == 'official_adjusted_daily_update'
+                and manifest.get('status') in {'complete', 'partial', 'current'}
+                and manifest.get('calendar_basis') == 'official_twse_tpex'
+                and manifest.get('calendar_as_of') == day.isoformat()
+                and manifest.get('expected_completed_session') == manifest.get('data_as_of')
+                and len(str(manifest.get('official_sessions_sha256') or '')) == 64):
+            session = date.fromisoformat(manifest['data_as_of'])
+            generated = datetime.fromisoformat(manifest['generated_at'])
+            if generated.tzinfo and timedelta(minutes=-5) <= now - generated < timedelta(days=1) and session <= day:
+                return session.isoformat()
     while day.weekday() >= 5:
         day -= timedelta(days=1)
     return day.isoformat()
@@ -99,6 +111,13 @@ def build_sfz(data: Path, as_of: str, analyzer=None):
     for report in read_json(data / 'site_reports.json', []):
         for stock in report.get('stocks', []):
             names[str(stock.get('id', ''))] = stock.get('name', '')
+    references = read_json(data / 'stock_markets.json').get('stocks', {})
+    for sid, ref in references.items():
+        if ref.get('name'):
+            names[sid] = ref['name']
+    for sid, ref in read_json(data / 'stock_industries.json').get('stocks', {}).items():
+        if ref.get('stock_name'):
+            names.setdefault(sid, ref['stock_name'])
     paths = [p for p in sorted((data / 'prices').glob('*.csv'))
              if len(p.stem) == 4 and p.stem.isdigit() and not p.stem.startswith('0')]
     results, missing = [], []
@@ -235,7 +254,8 @@ def build(data: Path, as_of: str):
                     route['checklist'] = current_mda.get('checklist')
         if sid.isdigit() and (ROOT / 'docs/v2/data' / f'{sid}.json').exists():
             card['detail_href'] = f'v2/stock.html?id={sid}'
-    queue['calendar_basis'] = 'weekday_after_16_taipei_fallback; exchange holidays not inferred'
+    calendar = read_json(data / 'official_adjusted_update_manifest.json')
+    queue['calendar_basis'] = ('official_twse_tpex' if calendar.get('calendar_basis') == 'official_twse_tpex' and calendar.get('expected_completed_session') == as_of else 'weekday_after_16_taipei_fallback; exchange holidays not inferred')
     queue['mda_pool_version'] = mda['rule_version'] if mda['pool_verified'] else (previous or {}).get('mda_pool_version')
     queue['source_summary'] = {
         'sfz': {'status': sfz['quality'], 'data_date': as_of if sfz['evaluated_count'] else None,
@@ -254,8 +274,9 @@ def build(data: Path, as_of: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', type=Path, default=ROOT / 'data')
-    parser.add_argument('--as-of', default=expected_session())
+    parser.add_argument('--as-of')
     args = parser.parse_args()
+    args.as_of = args.as_of or expected_session(data_dir=args.data_dir)
     date.fromisoformat(args.as_of)
     result = build(args.data_dir, args.as_of)
     print(json.dumps({'as_of': args.as_of, 'sources': result['source_summary']}, ensure_ascii=False))

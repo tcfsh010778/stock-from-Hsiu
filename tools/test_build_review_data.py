@@ -97,3 +97,20 @@ def test_mixed_official_increment_contract_requires_hash_and_updated_coverage(tm
         handle.write(b'\n')
     with pytest.raises(ValueError, match='驗證紀錄'):
         verified_frame(tmp_path, '9001', '2026-09-04')
+
+
+def test_official_holiday_manifest_overrides_weekday_fallback(tmp_path):
+    import json
+    from datetime import datetime, timezone, timedelta
+    from build_review_data import expected_session
+    now = datetime(2026, 9, 9, 18, tzinfo=timezone(timedelta(hours=8)))
+    manifest = {"dataset_id": "official_adjusted_daily_update", "status": "current",
+                "calendar_basis": "official_twse_tpex", "calendar_as_of": "2026-09-09",
+                "expected_completed_session": "2026-09-08", "data_as_of": "2026-09-08",
+                "official_sessions_sha256": "a"*64, "generated_at": now.isoformat()}
+    path=tmp_path/'official_adjusted_update_manifest.json'
+    path.write_text(json.dumps(manifest),encoding='utf-8')
+    assert expected_session(now,data_dir=tmp_path)=='2026-09-08'
+    manifest['calendar_as_of']='2026-09-08'
+    path.write_text(json.dumps(manifest),encoding='utf-8')
+    assert expected_session(now,data_dir=tmp_path)=='2026-09-09'
