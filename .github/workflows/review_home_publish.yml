@@ -40,7 +40,9 @@ jobs:
       - name: Sync latest generated data
         run: git pull --ff-only origin main
       - name: Build independent observations and compare durable state
-        run: python build_review_data.py
+        run: |
+          PRICE_DATE=$(python tools/resolve_verified_session.py)
+          python build_review_data.py --as-of "$PRICE_DATE"
       - name: Build only review homepage and supporting pages
         run: python generate_site.py --review-only
       - name: Verify source gates and publication semantics
@@ -56,10 +58,11 @@ jobs:
             exit 0
           fi
           git commit -m 'Update independent routes and human review home'
+          git pull --rebase origin main
           git push
           echo 'changed=true' >> "$GITHUB_OUTPUT"
       - name: Request Pages build for generated commit
         if: steps.publish.outputs.changed == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+        run: python tools/publish_pages_verified.py --repo "${{ github.repository }}" --docs-dir docs
