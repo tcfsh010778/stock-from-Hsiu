@@ -405,65 +405,60 @@ def find_all_reports() -> list[Path]:
 
 
 def _fetch_json(url: str):
-    req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    with urllib.request.urlopen(req, timeout=20) as resp:
-        return json.loads(resp.read().decode("utf-8-sig"))
+    from official_price_refresh import _get_json
+    return _get_json(url, timeout=30, attempts=3)
+
+
+def complete_market_reference(stocks: dict) -> bool:
+    counts = {market: sum(isinstance(item, dict) and item.get("market") == market for item in stocks.values())
+              for market in ("上市", "上櫃")}
+    return counts["上市"] >= 800 and counts["上櫃"] >= 600
 
 
 def load_stock_reference_map() -> dict[str, dict]:
-    """Load listed/OTC market and name map from official daily quote APIs."""
+    """Never replace a two-market reference with a partially fetched map."""
+    cached = {}
     if MARKET_CACHE_PATH.exists():
         try:
-            cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
-            updated_at = datetime.fromisoformat(cache.get("updated_at", "1970-01-01T00:00:00"))
-            stocks = cache.get("stocks")
-            if stocks and datetime.now() - updated_at < timedelta(days=1):
-                return stocks
-        except Exception:
+            payload = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
+            cached = payload.get("stocks") or {code: {"market": market, "name": ""}
+                      for code, market in (payload.get("markets") or {}).items()}
+            updated_at = datetime.fromisoformat(payload.get("updated_at", "1970-01-01T00:00:00"))
+            if complete_market_reference(cached) and timedelta(0) <= datetime.now(updated_at.tzinfo) - updated_at < timedelta(days=1):
+                return cached
+        except (ValueError, TypeError, AttributeError):
             pass
-
-    stocks: dict[str, dict] = {}
-    errors: list[str] = []
-    try:
-        for row in _fetch_json(TWSE_STOCK_DAY_ALL_URL):
-            code = str(row.get("Code", "")).strip()
-            if re.fullmatch(r"\d{4}", code):
-                stocks[code] = {"market": "上市", "name": clean_stock_name(row.get("Name", ""))}
-    except Exception as exc:
-        errors.append(f"TWSE {exc}")
-
-    try:
-        for row in _fetch_json(TPEX_DAILY_CLOSE_URL):
-            code = str(row.get("SecuritiesCompanyCode", "")).strip()
-            if re.fullmatch(r"\d{4}", code):
-                stocks[code] = {"market": "上櫃", "name": clean_stock_name(row.get("CompanyName", ""))}
-    except Exception as exc:
-        errors.append(f"TPEX {exc}")
-
-    if stocks:
-        markets = {code: item.get("market", "") for code, item in stocks.items()}
+    stocks = {}
+    errors = []
+    for market, url, code_key, name_key in (
+        ("上市", TWSE_STOCK_DAY_ALL_URL, "Code", "Name"),
+        ("上櫃", TPEX_DAILY_CLOSE_URL, "SecuritiesCompanyCode", "CompanyName"),
+    ):
+        try:
+            rows = _fetch_json(url)
+            if not isinstance(rows, list) or not rows:
+                raise ValueError("empty or invalid market reference response")
+            for row in rows:
+                code = str(row.get(code_key, "")).strip()
+                if re.fullmatch(r"\d{4}", code):
+                    if code in stocks:
+                        raise ValueError("duplicate security in market references")
+                    stocks[code] = {"market": market, "name": clean_stock_name(row.get(name_key, ""))}
+        except Exception as exc:
+            errors.append(f"{market}: {type(exc).__name__}")
+    if not errors and complete_market_reference(stocks):
+        markets = {code: item["market"] for code, item in stocks.items()}
         LOCAL_DATA_DIR.mkdir(parents=True, exist_ok=True)
-        MARKET_CACHE_PATH.write_text(
-            json.dumps(
-                {"updated_at": datetime.now().isoformat(timespec="seconds"), "markets": markets, "stocks": stocks},
-                ensure_ascii=False,
-                indent=2,
-            ),
-            encoding="utf-8",
-        )
+        temporary = MARKET_CACHE_PATH.with_suffix(".json.tmp")
+        temporary.write_text(json.dumps({"updated_at": datetime.now().isoformat(timespec="seconds"),
+                             "markets": markets, "stocks": stocks}, ensure_ascii=False, indent=2), encoding="utf-8")
+        temporary.replace(MARKET_CACHE_PATH)
         print(f"   [Market] loaded {len(stocks)} listed/OTC codes", flush=True)
         return stocks
-
-    if MARKET_CACHE_PATH.exists():
-        cache = json.loads(MARKET_CACHE_PATH.read_text(encoding="utf-8"))
-        print(f"   [Market] using cached market map after fetch failure: {'; '.join(errors)}", flush=True)
-        stocks = cache.get("stocks")
-        if stocks:
-            return stocks
-        return {code: {"market": market, "name": ""} for code, market in cache.get("markets", {}).items()}
-
-    print(f"   [Market][WARN] market map unavailable, skip listed/OTC filter: {'; '.join(errors)}", flush=True)
-    return {}
+    if complete_market_reference(cached):
+        print(f"   [Market][WARN] preserving complete cached reference: {errors}", flush=True)
+        return cached
+    raise RuntimeError(f"both-market security reference unavailable or incomplete: {errors}")
 
 
 def load_stock_market_map() -> dict[str, str]:
@@ -5905,6 +5900,8 @@ def build_index_page(reports: list[dict]) -> str:
 
 def review_html_page(title: str, active: str, content: str) -> str:
     page = html_page(title, active, content)
+    if SITE_LATEST_REPORT_DATE:
+        page = page.replace("</head>", f'<meta name="build-session" content="{esc(SITE_LATEST_REPORT_DATE)}">\n</head>', 1)
     review_footer = '<footer><p>價格、週股權與各項證據的日期分別列示於頁面；缺漏資料不視為符合條件。</p><p>資料來源：FinMind · TWSE · TPEx · TDCC，依個股驗證紀錄。僅供研究與人工複判。</p></footer>'
     page = page.replace(footer_html(), review_footer, 1)
     links = [("home", "index.html", "複判首頁"), ("selection", "review-pool.html", "觀察池"),

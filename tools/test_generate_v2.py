@@ -2,13 +2,74 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import json
 from pathlib import Path
+from unittest.mock import patch
 
-from generate_v2 import add_public_workbench, analyze_stock_task, load_market_evidence, safe_decision, switch_navigation, trim_packet
+from generate_v2 import add_public_workbench, analyze_stock_task, build_v2, load_market_evidence, load_verified_universe, safe_decision, switch_navigation, trim_packet
 from stock_v2_public.site import stock_redirect_html
 
 
 class PublicV2GenerationTests(unittest.TestCase):
+    def _base(self, root):
+        docs, data = root / "docs", root / "data"
+        (docs / "v2" / "data").mkdir(parents=True)
+        (docs / "v2" / "data" / "index.json").write_text('{"old":true}', encoding="utf-8")
+        (data / "prices").mkdir(parents=True)
+        (data / "price_basis").mkdir()
+        (data / "price_refresh_summary.json").write_text(json.dumps({"status": "fresh", "latest_data_date": "2026-09-10"}), encoding="utf-8")
+        return docs, data
+
+    def _basis(self, data, sid="9999", **changes):
+        meta = {"stock_id": sid, "mode": "reference_ratio_back_adjusted_mixed_sources_v1", "verified": True, "volume_basis": "raw_shares", "adjustment_as_of": "2026-09-10"}
+        meta.update(changes)
+        (data / "price_basis" / f"{sid}.json").write_text(json.dumps(meta), encoding="utf-8")
+        (data / "prices" / f"{sid}.csv").write_text("date,open,high,low,close,volume\n2026-09-10,10,11,9,10,1000\n", encoding="utf-8")
+
+    def test_verified_universe_accepts_new_mixed_mode_without_legacy_name(self):
+        with tempfile.TemporaryDirectory() as folder:
+            _, data = self._base(Path(folder)); self._basis(data)
+            ids, failures = load_verified_universe(data)
+            self.assertEqual(ids, {"9999"}); self.assertEqual(failures, [])
+
+    def test_missing_basis_is_expected_exclusion_and_corrupt_claim_is_failure(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, data = self._base(Path(folder))
+            (data / "prices" / "1111.csv").write_text("raw", encoding="utf-8")
+            with patch("build_review_data.expected_session", return_value="2026-09-10"):
+                result = build_v2(docs_dir=docs, data_dir=data)
+            self.assertEqual(result["failure_count"], 0)
+            status = json.loads((data / "v2_build_status.json").read_text(encoding="utf-8"))
+            self.assertEqual(status["excluded_count"], 1)
+        with tempfile.TemporaryDirectory() as folder:
+            docs, data = self._base(Path(folder)); self._basis(data, volume_basis="wrong")
+            result = build_v2(docs_dir=docs, data_dir=data)
+            self.assertEqual(result["failure_count"], 1)
+
+    def test_worker_failure_preserves_old_published_v2(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, data = self._base(Path(folder)); self._basis(data)
+            class InlineExecutor:
+                def __init__(self, **kwargs): pass
+                def __enter__(self): return self
+                def __exit__(self, *args): pass
+                def map(self, function, tasks, chunksize=1):
+                    for task in tasks: yield (task[0], task[1], None, "metadata corruption")
+            with patch("generate_v2.concurrent.futures.ProcessPoolExecutor", InlineExecutor):
+                result = build_v2(docs_dir=docs, data_dir=data)
+            self.assertEqual(result["failure_count"], 1)
+            self.assertEqual((docs / "v2" / "data" / "index.json").read_text(encoding="utf-8"), '{"old":true}')
+
+    def test_wrong_refresh_summary_date_does_not_replace_published_v2(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, data = self._base(Path(folder))
+            (data / "price_refresh_summary.json").write_text(json.dumps({"status": "fresh", "latest_data_date": "2026-09-09"}), encoding="utf-8")
+            with patch("build_review_data.expected_session", return_value="2026-09-10"):
+                result = build_v2(docs_dir=docs, data_dir=data)
+            self.assertFalse(result["release_ready"])
+            status = json.loads((data / "v2_build_status.json").read_text(encoding="utf-8"))
+            self.assertEqual(status["release_blocker"], "price_refresh_mismatch")
+            self.assertEqual((docs / "v2" / "data" / "index.json").read_text(encoding="utf-8"), '{"old":true}')
     def test_uncovered_stock_is_not_ai_invented(self):
         decision = safe_decision("9999", None)
         self.assertEqual(decision["action_state"], "UNRATED")

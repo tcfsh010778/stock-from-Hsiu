@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 PRICE_MODE = 'official_reference_ratio_back_adjusted_v1'
 PRICE_BASES = {
     PRICE_MODE: 'official_raw_shares',
+    'reference_ratio_back_adjusted_mixed_sources_v1': 'raw_shares',
     'finmind_raw_reconciled_reference_ratio_back_adjusted_v1': 'finmind_raw_shares',
 }
 SFZ_SOURCE_SHA = '6a45a1038c687f2abf96627138587445c9703e60'
@@ -29,12 +30,24 @@ def read_json(path: Path, default=None):
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
-def expected_session(now=None):
+def expected_session(now=None, data_dir=None):
     """Conservative weekday fallback; public output discloses calendar basis."""
     now = now or datetime.now(timezone(timedelta(hours=8)))
     day = now.date()
     if now.hour < 16:
         day -= timedelta(days=1)
+    if data_dir is not None:
+        manifest = read_json(Path(data_dir) / 'official_adjusted_update_manifest.json')
+        if (manifest.get('dataset_id') == 'official_adjusted_daily_update'
+                and manifest.get('status') in {'complete', 'partial', 'current'}
+                and manifest.get('calendar_basis') == 'official_twse_tpex'
+                and manifest.get('calendar_as_of') == day.isoformat()
+                and manifest.get('expected_completed_session') == manifest.get('data_as_of')
+                and len(str(manifest.get('official_sessions_sha256') or '')) == 64):
+            session = date.fromisoformat(manifest['data_as_of'])
+            generated = datetime.fromisoformat(manifest['generated_at'])
+            if generated.tzinfo and timedelta(minutes=-5) <= now - generated < timedelta(days=1) and session <= day:
+                return session.isoformat()
     while day.weekday() >= 5:
         day -= timedelta(days=1)
     return day.isoformat()
@@ -48,7 +61,7 @@ def verified_frame(data: Path, stock_id: str, as_of: str) -> pd.DataFrame:
             or basis.get('adjustment_as_of') != as_of):
         raise ValueError('缺少當期已驗證的還原價／原始成交量資料')
     price_path = data / 'prices' / f'{stock_id}.csv'
-    if basis.get('mode') == 'finmind_raw_reconciled_reference_ratio_back_adjusted_v1':
+    if basis.get('mode') in {'finmind_raw_reconciled_reference_ratio_back_adjusted_v1', 'reference_ratio_back_adjusted_mixed_sources_v1'}:
         if hashlib.sha256(price_path.read_bytes()).hexdigest() != basis.get('csv_sha256'):
             raise ValueError('價格檔與驗證紀錄不一致')
     frame = pd.read_csv(price_path, dtype={'date': str})
@@ -61,7 +74,7 @@ def verified_frame(data: Path, stock_id: str, as_of: str) -> pd.DataFrame:
         raise ValueError('日期格式不正確')
     if dates != sorted(set(dates)) or dates[-1] != as_of:
         raise ValueError('價格日期未對齊或重複')
-    if basis.get('mode').startswith('finmind_'):
+    if basis.get('mode') in {'finmind_raw_reconciled_reference_ratio_back_adjusted_v1', 'reference_ratio_back_adjusted_mixed_sources_v1'}:
         expected_meta = {'data_start': dates[0], 'data_end': as_of, 'row_count': len(frame),
                          'available_bars': len(frame), 'ma240_required_bars': 240,
                          'direction_required_bars': 241, 'full_study_recommended_bars': 245,
@@ -98,6 +111,13 @@ def build_sfz(data: Path, as_of: str, analyzer=None):
     for report in read_json(data / 'site_reports.json', []):
         for stock in report.get('stocks', []):
             names[str(stock.get('id', ''))] = stock.get('name', '')
+    references = read_json(data / 'stock_markets.json').get('stocks', {})
+    for sid, ref in references.items():
+        if ref.get('name'):
+            names[sid] = ref['name']
+    for sid, ref in read_json(data / 'stock_industries.json').get('stocks', {}).items():
+        if ref.get('stock_name'):
+            names.setdefault(sid, ref['stock_name'])
     paths = [p for p in sorted((data / 'prices').glob('*.csv'))
              if len(p.stem) == 4 and p.stem.isdigit() and not p.stem.startswith('0')]
     results, missing = [], []
@@ -234,7 +254,8 @@ def build(data: Path, as_of: str):
                     route['checklist'] = current_mda.get('checklist')
         if sid.isdigit() and (ROOT / 'docs/v2/data' / f'{sid}.json').exists():
             card['detail_href'] = f'v2/stock.html?id={sid}'
-    queue['calendar_basis'] = 'weekday_after_16_taipei_fallback; exchange holidays not inferred'
+    calendar = read_json(data / 'official_adjusted_update_manifest.json')
+    queue['calendar_basis'] = ('official_twse_tpex' if calendar.get('calendar_basis') == 'official_twse_tpex' and calendar.get('expected_completed_session') == as_of else 'weekday_after_16_taipei_fallback; exchange holidays not inferred')
     queue['mda_pool_version'] = mda['rule_version'] if mda['pool_verified'] else (previous or {}).get('mda_pool_version')
     queue['source_summary'] = {
         'sfz': {'status': sfz['quality'], 'data_date': as_of if sfz['evaluated_count'] else None,
@@ -242,7 +263,7 @@ def build(data: Path, as_of: str):
                 'excluded_count': len(sfz['excluded'])},
         'mda': {'status': mda['quality'], 'data_date': mda['pool_date'], 'candidate_count': mda.get('weekly_count', len(mda_ids)),
                 'retained_count': mda.get('retained_count', 0),
-                'eligible_count': mda['eligible_count']},
+                'eligible_count': mda['eligible_count'], 'coverage': mda.get('pool_coverage', {})},
     }
     atomic_json(data / 'sfz_technical_candidates.json', sfz)
     atomic_json(data / 'mda_checklist_candidates.json', mda)
@@ -253,8 +274,9 @@ def build(data: Path, as_of: str):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--data-dir', type=Path, default=ROOT / 'data')
-    parser.add_argument('--as-of', default=expected_session())
+    parser.add_argument('--as-of')
     args = parser.parse_args()
+    args.as_of = args.as_of or expected_session(data_dir=args.data_dir)
     date.fromisoformat(args.as_of)
     result = build(args.data_dir, args.as_of)
     print(json.dumps({'as_of': args.as_of, 'sources': result['source_summary']}, ensure_ascii=False))

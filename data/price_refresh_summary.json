@@ -7,20 +7,20 @@
     "twse_history": "https://www.twse.com.tw/rwd/zh/afterTrading/MI_INDEX",
     "tpex_history": "https://www.tpex.org.tw/www/zh-tw/afterTrading/dailyQuotes"
   },
-  "generated_at": "2026-09-03T16:45:56.134383+00:00",
-  "query_start_date": "2026-08-26",
-  "latest_data_date": "2026-09-03",
+  "generated_at": "2026-09-09T16:16:53.428810+00:00",
+  "query_start_date": "2026-08-27",
+  "latest_data_date": "2026-09-09",
   "latest_snapshot": {
     "mode": "historical_exact_date_recovery",
     "date_skew_recovered": true,
-    "twse_latest_date": "2026-09-02",
-    "tpex_latest_date": "2026-09-03",
-    "target_date": "2026-09-03",
+    "twse_latest_date": "2026-09-08",
+    "tpex_latest_date": "2026-09-09",
+    "target_date": "2026-09-09",
     "recovery_coverage": {
       "count_basis": "unique_security_ids",
       "reference_unique_ids": {
         "twse": 1092,
-        "tpex": 864
+        "tpex": 867
       },
       "minimum_unique_ids": {
         "twse": 800,
@@ -28,35 +28,38 @@
       },
       "required_reference_ids": {
         "twse": 1082,
-        "tpex": 856
+        "tpex": 859
       },
       "covered_reference_ids": {
-        "twse": 1086,
-        "tpex": 864
+        "twse": 1092,
+        "tpex": 867
       },
       "recovered_unique_ids": {
-        "twse": 1086,
-        "tpex": 864
+        "twse": 1095,
+        "tpex": 867
       },
       "min_reference_ratio": 0.99
     }
   },
   "common_trading_dates": [
-    "2026-08-26",
     "2026-08-27",
     "2026-08-28",
     "2026-08-31",
     "2026-09-01",
     "2026-09-02",
-    "2026-09-03"
+    "2026-09-03",
+    "2026-09-04",
+    "2026-09-07",
+    "2026-09-08",
+    "2026-09-09"
   ],
-  "stock_scope_count": 1993,
+  "stock_scope_count": 534,
   "latest_partition_rows": {
-    "twse": 1086,
-    "tpex": 864
+    "twse": 1095,
+    "tpex": 867
   },
-  "latest_matched_stocks": 1949,
-  "written_files": 1982,
+  "latest_matched_stocks": 502,
+  "written_files": 524,
   "history_warning_count": 0,
   "history_warnings": [],
   "status": "fresh"

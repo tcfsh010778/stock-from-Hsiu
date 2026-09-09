@@ -23,8 +23,11 @@ def load_json(path: Path):
 
 def validate_pool(pool: dict, as_of: str) -> list[dict]:
     if (pool.get('dataset_id') != 'mda_weekly_top50'
-            or pool.get('quality') != 'complete' or pool.get('status') != 'ok'):
+            or pool.get('quality') not in {'complete', 'partial_with_documented_exchange_suspension'} or pool.get('status') != 'ok'):
         raise ValueError('每週全市場大戶增加 Top 50 尚未驗證')
+    if pool.get('quality') != 'complete' or pool.get('coverage'):
+        from tools.update_weekly_mda_pool import validate_pool_coverage
+        validate_pool_coverage(pool)
     current = date.fromisoformat(pool['data_date'])
     prior = date.fromisoformat(pool['previous_date'])
     if not 4 <= (current - prior).days <= 10 or not 0 <= (date.fromisoformat(as_of) - current).days <= 7:
@@ -70,6 +73,8 @@ def build_mda(data: Path, as_of: str, verified_frame: Callable, analyzer=None) -
         result['missing'] = [str(exc)]
         return result
     result['pool_verified'] = True
+    result['pool_quality'] = pool['quality']
+    result['pool_coverage'] = pool.get('coverage') or {}
     previous = load_json(data / 'mda_checklist_candidates.json')
     retained = {}
     if previous.get('selection_source') == 'mda_weekly_top50' and previous.get('dataset_id') == 'mda_candidate_pool':

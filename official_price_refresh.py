@@ -384,7 +384,7 @@ def merge_price_rows(price_dir: Path, stock_ids: set[str], rows: list[dict[str, 
             row_date = str(item["date"])
             by_date[row_date] = {field: item.get(field, "") for field in CSV_FIELDS}
         with path.open("w", encoding="utf-8", newline="") as handle:
-            writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS)
+            writer = csv.DictWriter(handle, fieldnames=CSV_FIELDS, lineterminator="\n")
             writer.writeheader()
             writer.writerows(by_date[key] for key in sorted(by_date))
     return len(grouped)

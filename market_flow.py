@@ -845,6 +845,18 @@ def build_payload(
         "rankings": build_rankings(all_detail_rows, rolling_metrics),
         "institutional_history": institutional_history,
         "holder_metrics_by_security": holder_metrics,
+        "workbench_details": {
+            "date": data_date,
+            "institutional_unit": "shares",
+            "margin_unit": "official_report_balance",
+            "institutional": [{key: row.get(key) for key in (
+                "security_id", "market", "foreign_net", "investment_trust_net",
+                "dealer_net", "institutional_total_net")}
+                for row in all_detail_rows if is_ordinary_equity(row)],
+            "margin": [{key: row.get(key) for key in (
+                "security_id", "market", "margin_balance", "short_balance")}
+                for row in [*margin_map["listed"], *margin_map["otc"]]],
+        },
         "supplemental_data": {
             "margin_date": data_date,
             "retail_200": retail_reference,
@@ -1054,12 +1066,16 @@ def main() -> int:
     parser.add_argument("--date", type=date.fromisoformat, default=None)
     parser.add_argument("--output", type=Path, default=OUTPUT_PATH)
     parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST_PATH)
+    parser.add_argument("--strict", action="store_true", help="fail the workflow when a required official source is incomplete")
     args = parser.parse_args()
     payload = collect(args.date)
     if not _is_complete_snapshot(payload):
         warnings = "; ".join((payload.get("data_quality") or {}).get("warnings") or ["official partitions incomplete"])
         print(f"[market_flow][WARN] keeping the existing artifact; {warnings}")
-        return 0
+        return 1 if args.strict else 0
+    from tools.official_workbench import accumulate_workbench_history
+    previous = json.loads(args.output.read_text(encoding="utf-8-sig")) if args.output.exists() else {}
+    payload = accumulate_workbench_history(payload, previous)
     write_payload(payload, args.output, args.manifest)
     print(f"[market_flow] wrote {args.output} date={payload.get('date')} state={(payload.get('data_quality') or {}).get('state')}")
     return 0

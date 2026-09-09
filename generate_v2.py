@@ -8,7 +8,9 @@ import json
 import os
 import re
 import warnings
+import shutil
 from pathlib import Path
+from functools import lru_cache
 
 import pandas as pd
 from jsonschema import Draft202012Validator
@@ -16,13 +18,14 @@ from jsonschema import Draft202012Validator
 from stock_v2_public.analysis.engine import ENGINE_VERSION, analyze_multi_timeframe, stable_json
 from stock_v2_public.site import STOCK_PAGE_HTML, V2_CSS, V2_JS, stock_redirect_html
 from stock_rules import holding_group
+from tools.official_workbench import merge_official_evidence, prepare_official_evidence
 
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = ROOT / "data"
 DOCS_DIR = ROOT / "docs"
 SCHEMA_PATH = ROOT / "schemas" / "technical_pattern_packet.schema.json"
 CANDLE_SCHEMA_PATH = ROOT / "schemas" / "candlestick_pattern_event.schema.json"
-PRIVATE_SOURCE_SHA = '6a45a1038c687f2abf96627138587445c9703e60'
+PRIVATE_SOURCE_SHA = '332cf6013059c47224a07ef36e75c4c3dbc0cd31'
 FIXED_STOP_PCT = 15.0
 
 
@@ -38,6 +41,17 @@ def _csv_rows(path: Path) -> list[dict]:
         return []
     with path.open("r", encoding="utf-8-sig", newline="") as handle:
         return list(csv.DictReader(handle))
+
+
+@lru_cache(maxsize=4)
+def _prepared_market_evidence(data_dir: str, as_of: str, source_versions: tuple) -> dict:
+    """Index shared official sources once per worker and source revision."""
+    root = Path(data_dir)
+    payloads = []
+    for name in ("daily_market_flow.json", "tdcc_compact_weekly_snapshots.json"):
+        path = root / name
+        payloads.append(json.loads(path.read_text(encoding="utf-8-sig")) if path.exists() else {})
+    return prepare_official_evidence(as_of, *payloads)
 
 
 def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = None) -> dict:
@@ -58,17 +72,19 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         if not date or buy is None or sell is None:
             continue
         item = institutional_by_date.setdefault(
-            date, {"date": date, "foreign": 0.0, "trust": 0.0, "dealer": 0.0, "total": 0.0}
+            date, {"date": date, "foreign": None, "trust": None, "dealer": None, "total": None}
         )
         net_lots = (buy - sell) / 1000.0
         name = str(row.get("name") or "")
         if "Foreign" in name:
-            item["foreign"] += net_lots
+            item["foreign"] = (item["foreign"] or 0.0) + net_lots
         elif "Investment_Trust" in name:
-            item["trust"] += net_lots
+            item["trust"] = (item["trust"] or 0.0) + net_lots
         elif "Dealer" in name:
-            item["dealer"] += net_lots
-        item["total"] += net_lots
+            item["dealer"] = (item["dealer"] or 0.0) + net_lots
+    for item in institutional_by_date.values():
+        if all(item[key] is not None for key in ("foreign", "trust", "dealer")):
+            item["total"] = sum(item[key] for key in ("foreign", "trust", "dealer"))
     institutional = [institutional_by_date[key] for key in sorted(institutional_by_date)][-260:]
     if institutional:
         source_dates["institutional"] = institutional[-1]["date"]
@@ -124,7 +140,11 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
             if level == "total":
                 item["total_people"] = int(people) if people is not None else None
                 continue
-            group = holding_group(level)
+            if level.isdigit():
+                band = int(level)
+                group = "major" if 12 <= band <= 15 else "middle" if band == 11 else "retail" if 1 <= band <= 3 else "other"
+            else:
+                group = holding_group(level)
             if group in {"major", "middle", "retail"} and percent is not None:
                 item[group] += percent
         for key in ("major", "middle", "retail"):
@@ -159,7 +179,7 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         ('institutional', institutional), ('foreign_ownership', foreign_ownership),
         ('margin', margin), ('holdings', holdings)) if values}
     gaps = [key for key in ('institutional', 'foreign_ownership', 'margin', 'holdings') if key not in source_dates]
-    return {
+    evidence = {
         "institutional": institutional,
         "foreign_ownership": foreign_ownership,
         "margin": margin,
@@ -167,6 +187,12 @@ def load_market_evidence(data_dir: Path, stock_id: str, *, as_of: str | None = N
         "source_dates": source_dates,
         "gaps": gaps,
     }
+    if as_of:
+        paths = [data_dir / name for name in ("daily_market_flow.json", "tdcc_compact_weekly_snapshots.json")]
+        versions = tuple((path.stat().st_mtime_ns, path.stat().st_size) if path.exists() else None for path in paths)
+        prepared = _prepared_market_evidence(str(data_dir.resolve()), as_of, versions)
+        evidence = merge_official_evidence(evidence, stock_id, as_of, {}, {}, prepared=prepared)
+    return evidence
 
 
 def add_public_workbench(packet: dict, market_evidence: dict | None = None) -> dict:
@@ -203,7 +229,52 @@ def load_stock_map(docs_dir: Path, data_dir: Path) -> dict[str, dict]:
             stocks[stock_id] = {"name": html.unescape(name).strip()}
     for price_path in sorted((data_dir / "prices").glob("*.csv")):
         stocks.setdefault(price_path.stem, {"name": ""})
+    for filename, key in (("stock_industries.json", "stock_name"), ("stock_markets.json", "name")):
+        path = data_dir / filename
+        if path.exists():
+            references = json.loads(path.read_text(encoding="utf-8-sig")).get("stocks", {})
+            for sid, row in references.items():
+                if row.get(key) and sid in stocks:
+                    stocks[sid]["name"] = row[key]
     return stocks
+
+
+VERIFIED_PRICE_MODES = {
+    "official_reference_ratio_back_adjusted_v1": "official_raw_shares",
+    "finmind_raw_reconciled_reference_ratio_back_adjusted_v1": "finmind_raw_shares",
+    "reference_ratio_back_adjusted_mixed_sources_v1": "raw_shares",
+}
+
+
+def load_verified_universe(data_dir: Path) -> tuple[set[str], list[dict]]:
+    """Enumerate claimed verified pairs; content corruption is checked by workers."""
+    ids, rejected = set(), []
+    for path in sorted((data_dir / "price_basis").glob("*.json")):
+        try:
+            meta = json.loads(path.read_text(encoding="utf-8-sig"))
+        except (OSError, json.JSONDecodeError) as exc:
+            rejected.append({"stock_id": path.stem, "reason_code": "basis_metadata_corrupt", "reason": str(exc)})
+            continue
+        sid, mode = str(meta.get("stock_id") or ""), str(meta.get("mode") or "")
+        if meta.get("verified") is not True:
+            continue
+        if sid != path.stem or mode not in VERIFIED_PRICE_MODES or meta.get("volume_basis") != VERIFIED_PRICE_MODES[mode]:
+            rejected.append({"stock_id": path.stem, "reason_code": "basis_claim_invalid", "reason": "unsupported or inconsistent verified metadata"})
+            continue
+        ids.add(sid)
+    return ids, rejected
+
+
+def _managed_dir(path: Path, docs_dir: Path, expected_name: str) -> Path:
+    if path.name != expected_name or path.parent.resolve() != docs_dir.resolve() or path.is_symlink():
+        raise RuntimeError(f"unsafe managed V2 path: {path}")
+    return path
+
+
+def _remove_managed(path: Path, docs_dir: Path, expected_name: str) -> None:
+    checked = _managed_dir(path, docs_dir, expected_name)
+    if checked.exists():
+        shutil.rmtree(checked)
 
 
 def load_decisions(path: Path) -> tuple[dict[str, dict], dict]:
@@ -354,14 +425,25 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     global_warnings = list(quality.get("warnings") or [])
     freshness_status = str(quality.get("state") or "unknown")
     price_summary = load_price_refresh_summary(data_dir / "price_refresh_summary.json")
-    expected_price_date = str(price_summary.get("latest_data_date") or "")
+    summary_price_date = str(price_summary.get("latest_data_date") or "")
     from build_review_data import expected_session
-    expected_price_date = expected_session()
+    expected_price_date = expected_session(data_dir=data_dir)
     price_refresh_status = str(price_summary.get("status") or "missing")
     if price_refresh_status != "fresh":
         global_warnings.append(f"official price refresh status is {price_refresh_status}")
 
-    root = docs_dir / "v2"
+    published_root = docs_dir / "v2"
+    root = docs_dir / ".v2-staging"
+    backup = docs_dir / ".v2-previous"
+    _managed_dir(root, docs_dir, ".v2-staging")
+    _managed_dir(backup, docs_dir, ".v2-previous")
+    if backup.exists():
+        if published_root.exists():
+            raise RuntimeError("previous V2 backup still exists; refusing to discard uncertain recovery data")
+        backup.rename(published_root)
+    _remove_managed(root, docs_dir, ".v2-staging")
+    if only and published_root.exists():
+        shutil.copytree(published_root, root)
     packet_dir = root / "data"
     redirect_dir = root / "stocks"
     asset_dir = root / "assets"
@@ -371,7 +453,10 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     (asset_dir / "v2.css").write_text(V2_CSS + "\n", encoding="utf-8")
     (asset_dir / "v2.js").write_text(V2_JS + "\n", encoding="utf-8")
 
-    target_ids = set(stock_map) if all_stocks else set(decisions)
+    verified_ids, metadata_failures = load_verified_universe(data_dir)
+    for sid in verified_ids:
+        stock_map.setdefault(sid, {"name": ""})
+    target_ids = set(verified_ids)
     review_path = data_dir / "sfz_technical_candidates.json"
     if review_path.exists():
         review = json.loads(review_path.read_text(encoding="utf-8"))
@@ -391,29 +476,29 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         except (ValueError, KeyError, TypeError):
             pass  # Invalid pool does not create chart eligibility.
     if only:
-        target_ids = set(only)
-    target_ids &= set(stock_map)
-    if not only:
-        for old in packet_dir.glob("*.json"):
-            old.unlink()
-        for old in redirect_dir.glob("*.html"):
-            old.unlink()
+        target_ids &= set(only)
+    target_ids &= verified_ids
 
-    index: dict[str, dict] = {}
-    failures: list[dict] = []
-    exclusions: list[dict] = []
+    old_index_path = packet_dir / "index.json"
+    old_manifest = json.loads(old_index_path.read_text(encoding="utf-8")) if only and old_index_path.exists() else {}
+    index: dict[str, dict] = dict(old_manifest.get("stocks") or {})
+    failures: list[dict] = list(metadata_failures)
+    exclusions: list[dict] = [
+        {"stock_id": sid, "reason_code": "verified_basis_missing", "reason": "not in verified price universe"}
+        for sid in sorted(set(stock_map) - verified_ids)
+    ]
     tasks = []
     for stock_id in sorted(target_ids):
         stock = stock_map[stock_id]
         price_path = data_dir / "prices" / f"{stock_id}.csv"
         if not price_path.exists():
-            failures.append({"stock_id": stock_id, "reason": "price file missing"})
+            failures.append({"stock_id": stock_id, "reason_code": "verified_price_file_missing", "reason": "price file missing"})
             continue
         tasks.append((stock_id, str(stock.get("name") or ""), str(price_path), str(data_dir), safe_decision(stock_id, decisions.get(stock_id)), freshness_status, expected_price_date, global_warnings, validate))
 
     worker_count = workers or min(4, os.cpu_count() or 1)
     with concurrent.futures.ProcessPoolExecutor(max_workers=worker_count) as executor:
-        for stock_id, name, packets, error in executor.map(analyze_stock_task, tasks, chunksize=1):
+        for completed_count, (stock_id, name, packets, error) in enumerate(executor.map(analyze_stock_task, tasks, chunksize=1), 1):
             if not error and packets:
                 (packet_dir / f"{stock_id}.json").write_text(stable_json(packets) + "\n", encoding="utf-8")
                 (redirect_dir / f"{stock_id}.html").write_text(stock_redirect_html(stock_id), encoding="utf-8")
@@ -423,17 +508,23 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
                 }
             else:
                 reason = error or "no packets generated"
-                if "invalid high/low/volume" in reason or "fewer than 30 OHLCV rows" in reason or "stale OHLCV" in reason:
-                    exclusions.append({"stock_id": stock_id, "reason": reason})
-                else:
-                    failures.append({"stock_id": stock_id, "reason": reason})
+                failures.append({"stock_id": stock_id, "reason_code": "verified_pair_corrupt", "reason": reason})
+                print(f"[V2] failed {stock_id}: {reason[:240]}", flush=True)
+            if completed_count % 50 == 0 or completed_count == len(tasks):
+                print(f"[V2] analyzed {completed_count}/{len(tasks)}; published candidates={len(index)}; failures={len(failures)}", flush=True)
+
+    fresh_count = sum(item["data_date"] == expected_price_date for item in index.values())
 
     manifest = {
         "schema_version": "1.0.0",
         "engine_version": ENGINE_VERSION,
         "private_source_sha": PRIVATE_SOURCE_SHA,
         "stock_count": len(index),
-        "coverage": "all_prices" if all_stocks else "daily_decisions",
+        "coverage": "verified_price_universe",
+        "verified_universe_count": len(verified_ids),
+        "target_count": len(index) if only else len(target_ids),
+        "generated_count": len(index),
+        "fresh_count": fresh_count,
         "failure_count": len(failures),
         "excluded_count": len(exclusions),
         "price_data_date": expected_price_date or None,
@@ -443,6 +534,25 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         "exclusions": exclusions,
     }
     (packet_dir / "index.json").write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
+
+    freshness_ready = price_refresh_status == "fresh" and summary_price_date == expected_price_date
+    release_ready = not failures and freshness_ready and fresh_count >= 400
+    blocker = None if release_ready else ("corruption_failures" if failures else ("price_refresh_mismatch" if not freshness_ready else "fresh_coverage_below_400"))
+    status = {"as_of": expected_price_date, "summary_price_date": summary_price_date, "price_refresh_status": price_refresh_status, "verified_universe_count": len(verified_ids), "generated_count": len(index), "fresh_count": fresh_count, "failure_count": len(failures), "excluded_count": len(exclusions), "release_ready": release_ready, "release_blocker": blocker, "failures": failures}
+    (data_dir / "v2_build_status.json").write_text(stable_json(status) + "\n", encoding="utf-8")
+    if not release_ready:
+        _remove_managed(root, docs_dir, ".v2-staging")
+        return {"stock_count": len(index), "excluded_count": len(exclusions), "failure_count": len(failures), "release_ready": False, "switched_links": 0, "failures": failures}
+
+    if published_root.exists():
+        published_root.rename(backup)
+    try:
+        root.rename(published_root)
+    except Exception:
+        if backup.exists() and not published_root.exists():
+            backup.rename(published_root)
+        raise
+    _remove_managed(backup, docs_dir, ".v2-previous")
 
     switched = 0
     if switch_links:
@@ -459,7 +569,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         if additions:
             sitemap_path.write_text(sitemap.replace(marker, additions + marker), encoding="utf-8")
 
-    return {"stock_count": len(index), "excluded_count": len(exclusions), "failure_count": len(failures), "switched_links": switched, "failures": failures}
+    return {"stock_count": len(index), "excluded_count": len(exclusions), "failure_count": len(failures), "release_ready": True, "switched_links": switched, "failures": failures}
 
 
 def main() -> None:
@@ -472,7 +582,7 @@ def main() -> None:
     args = parser.parse_args()
     result = build_v2(validate=args.validate, switch_links=args.switch_navigation, only=set(args.only or []) or None, all_stocks=args.all_stocks, workers=args.workers)
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    if result["failure_count"]:
+    if result["failure_count"] or not result.get("release_ready"):
         raise SystemExit(1)
 
 

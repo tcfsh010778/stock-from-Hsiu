@@ -123,3 +123,23 @@ def test_chart_uses_verified_weekly_dates_without_inventing_retail(tmp_path):
     assert [r['major'] for r in evidence['holdings']] == [58, 60]
     assert all(r['retail'] is None and r['middle'] is None for r in evidence['holdings'])
     assert load_market_evidence(tmp_path, '2330', as_of='2026-09-03')['holdings'] == []
+
+
+def test_documented_suspension_pool_requires_proven_coverage_and_excludes_missing_stock():
+    from copy import deepcopy
+    candidate = pool()
+    event = {"security_id": "6461", "name": "益得", "market": "otc", "event_type": "reduction",
+             "stop_date": "2026-09-02", "resume_date": "2026-09-09", "known_at": "2026-09-09T17:00:00Z",
+             "source_url": "https://www.tpex.org.tw/www/zh-tw/bulletin/revivt", "raw_sha256": "a" * 64,
+             "query_start": "2026-09-04", "query_end": "2026-09-10", "reason": "capital reduction"}
+    candidate["quality"] = "partial_with_documented_exchange_suspension"
+    candidate["coverage"] = {"expected_count": 1801, "observed_count": 1800,
+        "expected_market_counts": {"listed": 1000, "otc": 801}, "observed_market_counts": {"listed": 1000, "otc": 800},
+        "excluded_official_suspensions": [event], "previous_coverage": {
+            "expected_count": 1801, "observed_count": 1801, "expected_market_counts": {"listed": 1000, "otc": 801},
+            "observed_market_counts": {"listed": 1000, "otc": 801}, "excluded_official_suspensions": []}}
+    assert validate_pool(candidate, "2026-09-09")[0]["security_id"] == "2330"
+    bad = deepcopy(candidate); bad["coverage"]["excluded_official_suspensions"] = []
+    with pytest.raises(ValueError): validate_pool(bad, "2026-09-09")
+    bad = deepcopy(candidate); bad["coverage"]["excluded_official_suspensions"][0]["security_id"] = "2330"
+    with pytest.raises(ValueError): validate_pool(bad, "2026-09-09")

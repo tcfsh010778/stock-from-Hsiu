@@ -71,6 +71,7 @@ def analyze_ohlcv(
     decision: dict[str, Any] | None = None,
     freshness: dict[str, Any] | None = None,
     market: str = "listed",
+    source_data_date: str | None = None,
 ) -> dict[str, Any]:
     if timeframe not in {"daily", "weekly", "monthly"}:
         raise ValueError(f"unsupported timeframe: {timeframe}")
@@ -90,7 +91,7 @@ def analyze_ohlcv(
         for item in trendlines:
             item["quality_score"] = round(float(item["quality_score"]) * 0.8, 2)
 
-    data_date = iso_date(frame.iloc[-1]["date"])
+    data_date = iso_date(source_data_date) if source_data_date is not None else iso_date(frame.iloc[-1]["date"])
     candlestick_annotations = (
         build_candlestick_event_envelope(
             frame,
@@ -156,6 +157,7 @@ def analyze_multi_timeframe(
     market: str = "listed",
 ) -> list[dict[str, Any]]:
     frame = prepare_ohlcv(data, min_rows=1)
+    source_data_date = iso_date(frame.iloc[-1]["date"])
     packets: list[dict[str, Any]] = []
     for timeframe in ("daily", "weekly", "monthly"):
         resampled = _resample(frame, timeframe)
@@ -170,6 +172,7 @@ def analyze_multi_timeframe(
                 decision=decision,
                 freshness=freshness,
                 market=market,
+                source_data_date=source_data_date,
             )
         )
     return packets

@@ -35,6 +35,11 @@ class VerifyV2PublicTest(unittest.TestCase):
             result = verify_daily_history(daily_packet(count))
             self.assertEqual(result["returned_bars"], count)
 
+    def test_daily_history_accepts_mixed_source_raw_share_basis(self) -> None:
+        packet = daily_packet(240, available=520)
+        packet["price_adjustment"].update(mode="reference_ratio_back_adjusted_mixed_sources_v1", volume_basis="raw_shares")
+        self.assertEqual(verify_daily_history(packet)["basis_mode"], "reference_ratio_back_adjusted_mixed_sources_v1")
+
     def test_daily_history_rejects_wrong_warmup_nullability(self) -> None:
         packet = daily_packet(240)
         packet["series"][0]["sma240"] = None

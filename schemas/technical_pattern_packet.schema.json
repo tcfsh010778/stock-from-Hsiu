@@ -209,6 +209,52 @@
               "holdings"
             ]
           }
+        },
+        "units": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "unit_notes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "source_status": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": [
+              "state",
+              "date"
+            ],
+            "properties": {
+              "state": {
+                "enum": [
+                  "current",
+                  "stale",
+                  "missing"
+                ]
+              },
+              "date": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "age_days": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "freshness_window_days": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "additionalProperties": false
+          }
         }
       },
       "additionalProperties": false

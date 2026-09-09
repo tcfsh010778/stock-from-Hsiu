@@ -17,6 +17,8 @@ fetch('data/mda_checklist_candidates.json').then(r=>{if(!r.ok)throw Error();retu
  document.getElementById('mda-chart').href='v2/stock.html?id='+encodeURIComponent(sid);
  status.textContent='股權週別 '+p.pool_date+' · 價格基準 '+p.data_date+(row.weekly_pool_member?' · 本週排名 '+row.pool_rank:' · 長期觀察池（納入週別 '+(row.admitted_week||'既有紀錄')+'）');
  const host=document.getElementById('mda-table'), analysis=row.checklist;
+ const coverage=p.pool_coverage||{}, excluded=[...(coverage.excluded_official_suspensions||[]),...(coverage.previous_coverage?.excluded_official_suspensions||[])];
+ if(excluded.length){const codes=[...new Set(excluded.map(e=>e.security_id))];host.append(n('p','本週股權涵蓋 '+coverage.observed_count+'／'+coverage.expected_count+' 檔；'+codes.join('、')+' 因官方減資／面額變更停牌期間缺少比較資料，未納入兩期可比較排行。'));}
  if(!analysis){host.append(n('p',(row.missing||[]).join('；')||'資料不足，尚無檢核結果。'));return;}
  for(const [section,ids] of Object.entries(analysis.table_sections||{})){
   host.append(n('h2',section));const table=n('table');table.className='review-rule-table';

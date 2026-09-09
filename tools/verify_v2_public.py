@@ -13,7 +13,11 @@ EXPECTED_TECHNICAL_INDICATORS = {
 }
 EXPECTED_DAILY_BARS = 240
 EXPECTED_MAS = (5, 20, 60, 120, 240)
-VERIFIED_BASIS_MODES = {"finmind_raw_reconciled_reference_ratio_back_adjusted_v1"}
+VERIFIED_BASIS_MODES = {
+    "finmind_raw_reconciled_reference_ratio_back_adjusted_v1": "finmind_raw_shares",
+    "official_reference_ratio_back_adjusted_v1": "official_raw_shares",
+    "reference_ratio_back_adjusted_mixed_sources_v1": "raw_shares",
+}
 
 
 def verify_daily_history(daily: dict) -> dict:
@@ -44,7 +48,7 @@ def verify_daily_history(daily: dict) -> dict:
     adjustment = daily.get("price_adjustment") or {}
     if adjustment.get("mode") not in VERIFIED_BASIS_MODES or adjustment.get("verified") is not True:
         raise AssertionError(f"daily price basis is not a verified release mode: {adjustment}")
-    if adjustment.get("volume_basis") != "finmind_raw_shares":
+    if adjustment.get("volume_basis") != VERIFIED_BASIS_MODES[adjustment["mode"]]:
         raise AssertionError(f"daily volume basis is invalid: {adjustment.get('volume_basis')}")
 
     for index, row in enumerate(series):
@@ -156,6 +160,32 @@ def verify_technical_evidence(daily: dict) -> set[str]:
     return indicator_ids
 
 
+def verify_dynamic_review_navigation(docs: Path, available_ids: set[str]) -> int:
+    """Check the actual JSON-driven card links, including a zero-alert homepage."""
+    html = (docs / "index.html").read_text(encoding="utf-8")
+    if 'id="review-list"' not in html or 'src="js/review-home.js"' not in html:
+        raise AssertionError("homepage has neither static nor dynamic review navigation")
+    script = (docs / "js/review-home.js").read_text(encoding="utf-8")
+    if "a.href=s.detail_href" not in script:
+        raise AssertionError("review renderer does not use verified detail links")
+    queue = json.loads((docs / "data/review_queue.json").read_text(encoding="utf-8"))
+    if queue.get("dataset_id") != "review_queue":
+        raise AssertionError("invalid review navigation dataset")
+    count = 0
+    for card in queue.get("stocks", []):
+        sid = str(card.get("stock_id") or "")
+        href = card.get("detail_href")
+        if sid in available_ids:
+            if href != f"v2/stock.html?id={sid}" or not (docs / "v2/data" / f"{sid}.json").is_file():
+                raise AssertionError(f"invalid or missing dynamic V2 link for {sid}")
+            count += 1
+        elif href and str(href).startswith("v2/"):
+            raise AssertionError(f"dynamic V2 link points outside published universe: {sid}")
+    if not count:
+        raise AssertionError("review queue has no verified V2 navigation")
+    return count
+
+
 def verify(navigation: str) -> dict:
     manifest_path = DOCS / "v2" / "data" / "index.json"
     if not manifest_path.exists():
@@ -170,6 +200,12 @@ def verify(navigation: str) -> dict:
         raise AssertionError(f"V2 manifest contains failures: {manifest.get('failures', [])[:3]}")
     if manifest.get("stock_count", 0) < 400:
         raise AssertionError(f"V2 stock coverage too small: {manifest.get('stock_count')}")
+    if manifest.get("coverage") != "verified_price_universe":
+        raise AssertionError(f"V2 coverage is not the verified universe: {manifest.get('coverage')}")
+    if manifest.get("generated_count") != manifest.get("stock_count") or manifest.get("target_count") != manifest.get("generated_count"):
+        raise AssertionError("V2 verified target was not generated completely")
+    if manifest.get("fresh_count", 0) < 400:
+        raise AssertionError(f"V2 fresh coverage too small: {manifest.get('fresh_count')}")
     for relative in ("v2/stock.html", "v2/stocks/2353.html", "v2/data/2353.json", "stocks/2353.html"):
         if not (DOCS / relative).exists():
             raise AssertionError(f"required public artifact missing: docs/{relative}")
@@ -195,7 +231,10 @@ def verify(navigation: str) -> dict:
         v2_links = len(re.findall(r'href="v2/stocks/[0-9A-Za-z]+\.html"', text))
         legacy_links = len(re.findall(r'href="stocks/[0-9A-Za-z]+\.html"', text))
         if navigation == "switched" and not v2_links:
-            raise AssertionError(f"{page.name} has no V2 stock navigation links")
+            if page.name == "index.html":
+                verify_dynamic_review_navigation(DOCS, set(manifest["stocks"]))
+            else:
+                raise AssertionError(f"{page.name} has no V2 stock navigation links")
         if navigation == "legacy" and v2_links:
             raise AssertionError(f"{page.name} switched before V2 release validation")
     search_text = (DOCS / "stocks.html").read_text(encoding="utf-8")

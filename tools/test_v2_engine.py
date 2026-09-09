@@ -80,3 +80,12 @@ class V2EngineTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+def test_resampled_packet_dates_use_actual_source_session():
+    frame = synthetic_ohlcv()
+    frame["date"] = pd.bdate_range(end="2026-09-09", periods=len(frame))
+    packets = analyze_multi_timeframe(frame, stock_id="2353")
+    assert {p["data_date"] for p in packets} == {"2026-09-09"}
+    assert next(p for p in packets if p["timeframe"] == "weekly")["series"][-1]["date"] == "2026-09-11"
+    assert next(p for p in packets if p["timeframe"] == "monthly")["series"][-1]["date"] == "2026-09-30"

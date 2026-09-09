@@ -50,11 +50,23 @@ def html_pages(docs_dir: Path) -> list[Path]:
     )
 
 
+def contains_text(path: Path, needle: str) -> bool:
+    """Stop at the freshness header instead of loading megabytes of chart JSON."""
+    carry = ""
+    with path.open("r", encoding="utf-8", errors="replace") as handle:
+        while chunk := handle.read(65536):
+            text = carry + chunk
+            if needle in text:
+                return True
+            carry = text[-max(len(needle) - 1, 0):]
+    return False
+
+
 def fail(message: str) -> None:
     raise SystemExit(f"daily update artifact verification failed: {message}")
 
 
-def verify_artifacts(root: Path) -> VerificationResult:
+def verify_artifacts(root: Path, expected_session: str | None = None) -> VerificationResult:
     reports = root / "reports"
     index = root / "docs" / "index.html"
     site_reports = root / "data" / "site_reports.json"
@@ -73,8 +85,7 @@ def verify_artifacts(root: Path) -> VerificationResult:
 
     stale_pages: list[Path] = []
     for page in html_pages(root / "docs"):
-        page_text = page.read_text(encoding="utf-8", errors="replace")
-        if latest not in page_text:
+        if not contains_text(page, latest):
             stale_pages.append(page.relative_to(root))
     if stale_pages:
         sample = ", ".join(str(path) for path in stale_pages[:10])
@@ -106,6 +117,24 @@ def verify_artifacts(root: Path) -> VerificationResult:
     if any(int((markets.get(market) or {}).get("stock_count") or 0) <= 0 for market in ("listed", "otc")):
         fail("market-flow listed or OTC detail rows are empty")
 
+    if expected_session is not None:
+        if not DATE_PATTERN.fullmatch(expected_session) or latest != expected_session or flow_date != expected_session:
+            fail(f"common session mismatch: expected={expected_session}, report={latest}, flow={flow_date}")
+        manifest_path = root / "data" / "official_adjusted_update_manifest.json"
+        if not manifest_path.exists():
+            fail("verified adjusted update manifest is missing")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        if (manifest.get("dataset_id") != "official_adjusted_daily_update"
+                or manifest.get("data_as_of") != expected_session
+                or manifest.get("status") not in {"complete", "partial", "current"}):
+            fail("verified adjusted update manifest does not match the common session")
+        queue = json.loads((root / "data" / "review_queue.json").read_text(encoding="utf-8"))
+        if queue.get("as_of") != expected_session:
+            fail(f"review queue session mismatch: {queue.get('as_of')}")
+        for name in (".v2-staging", ".v2-previous"):
+            if (root / "docs" / name).exists():
+                fail(f"unfinished V2 recovery directory exists: {name}")
+
     print(f"verified latest report date: {latest}")
     print(f"report date count: {len(dates)}")
     return VerificationResult(latest_report_date=latest, report_count=len(dates))
@@ -114,8 +143,9 @@ def verify_artifacts(root: Path) -> VerificationResult:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Verify daily update outputs are internally current.")
     parser.add_argument("--root", type=Path, default=Path.cwd())
+    parser.add_argument("--expected-session")
     args = parser.parse_args()
-    verify_artifacts(args.root.resolve())
+    verify_artifacts(args.root.resolve(), args.expected_session)
 
 
 if __name__ == "__main__":
