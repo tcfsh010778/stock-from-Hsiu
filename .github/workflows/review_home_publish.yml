@@ -37,6 +37,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m pip install -r requirements-v2.lock
+      - name: Verify review pipeline runtime dependencies
+        run: python -c "import requests; from tools.update_weekly_mda_pool import validate_pool_coverage; import build_review_data"
       - name: Sync latest generated data
         run: git pull --ff-only origin main
       - name: Build independent observations and compare durable state
