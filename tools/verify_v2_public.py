@@ -13,7 +13,11 @@ EXPECTED_TECHNICAL_INDICATORS = {
 }
 EXPECTED_DAILY_BARS = 240
 EXPECTED_MAS = (5, 20, 60, 120, 240)
-VERIFIED_BASIS_MODES = {"finmind_raw_reconciled_reference_ratio_back_adjusted_v1"}
+VERIFIED_BASIS_MODES = {
+    "finmind_raw_reconciled_reference_ratio_back_adjusted_v1": "finmind_raw_shares",
+    "official_reference_ratio_back_adjusted_v1": "official_raw_shares",
+    "reference_ratio_back_adjusted_mixed_sources_v1": "raw_shares",
+}
 
 
 def verify_daily_history(daily: dict) -> dict:
@@ -44,7 +48,7 @@ def verify_daily_history(daily: dict) -> dict:
     adjustment = daily.get("price_adjustment") or {}
     if adjustment.get("mode") not in VERIFIED_BASIS_MODES or adjustment.get("verified") is not True:
         raise AssertionError(f"daily price basis is not a verified release mode: {adjustment}")
-    if adjustment.get("volume_basis") != "finmind_raw_shares":
+    if adjustment.get("volume_basis") != VERIFIED_BASIS_MODES[adjustment["mode"]]:
         raise AssertionError(f"daily volume basis is invalid: {adjustment.get('volume_basis')}")
 
     for index, row in enumerate(series):
@@ -170,6 +174,12 @@ def verify(navigation: str) -> dict:
         raise AssertionError(f"V2 manifest contains failures: {manifest.get('failures', [])[:3]}")
     if manifest.get("stock_count", 0) < 400:
         raise AssertionError(f"V2 stock coverage too small: {manifest.get('stock_count')}")
+    if manifest.get("coverage") != "verified_price_universe":
+        raise AssertionError(f"V2 coverage is not the verified universe: {manifest.get('coverage')}")
+    if manifest.get("generated_count") != manifest.get("stock_count") or manifest.get("target_count") != manifest.get("generated_count"):
+        raise AssertionError("V2 verified target was not generated completely")
+    if manifest.get("fresh_count", 0) < 400:
+        raise AssertionError(f"V2 fresh coverage too small: {manifest.get('fresh_count')}")
     for relative in ("v2/stock.html", "v2/stocks/2353.html", "v2/data/2353.json", "stocks/2353.html"):
         if not (DOCS / relative).exists():
             raise AssertionError(f"required public artifact missing: docs/{relative}")
