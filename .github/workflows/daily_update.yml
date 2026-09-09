@@ -8,6 +8,11 @@ on:
     - cron: "30 12 * * 1-5"
   workflow_dispatch:
     inputs:
+      dry_run:
+        description: "Validate the complete update without committing or deploying"
+        required: false
+        default: false
+        type: boolean
       backfill_tdcc_holder_history:
         description: "One-time official TDCC six-week holder-history backfill"
         required: false
@@ -132,6 +137,7 @@ jobs:
 
       - name: Commit and push generated site
         id: publish
+        if: inputs.dry_run != true
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -153,3 +159,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh api --method POST "repos/${{ github.repository }}/pages/builds"
+
+      - name: Preserve update diagnostics
+        if: failure() || inputs.dry_run == true
+        uses: actions/upload-artifact@v4
+        with:
+          name: daily-update-verification
+          retention-days: 7
+          path: |
+            data/official_adjusted_update_manifest.json
+            data/price_refresh_summary.json
+            data/v2_build_status.json
+            data/review_queue.json
+            data/mda_weekly_top50.json
+            data/official_stock_universe.json
+            data/freshness_manifest.json
+            docs/v2/data/index.json

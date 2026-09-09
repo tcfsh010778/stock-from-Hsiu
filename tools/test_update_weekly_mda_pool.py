@@ -87,6 +87,32 @@ def test_same_date_core_uses_official_two_decimal_precision_but_reports_real_cha
                                  "new": ("listed", 7.01, 40)}]}
 
 
+def test_same_date_append_only_universe_expansion_is_audited_and_not_ranked_as_an_increase():
+    existing = normalize_latest(raw(), universe(), as_of="2026-09-09")
+    added_ref = {"security_id": "1102", "name": "新增", "market": "listed", "listing_date": "2020-01-01"}
+    expanded_raw = raw()
+    for level in range(1, 18):
+        expanded_raw.append({"資料日期": "20260904", "證券代號": "1102", "持股分級": str(level),
+                             "人數": "10", "股數": "1000",
+                             "占集保庫存數比例%": str(100 if level == 17 else 2 if level in {12,13,14,15} else 0)})
+    updated, pool = update(universe() + [added_ref], archive(compact(), existing), as_of="2026-09-09",
+                           universe_as_of="2026-09-09", universe_source_sha256="b" * 64,
+                           observed_at="2026-09-09T16:00:00Z", fetch_rows=lambda: expanded_raw)
+    repair = updated["snapshots"][-1]["same_date_universe_expansion"]
+    assert repair["kind"] == "coverage_repair_append_only"
+    assert repair["prior_count"] == 2 and repair["new_count"] == 3
+    assert repair["added_security_ids"] == ["1102"] and len(repair["old_core_sha256"]) == 64
+    assert pool["excluded_new_security_ids"] == ["1102"]
+    assert "1102" not in {row["security_id"] for row in pool["rows"]}
+    replayed, _ = update(universe() + [added_ref], updated, as_of="2026-09-09",
+                         universe_as_of="2026-09-09", universe_source_sha256="b" * 64,
+                         observed_at="2026-09-10T00:00:00Z", fetch_rows=lambda: expanded_raw)
+    assert replayed["snapshots"][-1]["same_date_universe_expansion"] == repair
+    with pytest.raises(ValueError, match="coverage regressed|missing_ids.*1102"):
+        update(universe(), updated, as_of="2026-09-09", universe_as_of="2026-09-09",
+               universe_source_sha256="b" * 64, observed_at="2026-09-10T00:00:00Z", fetch_rows=raw)
+
+
 def test_same_date_ignores_name_and_metadata_but_rejects_duplicate_or_older_archive():
     current = normalize_latest(raw(), universe(), as_of="2026-09-09")
     renamed = deepcopy(current); renamed["rows"][0]["name"] = "名稱修訂"; renamed["note"] = "format only"

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import hashlib
 import importlib.util
 import json
 import math
@@ -261,6 +262,11 @@ def compact_core_difference(existing: dict[str, Any], current: dict[str, Any]) -
                         for sid in common if old[sid] != new[sid]][:10]}
 
 
+def compact_core_sha256(core: dict[str, Any]) -> str:
+    payload = json.dumps(core, ensure_ascii=False, sort_keys=True, separators=(",", ":"), allow_nan=False)
+    return hashlib.sha256(payload.encode()).hexdigest()
+
+
 def seed_compact_snapshot(recovered: dict[str, Any]) -> dict[str, Any]:
     """Convert one complete strict recovery artifact without retaining levels."""
     if (recovered.get("complete") is not True or recovered.get("row_count") != recovered.get("expected_count")
@@ -362,6 +368,7 @@ def update(universe: list[dict[str, str]], archive: dict[str, Any], *, as_of: st
            universe_as_of: str | None = None,
            universe_source_sha256: str | None = None,
            documented_exclusions: dict[str, dict[str, Any]] | None = None,
+           observed_at: str | None = None,
            fetch_rows: Callable[[], list[dict[str, Any]]]) -> tuple[dict[str, Any], dict[str, Any]]:
     if archive.get("dataset_id") != ARCHIVE_ID or not isinstance(archive.get("snapshots"), list):
         raise ValueError("compact snapshot archive is missing")
@@ -389,8 +396,28 @@ def update(universe: list[dict[str, str]], archive: dict[str, Any], *, as_of: st
             if current["market_counts"][market] < math.ceil(latest["market_counts"][market] * 0.99):
                 raise ValueError(f"TDCC {market} coverage regressed")
     existing = snapshots.get(current["date"])
-    if existing and compact_core(existing) != compact_core(current):
-        raise ValueError(f"same-date TDCC compact snapshot changed: {compact_core_difference(existing, current)}")
+    if existing:
+        old_core, new_core = compact_core(existing), compact_core(current)
+        if old_core != new_core:
+            missing_ids = sorted(set(old_core) - set(new_core))
+            added_ids = sorted(set(new_core) - set(old_core))
+            changed_ids = sorted(sid for sid in set(old_core) & set(new_core) if old_core[sid] != new_core[sid])
+            if not missing_ids and not changed_ids and added_ids:
+                if not observed_at or not universe_source_sha256:
+                    raise ValueError("same-date universe expansion lacks observation/source provenance")
+                observed = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+                if observed.tzinfo is None:
+                    raise ValueError("same-date universe expansion observed-at lacks timezone")
+                current["same_date_universe_expansion"] = {
+                    "kind": "coverage_repair_append_only", "prior_count": len(old_core),
+                    "new_count": len(new_core), "added_security_ids": added_ids,
+                    "old_core_sha256": compact_core_sha256(old_core), "observed_at": observed_at,
+                    "source_universe_sha256": universe_source_sha256,
+                }
+            else:
+                raise ValueError(f"same-date TDCC compact snapshot changed: {compact_core_difference(existing, current)}")
+        elif existing.get("same_date_universe_expansion"):
+            current["same_date_universe_expansion"] = existing["same_date_universe_expansion"]
     snapshots[current["date"]] = current
     dates = sorted(snapshots)
     if len(dates) < 2:

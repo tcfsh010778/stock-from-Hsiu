@@ -247,6 +247,7 @@ def prepare(*, data_dir: Path, official_root: Path, as_of: str,
                                        (json.dumps(universe, ensure_ascii=False, sort_keys=True,
                                                    separators=(",", ":")) + "\n").encode()).hexdigest(),
                                    documented_exclusions=exclusions,
+                                   observed_at=observed,
                                    fetch_rows=lambda: raw_tdcc)
     latest_compact = compact_archive["snapshots"][-1]
     if latest_compact["date"] != compact_check["date"] or set(r["security_id"] for r in latest_compact["rows"]) != set(r["security_id"] for r in compact_check["rows"]):

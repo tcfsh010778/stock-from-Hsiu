@@ -17,6 +17,8 @@ def _line_value(first: dict[str, Any], second: dict[str, Any], index: int) -> fl
 
 def _evaluate_line(
     frame: pd.DataFrame,
+    atr_values: np.ndarray,
+    close_values: np.ndarray,
     pivots: list[dict[str, Any]],
     first: dict[str, Any],
     second: dict[str, Any],
@@ -30,7 +32,7 @@ def _evaluate_line(
     residuals: list[float] = []
     for pivot in candidate_pivots:
         expected = _line_value(first, second, int(pivot["index"]))
-        atr = max(float(frame.iloc[pivot["index"]]["atr14"]), abs(float(pivot["price"])) * 0.005)
+        atr = max(float(atr_values[pivot["index"]]), abs(float(pivot["price"])) * 0.005)
         residual = abs(float(pivot["price"]) - expected) / atr
         if residual <= 0.65:
             touches.append(pivot)
@@ -43,8 +45,8 @@ def _evaluate_line(
     violations = 0
     for index in range(start_index, last_index + 1):
         expected = _line_value(first, second, index)
-        atr = max(float(frame.iloc[index]["atr14"]), abs(expected) * 0.005)
-        close = float(frame.iloc[index]["close"])
+        atr = max(float(atr_values[index]), abs(expected) * 0.005)
+        close = float(close_values[index])
         if kind == "support" and close < expected - atr * 0.7:
             violations += 1
         elif kind == "resistance" and close > expected + atr * 0.7:
@@ -56,9 +58,9 @@ def _evaluate_line(
     score = 25 + len(touches) * 16 + min(span, 120) * 0.12 - violations * 7 - average_residual * 10 - recency * 0.15
     status = "confirmed" if len(touches) >= 3 and violations <= 1 else "forming"
     slope = (_line_value(first, second, last_index) - float(first["price"])) / max(1, last_index - start_index)
-    tolerance = max(float(frame.iloc[-1]["atr14"]) * 0.5, float(frame.iloc[-1]["close"]) * 0.005)
+    tolerance = max(float(atr_values[-1]) * 0.5, float(close_values[-1]) * 0.005)
     latest_values = [_line_value(first, second, index) for index in (max(0, last_index - 1), last_index)]
-    latest_closes = frame.iloc[-2:]["close"].to_numpy(float)
+    latest_closes = close_values[-2:]
     if kind == "resistance":
         broken = bool(np.all(latest_closes > np.asarray(latest_values) + tolerance))
     else:
@@ -88,10 +90,12 @@ def detect_trendlines(
     frame: pd.DataFrame, swings: list[dict[str, Any]], timeframe: str, max_lines: int = 3
 ) -> list[dict[str, Any]]:
     lines: list[dict[str, Any]] = []
+    atr_values = frame["atr14"].to_numpy(float)
+    close_values = frame["close"].to_numpy(float)
     for pivot_kind, line_kind in (("low", "support"), ("high", "resistance")):
         pivots = [item for item in swings if item["kind"] == pivot_kind][-14:]
         for first, second in combinations(pivots, 2):
-            line = _evaluate_line(frame, pivots, first, second, line_kind, timeframe)
+            line = _evaluate_line(frame, atr_values, close_values, pivots, first, second, line_kind, timeframe)
             if line:
                 lines.append(line)
 
