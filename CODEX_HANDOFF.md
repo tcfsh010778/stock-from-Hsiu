@@ -1,12 +1,14 @@
 # Codex Handoff
 
-## 2026-09-10 Daily update repair in progress (Issue 34)
+## 2026-09-10 Daily update repair (Issue 34)
 
-- Run 34359527244 downloaded September 9 raw prices, but adjusted histories had no incremental producer; V2 then failed on raw-only membership (43 generated / 902 failures).
-- Imported 1,459 validated historical pairs through September 4. This is a baseline, not a current-data release. Added official incremental prices/actions, verified weekly Top50 with both-market rosters, mixed-source basis support and staged V2 generation.
-- Holder run 34090995907 completed 50 six-week records for September 4, then failed on a market-flow assertion. A named-field verifier now exposes dates, coverage and session failures.
-- Private source PR17 owns provider code. Full incremental generation and formal release/live Pages verification are pending; do not call this branch deployed. Long-term MDA holder evidence remains distinct from latest-week ranking.
-
+- Root causes: daily run 34359527244 fetched September 9 raw prices but had no verified adjusted-history increment producer; V2 selected raw-only legacy membership and failed (43 generated / 902 failures). Holder run 34090995907 completed 50 six-week records, then an unrelated stale flow assertion discarded publication. FinMind bulk/adjusted/holder access is denied for existing credentials; official TWSE/TPEx daily/action sources are now used.
+- Source of truth: private PR17; public PR37 mirrors provider/engine code. Official real-source run 34385472841 passed full increments, unchanged-hash retry, two-market weekly Top50 and September 9 flow; Ubuntu/Windows CI passed (304 tests plus 14 subtests). Pages verification now requires the requested commit and matching deployed HTML/JSON bytes, not merely a successful build request.
+- Rebuilt 1,459 verified price histories through 2026-09-09; full V2 produced 1,459 packets with zero failures. Indicators use full adjusted history with raw volume before the 240-bar viewport; five short daily histories retain null MA240 (eight lack SFZ 89 completed weeks). SFZ scans independently (1,459 / 1,985); 526 rejected histories remain excluded. New coverage is a baseline, never a fabricated new alert.
+- Latest weekly coverage: September 4, observed 1,973 / expected 1,974; 6461 is excluded only with dated official reduction-suspension evidence. Top50 compares 1,967 paired stocks to August 28. Six newly recovered IDs have unchanged old core values and append-only audit proof; they are not counted as weekly increases. Long-term MDA B1 evidence remains insufficient; weekly ranking is not full checklist qualification.
+- V2 workbench consumes current official September 9 institutional and margin data plus September 4 weekly major-holder data. Units and missing foreign-ownership evidence are explicit. Margin history accumulates idempotently; unsupported legacy units are not silently joined.
+- Rebuild: update_official_adjusted_history.py; python -m tools.update_weekly_sources; market_flow.py --strict --date <verified session>; build_review_data.py --as-of <verified session>; generate_site.py; generate_v2.py --validate --switch-navigation. Validate with verified_price_guard.py and tools/verify_daily_update_artifacts.py, verify_v2_public.py, verify_review_home.py, verify_holder_flow.py.
+- Release status: final end-to-end workflow / PR merge / live Pages checks in progress. Do not claim deployment until the final commit and semantic checks are recorded below or in Issue34.
 
 ## 2026-09-08 Authorized partial-data feature release
 
