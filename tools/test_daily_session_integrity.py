@@ -58,6 +58,24 @@ class DailySessionIntegrityTests(unittest.TestCase):
         self.assertIn('<meta name="build-session" content="2026-09-09">', page)
         self.assertNotIn('class="site-freshness"', page)
 
+    def test_dynamic_homepage_validates_card_links_without_requiring_alerts(self):
+        from tools.verify_v2_public import verify_dynamic_review_navigation
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for subdir in ("js", "data", "v2/data"):
+                (root / subdir).mkdir(parents=True, exist_ok=True)
+            (root / "index.html").write_text('<div id="review-list"></div><script src="js/review-home.js"></script>', encoding="utf-8")
+            (root / "js/review-home.js").write_text('a.href=s.detail_href', encoding="utf-8")
+            (root / "v2/data/2353.json").write_text('[]', encoding="utf-8")
+            payload = {"dataset_id": "review_queue", "alerts": [], "stocks": [{"stock_id": "2353", "detail_href": "v2/stock.html?id=2353"}]}
+            path = root / "data/review_queue.json"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            self.assertEqual(verify_dynamic_review_navigation(root, {"2353"}), 1)
+            payload["stocks"][0]["detail_href"] = "stocks/2353.html"
+            path.write_text(json.dumps(payload), encoding="utf-8")
+            with self.assertRaisesRegex(AssertionError, "missing dynamic V2 link"):
+                verify_dynamic_review_navigation(root, {"2353"})
+
     def test_valid_weekday_common_session(self):
         with tempfile.TemporaryDirectory() as folder:
             result = verifier.verify_artifacts(self.make_root(folder), self.SESSION)
