@@ -1,5 +1,474 @@
 [
   {
+    "date": "2026-09-09",
+    "market_overview": "",
+    "filter_summary": [],
+    "stocks": [
+      {
+        "icon": "🟡",
+        "id": "5871",
+        "name": "中租-KY",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "112",
+        "gain_6w": "-0.44%",
+        "gain_3d": "0.45%",
+        "rsi": "50.9",
+        "bband_pct": "38.6%",
+        "vol_5d": "6831 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "117.5",
+        "support": "108.5",
+        "entry": "110.81",
+        "target": "119.85",
+        "stop": "107.96",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "8481",
+        "name": "政伸",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "41.2",
+        "gain_6w": "1.85%",
+        "gain_3d": "0.49%",
+        "rsi": "58.6",
+        "bband_pct": "67.7%",
+        "vol_5d": "14 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "41.5",
+        "support": "40",
+        "entry": "40.52",
+        "target": "42.33",
+        "stop": "39.8",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "8942",
+        "name": "森鉅",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "41.9",
+        "gain_6w": "16.39%",
+        "gain_3d": "-1.18%",
+        "rsi": "48.9",
+        "bband_pct": "29.6%",
+        "vol_5d": "168 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "44",
+        "support": "39.45",
+        "entry": "41.55",
+        "target": "44.88",
+        "stop": "39.25",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "9933",
+        "name": "中鼎",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "40.15",
+        "gain_6w": "14.91%",
+        "gain_3d": "3.25%",
+        "rsi": "43.5",
+        "bband_pct": "58.5%",
+        "vol_5d": "2416 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "41.49",
+        "support": "38.4",
+        "entry": "38.65",
+        "target": "42.31",
+        "stop": "38.21",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "2408",
+        "name": "南亞科",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "523",
+        "gain_6w": "47.95%",
+        "gain_3d": "5.44%",
+        "rsi": "51.4",
+        "bband_pct": "60%",
+        "vol_5d": "73956 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "569",
+        "support": "470",
+        "entry": "501.27",
+        "target": "580.38",
+        "stop": "467.65",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🔴",
+        "id": "2412",
+        "name": "中華電",
+        "status": "過熱/風險",
+        "score": 100.0,
+        "price": "139.5",
+        "gain_6w": "-0.71%",
+        "gain_3d": "1.45%",
+        "rsi": "75",
+        "bband_pct": "110%",
+        "vol_5d": "10077 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "139.5",
+        "support": "135",
+        "entry": "136.32",
+        "target": "142.29",
+        "stop": "134.32",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "2471",
+        "name": "資通",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "49.4",
+        "gain_6w": "3.78%",
+        "gain_3d": "-1.59%",
+        "rsi": "58.5",
+        "bband_pct": "39.4%",
+        "vol_5d": "78 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "50.9",
+        "support": "48.35",
+        "entry": "49",
+        "target": "51.92",
+        "stop": "48.11",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "3034",
+        "name": "聯詠",
+        "status": "強勢追蹤",
+        "score": 100.0,
+        "price": "543",
+        "gain_6w": "7.52%",
+        "gain_3d": "3.63%",
+        "rsi": "56.8",
+        "bband_pct": "63.6%",
+        "vol_5d": "2549 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "567",
+        "support": "498.5",
+        "entry": "525.6",
+        "target": "578.34",
+        "stop": "496.01",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "2351",
+        "name": "順德",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "237.5",
+        "gain_6w": "83.2%",
+        "gain_3d": "-0.84%",
+        "rsi": "72.3",
+        "bband_pct": "77%",
+        "vol_5d": "5915 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "247",
+        "support": "167",
+        "entry": "228.72",
+        "target": "251.94",
+        "stop": "166.16",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "5274",
+        "name": "信驊",
+        "status": "強勢追蹤",
+        "score": 70.0,
+        "price": "18605",
+        "gain_6w": "44.11%",
+        "gain_3d": "6.5%",
+        "rsi": "70.7",
+        "bband_pct": "84.5%",
+        "vol_5d": "459 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "19795",
+        "support": "14600",
+        "entry": "18194.92",
+        "target": "20190.9",
+        "stop": "14527",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟢",
+        "id": "3228",
+        "name": "金麗科",
+        "status": "健康整理",
+        "score": 100.0,
+        "price": "173.5",
+        "gain_6w": "28.04%",
+        "gain_3d": "-0.29%",
+        "rsi": "74.2",
+        "bband_pct": "74.5%",
+        "vol_5d": "267 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "188",
+        "support": "137.5",
+        "entry": "171.98",
+        "target": "191.76",
+        "stop": "136.81",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟢",
+        "id": "6548",
+        "name": "長科*",
+        "status": "健康整理",
+        "score": 100.0,
+        "price": "71.7",
+        "gain_6w": "20.3%",
+        "gain_3d": "-4.65%",
+        "rsi": "52.1",
+        "bband_pct": "39.8%",
+        "vol_5d": "3210 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "77",
+        "support": "67.4",
+        "entry": "71.39",
+        "target": "78.54",
+        "stop": "67.06",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "2421",
+        "name": "建準",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "167.5",
+        "gain_6w": "34.54%",
+        "gain_3d": "-5.9%",
+        "rsi": "65.2",
+        "bband_pct": "68.8%",
+        "vol_5d": "5486 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "184",
+        "support": "140.5",
+        "entry": "167.35",
+        "target": "187.68",
+        "stop": "139.8",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🔴",
+        "id": "6538",
+        "name": "倉和",
+        "status": "過熱/風險",
+        "score": 90.0,
+        "price": "349",
+        "gain_6w": "186.07%",
+        "gain_3d": "16.33%",
+        "rsi": "87.6",
+        "bband_pct": "109.4%",
+        "vol_5d": "3636 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "353",
+        "support": "147",
+        "entry": "304.96",
+        "target": "360.06",
+        "stop": "146.26",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "8093",
+        "name": "保銳",
+        "status": "強勢追蹤",
+        "score": 90.0,
+        "price": "26.15",
+        "gain_6w": "41.35%",
+        "gain_3d": "-0.76%",
+        "rsi": "72.6",
+        "bband_pct": "52.6%",
+        "vol_5d": "36 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "28.95",
+        "support": "21.65",
+        "entry": "25.94",
+        "target": "29.53",
+        "stop": "21.54",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟡",
+        "id": "4939",
+        "name": "4939",
+        "status": "強勢追蹤",
+        "score": 70.0,
+        "price": "90.7",
+        "gain_6w": "81.58%",
+        "gain_3d": "3.19%",
+        "rsi": "71.5",
+        "bband_pct": "77.1%",
+        "vol_5d": "4864 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "95.2",
+        "support": "59.1",
+        "entry": "87.31",
+        "target": "97.1",
+        "stop": "58.8",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟢",
+        "id": "8473",
+        "name": "山林水",
+        "status": "健康整理",
+        "score": 100.0,
+        "price": "39.95",
+        "gain_6w": "11.29%",
+        "gain_3d": "-1.62%",
+        "rsi": "48.3",
+        "bband_pct": "24.3%",
+        "vol_5d": "914 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "41.9",
+        "support": "37.1",
+        "entry": "39.69",
+        "target": "42.73",
+        "stop": "36.91",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟢",
+        "id": "8438",
+        "name": "昶昕",
+        "status": "健康整理",
+        "score": 70.0,
+        "price": "69",
+        "gain_6w": "30.19%",
+        "gain_3d": "0.29%",
+        "rsi": "61.3",
+        "bband_pct": "52.9%",
+        "vol_5d": "137 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "73.5",
+        "support": "64.7",
+        "entry": "67.63",
+        "target": "74.97",
+        "stop": "64.38",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🟢",
+        "id": "6944",
+        "name": "兆聯實業",
+        "status": "健康整理",
+        "score": 55.0,
+        "price": "715",
+        "gain_6w": "4.08%",
+        "gain_3d": "2.73%",
+        "rsi": "50",
+        "bband_pct": "42.7%",
+        "vol_5d": "386 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "764",
+        "support": "685",
+        "entry": "695.61",
+        "target": "779.28",
+        "stop": "681.58",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      },
+      {
+        "icon": "🔴",
+        "id": "8341",
+        "name": "日友",
+        "status": "過熱/風險",
+        "score": 70.0,
+        "price": "74.9",
+        "gain_6w": "-1.71%",
+        "gain_3d": "-0.4%",
+        "rsi": "29.3",
+        "bband_pct": "13%",
+        "vol_5d": "161 張",
+        "foreign_month": "─",
+        "foreign_5d": "─",
+        "foreign_streak": "─",
+        "resistance": "77.7",
+        "support": "74.6",
+        "entry": "73.86",
+        "target": "79.25",
+        "stop": "74.23",
+        "score_source": "原始報告 Score",
+        "report_date": "2026-09-09"
+      }
+    ],
+    "notes": "",
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-09-09.md"
+  },
+  {
     "date": "2026-09-03",
     "market_overview": "",
     "filter_summary": [],
@@ -466,7 +935,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-09-03.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-09-03.md"
   },
   {
     "date": "2026-09-02",
@@ -935,7 +1404,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-09-02.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-09-02.md"
   },
   {
     "date": "2026-09-01",
@@ -1404,7 +1873,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-09-01.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-09-01.md"
   },
   {
     "date": "2026-08-31",
@@ -1873,7 +2342,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-31.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-31.md"
   },
   {
     "date": "2026-08-28",
@@ -2342,7 +2811,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-28.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-28.md"
   },
   {
     "date": "2026-08-27",
@@ -2811,7 +3280,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-27.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-27.md"
   },
   {
     "date": "2026-08-14",
@@ -3280,7 +3749,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-14.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-14.md"
   },
   {
     "date": "2026-08-13",
@@ -3749,7 +4218,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-13.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-13.md"
   },
   {
     "date": "2026-08-12",
@@ -4218,7 +4687,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-12.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-12.md"
   },
   {
     "date": "2026-08-11",
@@ -4687,7 +5156,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-11.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-11.md"
   },
   {
     "date": "2026-08-10",
@@ -5156,7 +5625,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-10.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-10.md"
   },
   {
     "date": "2026-08-07",
@@ -5625,7 +6094,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-07.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-07.md"
   },
   {
     "date": "2026-08-06",
@@ -6094,7 +6563,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-06.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-06.md"
   },
   {
     "date": "2026-08-05",
@@ -6563,7 +7032,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-05.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-05.md"
   },
   {
     "date": "2026-08-04",
@@ -7032,7 +7501,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-04.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-04.md"
   },
   {
     "date": "2026-08-03",
@@ -7501,7 +7970,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-08-03.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-08-03.md"
   },
   {
     "date": "2026-07-31",
@@ -7970,7 +8439,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-31.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-31.md"
   },
   {
     "date": "2026-07-30",
@@ -8439,7 +8908,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-30.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-30.md"
   },
   {
     "date": "2026-07-29",
@@ -8908,7 +9377,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-29.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-29.md"
   },
   {
     "date": "2026-07-28",
@@ -9377,7 +9846,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-28.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-28.md"
   },
   {
     "date": "2026-07-27",
@@ -9846,7 +10315,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-27.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-27.md"
   },
   {
     "date": "2026-07-24",
@@ -10315,7 +10784,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-24.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-24.md"
   },
   {
     "date": "2026-07-23",
@@ -10784,7 +11253,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-23.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-23.md"
   },
   {
     "date": "2026-07-22",
@@ -11253,7 +11722,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-22.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-22.md"
   },
   {
     "date": "2026-07-21",
@@ -11722,7 +12191,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-21.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-21.md"
   },
   {
     "date": "2026-07-20",
@@ -12191,7 +12660,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-20.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-20.md"
   },
   {
     "date": "2026-07-17",
@@ -12660,7 +13129,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-17.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-17.md"
   },
   {
     "date": "2026-07-16",
@@ -13129,7 +13598,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-16.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-16.md"
   },
   {
     "date": "2026-07-15",
@@ -13598,7 +14067,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-15.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-15.md"
   },
   {
     "date": "2026-07-14",
@@ -14067,7 +14536,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-14.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-14.md"
   },
   {
     "date": "2026-07-13",
@@ -14536,7 +15005,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-13.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-13.md"
   },
   {
     "date": "2026-07-09",
@@ -15005,7 +15474,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-09.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-09.md"
   },
   {
     "date": "2026-07-08",
@@ -15474,7 +15943,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-08.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-08.md"
   },
   {
     "date": "2026-07-07",
@@ -15943,7 +16412,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-07.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-07.md"
   },
   {
     "date": "2026-07-06",
@@ -16412,7 +16881,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-06.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-06.md"
   },
   {
     "date": "2026-07-03",
@@ -16881,7 +17350,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-03.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-03.md"
   },
   {
     "date": "2026-07-02",
@@ -17350,7 +17819,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-02.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-02.md"
   },
   {
     "date": "2026-07-01",
@@ -17819,7 +18288,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-07-01.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-07-01.md"
   },
   {
     "date": "2026-06-30",
@@ -18288,7 +18757,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-30.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-30.md"
   },
   {
     "date": "2026-06-29",
@@ -18757,7 +19226,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-29.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-29.md"
   },
   {
     "date": "2026-06-26",
@@ -19226,7 +19695,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-26.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-26.md"
   },
   {
     "date": "2026-06-25",
@@ -19695,7 +20164,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-25.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-25.md"
   },
   {
     "date": "2026-06-24",
@@ -20164,7 +20633,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-24.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-24.md"
   },
   {
     "date": "2026-06-23",
@@ -20633,7 +21102,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-23.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-23.md"
   },
   {
     "date": "2026-06-22",
@@ -21102,7 +21571,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-22.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-22.md"
   },
   {
     "date": "2026-06-18",
@@ -21571,7 +22040,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-18.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-18.md"
   },
   {
     "date": "2026-06-17",
@@ -22040,7 +22509,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-17.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-17.md"
   },
   {
     "date": "2026-06-16",
@@ -22509,7 +22978,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-16.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-16.md"
   },
   {
     "date": "2026-06-15",
@@ -22978,7 +23447,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-15.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-15.md"
   },
   {
     "date": "2026-06-12",
@@ -23447,7 +23916,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-12.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-12.md"
   },
   {
     "date": "2026-06-11",
@@ -23916,7 +24385,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-11.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-11.md"
   },
   {
     "date": "2026-06-10",
@@ -24385,7 +24854,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-10.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-10.md"
   },
   {
     "date": "2026-06-09",
@@ -24854,7 +25323,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-09.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-09.md"
   },
   {
     "date": "2026-06-08",
@@ -25323,7 +25792,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-08.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-08.md"
   },
   {
     "date": "2026-06-05",
@@ -25792,7 +26261,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-05.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-05.md"
   },
   {
     "date": "2026-06-04",
@@ -26261,7 +26730,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-04.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-04.md"
   },
   {
     "date": "2026-06-03",
@@ -26730,7 +27199,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-03.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-03.md"
   },
   {
     "date": "2026-06-02",
@@ -27199,7 +27668,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-02.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-02.md"
   },
   {
     "date": "2026-06-01",
@@ -27668,7 +28137,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-06-01.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-06-01.md"
   },
   {
     "date": "2026-05-29",
@@ -28137,7 +28606,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-29.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-29.md"
   },
   {
     "date": "2026-05-28",
@@ -28606,7 +29075,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-28.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-28.md"
   },
   {
     "date": "2026-05-27",
@@ -29075,7 +29544,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-27.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-27.md"
   },
   {
     "date": "2026-05-26",
@@ -29544,7 +30013,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-26.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-26.md"
   },
   {
     "date": "2026-05-22",
@@ -30013,7 +30482,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-22.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-22.md"
   },
   {
     "date": "2026-05-21",
@@ -30482,7 +30951,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-21.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-21.md"
   },
   {
     "date": "2026-05-20",
@@ -30951,7 +31420,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-20.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-20.md"
   },
   {
     "date": "2026-05-19",
@@ -31420,7 +31889,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-19.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-19.md"
   },
   {
     "date": "2026-05-18",
@@ -31889,7 +32358,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-18.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-18.md"
   },
   {
     "date": "2026-05-15",
@@ -32358,7 +32827,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-15.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-15.md"
   },
   {
     "date": "2026-05-14",
@@ -32827,7 +33296,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-14.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-14.md"
   },
   {
     "date": "2026-05-13",
@@ -33296,7 +33765,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-13.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-13.md"
   },
   {
     "date": "2026-05-12",
@@ -33765,7 +34234,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-12.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-12.md"
   },
   {
     "date": "2026-05-11",
@@ -34234,7 +34703,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-11.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-11.md"
   },
   {
     "date": "2026-05-08",
@@ -34703,7 +35172,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-08.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-08.md"
   },
   {
     "date": "2026-05-07",
@@ -35172,7 +35641,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-07.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-07.md"
   },
   {
     "date": "2026-05-06",
@@ -35641,7 +36110,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-06.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-06.md"
   },
   {
     "date": "2026-05-04",
@@ -36110,7 +36579,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-05-04.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-05-04.md"
   },
   {
     "date": "2026-04-30",
@@ -36579,7 +37048,7 @@
       }
     ],
     "notes": "",
-    "raw_path": "/home/runner/work/stock-from-Hsiu/stock-from-Hsiu/reports/每日選股報告_2026-04-30.md"
+    "raw_path": "C:\\Users\\USER\\Documents\\Codex\\stock-v2-repair-20260906\\daily-public\\reports\\每日選股報告_2026-04-30.md"
   },
   {
     "date": "2026-04-29",
