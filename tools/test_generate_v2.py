@@ -36,12 +36,13 @@ class PublicV2GenerationTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder:
             docs, data = self._base(Path(folder))
             (data / "prices" / "1111.csv").write_text("raw", encoding="utf-8")
-            result = build_v2(docs_dir=docs, data_dir=data)
+            with patch("build_review_data.expected_session", return_value="2026-09-10"):
+                result = build_v2(docs_dir=docs, data_dir=data)
             self.assertEqual(result["failure_count"], 0)
             status = json.loads((data / "v2_build_status.json").read_text(encoding="utf-8"))
             self.assertEqual(status["excluded_count"], 1)
         with tempfile.TemporaryDirectory() as folder:
-            docs, data = self._base(Path(folder)); self._basis(data, verified=False)
+            docs, data = self._base(Path(folder)); self._basis(data, volume_basis="wrong")
             result = build_v2(docs_dir=docs, data_dir=data)
             self.assertEqual(result["failure_count"], 1)
 
@@ -57,6 +58,17 @@ class PublicV2GenerationTests(unittest.TestCase):
             with patch("generate_v2.concurrent.futures.ProcessPoolExecutor", InlineExecutor):
                 result = build_v2(docs_dir=docs, data_dir=data)
             self.assertEqual(result["failure_count"], 1)
+            self.assertEqual((docs / "v2" / "data" / "index.json").read_text(encoding="utf-8"), '{"old":true}')
+
+    def test_wrong_refresh_summary_date_does_not_replace_published_v2(self):
+        with tempfile.TemporaryDirectory() as folder:
+            docs, data = self._base(Path(folder))
+            (data / "price_refresh_summary.json").write_text(json.dumps({"status": "fresh", "latest_data_date": "2026-09-09"}), encoding="utf-8")
+            with patch("build_review_data.expected_session", return_value="2026-09-10"):
+                result = build_v2(docs_dir=docs, data_dir=data)
+            self.assertFalse(result["release_ready"])
+            status = json.loads((data / "v2_build_status.json").read_text(encoding="utf-8"))
+            self.assertEqual(status["release_blocker"], "price_refresh_mismatch")
             self.assertEqual((docs / "v2" / "data" / "index.json").read_text(encoding="utf-8"), '{"old":true}')
     def test_uncovered_stock_is_not_ai_invented(self):
         decision = safe_decision("9999", None)

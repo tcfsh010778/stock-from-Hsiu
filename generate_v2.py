@@ -224,11 +224,25 @@ def load_verified_universe(data_dir: Path) -> tuple[set[str], list[dict]]:
             rejected.append({"stock_id": path.stem, "reason_code": "basis_metadata_corrupt", "reason": str(exc)})
             continue
         sid, mode = str(meta.get("stock_id") or ""), str(meta.get("mode") or "")
-        if sid != path.stem or meta.get("verified") is not True or mode not in VERIFIED_PRICE_MODES or meta.get("volume_basis") != VERIFIED_PRICE_MODES[mode]:
+        if meta.get("verified") is not True:
+            continue
+        if sid != path.stem or mode not in VERIFIED_PRICE_MODES or meta.get("volume_basis") != VERIFIED_PRICE_MODES[mode]:
             rejected.append({"stock_id": path.stem, "reason_code": "basis_claim_invalid", "reason": "unsupported or inconsistent verified metadata"})
             continue
         ids.add(sid)
     return ids, rejected
+
+
+def _managed_dir(path: Path, docs_dir: Path, expected_name: str) -> Path:
+    if path.name != expected_name or path.parent.resolve() != docs_dir.resolve() or path.is_symlink():
+        raise RuntimeError(f"unsafe managed V2 path: {path}")
+    return path
+
+
+def _remove_managed(path: Path, docs_dir: Path, expected_name: str) -> None:
+    checked = _managed_dir(path, docs_dir, expected_name)
+    if checked.exists():
+        shutil.rmtree(checked)
 
 
 def load_decisions(path: Path) -> tuple[dict[str, dict], dict]:
@@ -379,7 +393,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     global_warnings = list(quality.get("warnings") or [])
     freshness_status = str(quality.get("state") or "unknown")
     price_summary = load_price_refresh_summary(data_dir / "price_refresh_summary.json")
-    expected_price_date = str(price_summary.get("latest_data_date") or "")
+    summary_price_date = str(price_summary.get("latest_data_date") or "")
     from build_review_data import expected_session
     expected_price_date = expected_session()
     price_refresh_status = str(price_summary.get("status") or "missing")
@@ -388,8 +402,16 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
 
     published_root = docs_dir / "v2"
     root = docs_dir / ".v2-staging"
-    if root.exists():
-        shutil.rmtree(root)
+    backup = docs_dir / ".v2-previous"
+    _managed_dir(root, docs_dir, ".v2-staging")
+    _managed_dir(backup, docs_dir, ".v2-previous")
+    if backup.exists():
+        if published_root.exists():
+            raise RuntimeError("previous V2 backup still exists; refusing to discard uncertain recovery data")
+        backup.rename(published_root)
+    _remove_managed(root, docs_dir, ".v2-staging")
+    if only and published_root.exists():
+        shutil.copytree(published_root, root)
     packet_dir = root / "data"
     redirect_dir = root / "stocks"
     asset_dir = root / "assets"
@@ -423,8 +445,11 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
             pass  # Invalid pool does not create chart eligibility.
     if only:
         target_ids &= set(only)
+    target_ids &= verified_ids
 
-    index: dict[str, dict] = {}
+    old_index_path = packet_dir / "index.json"
+    old_manifest = json.loads(old_index_path.read_text(encoding="utf-8")) if only and old_index_path.exists() else {}
+    index: dict[str, dict] = dict(old_manifest.get("stocks") or {})
     failures: list[dict] = list(metadata_failures)
     exclusions: list[dict] = [
         {"stock_id": sid, "reason_code": "verified_basis_missing", "reason": "not in verified price universe"}
@@ -451,10 +476,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
                 }
             else:
                 reason = error or "no packets generated"
-                if "invalid high/low/volume" in reason or "fewer than 30 OHLCV rows" in reason or "stale OHLCV" in reason:
-                    exclusions.append({"stock_id": stock_id, "reason": reason})
-                else:
-                    failures.append({"stock_id": stock_id, "reason_code": "verified_pair_corrupt", "reason": reason})
+                failures.append({"stock_id": stock_id, "reason_code": "verified_pair_corrupt", "reason": reason})
 
     fresh_count = sum(item["data_date"] == expected_price_date for item in index.values())
 
@@ -465,7 +487,7 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
         "stock_count": len(index),
         "coverage": "verified_price_universe",
         "verified_universe_count": len(verified_ids),
-        "target_count": len(target_ids),
+        "target_count": len(index) if only else len(target_ids),
         "generated_count": len(index),
         "fresh_count": fresh_count,
         "failure_count": len(failures),
@@ -478,21 +500,24 @@ def build_v2(*, docs_dir: Path = DOCS_DIR, data_dir: Path = DATA_DIR, validate: 
     }
     (packet_dir / "index.json").write_text(json.dumps(manifest, ensure_ascii=False, sort_keys=True, separators=(",", ":")) + "\n", encoding="utf-8")
 
-    release_ready = not failures and (bool(only) or fresh_count >= 400)
-    status = {"as_of": expected_price_date, "verified_universe_count": len(verified_ids), "generated_count": len(index), "fresh_count": fresh_count, "failure_count": len(failures), "excluded_count": len(exclusions), "release_ready": release_ready, "release_blocker": None if release_ready else ("corruption_failures" if failures else "fresh_coverage_below_400"), "failures": failures}
+    freshness_ready = price_refresh_status == "fresh" and summary_price_date == expected_price_date
+    release_ready = not failures and freshness_ready and fresh_count >= 400
+    blocker = None if release_ready else ("corruption_failures" if failures else ("price_refresh_mismatch" if not freshness_ready else "fresh_coverage_below_400"))
+    status = {"as_of": expected_price_date, "summary_price_date": summary_price_date, "price_refresh_status": price_refresh_status, "verified_universe_count": len(verified_ids), "generated_count": len(index), "fresh_count": fresh_count, "failure_count": len(failures), "excluded_count": len(exclusions), "release_ready": release_ready, "release_blocker": blocker, "failures": failures}
     (data_dir / "v2_build_status.json").write_text(stable_json(status) + "\n", encoding="utf-8")
     if not release_ready:
-        shutil.rmtree(root)
+        _remove_managed(root, docs_dir, ".v2-staging")
         return {"stock_count": len(index), "excluded_count": len(exclusions), "failure_count": len(failures), "release_ready": False, "switched_links": 0, "failures": failures}
 
-    backup = docs_dir / ".v2-previous"
-    if backup.exists():
-        shutil.rmtree(backup)
     if published_root.exists():
         published_root.rename(backup)
-    root.rename(published_root)
-    if backup.exists():
-        shutil.rmtree(backup)
+    try:
+        root.rename(published_root)
+    except Exception:
+        if backup.exists() and not published_root.exists():
+            backup.rename(published_root)
+        raise
+    _remove_managed(backup, docs_dir, ".v2-previous")
 
     switched = 0
     if switch_links:
