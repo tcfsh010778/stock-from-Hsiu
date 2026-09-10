@@ -12,4 +12,3 @@
 - Local public focused suite passed 58 tests before the final redirect regression; private full CI passed Linux and Windows (343 tests plus 14 subtests). Read-only review findings in outbox unknown-state preservation, stale CDN verification and archive event provenance were fixed and rechecked.
 - Next action: finish public PR CI/browser checks, then activate only after secure Telegram/OpenAI configuration and review of any paid hosting. No actual provider call, real Telegram send, live order or public deployment is claimed.
 - Rollback: pause notification activation first, retain private notification-state, restore previous release and verify deployed bytes. User-facing preview/report live in the configured Codex Outputs location; raw caches stay outside Git/OneDrive.
-

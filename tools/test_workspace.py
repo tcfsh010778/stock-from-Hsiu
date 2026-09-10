@@ -112,4 +112,3 @@ class DataTests(unittest.TestCase):
             stock=next(s for s in result['stocks'] if s['stock_id']=='1589')
             self.assertEqual(stock['name'],'永冠-KY');self.assertFalse(stock['price_verified'])
             self.assertFalse(stock['chips']['10']['complete']);self.assertEqual(stock['chips']['10']['end'],as_of)
-
