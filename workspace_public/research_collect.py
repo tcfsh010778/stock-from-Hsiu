@@ -130,7 +130,7 @@ def ownership_rows(raw, as_of):
         result[sid] = {'date':day,
             'major':{str(k):round(sum(levels[n]['percent'] for n in range(start,16)),4) for k,start in [(400,12),(600,13),(800,14),(1000,15)]},
             'retail':{str(k):round(sum(levels[n]['percent'] for n in range(1,end+1)),4) for k,end in [(30,6),(40,7),(50,8)]},
-            'shareholders':levels[17]['people']}
+            'shareholders':int(levels[17]['people'])}
     return result
 
 

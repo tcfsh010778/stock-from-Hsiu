@@ -49,7 +49,9 @@ def full_point(point):
     values=[point.get('major',{}).get(k) for k in ('400','600','800','1000')]
     values += [point.get('retail',{}).get(k) for k in ('30','40','50')]
     people=point.get('shareholders')
-    return all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) and 0<=v<=100 for v in values) and isinstance(people,int) and people>0
+    valid_people=(isinstance(people,(int,float)) and not isinstance(people,bool)
+                  and math.isfinite(people) and people>0 and people==int(people))
+    return all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) and 0<=v<=100 for v in values) and valid_people
 
 
 def priority_stocks(institutional, sessions, watch_ids=()):

@@ -30,6 +30,23 @@ def test_signed_adjustment_and_all_chart_bands():
     assert not full_point({'major':{'400':20}})
 
 
+def test_shareholder_count_accepts_integral_json_numbers_only():
+    point=distribution_point(distribution(),'2026-09-04','s')
+    for people in (15,15.0):
+        assert full_point({**point,'shareholders':people})
+    for people in (True,False,None,'15',15.5,0,-1,float('nan'),float('inf')):
+        assert not full_point({**point,'shareholders':people})
+
+
+def test_complete_float_counts_do_not_consume_backfill_budget(tmp_path):
+    points=[distribution_point(distribution(),day,'s') for day in Client.dates]
+    for point in points:point['shareholders']=float(point['shareholders'])
+    result={'stocks':{'2330':{'ownership':points}}};client=Client()
+    backfill(result,{},['2026-09-10'],tmp_path,watch_ids=['2330'],budget=120,client=client)
+    assert not client.calls
+    assert result['ownership_backfill']['missing_points']==0
+
+
 def test_priority_uses_three_actual_dates_or_explicit_watch():
     days=['2026-09-08','2026-09-09','2026-09-10']
     inst={'history':[{'date':day,'rows':[{'security_id':'2330','foreign_net':1,'investment_trust_net':-1},

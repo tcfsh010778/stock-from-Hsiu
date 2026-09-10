@@ -96,6 +96,9 @@ class ResearchTests(unittest.TestCase):
             rows.append({'資料日期':'20260904','證券代號':'2330  ','持股分級':n,'人數':10 if n<=15 else 0 if n==16 else 150,
                          '股數':1000 if n<=15 else 100 if n==16 else 14900,'占集保庫存數比例%':6 if n<15 else 16 if n==15 else 0 if n==16 else 100})
         r=ownership_rows(json.dumps(rows).encode(),'2026-09-10')['2330']
+        from workspace_public.ownership_history import full_point
+        self.assertIsInstance(r['shareholders'],int)
+        self.assertTrue(full_point(r))
         self.assertEqual(r['retail'],{'30':36,'40':42,'50':48});self.assertEqual(r['major']['400'],34);self.assertEqual(r['shareholders'],150)
         with self.assertRaises(ValueError):ownership_rows(json.dumps(rows[:-1]).encode(),'2026-09-10')
         rows[-1]['股數']=15000
