@@ -644,7 +644,20 @@ def run(
         calendar_fetcher = load_module(
             args.official_root, "attention_disposition"
         ).fetch_trading_sessions
-    official_sessions = calendar_fetcher(cutoff)
+    official_sessions = []
+    for year in range(date.fromisoformat(previous).year, cutoff.year + 1):
+        through = min(date(year, 12, 31), cutoff)
+        annual = calendar_fetcher(through)
+        if annual != sorted(set(annual)):
+            raise UpdateError("annual calendar must be sorted and unique")
+        try:
+            valid = all(iso(day) == day and date.fromisoformat(day).year == year
+                        and date.fromisoformat(day) <= through for day in annual)
+        except (ValueError, UpdateError):
+            valid = False
+        if not valid:
+            raise UpdateError("annual calendar date or coverage mismatch")
+        official_sessions.extend(annual)
     try:
         canonical_sessions = [iso(d) for d in official_sessions]
     except Exception as exc:
@@ -687,10 +700,6 @@ def run(
             args.output_root / "official_adjusted_update_manifest.json", manifest
         )
         return manifest
-    if date.fromisoformat(previous).year != date.fromisoformat(latest).year:
-        raise UpdateError(
-            "cross-year calendar range requires explicit yearly calendar adapter"
-        )
     expected = [d for d in official_sessions if previous < d < latest]
     for day in expected:
         twse, tpex, retrieved_at = cached_partition(
