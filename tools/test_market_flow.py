@@ -9,6 +9,21 @@ import market_flow
 
 
 class MarketFlowTests(unittest.TestCase):
+    def test_tpex_margin_dated_fallback_rejects_missing_and_wrong_date(self):
+        payload = {"date": "20260910", "tables": [{"fields": ["代號", "名稱", "前資餘額(張)", "資餘額", "前券餘額(張)", "券餘額"],
+            "data": [["6488", "環球晶", "1,000", "1,020", "5", "4"]]}]}
+        stale = [{"Date": "1150909", "SecuritiesCompanyCode": "6488", "MarginPurchaseBalance": "999"}]
+        with patch.object(market_flow, "_fetch_json", side_effect=[stale, payload]) as fetch:
+            rows = market_flow.fetch_tpex_margin_for_date("2026-09-10")
+        self.assertEqual(rows[0]["margin_balance"], 1020)
+        self.assertEqual(rows[0]["unit"], "lots")
+        self.assertEqual(fetch.call_args.args[0], market_flow.TPEX_MARGIN_HISTORY_URL)
+        with self.assertRaises(ValueError):
+            market_flow.normalize_tpex_margin_history(payload, "2026-09-11")
+        payload["tables"][0]["data"][0][3] = "--"
+        with self.assertRaises(ValueError):
+            market_flow.normalize_tpex_margin_history(payload, "2026-09-10")
+
     def test_fetch_json_retries_truncated_official_response(self):
         response = MagicMock()
         response.__enter__.return_value.read.return_value = b'{"ok": true}'

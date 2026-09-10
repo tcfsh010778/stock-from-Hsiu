@@ -33,6 +33,9 @@ jobs:
           path: ${{ runner.temp }}/workspace-official
           key: workspace-official-${{ github.run_id }}
           restore-keys: workspace-official-
+      - name: Sync main for scheduled publication
+        if: github.ref == 'refs/heads/main'
+        run: git pull --ff-only origin main
       - name: Refresh official price and holder sources
         env:
           V44_REFRESH_SCOPE: all
@@ -40,7 +43,6 @@ jobs:
           V44_OFFICIAL_OVERLAP_DAYS: '2'
           ENABLE_FINMIND_AUX: '0'
         run: |
-          git pull --ff-only origin main
           python refresh_prices.py
           python update_official_adjusted_history.py --data-dir data --cache-dir "${{ runner.temp }}/official-adjusted-cache"
           python -m tools.update_weekly_sources --data-dir data --official-root .
