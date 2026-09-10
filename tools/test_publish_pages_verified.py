@@ -111,20 +111,21 @@ def test_numeric_alias_rejects_untrusted_variants(url):
         m.safe_build_endpoint("owner/repo", url)
 
 
-def test_workspace_rejects_stale_data_even_when_html_matches(tmp_path):
+@pytest.mark.parametrize('stale_asset',['data/index.json','research.js','profile.js'])
+def test_workspace_rejects_stale_data_even_when_html_matches(tmp_path,stale_asset):
     root = docs(tmp_path)
     (root/'data/stocks').mkdir()
     index={'schema_version':'sfz-mda-workspace-1','stocks':[
         {'stock_id':'2330','market':'上市','price_verified':True,'detail':'data/stocks/2330.json'},
         {'stock_id':'6488','market':'上櫃','price_verified':True,'detail':'data/stocks/6488.json'}]}
     (root/'data/index.json').write_text(json.dumps(index),encoding='utf-8')
-    for name in ('app.js','style.css','data/stocks/2330.json','data/stocks/6488.json'):
+    for name in ('app.js','style.css','research.js','profile.js','data/stocks/2330.json','data/stocks/6488.json'):
         (root/name).write_text('current',encoding='utf-8')
     from urllib.parse import urlparse
     def fetch(url):
         rel=urlparse(url).path.removeprefix('/repo/')
-        return b'stale' if rel=='data/index.json' else (root/rel).read_bytes()
-    with pytest.raises(m.PublishError,match='data/index.json'):
+        return b'stale' if rel==stale_asset else (root/rel).read_bytes()
+    with pytest.raises(m.PublishError,match=stale_asset):
         call(tmp_path,[{'status':'built','commit':'a'*40}],fetch=fetch,timeout=20)
     result=call(tmp_path,[{'status':'built','commit':'a'*40}],fetch=lambda url:(root/urlparse(url).path.removeprefix('/repo/')).read_bytes())
-    assert set(result['verified_paths'])=={'index.html','app.js','style.css','data/index.json','data/stocks/2330.json','data/stocks/6488.json'}
+    assert set(result['verified_paths'])=={'index.html','app.js','style.css','research.js','profile.js','data/index.json','data/stocks/2330.json','data/stocks/6488.json'}

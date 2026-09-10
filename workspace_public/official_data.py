@@ -7,10 +7,10 @@ import json
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.request import Request, urlopen
 from urllib.parse import urlencode
 
 import pandas as pd
+import requests
 
 from .model import revenue_row, number
 
@@ -20,9 +20,15 @@ def fetch(url, cache, force=False):
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists() and not force and time.time()-path.stat().st_mtime < 7*86400:
         return path.read_bytes()
-    request = Request(url, headers={'User-Agent': 'StockWorkspace/1.0 (official-data reader)'})
-    with urlopen(request, timeout=45) as response:
-        raw = response.read(12_000_000)
+    # Use the standard HTTP client's redirect handling and identifiable default UA.
+    with requests.get(url, timeout=45, stream=True) as response:
+        response.raise_for_status()
+        chunks=[]; size=0
+        for chunk in response.iter_content(65536):
+            size+=len(chunk)
+            if size>=12_000_000:raise ValueError('invalid response size')
+            chunks.append(chunk)
+        raw=b''.join(chunks)
     if not raw or len(raw) >= 12_000_000:
         raise ValueError('invalid response size')
     temporary = path.with_suffix('.tmp')
@@ -130,7 +136,7 @@ def collect_institutional(sessions, cache, market_flow):
         for market, base, params in endpoints:
             url = base + '?' + urlencode(params)
             try:
-                raw,part = valid_fetch(url,cache,lambda raw:institutional_rows(raw,market,day,market_flow))
+                raw,part = valid_fetch(url,cache,lambda raw:institutional_rows(raw,market,day,market_flow),force=day==sessions[-1])
                 rows.extend(part)
                 sources.append({'market': market, 'url': url, 'sha256':hashlib.sha256(raw).hexdigest()})
             except Exception as exc:

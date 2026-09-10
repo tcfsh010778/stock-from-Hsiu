@@ -103,7 +103,7 @@ def verify_publish(
                     representatives.append(rel)
             if len(representatives)!=2:
                 raise PublishError('workspace requires verified listed and OTC examples')
-            verify_paths = ('index.html','app.js','style.css','data/index.json',*representatives)
+            verify_paths = ('index.html','app.js','style.css','research.js','profile.js','data/index.json',*representatives)
             if any(not (docs_dir/rel).is_file() for rel in verify_paths):
                 raise PublishError('workspace publication assets are incomplete')
     local = {

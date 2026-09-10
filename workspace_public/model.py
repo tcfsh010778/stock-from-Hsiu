@@ -16,6 +16,11 @@ PATTERNS = {
     "descending_triangle": "下降三角候選", "bullish_engulfing": "多方吞噬",
     "bearish_engulfing": "空方吞噬", "hammer": "錘子線", "doji": "十字線",
 }
+PATTERNS.update( {'rising_channel':'上升通道候選','falling_channel':'下降通道候選',
+    'symmetrical_triangle':'收斂三角候選','bull_pennant':'多方三角旗候選','bear_pennant':'空方三角旗候選',
+    'head_shoulders':'頭肩頂候選','inverse_head_shoulders':'頭肩底候選',
+    'morning_star':'晨星候選','evening_star':'暮星候選','shooting_star':'流星線',
+    'bullish_harami':'多方母子線','bearish_harami':'空方母子線','three_white':'三紅兵','three_black':'三黑兵'})
 
 
 def number(value):

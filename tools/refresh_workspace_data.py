@@ -7,6 +7,7 @@ import market_flow
 from build_review_data import verified_frame
 from workspace_public.build import read, write
 from workspace_public.official_data import collect_institutional, collect_revenue
+from workspace_public.research_collect import collect as collect_research
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -23,6 +24,10 @@ def main():
         print('Some official partitions remain unavailable; status will be visible.')
     write(data/'workspace/revenue.json',revenue)
     write(data/'workspace/institutional.json',institutional)
+    research_path=data/'workspace/research.json'
+    research=collect_research(sessions[-5:],args.cache/'research',read(research_path))
+    write(research_path,research)
+    print({'research_sources':len(research['sources']),'research_failures':len(research['failures'])})
 
 
 if __name__=='__main__':main()

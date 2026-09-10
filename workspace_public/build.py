@@ -3,11 +3,12 @@ from __future__ import annotations
 
 import hashlib
 import json
-import shutil
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 from .model import VERSION, PATTERNS, candles, chip_windows, detect_patterns, digest, growth
+from .research import source_evidence, checklist, assign_sources, notification_eligible
+from .chart_patterns import annotate
 
 
 def read(path, default=None):
@@ -20,6 +21,18 @@ def write(path, payload):
     temporary = path.with_suffix(path.suffix + '.tmp')
     temporary.write_text(raw, encoding='utf-8', newline='\n')
     temporary.replace(path)
+
+
+def export_assets(source, output, names):
+    """Hash the canonical UTF-8/LF bytes that Git and the host will serve."""
+    hashes = {}
+    for name in names:
+        raw = (source/name).read_text(encoding='utf-8-sig').encode('utf-8')
+        temporary = (output/name).with_suffix(Path(name).suffix + '.tmp')
+        temporary.write_bytes(raw)
+        temporary.replace(output/name)
+        hashes[name] = hashlib.sha256(raw).hexdigest()
+    return hashes
 
 
 def build(source, output, verified_frame, analyze_sfz_universe, expected_session, supplement=None):
@@ -65,11 +78,14 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
         for row in snapshot['rows']:
             by_stock.setdefault(row['security_id'],[]).append({'date':snapshot['date'],'rows':[row]})
     calendar = verified_frame(data,'2330',as_of)
-    sessions = sorted(str(s)[:10] for s in calendar['date'])[-10:]
+    market_sessions = sorted(str(s)[:10] for s in calendar['date'])
+    sessions = market_sessions[-10:]
     if len(sessions)!=10 or sessions[-1]!=as_of:
         raise ValueError('verified session calendar unavailable')
     revenues = read(supplement/'revenue.json')
     revenue_map = {}
+    research = read(supplement/'research.json')
+    research_stocks = research.get('stocks',{})
     for row in revenues.get('rows',[]):
         revenue_map.setdefault(row['stock_id'],[]).append(row)
     stocks, failures = [], []
@@ -108,21 +124,30 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                    'note':'週 Top50 是觀察池；A 或 X、長期 B1、B2 與人工 C 必須分開核對。'}
             rev = sorted(revenue_map.get(sid,[]),key=lambda r:r['period'])
             chips = chip_windows(by_stock.get(sid,[]),sessions,sid)
+            research_series = research_stocks.get(sid,{})
+            mda['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of,frame,market_sessions[-21:])
             patterns = detect_patterns(frame,as_of)
+            chart_candles={f:candles(frame,as_of,f) for f in ('day','week','month')}
+            annotations={f:annotate(chart_candles[f]) for f in chart_candles}
+            patterns['observations'] += annotations['day']['observations']
+            patterns['version']='pattern-geometry-v2'
             quote = frame.iloc[-1]
             row = {'stock_id':sid,'name':sfz_names.get(sid,pool_map.get(sid,{}).get('name',sid)),
                    'market':markets.get(sid,{}).get('market') if isinstance(markets.get(sid),dict) else markets.get(sid),
                    'close':float(quote['raw_close']), 'change_pct':growth(quote['close'],frame.iloc[-2]['close']) if len(frame)>1 else None,
                    'data_date':as_of, 'sfz':sfz,'mda':mda,
-                   'patterns':[p['id'] for p in patterns['observations']],
+                   'patterns':sorted({p['id'] for p in patterns['observations']} | {p['id'] for p in annotations['day']['events'] if p['end']==as_of}),
                    'chips':chips['windows'], 'revenue':rev[-1] if rev else None,
                    'holder':holder_map.get(sid), 'detail':f'data/stocks/{sid}.json','price_verified':True}
-            detail = {**row,'schema_version':VERSION,'candles':{f:candles(frame,as_of,f) for f in ('day','week','month')},
+            detail = {**row,'schema_version':VERSION,'candles':chart_candles,'annotations':annotations,
                       'patterns':patterns,'chips':chips,'revenue_history':rev,
                       'price_basis':{'mode':basis['mode'],'verified':True,'csv_sha256':basis['csv_sha256'],
                                      'volume_unit':'shares','chart':'還原價格／原始成交股數','bars':len(frame)},
                       'weekly_date':weekly_date,'expected_revenue_period':revenues.get('expected_period'),
                       'margin':margins.get(sid),
+                      'research':research_series,
+                      'mda_table':checklist(frame,as_of,mda['sources']),
+                      'industry':research.get('industries',{}).get(sid),
                       'ai':{'status':'not_configured','observations':[]}}
             write(output/'data'/'stocks'/f'{sid}.json',detail)
             stocks.append(row)
@@ -131,6 +156,7 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
             if sid not in markets:
                 continue
             chips = chip_windows(by_stock.get(sid,[]),sessions,sid)
+            research_series = research_stocks.get(sid,{})
             rev = sorted(revenue_map.get(sid,[]),key=lambda r:r['period'])
             retained = mda_map.get(sid,{}).get('watch_pool_member') is True
             row = {'stock_id':sid,'name':sfz_names.get(sid,pool_map.get(sid,{}).get('name',sid)),
@@ -142,23 +168,38 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                           'note':'週股權觀察保留；價格未驗證，完整檢核待補。'},
                    'patterns':[],'chips':chips['windows'],'revenue':rev[-1] if rev else None,'holder':holder_map.get(sid),
                    'detail':f'data/stocks/{sid}.json'}
+            row['mda']['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of)
             write(output/'data/stocks'/f'{sid}.json',{**row,'schema_version':VERSION,'candles':{f:[] for f in ('day','week','month')},
                 'chips':chips,'revenue_history':rev,'patterns':{'observations':[]},'weekly_date':weekly_date,
-                'expected_revenue_period':revenues.get('expected_period'),'price_basis':{'verified':False},'ai':{'status':'insufficient_data'}})
+                'expected_revenue_period':revenues.get('expected_period'),'price_basis':{'verified':False},'ai':{'status':'insufficient_data'},
+                'research':research_series,'industry':research.get('industries',{}).get(sid)})
+            packet=read(output/'data/stocks'/f'{sid}.json')
+            packet['mda_table']=checklist(None,as_of,row['mda']['sources'])
+            write(output/'data/stocks'/f'{sid}.json',packet)
             stocks.append(row)
     if not stocks:
         raise ValueError('no verified stocks; retain last successful workspace')
+    assign_sources(stocks)
+    for row in stocks:
+        path=output/'data/stocks'/f"{row['stock_id']}.json"
+        packet=read(path); packet['mda']=row['mda']; row['industry']=packet.get('industry')
+        row['turnover']=research_stocks.get(row['stock_id'],{}).get('turnover')
+        row['mda']['notification_eligible'] = notification_eligible(row['mda'],fresh,row['price_verified'])
+        write(path,packet)
+        row['detail_sha256']=hashlib.sha256(path.read_bytes()).hexdigest()
     stocks.sort(key=lambda s:(not(s['sfz']['member'] or s['mda']['member']),s['stock_id']))
+    assets = Path(__file__).parent/'web'
+    asset_names=('index.html','app.js','style.css','research.js','profile.js')
+    asset_hashes = export_assets(assets, output, asset_names)
     index = {'schema_version':VERSION,'data_date':as_of,'expected_session':expected,'fresh':fresh,
+             'asset_sha256':asset_hashes,
              'generated_at':datetime.now(timezone.utc).isoformat(),'stocks':stocks,'patterns':PATTERNS,
              'coverage':{'verified':sum(s['price_verified'] for s in stocks),'universe':len(frames),'rejected':len(failures),'visible':len(stocks),
                          'revenue':sum(s['revenue'] is not None for s in stocks),
                          'complete_chips_10':sum(s['chips']['10']['complete'] for s in stocks)},
              'weekly_date':weekly_date,'expected_revenue_period':revenues.get('expected_period'),
              'services':{'telegram':'尚未設定','ai':'尚未設定','holdings':'永豐持倉尚未串接'},
-             'data_issues':{'prices':failures,'revenue':revenues.get('failures',[]),'institutional':inst.get('failures',[])}}
+             'research_sources':research.get('sources',[]),
+             'data_issues':{'prices':failures,'revenue':revenues.get('failures',[]),'institutional':inst.get('failures',[]),'research':research.get('failures',[])}}
     write(output/'data'/'index.json',index)
-    assets = Path(__file__).parent/'web'
-    for name in ('index.html','app.js','style.css'):
-        shutil.copyfile(assets/name, output/name)
     return index
