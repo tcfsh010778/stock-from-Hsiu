@@ -158,6 +158,10 @@ def number(v: Any) -> float:
 def parse_event(
     payload: dict, source: str, table: bool, labels: dict[str, str]
 ) -> list[dict]:
+    if (not table and source.startswith('twse_')
+            and payload.get('stat') == '很抱歉，沒有符合條件的資料!'
+            and not payload.get('data') and not payload.get('tables')):
+        return []
     body = (payload.get("tables") or [{}])[0] if table else payload
     fields = [str(x).strip() for x in body.get("fields") or []]
     rows = body.get("data")

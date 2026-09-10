@@ -87,32 +87,11 @@ jobs:
       - name: Refresh verified two-market weekly holder sources and Top50
         run: python -m tools.update_weekly_sources --data-dir data --official-root .
 
-      - name: Refresh MDA full-market scan from current caches
-        run: python mda_universe_scan.py
-
-      - name: Refresh industry category cache
-        run: python tools/refresh_industry_cache.py
-
-      - name: Generate daily Top20 report
-        run: python run_screener.py
-
-      - name: Generate market sentiment data
-        run: python market_sentiment.py
-
       - name: Generate daily listed and OTC market flow
         run: python market_flow.py --strict --date "${{ steps.session.outputs.date }}"
 
-      - name: Generate CaryBot signal bridge
-        run: python carybot_signals.py
-
-      - name: Generate backtest dashboard data
-        run: python backtest_dashboard.py
-
       - name: Collect official attention and disposition risk
         run: python attention_disposition.py --date "${{ steps.session.outputs.date }}"
-
-      - name: Generate daily decision contract
-        run: python daily_decisions.py
 
       - name: Backfill official TDCC six-week holder history
         if: ${{ inputs.backfill_tdcc_holder_history == true }}
@@ -124,17 +103,21 @@ jobs:
       - name: Generate independent routes and human review changes
         run: python build_review_data.py --as-of "${{ steps.session.outputs.date }}"
 
+      - name: Restore official-only response cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/workspace-official
+          key: workspace-official-${{ github.run_id }}
+          restore-keys: workspace-official-
+
+      - name: Update full institutional windows and monthly revenue
+        run: python -m tools.refresh_workspace_data --cache "${{ runner.temp }}/workspace-official"
+
       - name: Generate static site
         run: python generate_site.py
 
-      - name: Generate public V2 parallel pages
-        run: python generate_v2.py --validate --switch-navigation
-
-      - name: Verify generated daily artifacts
-        run: python tools/verify_daily_update_artifacts.py --expected-session "${{ steps.session.outputs.date }}"
-
-      - name: Verify V2 parallel release
-        run: python tools/verify_v2_public.py --navigation switched
+      - name: Verify workspace dates, coverage and retired-rule removal
+        run: python -m tools.verify_workspace
 
       - name: Commit and push generated site
         id: publish

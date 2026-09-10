@@ -68,6 +68,13 @@ def test_six_event_schemas_and_conflict():
             ]
             == 50
         )
+
+
+def test_explicit_twse_no_event_response_is_not_a_transport_failure():
+    _,table,labels=m.EVENT_URLS['twse_reduction']
+    assert m.parse_event({'stat':'很抱歉，沒有符合條件的資料!'},'twse_reduction',table,labels)==[]
+    for bad in ({'stat':'service unavailable'},{'stat':'OK'},{}):
+        with pytest.raises(m.UpdateError):m.parse_event(bad,'twse_reduction',table,labels)
     with pytest.raises(m.UpdateError):
         m.reconcile_actions(
             [
