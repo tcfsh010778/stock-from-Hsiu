@@ -33,11 +33,11 @@ function renderResearchCharts(){
  for(const [title,pts,hist,id] of panels){
   const price=id==='price',height=price?340:112,top=18,bottom=22,ph=height-top-bottom;
   let vals=price?bars.flatMap(b=>[b.low,b.high,...['ma20','ma60','ma240'].map(k=>b[k]).filter(v=>v!=null)]):pts.map(p=>p.value);
-  if(hist)vals.push(0);let lo=Math.min(...vals),hi=Math.max(...vals);const pad=(hi-lo)*.09||1;lo-=pad;hi+=pad;
+  if(hist)vals.push(0);let lo=Math.min(...vals),hi=Math.max(...vals);const pad=(hi-lo)*.09||1;lo-=pad;hi+=pad;if(id==='volume')lo=0;
   const y=v=>top+(hi-v)/(hi-lo)*ph;
   let svg=`<svg viewBox="0 0 ${width} ${height}" role="img" aria-label="${esc(title)}"><g>`;
   if(price||pts.length){
-   for(let j=0;j<=2;j++){const v=lo+(hi-lo)*j/2;svg+=`<path d="M ${left} ${y(v)} H ${width-right}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${width-right+6}" y="${y(v)+4}" fill="var(--muted)" font-size="10">${num(v,price||['major','retail'].includes(id)?1:0)}</text>`;}
+   for(let j=0;j<=2;j++){const v=lo+(hi-lo)*j/2;svg+=`<path d="M ${left} ${y(v)} H ${width-right}" stroke="var(--line)" stroke-dasharray="2 4"/><text x="${width-right+6}" y="${y(v)+4}" fill="var(--muted)" font-size="10">${num(v,['major','retail'].includes(id)?2:price?1:0)}</text>`;}
    if(price){
     for(const [k,stroke]of [['ma20','#d7b967'],['ma60','#71a5f6'],['ma240','#ba8de2']]){let d='',started=false;bars.forEach((b,i)=>{if(b[k]!=null){d+=`${started?'L':'M'}${x(i)},${y(b[k])} `;started=true;}else started=false;});svg+=`<path d="${d}" fill="none" stroke="${stroke}" stroke-width="1.2"/>`;}
     bars.forEach((b,i)=>{const xx=x(i),stroke=b.close>=b.open?'var(--red)':'var(--green)',w=Math.max(.65,stride*.6);svg+=`<line x1="${xx}" x2="${xx}" y1="${y(b.high)}" y2="${y(b.low)}" stroke="${stroke}"/><rect x="${xx-w/2}" y="${Math.min(y(b.open),y(b.close))}" width="${w}" height="${Math.max(1,Math.abs(y(b.open)-y(b.close)))}" fill="${stroke}"/>`;});

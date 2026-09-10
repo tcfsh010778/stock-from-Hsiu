@@ -8,11 +8,18 @@ from stock_v2_public.analysis.sfz_universe import analyze_sfz_universe
 from workspace_public.build import build
 
 ROOT=Path(__file__).resolve().parent
-PRIVATE_SOURCE_SHA='df0070434d0944f66f5fe9be8aefdaeec92c4068'
+PRIVATE_SOURCE_SHA='36ba992c6dc3258a9cf7cf104eaca8734efe4d2d'
 
 
 def retire_routes(output):
-    paths=list(output.glob('*.html'))+list((output/'stocks').glob('*.html'))+list((output/'v2').rglob('*.html'))
+    paths=list(output.rglob('*.html'))
+    retired_json=[p for p in (output/'data').glob('*.json') if p.name!='index.json']
+    retired_json+=list((output/'v2/data').rglob('*.json'))
+    root=output.resolve()
+    # All targets are generated site artifacts; preserve source data and new packets.
+    for path in paths+retired_json:
+        if not path.resolve().is_relative_to(root):
+            raise ValueError('Retired artifact resolves outside the output directory')
     for path in paths:
         if path==output/'index.html':continue
         relative=path.relative_to(output)
@@ -20,6 +27,8 @@ def retire_routes(output):
         if re.fullmatch(r'\d{4}',path.stem):target+='?stock='+path.stem
         redirect=f'<!doctype html><html lang="zh-Hant"><meta charset="utf-8"><meta http-equiv="refresh" content="0;url={target}"><title>選股工作台</title><a href="{target}">開啟新版選股工作台</a></html>'
         path.write_text(redirect,encoding='utf-8',newline='\n')
+    for path in retired_json:
+        path.unlink()
 
 
 def generate(output=None):

@@ -15,13 +15,26 @@ from workspace_public.build import build, write
 
 def test_old_stock_and_strategy_routes_redirect_to_the_new_workspace(tmp_path):
     from generate_workspace import retire_routes
-    for name in ('index.html','carybot.html','backtest.html','stocks/2330.html','v2/stocks/6488.html'):
+    for name in ('index.html','carybot.html','backtest.html','stocks/2330.html','v2/stocks/6488.html','mda_candidates/2330.html','daily/2026-09-09.html'):
         path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('legacy',encoding='utf-8')
     retire_routes(tmp_path)
     assert (tmp_path/'index.html').read_text()=='legacy'
     assert 'url=./' in (tmp_path/'carybot.html').read_text(encoding='utf-8')
     assert 'url=../?stock=2330' in (tmp_path/'stocks/2330.html').read_text(encoding='utf-8')
     assert 'url=../../?stock=6488' in (tmp_path/'v2/stocks/6488.html').read_text(encoding='utf-8')
+    assert 'url=../?stock=2330' in (tmp_path/'mda_candidates/2330.html').read_text(encoding='utf-8')
+    assert 'url=../' in (tmp_path/'daily/2026-09-09.html').read_text(encoding='utf-8')
+
+
+def test_retired_payload_cleanup_preserves_new_workspace_and_sources(tmp_path):
+    from generate_workspace import retire_routes
+    for name in ('site/data/index.json','site/data/stocks/2330.json','site/data/carybot_signals.json','site/v2/data/stocks/2330.json','data/prices/2330.csv'):
+        path=tmp_path/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('preserved',encoding='utf-8')
+    retire_routes(tmp_path/'site')
+    assert not (tmp_path/'site/data/carybot_signals.json').exists()
+    assert not (tmp_path/'site/v2/data/stocks/2330.json').exists()
+    for name in ('site/data/index.json','site/data/stocks/2330.json','data/prices/2330.csv'):
+        assert (tmp_path/name).read_text()=='preserved'
 
 
 def bars(count=260):
