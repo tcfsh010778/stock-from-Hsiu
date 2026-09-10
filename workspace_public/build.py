@@ -7,7 +7,7 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 from .model import VERSION, PATTERNS, candles, chip_windows, detect_patterns, digest, growth
-from .research import source_evidence, checklist, assign_sources, notification_eligible
+from .research import source_evidence, checklist, assign_sources, notification_eligible, macro_overview
 from .chart_patterns import annotate
 
 
@@ -127,10 +127,14 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
             research_series = research_stocks.get(sid,{})
             mda['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of,frame,market_sessions[-21:])
             patterns = detect_patterns(frame,as_of)
-            chart_candles={f:candles(frame,as_of,f) for f in ('day','week','month')}
+            chart_candles={f:candles(frame,as_of,f,limit=len(frame)) for f in ('day','week','month')}
             annotations={f:annotate(chart_candles[f]) for f in chart_candles}
+            # Each pattern has one owner; old overlapping detectors must not
+            # reintroduce rejected triangles or invalidated higher lows.
+            patterns['observations']=[p for p in patterns['observations'] if p['id'] in {'range','double_bottom','double_top'}]
             patterns['observations'] += annotations['day']['observations']
-            patterns['version']='pattern-geometry-v2'
+            patterns['observations'] += [p for p in annotations['day']['events'] if p['end']==as_of]
+            patterns['version']='pattern-geometry-v3'
             quote = frame.iloc[-1]
             row = {'stock_id':sid,'name':sfz_names.get(sid,pool_map.get(sid,{}).get('name',sid)),
                    'market':markets.get(sid,{}).get('market') if isinstance(markets.get(sid),dict) else markets.get(sid),
@@ -200,6 +204,8 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
              'weekly_date':weekly_date,'expected_revenue_period':revenues.get('expected_period'),
              'services':{'telegram':'尚未設定','ai':'尚未設定','holdings':'永豐持倉尚未串接'},
              'research_sources':research.get('sources',[]),
+             'macro':macro_overview(stocks,as_of,flow),
+             'ownership_backfill':research.get('ownership_backfill',{}),
              'data_issues':{'prices':failures,'revenue':revenues.get('failures',[]),'institutional':inst.get('failures',[]),'research':research.get('failures',[])}}
     write(output/'data'/'index.json',index)
     return index

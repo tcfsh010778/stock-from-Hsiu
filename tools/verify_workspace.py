@@ -33,7 +33,8 @@ def verify(output,allow_stale=False):
             assert len({row['time'] for row in rows})==len(rows)
         assert isinstance(packet['mda']['checks'],list)
         assert packet['mda']['qualified'] is None, 'Manual MDA table must not claim automatic qualification'
-        assert sum(len(s['rows']) for s in packet['mda_table']['sections'])==62
+        assert [s['id'] for s in packet['mda_table']['sections']]==['A甲','A乙','B1','B2','C']
+        assert sum(len(s['rows']) for s in packet['mda_table']['sections'])==48
         for frequency,annotations in packet.get('annotations',{}).items():
             closed={row['time'] for row in packet['candles'][frequency] if row['complete']}
             assert all(e['start'] in closed and e['end'] in closed and e['confirmed_at'] in closed for e in annotations['events'])
@@ -41,6 +42,7 @@ def verify(output,allow_stale=False):
             if isinstance(rows,list):assert all(r['date']<=index['data_date'] for r in rows)
         walk(packet)
     html=(output/'index.html').read_text(encoding='utf-8')
+    assert len(index['macro']['items'])==14 and index['macro']['data_date']==index['data_date']
     assert 'SFZ' in html and 'AI 看圖' in html
     assert 'CaryBot' not in html and '歷史回測' not in html
     for asset in ('index.html','app.js','style.css','research.js','profile.js'):

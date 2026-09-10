@@ -1,6 +1,17 @@
 # Codex Handoff
 
-## 2026-09-10 SFZ / MDA workspace rebuild (Issue35, draft)
+## 2026-09-10 Latest nine-point correction (Issue35, draft)
+
+- This section supersedes the historical union/62-row descriptions below. Private implementation d3441cd1a5fd2b3780af1b7b4d3c927411045403 is mirrored here. The final generated snapshot is pending the bounded TDCC recovery at this source commit.
+- MDA v3 uses the existing six-change weekly-holder trend AND (foreign OR trust buys for at least three consecutive market sessions). Gain/margin and old retained membership cannot bypass it. Unknown data stays unknown and cannot trigger false removal. SFZ rules are unchanged.
+- Global editable macro context precedes stock analysis. Per-stock review is exactly A甲/A乙/B1/B2/C, 48 rows; clear/migration cannot resurrect old content. Macro AI is still unconfigured.
+- Nine charts support full verified history, cursor-anchored wheel zoom, pointer drag, price-axis scaling, keyboard, reset and mobile buttons. Weekly/monthly candle views retain actual daily flows. Pattern v3 removes divergent-triangle false positives and invalidated higher-low/H&S observations; fixtures check confirmations without future bars.
+- New serial TDCC history adapter prioritizes institutional/SFZ candidates and gradually fills the rest with a 120-request batch cap, dated checkpoints and explicit partial/interrupted status. Complete 15-band validation includes the signed HTML adjustment. Response SHA is provenance; normalized caches do not preserve raw HTML for SHA replay.
+- XQ investment-trust holdings are a periodically adjusted estimate; source identified but not imported. Free authorized tick-CSV Volume Profile remains available. Pages/Actions are sufficient for screening and Telegram without a permanent paid host. Interactive AI still needs a protected backend; no new backend provisioned.
+- Public focused tests: 53 passed. Private focused tests: 72 passed; read-only review found no remaining blocker after notification-version and clear-record fixes. Final generated-data counts, browser acceptance and CI evidence will be recorded after recovery.
+- No public release, real Telegram/OpenAI call, new schedule activation, paid hosting or order execution. Next action: integrate final recovered ownership, regenerate through generate_site.py and qualify the draft artifacts.
+
+## Historical implementation before the latest nine-point correction
 
 - Public feature commit 256d49f7d20edd00c745499b612eb53d2fbc94a3; final mirrored platform source 36ba992c6dc3258a9cf7cf104eaca8734efe4d2d. Private companion source c25aaa1e67de88648c5472b4912e668bea32ab90 also aligns its preview CLI. Public PR40 and private PR19 are mergeable drafts. generate_site.py remains the durable entry point through site_mode.json / generate_workspace.py; all retired HTML routes redirect.
 - Current product supersedes the legacy CaryBot/backtest/preset stops, targets, support prices and strategy scores. Only SFZ/MDA entrances remain in active UI; original notebooks/research are historical. No live orders.

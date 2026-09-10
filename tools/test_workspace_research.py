@@ -8,7 +8,7 @@ import unittest
 import tempfile
 import hashlib
 
-from workspace_public.research import six_week_trend,source_evidence,TABLE,notification_eligible
+from workspace_public.research import six_week_trend,source_evidence,TABLE,MACRO_LABELS,notification_eligible
 from workspace_public.research_collect import daily_rows,industry_members,ownership_rows
 from workspace_public.chart_patterns import annotate
 
@@ -35,7 +35,7 @@ class ResearchTests(unittest.TestCase):
         self.assertEqual(six_week_trend(rows,'2026-10-10')['status'],'unknown')
 
     def test_full_table_preserves_distinct_review_rows(self):
-        self.assertEqual(len(TABLE['大環境']),14)
+        self.assertEqual(len(MACRO_LABELS),14)
         self.assertIn('專利',TABLE['C']);self.assertIn('擴廠',TABLE['C']);self.assertIn('併購',TABLE['C'])
         self.assertIn('400–600 張增加',TABLE['B1']);self.assertNotIn('評價分數',str(TABLE))
 
@@ -46,7 +46,7 @@ class ResearchTests(unittest.TestCase):
     def test_missing_foreign_cannot_send_mda_removal(self):
         src={'holder_six_weeks':{'status':'measured'},'foreign_consecutive':{'complete':False},'margin_observation':{'latest_change_lots':-4}}
         self.assertFalse(notification_eligible({'source_labels':[],'sources':src},True,True))
-        self.assertTrue(notification_eligible({'source_labels':['每日漲幅'],'sources':src},True,True))
+        self.assertFalse(notification_eligible({'source_labels':['每日漲幅'],'sources':src},True,True))
         self.assertFalse(notification_eligible({'source_labels':['每日漲幅'],'sources':src},False,True))
 
     def test_margin_gap_is_not_daily_change(self):

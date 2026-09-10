@@ -8,6 +8,7 @@ from build_review_data import verified_frame
 from workspace_public.build import read, write
 from workspace_public.official_data import collect_institutional, collect_revenue
 from workspace_public.research_collect import collect as collect_research
+from workspace_public.ownership_history import backfill as backfill_ownership
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -26,6 +27,9 @@ def main():
     write(data/'workspace/institutional.json',institutional)
     research_path=data/'workspace/research.json'
     research=collect_research(sessions[-5:],args.cache/'research',read(research_path))
+    watch=[s['stock_id'] for s in read(data/'sfz_technical_candidates.json').get('stocks',[]) if s.get('candidate')]
+    research=backfill_ownership(research,institutional,sessions,args.cache/'tdcc-history',watch_ids=watch,
+        universe=read(data/'stock_markets.json').get('markets',{}),checkpoint=lambda value:write(research_path,value))
     write(research_path,research)
     print({'research_sources':len(research['sources']),'research_failures':len(research['failures'])})
 
