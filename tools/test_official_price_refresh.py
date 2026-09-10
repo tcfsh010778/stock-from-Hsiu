@@ -5,6 +5,7 @@ import json
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import date
 from pathlib import Path
 
@@ -14,6 +15,49 @@ import official_price_refresh as prices
 
 
 class OfficialPriceRefreshTest(unittest.TestCase):
+    def test_unavailable_endpoint_recovers_only_at_surviving_official_date(self) -> None:
+        row = {"date": "2026-08-10", "stock_id": "2330", "open": 104, "high": 106,
+               "low": 103, "close": 105, "volume": 3000}
+        otc = [{"Date": "1150810", "SecuritiesCompanyCode": "8069", "Open": "51",
+                "High": "54", "Low": "50", "Close": "53", "TradingShares": "4000"}]
+        def fetch(url, params=None):
+            if url == prices.TWSE_LATEST_URL:
+                raise RuntimeError("non-JSON upstream response")
+            self.assertEqual(url, prices.TPEX_LATEST_URL)
+            return otc
+        partitions = ([row], [{**row, "stock_id": "8069"}])
+        with patch.object(prices, "fetch_history_partitions", return_value=partitions) as history:
+            day, rows, counts, metadata = prices.fetch_latest_snapshot(
+                fetch, recovery_min_unique_ids={"twse": 1, "tpex": 1})
+        history.assert_called_once_with(date(2026, 8, 10), fetch)
+        self.assertEqual(day, "2026-08-10")
+        self.assertEqual(counts, {"twse": 1, "tpex": 1})
+        self.assertIsNone(metadata["twse_latest_date"])
+        self.assertFalse(metadata["date_skew_recovered"])
+        self.assertEqual(metadata["latest_endpoint_unavailable"], {"twse": "RuntimeError"})
+        self.assertEqual(metadata["recovery_coverage"]["required_reference_ids"]["tpex"], 1)
+        # Losing one source must not relax either historical market's hard floor.
+        with patch.object(prices, "fetch_history_partitions", return_value=partitions):
+            with self.assertRaisesRegex(RuntimeError, "coverage is incomplete"):
+                prices.fetch_latest_snapshot(fetch)
+        # Nor may a recovery drop a security present in the surviving source.
+        with patch.object(prices, "fetch_history_partitions", return_value=([row], [{**row, "stock_id": "9999"}])):
+            with self.assertRaisesRegex(RuntimeError, "coverage is incomplete"):
+                prices.fetch_latest_snapshot(fetch, recovery_min_unique_ids={"twse": 1, "tpex": 1})
+
+    def test_both_latest_endpoints_unavailable_never_guesses_date_or_writes(self) -> None:
+        def fetch(url, params=None):
+            raise RuntimeError("upstream unavailable")
+        with tempfile.TemporaryDirectory() as tmp, patch.object(prices, "fetch_history_partitions") as history:
+            root = Path(tmp)
+            with self.assertRaisesRegex(RuntimeError, "no verified target date"):
+                prices.refresh_official_prices(
+                    stock_ids={"2330"}, price_dir=root / "prices", summary_path=root / "summary.json",
+                    fetch_latest=lambda: prices.fetch_latest_snapshot(fetch), fetch_history=lambda _: [])
+            history.assert_not_called()
+            self.assertFalse((root / "prices").exists())
+            self.assertFalse((root / "summary.json").exists())
+
     def test_latest_snapshot_keeps_aligned_openapi_as_primary_path(self) -> None:
         def fetch_json(url: str, params: dict[str, str] | None = None):
             self.assertIsNone(params)

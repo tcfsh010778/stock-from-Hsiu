@@ -249,12 +249,27 @@ def fetch_latest_snapshot(
     recovery_min_unique_ids: dict[str, int] | None = None,
     recovery_min_reference_ratio: float = RECOVERY_MIN_REFERENCE_RATIO,
 ) -> tuple[str, list[dict[str, Any]], dict[str, int], dict[str, Any]]:
-    twse_payload = fetch_json(TWSE_LATEST_URL)
-    tpex_payload = fetch_json(TPEX_LATEST_URL)
-    if not isinstance(twse_payload, list) or not isinstance(tpex_payload, list):
-        raise RuntimeError("official latest price endpoints returned an unexpected schema")
-    twse_date, twse_rows = normalize_twse_latest(twse_payload)
-    tpex_date, tpex_rows = normalize_tpex_latest(tpex_payload)
+    snapshots = {}
+    unavailable = {}
+    for market, url, normalize in (
+        ("twse", TWSE_LATEST_URL, normalize_twse_latest),
+        ("tpex", TPEX_LATEST_URL, normalize_tpex_latest),
+    ):
+        try:
+            payload = fetch_json(url)
+        except (RuntimeError, ValueError, requests.RequestException) as exc:
+            # A transport/non-JSON failure may use the other official market's
+            # verified date. Never infer a trading date from today's clock.
+            unavailable[market] = type(exc).__name__
+            snapshots[market] = ("", [])
+            continue
+        if not isinstance(payload, list):
+            raise RuntimeError("official latest price endpoints returned an unexpected schema")
+        snapshots[market] = normalize(payload)
+    if len(unavailable) == 2:
+        raise RuntimeError("both official latest price endpoints are unavailable; no verified target date")
+    twse_date, twse_rows = snapshots["twse"]
+    tpex_date, tpex_rows = snapshots["tpex"]
     twse_latest_ids = partition_security_ids(twse_rows, "TWSE latest")
     tpex_latest_ids = partition_security_ids(tpex_rows, "TPEx latest")
     if twse_date != tpex_date:
@@ -314,9 +329,10 @@ def fetch_latest_snapshot(
             )
         metadata = {
             "mode": "historical_exact_date_recovery",
-            "date_skew_recovered": True,
-            "twse_latest_date": twse_date,
-            "tpex_latest_date": tpex_date,
+            "date_skew_recovered": bool(twse_date and tpex_date and twse_date != tpex_date),
+            "latest_endpoint_unavailable": unavailable,
+            "twse_latest_date": twse_date or None,
+            "tpex_latest_date": tpex_date or None,
             "target_date": target_iso,
             "recovery_coverage": {
                 "count_basis": "unique_security_ids",
