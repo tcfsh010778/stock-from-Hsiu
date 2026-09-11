@@ -41,6 +41,7 @@ def verify(output,allow_stale=False):
         conditions=[r for section in packet['mda_table']['sections'] for r in section['rows']]
         assert stock['mda']['matched_conditions']==[r['id'] for r in conditions if r['status']=='pass']
         assert all(r['status'] in {'pass','fail','unknown'} for r in conditions)
+        assert [(r['id'],r['status']) for r in stock['mda']['checks']]==[(r['id'],r['status']) for r in conditions], 'Obsolete MDA checks survived'
         assert set(stock['patterns']).issubset(index['pattern_catalogs']['geometry'])
         assert [s['id'] for s in packet['mda_table']['sections']]==['A甲','A乙','B1','B2','C']
         assert sum(len(s['rows']) for s in packet['mda_table']['sections'])==48

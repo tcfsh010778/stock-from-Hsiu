@@ -133,6 +133,8 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                             industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
             mda['familiar_pattern']=table['familiar_pattern']
             mda['matched_conditions']=table['matched_conditions']
+            mda['checks']=[{'id':r['id'],'status':r['status'],'summary':r['method'],'threshold_basis':r['basis']}
+                           for section in table['sections'] for r in section['rows']]
             patterns = detect_patterns(frame,as_of)
             chart_candles={f:candles(frame,as_of,f,limit=len(frame)) for f in ('day','week','month')}
             annotations={f:annotate(chart_candles[f]) for f in chart_candles}
@@ -196,6 +198,8 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                                           industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
             row['mda']['familiar_pattern']=packet['mda_table']['familiar_pattern']
             row['mda']['matched_conditions']=packet['mda_table']['matched_conditions']
+            row['mda']['checks']=[{'id':r['id'],'status':r['status'],'summary':r['method'],'threshold_basis':r['basis']}
+                                  for section in packet['mda_table']['sections'] for r in section['rows']]
             write(output/'data/stocks'/f'{sid}.json',packet)
             stocks.append(row)
     if not stocks:
