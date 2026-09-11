@@ -70,7 +70,9 @@ def annotations(rows, as_of, stock_id, price_sha256, cache):
     if cached is not None:
         value=cached.get('annotations',{})
         if cached.get('price_sha256')!=price_sha256 or value.get('data_date')!=as_of or value.get('source_sha256')!=source_hash() or value.get('version')!=VERSION:
-            raise ValueError('candle cache price/date/source mismatch')
+            # A cache error must abort the build, not get mislabeled by the
+            # producer as an invalid-price stock and change its membership.
+            raise RuntimeError('candle cache price/date/source mismatch')
         return value
     try:
         return calculate(rows,as_of,stock_id)

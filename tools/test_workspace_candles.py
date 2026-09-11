@@ -16,8 +16,8 @@ def test_cache_binds_price_date_and_source(tmp_path,monkeypatch):
     (tmp_path/'manifest.json').write_text(json.dumps({'sha256':hashlib.sha256(raw).hexdigest()}))
     loaded=c.load_cache(tmp_path)
     assert c.annotations(None,'2026-09-10','2330','price-sha',loaded)==result
-    with pytest.raises(ValueError):c.annotations(None,'2026-09-10','2330','changed-price',loaded)
-    with pytest.raises(ValueError):c.annotations(None,'2026-09-11','2330','price-sha',loaded)
+    with pytest.raises(RuntimeError):c.annotations(None,'2026-09-10','2330','changed-price',loaded)
+    with pytest.raises(RuntimeError):c.annotations(None,'2026-09-11','2330','price-sha',loaded)
     (tmp_path/'candles.json').write_bytes(raw+b' ')
     with pytest.raises(ValueError):c.load_cache(tmp_path)
 

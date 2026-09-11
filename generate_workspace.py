@@ -8,7 +8,7 @@ from stock_v2_public.analysis.sfz_universe import analyze_sfz_universe
 from workspace_public.build import build
 
 ROOT=Path(__file__).resolve().parent
-PRIVATE_SOURCE_SHA='40f048a4d21ccde73071cecae76e1ab88743484c'
+PRIVATE_SOURCE_SHA='840979d3719e71cfe7636fdc56b60bf31006984e'
 
 
 def retire_routes(output):

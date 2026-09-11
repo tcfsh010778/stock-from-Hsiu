@@ -9,3 +9,5 @@
 
 /* Automated conditions replace required manual selects. */
 .automated-condition{align-items:start;grid-template-columns:minmax(0,1fr) auto}.automated-condition[hidden],.review-section[hidden]{display:none}.condition-metrics{white-space:pre-wrap;overflow-wrap:anywhere;font-size:11px;max-height:250px;overflow:auto}.condition-detail{margin-top:6px;font-size:12px}.matched-conditions{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}.matched-conditions .badge{white-space:normal}.optional-notes textarea{width:100%;box-sizing:border-box}.table-actions label{display:flex;align-items:center;gap:8px}.optional-notes{margin-top:16px}
+
+.condition-values{font-size:12px}.condition-values>div{display:flex;gap:12px;justify-content:space-between;border-bottom:1px solid var(--line);padding:4px 0}.condition-values dt{color:var(--muted)}.condition-values dd{margin:0;text-align:right}
