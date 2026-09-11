@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 from datetime import date, datetime, timezone
 from pathlib import Path
 
 from .model import VERSION, PATTERNS, candles, chip_windows, detect_patterns, digest, growth
-from .research import source_evidence, checklist, assign_sources, notification_eligible, macro_overview
+from .research import source_evidence, checklist, assign_sources, notification_eligible, macro_overview, TABLE
 from .chart_patterns import annotate
+from .candle_annotations import annotations as daily_annotations, load_cache, NAMES, TREND_IDS
 
 
 def read(path, default=None):
@@ -86,6 +88,7 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
     revenue_map = {}
     research = read(supplement/'research.json')
     research_stocks = research.get('stocks',{})
+    candle_cache=load_cache(os.environ.get('WORKSPACE_CANDLE_CACHE'))
     for row in revenues.get('rows',[]):
         revenue_map.setdefault(row['stock_id'],[]).append(row)
     stocks, failures = [], []
@@ -126,9 +129,19 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
             chips = chip_windows(by_stock.get(sid,[]),sessions,sid)
             research_series = research_stocks.get(sid,{})
             mda['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of,frame,market_sessions[-21:])
+            table=checklist(frame,as_of,mda['sources'],research=research_series,
+                            industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
+            mda['familiar_pattern']=table['familiar_pattern']
+            mda['matched_conditions']=table['matched_conditions']
             patterns = detect_patterns(frame,as_of)
             chart_candles={f:candles(frame,as_of,f,limit=len(frame)) for f in ('day','week','month')}
             annotations={f:annotate(chart_candles[f]) for f in chart_candles}
+            neutral=daily_annotations(frame,as_of,sid,basis['csv_sha256'],candle_cache)
+            # The reviewed daily whitelist is the sole candle-marker owner.
+            # Trend geometries stay separate; never transplant daily patterns
+            # onto aggregated or unfinished weekly/monthly bars.
+            for frequency in annotations: annotations[frequency]['events']=[]
+            annotations['day']['events']=neutral['events']
             # Each pattern has one owner; old overlapping detectors must not
             # reintroduce rejected triangles or invalidated higher lows.
             patterns['observations']=[p for p in patterns['observations'] if p['id'] in {'range','double_bottom','double_top'}]
@@ -145,12 +158,13 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                    'holder':holder_map.get(sid), 'detail':f'data/stocks/{sid}.json','price_verified':True}
             detail = {**row,'schema_version':VERSION,'candles':chart_candles,'annotations':annotations,
                       'patterns':patterns,'chips':chips,'revenue_history':rev,
+                      'candlestick_calculation':{k:v for k,v in neutral.items() if k!='events'},
                       'price_basis':{'mode':basis['mode'],'verified':True,'csv_sha256':basis['csv_sha256'],
                                      'volume_unit':'shares','chart':'還原價格／原始成交股數','bars':len(frame)},
                       'weekly_date':weekly_date,'expected_revenue_period':revenues.get('expected_period'),
                       'margin':margins.get(sid),
                       'research':research_series,
-                      'mda_table':checklist(frame,as_of,mda['sources']),
+                      'mda_table':table,
                       'industry':research.get('industries',{}).get(sid),
                       'ai':{'status':'not_configured','observations':[]}}
             write(output/'data'/'stocks'/f'{sid}.json',detail)
@@ -178,7 +192,10 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                 'expected_revenue_period':revenues.get('expected_period'),'price_basis':{'verified':False},'ai':{'status':'insufficient_data'},
                 'research':research_series,'industry':research.get('industries',{}).get(sid)})
             packet=read(output/'data/stocks'/f'{sid}.json')
-            packet['mda_table']=checklist(None,as_of,row['mda']['sources'])
+            packet['mda_table']=checklist(None,as_of,row['mda']['sources'],research=research_series,
+                                          industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
+            row['mda']['familiar_pattern']=packet['mda_table']['familiar_pattern']
+            row['mda']['matched_conditions']=packet['mda_table']['matched_conditions']
             write(output/'data/stocks'/f'{sid}.json',packet)
             stocks.append(row)
     if not stocks:
@@ -197,7 +214,9 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
     asset_hashes = export_assets(assets, output, asset_names)
     index = {'schema_version':VERSION,'data_date':as_of,'expected_session':expected,'fresh':fresh,
              'asset_sha256':asset_hashes,
-             'generated_at':datetime.now(timezone.utc).isoformat(),'stocks':stocks,'patterns':PATTERNS,
+             'generated_at':datetime.now(timezone.utc).isoformat(),'stocks':stocks,'patterns':{**PATTERNS,**NAMES},
+             'pattern_catalogs':{'geometry':{**{k:v for k,v in PATTERNS.items() if k in TREND_IDS},**NAMES},'ai':PATTERNS},
+             'condition_catalog':[{'id':f'{section}:{i+1}','label':label,'section':section} for section,labels in TABLE.items() for i,label in enumerate(labels)],
              'coverage':{'verified':sum(s['price_verified'] for s in stocks),'universe':len(frames),'rejected':len(failures),'visible':len(stocks),
                          'revenue':sum(s['revenue'] is not None for s in stocks),
                          'complete_chips_10':sum(s['chips']['10']['complete'] for s in stocks)},

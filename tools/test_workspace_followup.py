@@ -23,13 +23,15 @@ def test_gain_margin_and_old_retained_pool_cannot_bypass_intersection():
     assert not stock['mda']['member']
     assert stock['mda']['sources']['daily_gainers']['rank']==1
     assert '每日漲幅' not in stock['mda']['source_labels']
-    assert stock['mda']['rule_version']=='mda-holder-and-institutional-3days-v3'
+    assert stock['mda']['rule_version']=='mda-intersection-and-ax-20260911-v4'
 
 
 def test_unknown_intersection_does_not_notify_removal_even_with_source_labels():
     mda={'sources':sources(None,True,True),'source_labels':['外資連買至少3日']}
     assert not notification_eligible(mda,True,True)
     mda['sources']=sources(True,None,True)
+    assert not notification_eligible(mda,True,True)
+    mda['familiar_pattern']={'decision':True}
     assert notification_eligible(mda,True,True)
     assert not notification_eligible(mda,False,True)
     assert not notification_eligible(mda,True,False)
@@ -53,4 +55,4 @@ def test_macro_is_global_and_stock_table_has_only_five_sections():
     assert len(MACRO_LABELS)==14
     macro=macro_overview([], '2026-09-10')
     assert len(macro['items'])==14 and macro['ai_status']=='not_configured'
-    assert table['previous_version']=='mda-full-table-20260910-v2'
+    assert table['previous_version']=='mda-stock-table-20260910-v3'

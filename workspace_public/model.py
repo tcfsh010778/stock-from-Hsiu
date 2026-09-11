@@ -45,7 +45,7 @@ def growth(current, previous):
 
 def prepare_bars(rows, as_of):
     cutoff = date.fromisoformat(as_of)
-    frame = rows.copy() if isinstance(rows, pd.DataFrame) else pd.DataFrame(rows)
+    frame = rows.copy().reset_index(drop=True) if isinstance(rows, pd.DataFrame) else pd.DataFrame(rows)
     required = ["date", "open", "high", "low", "close", "volume"]
     if not set(required) <= set(frame):
         raise ValueError("OHLCV fields missing")

@@ -1,6 +1,7 @@
 """MDA research sources and full observation table, independent of trade rules."""
 from datetime import date
-from .model import number, prepare_bars
+from .model import number
+from .mda_conditions import evaluate, both
 
 TABLE = {
  '大環境': ['大盤趨勢','大盤量能','櫃台趨勢','櫃台量能','台幣動態','美元指數','外資動態','融資餘額','2330 動態','0050 動態','台指期','微台／小台','美國費半','美國 NAS'],
@@ -95,33 +96,15 @@ def source_evidence(chips, ownership, margin, as_of, price_rows=None, trading_se
         windows[str(n)]={'complete':complete,'change_lots':values[-1]-values[0] if complete else None,
                          'increase_sessions':sum(b>a for a,b in zip(values,values[1:])) if complete else None,
                          'price_change_pct':price_return,'start':days[0] if days else None,'end':as_of}
-    return {'holder_six_weeks':six_week_trend(ownership,as_of),
+    return {'market_sessions':sessions[-21:],'holder_six_weeks':six_week_trend(ownership,as_of),
             'foreign_consecutive':consecutive_buys(series,'foreign_net',as_of,trading_sessions),
             'trust_consecutive':consecutive_buys(series,'investment_trust_net',as_of,trading_sessions),
             'margin_observation':{'latest_change_lots':delta,'candidate':delta is not None and delta>0,'windows':windows,
                 'identity':'公開餘額沒有持有人分類；大額資金可能使用融資，但金額本身不能確認法人或外資身分。','note':'輔助觀察：搭配 5／10／20 日餘額與同期間股價、長期留場逐項判讀。融資增加不再直接納入初篩。'}}
 
 
-def checklist(rows, as_of, sources):
-    f=prepare_bars(rows,as_of) if rows is not None else None; n=len(f) if f is not None else 0; auto={}
-    if n>=240:
-        auto[('A乙',1)]=('measured',f'240 日扣抵價 {f.close.iloc[-240]:.2f}；目前 {f.close.iloc[-1]:.2f}')
-    if n>=20:
-        auto[('B2',8)]=('pass' if f.volume.tail(5).mean()>f.volume.tail(20).mean() else 'fail',
-                        f'5 日均量 {f.volume.tail(5).mean()/1000:,.0f} 張；20 日均量 {f.volume.tail(20).mean()/1000:,.0f} 張')
-    behavior=sources.get('margin_observation',{}).get('windows',{}).get('20',{})
-    if behavior.get('complete'):
-        auto[('B1',1)]=('measured',f"20 日融資變化 {behavior['change_lots']:,.0f} 張；{behavior['increase_sessions']} 日增加；股價變化 {behavior['price_change_pct']:.2f}%。身分與持續留場仍需人工判讀。")
-    sections=[]
-    for section,labels in TABLE.items():
-        items=[]
-        for i,label in enumerate(labels):
-            status,evidence=auto.get((section,i),('manual','需結合長期圖形與資料逐項判讀'))
-            items.append({'id':f'{section}:{i+1}','label':label,'status':status,'evidence':evidence})
-        sections.append({'id':section,'title':section,'rows':items})
-    return {'version':'mda-stock-table-20260910-v3','previous_version':'mda-full-table-20260910-v2','sections':sections,'qualified':None,
-            'source':'使用者提供的 M 哥說明書第 5、8–9、20–24 頁及選股表',
-            'note':'A甲／A乙是不同觀察路徑，並非所有格都必須勾選。B1、B2、C 各自檢查；不計分、不自動宣稱買進。'}
+def checklist(rows, as_of, sources, *, research=None, industry=None, revenue=None):
+    return evaluate(rows, as_of, TABLE, research=research, industry=industry, sources=sources, revenue=revenue)
 
 
 def assign_sources(stocks):
@@ -133,12 +116,14 @@ def assign_sources(stocks):
         if src['foreign_consecutive']['candidate']:reasons.append('外資連買至少3日')
         if src['trust_consecutive']['candidate']:reasons.append('投信連買至少3日')
         src['daily_gainers']={'rank':rank.get(s['stock_id']),'change_pct':s.get('change_pct'),'candidate':s['stock_id'] in rank}
-        decision=intersection_decision(src)
+        initial=intersection_decision(src)
+        familiar=s['mda'].get('familiar_pattern',{}).get('decision')
+        decision=both(initial,familiar)
         s['mda'].update(member=decision is True,source_labels=reasons,
-                       initial_pool_member=decision is True,selection_known=decision is not None,
-                       stage='初篩待逐項檢核' if decision is True else '未符合交集' if decision is False else '交集資料待補',
-                       qualified=None,rule_version='mda-holder-and-institutional-3days-v3',
-                       note='六週大戶股權趨勢 ∩（外資連買至少 3 日 或 投信連買至少 3 日）→ A甲／A乙、B1、B2、C。漲幅與融資只作輔助觀察。')
+                       initial_pool_member=initial is True,selection_known=decision is not None,selection_decision=decision,
+                       stage='A／X 觀察池' if decision is True else '未符合籌碼交集' if initial is False else 'A／X 均未成立' if familiar is False else '納入條件資料不足',
+                       qualified=None,rule_version='mda-intersection-and-ax-20260911-v4',
+                       note='六週股權趨勢 ∩（外資或投信連買至少 3 日）∩（A 或 X）。缺少 A、X 不納入觀察；其餘表格只列條件，不評分。')
 
 
 def intersection_decision(src):
@@ -158,4 +143,5 @@ def sources_complete(src):
 
 def notification_eligible(mda, fresh, price_verified):
     # Three-valued gates: a missing observation never fabricates a pool removal.
-    return bool(fresh and price_verified and sources_complete(mda['sources']))
+    decision=both(intersection_decision(mda['sources']),mda.get('familiar_pattern',{}).get('decision'))
+    return bool(fresh and price_verified and decision is not None)

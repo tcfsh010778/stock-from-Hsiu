@@ -33,9 +33,19 @@ def verify(output,allow_stale=False):
             assert len({row['time'] for row in rows})==len(rows)
         assert isinstance(packet['mda']['checks'],list)
         assert packet['mda']['qualified'] is None, 'Manual MDA table must not claim automatic qualification'
+        assert stock['mda']==packet['mda'], 'List/detail MDA gates differ'
+        if stock['mda']['member']:
+            assert stock['mda']['initial_pool_member'] is True
+            assert stock['mda']['familiar_pattern']['decision'] is True
+            assert stock['mda']['familiar_pattern']['A']['decision'] is True or stock['mda']['familiar_pattern']['X']['decision'] is True
+        conditions=[r for section in packet['mda_table']['sections'] for r in section['rows']]
+        assert stock['mda']['matched_conditions']==[r['id'] for r in conditions if r['status']=='pass']
+        assert all(r['status'] in {'pass','fail','unknown'} for r in conditions)
+        assert set(stock['patterns']).issubset(index['pattern_catalogs']['geometry'])
         assert [s['id'] for s in packet['mda_table']['sections']]==['A甲','A乙','B1','B2','C']
         assert sum(len(s['rows']) for s in packet['mda_table']['sections'])==48
         for frequency,annotations in packet.get('annotations',{}).items():
+            if frequency!='day':assert annotations['events']==[], 'Daily candle markers leaked into aggregated bars'
             closed={row['time'] for row in packet['candles'][frequency] if row['complete']}
             assert all(e['start'] in closed and e['end'] in closed and e['confirmed_at'] in closed for e in annotations['events'])
         for rows in packet.get('research',{}).values():
