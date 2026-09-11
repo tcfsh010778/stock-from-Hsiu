@@ -1,5 +1,98 @@
 # Codex Handoff
 
+## 2026-09-11 Automated MDA conditions and reviewed PR integration (Issue 35, draft)
+
+This supersedes the September 10 manual-table and MDA v3 descriptions. The
+authoritative implementation is private commit
+`0a25b9abb938f5d8592df0ebabfe3e99e044cebc`; the public source mirror is
+`60e314b82902c3d0963a2b527d97ceee9d11f3e0`. Final artifact/documentation heads
+and their CI links are recorded in Issue 35.
+
+- MDA v4 requires the existing six-change holder trend AND (foreign OR trust
+  net buying for at least three common market sessions) AND (A OR X). A is
+  rising MA240; X is the documented causal three-pivot reversal/breakout
+  interpretation, without inherited 15-percent decline or 1.2 volume filters.
+  Unknown inputs do not admit a stock or fabricate a removal. SFZ is unchanged.
+- All 48 A甲/A乙/B1/B2/C rows now report pass/fail/unknown with methods, periods,
+  values and provenance. Nineteen have computable predicates; the remaining
+  29 expose measurable subconditions or explicit unknowns. There is no score,
+  forced manual selection, invented owner identity, support, stop or target.
+  Old manual records remain exportable but cannot override computed results.
+  Optional notes are independent. A/X and matched-condition filters are live.
+- Decimal band subtraction prevents rounding-only ownership changes. Actual
+  trust holdings use their own field, never cumulative net flows. Holdings
+  checks use the common trading calendar, including price-missing stocks;
+  absent prices still leave A/X unknown. Compact index checks agree with the
+  full detail table. A standalone packet replay CLI emits input SHA and date.
+- Merged private PR13 and public PR27/28 were inspected directly and reused.
+  Private atomic Parquet/SHA/outcome separation remains; market allowlisting
+  and final partition resolution now reject traversal/symlink escapes.
+  Price charts control the viewport; latest-edge zoom stays pinned.
+  PR28 neutral daily markers use the reviewed eight-function public whitelist
+  plus existing geometry, with a 61-function TA-Lib catalog. No daily candle
+  events appear on weekly/monthly bars. Geometry/AI filters use distinct catalogs.
+- Native TA-Lib could not load locally. Manual cloud run 34553277213 at public
+  96e7c73b776d3318c99c74213bbf9f65c64794ac computed 847,996 historical neutral
+  annotations for all 1,918 verified histories without fetching sources or
+  publishing. The cache is bound to engine SHA, bundle SHA, each price CSV
+  SHA and date. A mismatched cache aborts, rather than creating a price gap.
+- Same verified snapshot: daily 2026-09-10, weekly 2026-09-04; roster 1,974,
+  verified prices 1,918, gaps 56, complete ten-session institutions 1,695,
+  revenue 1,852. MDA changes from 140 to 72, SFZ remains 26, combined 97.
+  Sixty admissions remain unknown. No source refresh occurred this follow-up.
+- The single writer ran generate_site.py and tools.verify_workspace for all
+  1,974 packets. Independent replay matches every membership and matched-ID
+  list, including 13 price-missing stocks whose holdings facts were previously
+  omitted. The exported PowerShell launcher successfully recalculated 2330.
+- Source CI passes on Linux and Windows: private run 34554501491 has 420 tests
+  plus 19 subtests per OS; public run 34554536953 has 40 unittest tests and
+  298 pytest tests plus 4 subtests per OS. Read-only review findings were
+  corrected and checked. Browser acceptance passes 48 computed rows, nine
+  panes, old-record isolation, notes/export/filtering, neutral day markers,
+  viewport ownership, zoom/drag/latest, and 390px width without JS errors.
+- Rule changes establish a notification baseline. Two nonmembers changing
+  exclusion reasons do not emit a removal. Live Telegram/OpenAI, public
+  release, paid resources, schedule activation and trading remain unperformed.
+  A pre-existing same-clock-tick outbox ordering edge remains outside this
+  follow-up; ordinary scheduled ingestion is spaced apart.
+- Next action: review the updated preview, then securely configure credentials
+  and qualify live delivery in a separately coordinated release. Draft public
+  PR40/private PR19 remain the review targets; original checkouts are preserved.
+
+## 2026-09-10 Latest nine-point correction (Issue35, draft)
+
+- This section supersedes the historical union/62-row descriptions below. Pure private implementation 40f048a4d21ccde73071cecae76e1ab88743484c is mirrored here; private-only notification queue correction is bd52ec83025a0c4ba6ea11cc3b9f8ae65e14bf44. TDCC integration is 8a373cc2. Final generated commit and final-head checks are recorded in Issue35.
+- MDA v3 uses the existing six-change weekly-holder trend AND (foreign OR trust buys for at least three consecutive market sessions). Gain/margin and old retained membership cannot bypass it. Unknown data stays unknown and cannot trigger false removal. SFZ rules are unchanged.
+- Global editable macro context precedes stock analysis. Per-stock review is exactly A甲/A乙/B1/B2/C, 48 rows; clear/migration cannot resurrect old content. Macro AI is still unconfigured.
+- Nine charts support full verified history, cursor-anchored wheel zoom, pointer drag, price-axis scaling, keyboard, reset and mobile buttons. Weekly/monthly candle views retain actual daily flows. Pattern v3 removes divergent-triangle false positives and invalidated higher-low/H&S observations; fixtures check confirmations without future bars.
+- New serial TDCC history adapter prioritizes institutional/SFZ candidates and gradually fills the rest with a 120-request batch cap, dated checkpoints and explicit partial/interrupted status. Complete 15-band validation includes the signed HTML adjustment. Response SHA is provenance; normalized caches do not preserve raw HTML for SHA replay.
+- XQ investment-trust holdings are a periodically adjusted estimate; source identified but not imported. Free authorized tick-CSV Volume Profile remains available. Pages/Actions are sufficient for screening and Telegram without a permanent paid host. Interactive AI still needs a protected backend; no new backend provisioned.
+- Final September 10 local snapshot: roster 1,974; verified prices 1,918; price gaps 56; complete ten-session institutional histories 1,695; revenue available 1,852; SFZ 26, MDA intersection 140, overlap 1, combined 165. Another 101 stocks have unknown intersection evidence, not a failing condition. All 315 stocks with proven foreign/trust three-day buying and all 26 SFZ have complete seven-date ownership; with named samples this is 342 distinct stocks. Latest complete bands cover 1,973/1,974 (6461 is the existing exception). Remaining noncandidate long history continues through bounded backfill.
+- Recovered 4,025 complete stock-week points / 2,054 source records, checked against checkpoint hashes and totals. Addendum SHA256 9c4db14751d7178bac2aace4e9482ae999ce88dc92de22432f4295531860fca1. Merge preserved every unrelated foreign/margin/industry field. Offline recorded-calendar resume made zero HTTP calls and preserved all points; it is not labelled a live source request.
+- Public focused tests: 55 passed; private: 78 plus 5 subtests. After the final numeric correction, private CI 34497733556 passes Linux/Windows with 393 tests + 19 subtests each; public CI 34497833660 passes Linux/Windows with 40 unittest + 278 pytest + 4 subtests each. New PRs bypass the 300-file path-filter limitation so generated artifacts cannot hide source changes from CI. Read-only review found no remaining blocker after clear-record, state-version, obsolete queued-event and numeric representation fixes.
+- Ran generate_site.py as the single generated writer and tools.verify_workspace across all 1,974 packets. All 1,979 packet/asset SHA values match output and Git staged blob bytes. Final browser QA passes 9 panes/48 rows, macro customization, migration/clear/reload/export, zoom/drag/price axis, 652 daily bars since 2024-01-02, daily flows in week/month views, and 390px mobile width without overflow/errors. Major/retail/shareholder plots each display seven actual sample dates. User preview and CSV/source/screenshot artifacts were refreshed together.
+- Full cloud update dry-run 34495537819 passed at 8a373cc2; commit/push and Pages request steps were skipped. Its artifact revealed that bulk shareholder counts such as 3058627.0 failed the int-only complete-point predicate, wasting the 120-query budget on known latest endpoints. No history was lost. Final code emits int and accepts finite positive integer-valued float counts, excluding bool/fractions. A hash-verified real bulk replay preserves all 342 complete histories, then two actual TDCC queries fill 1108 on July 24/31; missing points fall from 9,793 to 9,791. A 342-stock float-format replay makes zero queries. This focused post-fix live verification uses a copy, not the published data; the earlier full cloud run predates the fix. Evidence is TDCC連續更新驗證.json in the user output directory. The later cloud roster has 1,975 securities; do not combine that index with the earlier internally consistent local preview.
+- No public release, real Telegram/OpenAI call, new schedule activation, paid hosting or order execution. Next action: securely configure credentials and qualify live delivery for the reviewed release, with the referenced cloud/check results as release gates. A permanent paid host is optional.
+
+## Historical implementation before the latest nine-point correction
+
+- Public feature commit 256d49f7d20edd00c745499b612eb53d2fbc94a3; final mirrored platform source 36ba992c6dc3258a9cf7cf104eaca8734efe4d2d. Private companion source c25aaa1e67de88648c5472b4912e668bea32ab90 also aligns its preview CLI. Public PR40 and private PR19 are mergeable drafts. generate_site.py remains the durable entry point through site_mode.json / generate_workspace.py; all retired HTML routes redirect.
+- Current product supersedes the legacy CaryBot/backtest/preset stops, targets, support prices and strategy scores. Only SFZ/MDA entrances remain in active UI; original notebooks/research are historical. No live orders.
+- Latest user manual/table correction: MDA is the union of six weekly ownership changes (seven actual endpoints), consecutive foreign buys, positive daily gain ranking and margin-increase observation. Top50 is not the active universe. The 62-row macro/A甲/A乙/B1/B2/C table preserves separate manual states, notes, dates and export; no automatic full qualification or score. Margin has 5/10/20-session balance, increasing-day count and price evidence on the shared verified trading calendar, not an assertion of holder identity.
+- Nine ordered chart panes, 24 engineering pattern types with closed-bar annotations, adjustable 400/600/800/1000+ and <=30/40/50 ownership, independent local tick-CSV Volume Profile/POC, official fine-industry heatmap and separate OpenAI vision/cache filters. Weekly/monthly candles retain actual daily chip points. No Pine Script or complete TradingView clone is claimed.
+- September 10 verified roster 1,974; current price histories 1,918; explicit latest gaps 56; complete 10-session institutional data 1,695; some monthly revenue 1,852; SFZ 26; MDA initial pool 1,265; union 1,269. Industry mapping 1,883 stocks / 458 represented categories. Only 60 stocks have all six weekly ownership changes. Most 400+ history has three weeks; other ownership bands, retail and shareholders currently have one week. Foreign holdings and margin collected for 60 sessions. Investment-trust absolute holdings are unavailable, not synthesized from cumulative flows.
+- Source repairs recovered 487 historical pairs from 1,406 hash-checked official market/day archives and 18 annual action queries. Raw prices independently cross-checked and action payloads included in provenance. Latest TWSE OpenAPI non-JSON and TPEx margin stale-date responses have dated official historical fallbacks; unknown schemas still stop. Current-day mutable official responses refresh every poll. Raw caches, private state and paid source PDFs remain outside Git/OneDrive/site checkouts.
+- Stock files and five frontend assets are bound to the index by SHA-256. Canonical UTF-8/LF asset export and explicit Git EOL prevent Windows/Linux drift. Local all-packet validation and actual staged Git blob validation passed for 1,979 files. Same-day stale charts are rejected by browser/server/AI generation checks. CDN publication verifies new JS modules as well as index and representative listed/OTC stock bytes.
+- Local public focused suite: 66 passed before cleanup; 39 focused tests including nested-route cleanup passed afterward. Private Linux and Windows CI 34486033032: each 360 tests + 14 subtests passed. Public Linux and Windows CI 34486533524: each 40 unittest tests and 249 pytest tests + 4 subtests passed. Read-only review findings for unknown-state notifications, shared calendar windows, stale CDN/packet generations and CRLF hashes were fixed and rechecked; final delta had no remaining blocker.
+- Final isolated browser acceptance passed at 1600x1100 and 390x844: nine panes, 62 review rows, persist/reload/export/clear, day/week/month, ten daily flow bars preserved in weekly/monthly views, ownership bands, heatmap click/filter, search/empty state, SFZ 26, synthetic tick CSV POC and wrong-symbol rejection, no horizontal overflow or JS errors. Missing OpenAI key produced the expected message without a provider call. Synthetic profile QA is not real tick-source qualification.
+- Deployment remains draft: no real Telegram/OpenAI call, schedule activation, paid host or public cutover. Notification code compares automatic selection changes; browser-local manual table changes are not synced or notified. GitHub checks are about 15 minutes with possible scheduler delay. Existing OpenAI key, Telegram secrets, API cap, paid hosting decision and explicit release confirmation are pending. Render definitions are ready, not provisioned.
+- Textbook pages and supplied table were reviewed; five video author descriptions/chapters were checked but no complete transcript or all-audio review is claimed. Nineteen notebooks were inventoried with key-path review, not 99k lines individually verified. Detailed contract: research/workspace_chart_contract.md in private source; user-facing contract/report/CSV/screenshots are in the configured Codex Outputs folder.
+
+- Actual complete cloud daily dry-run 34486535915 succeeded at public feature 256d49f7: 294 research sources, zero research failures, all generated packets verified, publish/Pages steps skipped. Its later roster includes new 7825 和亞智慧, giving 1,975 visible / 57 price gaps / 1,853 revenue records; verified histories and SFZ/MDA/union remain 1,918 / 26 / 1,265 / 1,269. The local preview is the earlier internally consistent 1,974-stock snapshot, not a mix of cloud index and old packets.
+- Final display-only source follow-up uses two decimals for ownership and a zero volume-axis baseline. All nested retired HTML bookmarks now redirect; obsolete public top-level legacy JSON and V2 payloads are removed while source data and new stock packets remain. Target paths are resolved and checked before cleanup. Final local rebuild and cross-platform CI qualify this publication cleanup; the cloud producer/source logic is unchanged from the successful full dry-run. Latest commit/check links are in Issue35.
+- Next action: review the concrete preview/data limits and choose release/paid-host configuration, then securely configure credentials and validate actual delivery/AI before enabling normal use. No release activation performed in this task.
+
+
 ## 2026-09-10 Daily update repair (Issue 34)
 
 - Follow-up review-only run 34394192404 exposed a missing runtime dependency: weekly coverage validation imports requests, while this workflow installed only requirements-v2.lock. Requests is now pinned in the shared runtime lock and the review publisher performs an early import check. Daily and flow environments already installed it, explaining why the full daily dry run passed. Last verified public data remains preserved on failure; final successful review retry is recorded in Issue34.

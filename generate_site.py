@@ -10590,7 +10590,12 @@ def build_timing_page(reports: list[dict]) -> str:
 
 def main():
     import sys
-    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stdout.reconfigure(encoding='utf-8')
+    mode_path = Path(__file__).resolve().parent / 'site_mode.json'
+    if mode_path.exists() and json.loads(mode_path.read_text(encoding='utf-8')).get('mode') == 'sfz_mda_workspace' and '--legacy-site' not in sys.argv:
+        from generate_workspace import generate
+        generate()
+        return
     review_only = "--review-only" in sys.argv[1:]
     holder_only = "--holder-only" in sys.argv[1:]
     flow_only = "--flow-only" in sys.argv[1:]

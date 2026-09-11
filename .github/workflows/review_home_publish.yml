@@ -28,6 +28,7 @@ concurrency:
 
 jobs:
   publish:
+    if: vars.ENABLE_LEGACY_PIPELINES == '1'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

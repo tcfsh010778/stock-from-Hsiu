@@ -1,1 +1,4 @@
 data/prices/*.csv text eol=lf
+data/freshness_manifest.json text eol=lf
+docs/** text eol=lf
+workspace_public/web/* text eol=lf

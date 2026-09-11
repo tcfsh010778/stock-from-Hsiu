@@ -1,0 +1,15 @@
+# SFZ / MDA workspace rewrite
+
+## 2026-09-10 SFZ / MDA workspace rebuild (Issue35)
+
+- User-authorized product direction supersedes legacy CaryBot, backtest, preset price levels and strategy scores. New generator mode is site_mode.json; generate_site.py delegates to generate_workspace.py. Old root/stock/V2 HTML routes redirect into the new workspace so bookmarks cannot reintroduce retired prescriptions.
+- Reviewed private source: f471e7e9d4b0c7e89527dbfbce6d831c5f326d3d (private PR19). Public mirror contains only pure product contracts and anonymous official adapters. Telegram/OpenAI service and credentials remain private.
+- Current artifact: September 10, 2026; official roster 1,974; current verified prices 1,918; 56 unavailable for current-date screening; 1,695 complete ten-session institutional records; 1,852 available monthly-revenue records; SFZ 26; MDA watch pool 50. Revenue month and missing/latest status are separate, not inferred from record presence.
+- Restored 487 missing historical pairs from 1,406 hash-checked official archive partitions. Validated all 18 annual action-query ranges and bound actual event payloads to provenance; rerebuilt pairs matched initial staging bytes. September 9 had 31 unresolved histories; another 25 had no valid latest close during September 10 extension. Never fill unavailable quotes/flows with zero or assert removal because data is absent.
+- Added per-year official calendar loading, validation and cross-year extension regression tests.
+- Fixed explicit TWSE no-event response handling; unknown or malformed schemas still stop the producer. Exact date TWSE/TPEx mismatch was recovered using both-market historical partitions for September 10.
+- Replaced active scheduled product generation with official price/weekly/revenue/flow refresh and new artifacts. Legacy manual publishers are disabled unless explicitly re-enabled. Schedules remain in unmerged code; no new remote activation or public cutover has occurred.
+- Public artifact verification checks every stock packet, dates, prohibited keys and required assets. The Pages publisher now compares new index/app/style and listed/OTC stock packet bytes against the exact deployed commit; stale CDN data is a failure.
+- Local public focused suite passed 61 tests including route redirection and year-boundary regression; private full CI passed Linux and Windows (343 tests plus 14 subtests). Read-only review findings in outbox unknown-state preservation, stale CDN verification and archive event provenance were fixed and rechecked.
+- Next action: finish public PR CI/browser checks, then activate only after secure Telegram/OpenAI configuration and review of any paid hosting. No actual provider call, real Telegram send, live order or public deployment is claimed.
+- Rollback: pause notification activation first, retain private notification-state, restore previous release and verify deployed bytes. User-facing preview/report live in the configured Codex Outputs location; raw caches stay outside Git/OneDrive.

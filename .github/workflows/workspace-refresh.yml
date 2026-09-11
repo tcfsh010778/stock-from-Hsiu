@@ -1,0 +1,74 @@
+name: Refresh SFZ MDA workspace
+on:
+  schedule:
+    # Announcement/flow retries after close; weekly TDCC fallbacks on weekends.
+    - cron: '3,18,33,48 8-14 * * 1-5'
+    - cron: '3 1,5 * * 0,6'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Build and validate without publishing
+        type: boolean
+        default: true
+permissions:
+  contents: write
+  pages: write
+concurrency:
+  group: daily-stock-site-update
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-v2.lock
+      - uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/workspace-official
+          key: workspace-official-${{ github.run_id }}
+          restore-keys: workspace-official-
+      - name: Sync main for scheduled publication
+        if: github.ref == 'refs/heads/main'
+        run: git pull --ff-only origin main
+      - name: Refresh official price and holder sources
+        env:
+          V44_REFRESH_SCOPE: all
+          V44_OFFICIAL_INITIAL_BACKFILL_DAYS: '0'
+          V44_OFFICIAL_OVERLAP_DAYS: '2'
+          ENABLE_FINMIND_AUX: '0'
+        run: |
+          python refresh_prices.py
+          python update_official_adjusted_history.py --data-dir data --cache-dir "${{ runner.temp }}/official-adjusted-cache"
+          python -m tools.update_weekly_sources --data-dir data --official-root .
+      - name: Refresh current evidence and render workspace
+        run: |
+          PRICE_DATE=$(python tools/resolve_verified_session.py)
+          python build_review_data.py --as-of "$PRICE_DATE"
+          python -m tools.refresh_workspace_data --cache "${{ runner.temp }}/workspace-official"
+          python generate_site.py
+          python -m tools.verify_workspace --allow-stale
+      - name: Publish verified workspace
+        if: inputs.dry_run != true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add data/ docs/
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'Refresh official SFZ MDA workspace'
+          git pull --rebase origin main
+          git push
+          python tools/publish_pages_verified.py --repo "${{ github.repository }}" --docs-dir docs
+      - uses: actions/upload-artifact@v4
+        if: inputs.dry_run == true || failure()
+        with:
+          name: workspace-refresh-status
+          path: docs/data/index.json
+          retention-days: 7

@@ -68,6 +68,13 @@ def test_six_event_schemas_and_conflict():
             ]
             == 50
         )
+
+
+def test_explicit_twse_no_event_response_is_not_a_transport_failure():
+    _,table,labels=m.EVENT_URLS['twse_reduction']
+    assert m.parse_event({'stat':'很抱歉，沒有符合條件的資料!'},'twse_reduction',table,labels)==[]
+    for bad in ({'stat':'service unavailable'},{'stat':'OK'},{}):
+        with pytest.raises(m.UpdateError):m.parse_event(bad,'twse_reduction',table,labels)
     with pytest.raises(m.UpdateError):
         m.reconcile_actions(
             [
@@ -400,3 +407,37 @@ def test_event_nonjson_retries_then_caches(monkeypatch, tmp_path):
 )
 def test_official_roc_event_date_formats(value):
     assert m.iso(value) == "2026-09-07"
+
+def test_year_boundary_queries_each_year_before_extending(tmp_path):
+    seed(tmp_path)
+    rows,meta=m.read_pair(tmp_path,"2330")
+    rows[0]["date"]="2026-12-30"
+    meta.update(data_start="2026-12-30",data_end="2026-12-30",adjustment_as_of="2026-12-30")
+    m.write_pair(tmp_path,"2330",rows,meta)
+    def row(sid,day):
+        return {"stock_id":sid,"date":day,"open":10,"high":10,"low":10,"close":10,"volume":100}
+    class YearPrices:
+        @staticmethod
+        def fetch_latest_snapshot():
+            return "2027-01-04",[row("2330","2027-01-04"),row("6488","2027-01-04")],{"twse":1,"tpex":1},{}
+        @staticmethod
+        def fetch_history_partitions(day):
+            assert day.isoformat()=="2026-12-31"
+            return [row("2330",day.isoformat())],[row("6488",day.isoformat())]
+    queries=[]
+    def calendar(day):
+        queries.append(day.isoformat())
+        return ["2026-12-30","2026-12-31"] if day.year==2026 else ["2027-01-04"]
+    result=m.run(args(tmp_path),price_api=YearPrices,event_fetcher=lambda a,b:([],{}),calendar_fetcher=calendar,
+                 now=datetime(2027,1,4,17,tzinfo=ZoneInfo("Asia/Taipei")),min_twse=1,min_tpex=1)
+    assert queries==["2026-12-31","2027-01-04"]
+    assert result["sessions"]==["2026-12-31","2027-01-04"] and result["status"]=="complete"
+    assert [r["date"] for r in m.read_pair(tmp_path,"2330")[0]]==["2026-12-30","2026-12-31","2027-01-04"]
+
+
+def test_calendar_wrong_year_rejected_without_mutation(tmp_path):
+    path=seed(tmp_path);before=path.read_bytes()
+    with pytest.raises(m.UpdateError,match="annual calendar"):
+        m.run(args(tmp_path),price_api=Prices,event_fetcher=lambda a,b:([],{}),
+              calendar_fetcher=lambda d:["2025-09-08"],now=NOW,min_twse=1,min_tpex=1)
+    assert path.read_bytes()==before

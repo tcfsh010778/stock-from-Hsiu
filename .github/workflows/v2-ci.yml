@@ -1,63 +1,23 @@
 name: V2 Python Engine CI
 
 on:
+  # A generated-site PR can exceed GitHub's 300-file path-filter window.
+  # Run every PR so a large data diff cannot hide source changes from CI.
   pull_request:
-    paths:
-      - "stock_v2_public/**"
-      - "build_review_data.py"
-      - "market_flow.py"
-      - "tools/test_market_flow.py"
-      - "tools/official_workbench.py"
-      - "tools/test_official_workbench.py"
-      - "tools/test_workbench_integration.py"
-      - "mda_weekly_pipeline.py"
-      - "sfz_technical_pipeline.py"
-      - "mda_checklist_page.py"
-      - "verified_price_guard.py"
-      - "update_official_adjusted_history.py"
-      - "tools/*weekly_mda*"
-      - "tools/*weekly_sources*"
-      - "tools/*holder_flow*"
-      - "tools/recover_weekly_holder_pool.py"
-      - ".github/workflows/holder_history_publish.yml"
-      - ".github/workflows/market_flow_publish.yml"
-      - "tools/*official_stock_universe*"
-      - "tools/test_market_reference_integrity.py"
-      - "tools/test_official_adjusted_history.py"
-      - "tools/test_mda*"
-      - "tools/test_public_history*"
-      - "tools/test_verified_price*"
-      - "tools/*import_verified_price*"
-      - "review_queue.py"
-      - "review_home.py"
-      - "generate_site.py"
-      - "tools/test_review*"
-      - "tools/test_build_review*"
-      - "tools/test_sfz*"
-      - "tools/verify_review_home.py"
-      - "schemas/technical_pattern_packet.schema.json"
-      - "schemas/candlestick_pattern_event.schema.json"
-      - "THIRD_PARTY_NOTICES.md"
-      - "generate_v2.py"
-      - "requirements-v2.lock"
-      - "tools/test_generate_v2.py"
-      - "tools/test_v2_engine.py"
-      - "tools/test_viewport_master.py"
-      - "tools/test_candlestick_annotations.py"
-      - "tools/publish_pages_verified.py"
-      - "tools/test_publish_pages_verified.py"
-      - "tools/resolve_verified_session.py"
-      - "tools/test_resolve_verified_session.py"
-      - "tools/verify_daily_update_artifacts.py"
-      - "tools/test_verify_daily_update_artifacts.py"
-      - "tools/test_daily_session_integrity.py"
-      - "tools/verify_v2_public.py"
-      - "tools/test_verify_v2_public.py"
-      - ".github/workflows/daily_update.yml"
-      - ".github/workflows/v2-ci.yml"
+  workflow_dispatch:
+    inputs:
+      build_candle_cache:
+        description: Build portable neutral daily markers from the committed verified snapshot
+        type: boolean
+        default: false
   push:
     branches: [main]
     paths:
+      - "workspace_public/**"
+      - "generate_workspace.py"
+      - "site_mode.json"
+      - "tools/*workspace*"
+      - ".github/workflows/workspace-refresh.yml"
       - "stock_v2_public/**"
       - "build_review_data.py"
       - "market_flow.py"
@@ -69,6 +29,8 @@ on:
       - "sfz_technical_pipeline.py"
       - "mda_checklist_page.py"
       - "verified_price_guard.py"
+      - "official_price_refresh.py"
+      - "tools/test_official_price_refresh.py"
       - "update_official_adjusted_history.py"
       - "tools/*weekly_mda*"
       - "tools/*weekly_sources*"
@@ -111,6 +73,25 @@ on:
       - ".github/workflows/daily_update.yml"
 
 jobs:
+  candle-cache:
+    if: github.event_name == 'workflow_dispatch' && inputs.build_candle_cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -r requirements-v2.lock
+      - name: Calculate reviewed neutral daily markers without publishing
+        run: python -m tools.export_workspace_candles --output '${{ runner.temp }}/workspace-candles'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: workspace-candles
+          path: ${{ runner.temp }}/workspace-candles
+          retention-days: 7
   test:
     strategy:
       fail-fast: false
@@ -128,7 +109,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - run: python -m pytest tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py tools/test_sfz_universe.py tools/test_mda_checklist.py tools/test_mda_weekly_pipeline.py tools/test_verified_price_guard.py tools/test_public_history_contract.py tools/test_import_verified_price_batch.py tools/test_market_reference_integrity.py tools/test_official_adjusted_history.py tools/test_update_weekly_mda_pool.py tools/test_build_official_stock_universe.py tools/test_update_weekly_sources.py tools/test_verify_holder_flow.py tools/test_daily_session_integrity.py tools/test_market_flow.py tools/test_official_workbench.py tools/test_workbench_integration.py tools/test_resolve_verified_session.py tools/test_publish_pages_verified.py -q
+      - run: python -m pytest tools/test_mda_conditions.py tools/test_workspace_candles.py tools/test_official_price_refresh.py tools/test_workspace.py tools/test_workspace_research.py tools/test_workspace_followup.py tools/test_ownership_history.py tools/test_chart_pattern_contract.py tools/test_review_queue.py tools/test_build_review_data.py tools/test_review_home.py tools/test_sfz_review.py tools/test_sfz_universe.py tools/test_mda_checklist.py tools/test_mda_weekly_pipeline.py tools/test_verified_price_guard.py tools/test_public_history_contract.py tools/test_import_verified_price_batch.py tools/test_market_reference_integrity.py tools/test_official_adjusted_history.py tools/test_update_weekly_mda_pool.py tools/test_build_official_stock_universe.py tools/test_update_weekly_sources.py tools/test_verify_holder_flow.py tools/test_daily_session_integrity.py tools/test_market_flow.py tools/test_official_workbench.py tools/test_workbench_integration.py tools/test_resolve_verified_session.py tools/test_publish_pages_verified.py -q
       - shell: python
         run: |
           from pathlib import Path

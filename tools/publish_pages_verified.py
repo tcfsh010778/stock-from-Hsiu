@@ -88,9 +88,27 @@ def verify_publish(
         raise PublishError("expected commit is not a hexadecimal Git SHA")
     if not docs_dir.is_dir():
         raise PublishError("docs directory does not exist")
+    verify_paths = VERIFY_PATHS
+    workspace_index = docs_dir / 'data/index.json'
+    if workspace_index.exists():
+        workspace = json.loads(workspace_index.read_text(encoding='utf-8'))
+        if workspace.get('schema_version') == 'sfz-mda-workspace-1':
+            representatives = []
+            for market in ('上市','上櫃'):
+                stock = next((s for s in workspace.get('stocks',[]) if s.get('market')==market and s.get('price_verified')),None)
+                if stock:
+                    rel = stock.get('detail','')
+                    if not re.fullmatch(r'data/stocks/\d{4}\.json',rel):
+                        raise PublishError('invalid workspace verification path')
+                    representatives.append(rel)
+            if len(representatives)!=2:
+                raise PublishError('workspace requires verified listed and OTC examples')
+            verify_paths = ('index.html','app.js','style.css','research.js','profile.js','data/index.json',*representatives)
+            if any(not (docs_dir/rel).is_file() for rel in verify_paths):
+                raise PublishError('workspace publication assets are incomplete')
     local = {
         rel: (docs_dir / rel).read_bytes()
-        for rel in VERIFY_PATHS
+        for rel in verify_paths
         if (docs_dir / rel).is_file()
     }
     if "index.html" not in local:

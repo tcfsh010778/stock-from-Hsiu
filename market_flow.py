@@ -38,6 +38,7 @@ TWSE_AMOUNT_URL = "https://www.twse.com.tw/rwd/zh/fund/BFI82U"
 TPEX_AMOUNT_URL = "https://www.tpex.org.tw/www/zh-tw/insti/summary"
 TWSE_MARGIN_URL = "https://www.twse.com.tw/rwd/zh/marginTrading/MI_MARGN"
 TPEX_MARGIN_URL = "https://www.tpex.org.tw/openapi/v1/tpex_mainboard_margin_balance"
+TPEX_MARGIN_HISTORY_URL = "https://www.tpex.org.tw/www/zh-tw/margin/balance"
 DERIVED_SOURCE_ID = "daily_market_flow_derived"
 TAIPEI_TZ = timezone(timedelta(hours=8))
 RANKING_POLICY = "ordinary_equity_v1"
@@ -365,6 +366,48 @@ def normalize_tpex_margin_payload(payload: Any) -> list[dict[str, Any]]:
             "short_balance": _number(source.get("ShortSaleBalance")),
         })
     return rows
+
+
+def normalize_tpex_margin_history(payload: Any, expected_date: str) -> list[dict[str, Any]]:
+    """Exact-date official report; balance columns are explicitly labelled lots."""
+    if not isinstance(payload, Mapping) or _date_text(payload.get("date")) != expected_date:
+        raise ValueError("TPEx margin history date mismatch")
+    fields_needed = {"代號", "名稱", "前資餘額(張)", "資餘額", "前券餘額(張)", "券餘額"}
+    rows, seen = [], set()
+    for table in payload.get("tables") or []:
+        fields = [str(f).replace("<br>", "").replace("<br/>", "").strip() for f in table.get("fields", [])]
+        if not fields_needed <= set(fields):
+            continue
+        for values in table.get("data") or []:
+            if len(values) != len(fields):
+                raise ValueError("TPEx margin history row width mismatch")
+            item = dict(zip(fields, values)); sid = str(item["代號"]).strip()
+            if not sid or sid in seen:
+                raise ValueError("TPEx margin history duplicate or missing security")
+            seen.add(sid)
+            balances = {}
+            for target, source in (("margin_balance_previous", "前資餘額(張)"), ("margin_balance", "資餘額"),
+                                   ("short_balance_previous", "前券餘額(張)"), ("short_balance", "券餘額")):
+                value = float(str(item[source]).replace(",", ""))
+                if not math.isfinite(value) or value < 0 or not value.is_integer():
+                    raise ValueError("invalid TPEx margin history balance")
+                balances[target] = int(value)
+            rows.append({"trading_date": expected_date, "security_id": sid, "name": item["名稱"],
+                         "market": "otc", "source_url": TPEX_MARGIN_HISTORY_URL, "unit": "lots", **balances})
+    if not rows:
+        raise ValueError("TPEx margin history required table missing")
+    return rows
+
+
+def fetch_tpex_margin_for_date(expected_date: str) -> list[dict[str, Any]]:
+    try:
+        rows = normalize_tpex_margin_payload(_fetch_json(TPEX_MARGIN_URL))
+        if rows and {r["trading_date"] for r in rows} == {expected_date}:
+            return rows
+    except (OSError, ValueError, RuntimeError):
+        pass
+    return normalize_tpex_margin_history(_fetch_json(TPEX_MARGIN_HISTORY_URL,
+        {"date": expected_date.replace("-", "/"), "response": "json"}), expected_date)
 
 
 def margin_metrics(rows: Sequence[Mapping[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -776,6 +819,7 @@ def build_payload(
             "source_id": source_id,
             "market": market,
             "metric": "margin_short",
+            "source_url": rows[0].get("source_url", TPEX_MARGIN_URL if market == "otc" else TWSE_MARGIN_URL) if rows else None,
             "status": "missing" if missing else "fresh",
             "data_date": str(rows[0].get("trading_date") or "") if rows and not missing else None,
             "row_count": len(rows),
@@ -961,7 +1005,7 @@ def _collect_for_target(target: date, fetched_at: datetime) -> dict[str, Any]:
     except Exception as exc:
         margin_errors["listed"] = str(exc)[:200]
     try:
-        margin_rows["otc"] = normalize_tpex_margin_payload(_fetch_json(TPEX_MARGIN_URL))
+        margin_rows["otc"] = fetch_tpex_margin_for_date(expected_date)
     except Exception as exc:
         margin_errors["otc"] = str(exc)[:200]
 
