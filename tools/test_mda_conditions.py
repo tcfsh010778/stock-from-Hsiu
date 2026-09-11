@@ -117,6 +117,9 @@ def test_trust_inventory_field_and_shared_market_calendar():
     assert result['decision'] is True
     assert result['metrics']['trust']['observed']==21
     assert result['metrics']['trust']['start']==days[-21]
+    no_price=checklist(None,'2026-09-10',source,research=research)
+    assert table_rows(no_price)['B1:1']['decision'] is True
+    assert no_price['familiar_pattern']['decision'] is None
     research['trust_holdings']=[r for r in research['trust_holdings'] if r['date']!='2026-09-03']
     f=bars();f=f[f.date!=pd.Timestamp('2026-09-03')]
     result=table_rows(checklist(f,'2026-09-10',source,research=research))['B1:1']

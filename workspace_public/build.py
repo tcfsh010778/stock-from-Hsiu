@@ -133,7 +133,7 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                             industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
             mda['familiar_pattern']=table['familiar_pattern']
             mda['matched_conditions']=table['matched_conditions']
-            mda['checks']=[{'id':r['id'],'status':r['status'],'summary':r['method'],'threshold_basis':r['basis']}
+            mda['checks']=[{'id':r['id'],'status':r['status']}
                            for section in table['sections'] for r in section['rows']]
             patterns = detect_patterns(frame,as_of)
             chart_candles={f:candles(frame,as_of,f,limit=len(frame)) for f in ('day','week','month')}
@@ -188,7 +188,8 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                           'note':'週股權觀察保留；價格未驗證，完整檢核待補。'},
                    'patterns':[],'chips':chips['windows'],'revenue':rev[-1] if rev else None,'holder':holder_map.get(sid),
                    'detail':f'data/stocks/{sid}.json'}
-            row['mda']['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of)
+            row['mda']['sources'] = source_evidence(chips,research_series.get('ownership',[]),research_series.get('margin',[]),as_of,
+                                                   trading_sessions=market_sessions[-21:])
             write(output/'data/stocks'/f'{sid}.json',{**row,'schema_version':VERSION,'candles':{f:[] for f in ('day','week','month')},
                 'chips':chips,'revenue_history':rev,'patterns':{'observations':[]},'weekly_date':weekly_date,
                 'expected_revenue_period':revenues.get('expected_period'),'price_basis':{'verified':False},'ai':{'status':'insufficient_data'},
@@ -198,7 +199,7 @@ def build(source, output, verified_frame, analyze_sfz_universe, expected_session
                                           industry=research.get('industries',{}).get(sid),revenue=rev[-1] if rev else None)
             row['mda']['familiar_pattern']=packet['mda_table']['familiar_pattern']
             row['mda']['matched_conditions']=packet['mda_table']['matched_conditions']
-            row['mda']['checks']=[{'id':r['id'],'status':r['status'],'summary':r['method'],'threshold_basis':r['basis']}
+            row['mda']['checks']=[{'id':r['id'],'status':r['status']}
                                   for section in packet['mda_table']['sections'] for r in section['rows']]
             write(output/'data/stocks'/f'{sid}.json',packet)
             stocks.append(row)
